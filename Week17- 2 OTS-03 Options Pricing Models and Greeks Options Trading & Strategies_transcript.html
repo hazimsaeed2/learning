@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[WEEK 17-2] — Options Pricing Models &amp; Greeks (OTS-03) — Cheat Sheet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+           font-size: 11px; line-height: 1.5; }
+    @media print { body { font-size: 9px; } .page-break { page-break-before: always; } }
+    h1 { font-size: 18px; }
+    h2 { font-size: 13px; }
+    h3 { font-size: 11px; }
+    table { font-size: 10px; }
+    pre  { font-size: 9px; line-height: 1.45; }
+  </style>
+</head>
+<body class="bg-white p-4 max-w-6xl mx-auto">
+
+  <!-- ====================== PAGE 1 ====================== -->
+
+  <!-- HEADER -->
+  <header class="text-center border-b-4 border-blue-600 pb-3 mb-4">
+    <h1 class="font-extrabold text-blue-900">OPTIONS PRICING MODELS &amp; GREEKS — BLACK-SCHOLES, PUT-CALL PARITY &amp; RISK METRICS — COMPLETE CHEAT SHEET</h1>
+    <p class="text-gray-600 mt-1">EPAT Week 17-2 — OTS-03: Options Pricing Models and Greeks | Instructor: Varun Kumar (Options Trader, Global Macro, ML/NN Product Lead)</p>
+    <p class="text-gray-700 mt-2">
+      <strong>The Problem:</strong> You see an option premium of $14 but have no idea if that's overpriced or a bargain. You don't know which factors drive that price, how fast it will decay, or how to quantify risk across your options positions.<br>
+      <strong>Your Goal:</strong> Decompose premium into intrinsic + extrinsic value, understand put-call parity, calculate theoretical prices with Black-Scholes, and use Greeks (Delta, Gamma, Theta, Vega) to measure risk and make contract selection decisions.
+    </p>
+  </header>
+
+  <!-- SECTION 1: CORE EXAMPLE -->
+  <section class="border-2 border-amber-500 rounded-lg p-3 mb-4 bg-amber-50">
+    <h2 class="font-bold text-amber-900 mb-3 bg-amber-200 rounded px-2 py-1">1️⃣ CORE EXAMPLE — Decomposing a $14 Call Option Premium</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">THE SETUP — All Numbers for This Cheat Sheet</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-2 py-1">Parameter</th><th class="border px-2 py-1">Symbol</th><th class="border px-2 py-1">Value</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Underlying spot price</td><td class="border px-2 py-1 font-mono">S</td><td class="border px-2 py-1 font-mono font-bold">$100</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Strike price</td><td class="border px-2 py-1 font-mono">X</td><td class="border px-2 py-1 font-mono font-bold">$90</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Call premium (market)</td><td class="border px-2 py-1 font-mono">C</td><td class="border px-2 py-1 font-mono font-bold">$14</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Intrinsic value</td><td class="border px-2 py-1 font-mono">S − X</td><td class="border px-2 py-1 font-mono">$100 − $90 = <strong>$10</strong></td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Extrinsic (time) value</td><td class="border px-2 py-1 font-mono">C − intrinsic</td><td class="border px-2 py-1 font-mono">$14 − $10 = <strong>$4</strong></td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Volatility (annualized)</td><td class="border px-2 py-1 font-mono">σ</td><td class="border px-2 py-1 font-mono">10%</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Risk-free interest rate</td><td class="border px-2 py-1 font-mono">r</td><td class="border px-2 py-1 font-mono">0% (simplification)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Days to expiry</td><td class="border px-2 py-1 font-mono">T</td><td class="border px-2 py-1 font-mono">30 days</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Moneyness</td><td class="border px-2 py-1 font-mono">—</td><td class="border px-2 py-1 font-mono text-green-700 font-bold">In The Money (ITM)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-amber-800 mb-2">PREMIUM DECOMPOSITION</h3>
+        <p class="font-mono bg-amber-100 p-2 rounded">Premium = Intrinsic Value + Extrinsic Value<br>
+$14    = $10           + $4<br><br>
+Intrinsic = max(S − X, 0) for calls  ← exercise value NOW<br>
+         = max($100 − $90, 0) = $10<br><br>
+Extrinsic = $4 ← what you pay for TIME to act<br>
+  • Decays daily (Theta Greek measures this)<br>
+  • Goes to $0 at expiry if ATM or OTM<br>
+  • You're paying $4 for the right to act for 30 days</p>
+      </div>
+
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">MONEYNESS CLASSIFICATION</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-1 py-1">Type</th><th class="border px-1 py-1">Call Condition</th><th class="border px-1 py-1">Put Condition</th><th class="border px-1 py-1">Example (Strike=90)</th></tr>
+          </thead>
+          <tbody>
+            <tr class="bg-green-50"><td class="border px-1 py-1 font-bold text-green-700">ITM</td><td class="border px-1 py-1">S &gt; X</td><td class="border px-1 py-1">S &lt; X</td><td class="border px-1 py-1">S=$100 → call ITM by $10</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">ATM</td><td class="border px-1 py-1">S ≈ X</td><td class="border px-1 py-1">S ≈ X</td><td class="border px-1 py-1">S=$90 → no intrinsic value</td></tr>
+            <tr class="bg-red-50"><td class="border px-1 py-1 font-bold text-red-700">OTM</td><td class="border px-1 py-1">S &lt; X</td><td class="border px-1 py-1">S &gt; X</td><td class="border px-1 py-1">S=$80 → call worthless at expiry</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-amber-800 mb-2">OPTION TYPES</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-2 py-1">Type</th><th class="border px-2 py-1">Exercise Rule</th><th class="border px-2 py-1">Cost</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">European</td><td class="border px-2 py-1">ONLY on expiry date</td><td class="border px-2 py-1">Cheaper (limited optionality)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">American</td><td class="border px-2 py-1">ANY time before expiry</td><td class="border px-2 py-1">Costlier (more optionality)</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Exotic options</strong> (Asian, Russian, Parisian): institutional-grade, not retail. Asian uses average close price of N days for settlement instead of last traded price.</p>
+
+        <h3 class="font-bold text-amber-800 mt-2 mb-2">PAYOFF vs P&amp;L</h3>
+        <p class="font-mono bg-amber-100 p-2 rounded">Call Payoff = max(S − X, 0)   ← ignores cost<br>
+Call P&amp;L   = max(S − X, 0) − Premium  ← real profit<br><br>
+Example: S=$110, X=$90, Premium=$14<br>
+Payoff = max(110−90, 0) = $20<br>
+P&amp;L   = $20 − $14 = <strong>+$6 profit</strong><br><br>
+Example: S=$95, X=$90, Premium=$14<br>
+Payoff = max(95−90, 0) = $5<br>
+P&amp;L   = $5 − $14 = <strong>−$9 loss</strong></p>
+
+        <!-- VISUAL: Call Option Payoff Diagram -->
+        <div class="bg-white border-2 border-amber-300 rounded p-2 mt-2">
+          <svg viewBox="0 0 500 200" class="w-full">
+            <text x="250" y="14" text-anchor="middle" font-size="9" font-weight="bold" fill="#92400e">CALL OPTION PAYOFF vs P&amp;L</text>
+            <!-- Axes -->
+            <line x1="60" y1="160" x2="470" y2="160" stroke="#374151" stroke-width="1.5"/>
+            <line x1="60" y1="20" x2="60" y2="160" stroke="#374151" stroke-width="1.5"/>
+            <text x="265" y="185" text-anchor="middle" font-size="7" fill="#6b7280">Spot Price (S) at Expiry</text>
+            <text x="15" y="90" font-size="7" fill="#6b7280" transform="rotate(-90,15,90)">Profit / Loss ($)</text>
+            <!-- Zero line -->
+            <line x1="60" y1="120" x2="470" y2="120" stroke="#d1d5db" stroke-width="1" stroke-dasharray="3"/>
+            <text x="50" y="123" font-size="6" fill="#6b7280">$0</text>
+            <!-- Strike price line -->
+            <line x1="220" y1="20" x2="220" y2="160" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4"/>
+            <text x="220" y="175" text-anchor="middle" font-size="7" font-weight="bold" fill="#92400e">X = $90</text>
+            <!-- Payoff line (blue): flat at 0 then diagonal up -->
+            <polyline points="60,120 220,120 450,30" stroke="#3b82f6" stroke-width="2.5" fill="none"/>
+            <text x="420" y="25" font-size="7" font-weight="bold" fill="#3b82f6">Payoff</text>
+            <!-- P&L line (green): flat at -premium then diagonal up -->
+            <polyline points="60,140 220,140 450,50" stroke="#16a34a" stroke-width="2" stroke-dasharray="5" fill="none"/>
+            <text x="420" y="48" font-size="7" font-weight="bold" fill="#16a34a">P&amp;L</text>
+            <!-- Premium gap annotation -->
+            <line x1="130" y1="120" x2="130" y2="140" stroke="#dc2626" stroke-width="1.5"/>
+            <text x="135" y="134" font-size="6" fill="#dc2626">Premium = $14</text>
+            <!-- Breakeven point -->
+            <circle cx="275" cy="120" r="4" fill="#f59e0b"/>
+            <text x="280" y="117" font-size="6" font-weight="bold" fill="#92400e">Break-even ($104)</text>
+            <!-- OTM / ITM zones -->
+            <rect x="60" y="148" width="160" height="12" rx="2" fill="#fecaca" opacity="0.3"/>
+            <text x="140" y="157" text-anchor="middle" font-size="6" font-weight="bold" fill="#dc2626">OTM (worthless at expiry)</text>
+            <rect x="220" y="148" width="250" height="12" rx="2" fill="#dcfce7" opacity="0.3"/>
+            <text x="345" y="157" text-anchor="middle" font-size="6" font-weight="bold" fill="#16a34a">ITM (has intrinsic value)</text>
+            <!-- Example markers -->
+            <circle cx="350" cy="80" r="3" fill="#3b82f6"/>
+            <text x="355" y="78" font-size="5" fill="#374151">S=$110: Payoff=$20</text>
+            <circle cx="350" cy="95" r="3" fill="#16a34a"/>
+            <text x="355" y="93" font-size="5" fill="#374151">S=$110: P&amp;L=+$6</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: OPTION COMBINATIONS -->
+  <section class="border-2 border-blue-500 rounded-lg p-3 mb-4 bg-blue-50">
+    <h2 class="font-bold text-blue-900 mb-3 bg-blue-200 rounded px-2 py-1">2️⃣ OPTION COMBINATIONS — Hedging, Spreads, Straddles &amp; Why Overdoing Kills Profits</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-white border-2 border-blue-300 rounded p-3">
+        <h3 class="font-bold text-blue-800 mb-2">PROTECTIVE PUT (Stock + Long Put)</h3>
+        <p class="font-mono bg-blue-100 p-2 rounded mb-2">Position: Long stock at $90 + Buy $90 put for $10<br><br>
+If stock falls to $70:<br>
+  Stock loss = $90 − $70 = −$20<br>
+  Put payoff = $90 − $70 = +$20<br>
+  Net = $0 − $10 premium = <strong>−$10</strong><br><br>
+If stock rises to $120:<br>
+  Stock gain = $120 − $90 = +$30<br>
+  Put payoff = $0 (worthless)<br>
+  Net = $30 − $10 premium = <strong>+$20</strong><br><br>
+Max loss = $10 (premium only) ✅<br>
+Breakeven = $90 + $10 = $100<br>
+Profit starts above $100</p>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400">
+          <p><strong>💡 KEY:</strong> Hedging LIMITS losses but NEVER eliminates them. You always pay a cost (the premium). Think of it like insurance — you pay to cap the downside.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-blue-300 rounded p-3">
+        <h3 class="font-bold text-blue-800 mb-2">BULL CALL SPREAD</h3>
+        <p class="font-mono bg-blue-100 p-2 rounded mb-2">Position: Buy $90 call (pay $10) + Sell $120 call (receive $5)<br>
+Net cost = $10 − $5 = <strong>$5</strong> (50% cheaper!)<br><br>
+If stock at $110 on expiry:<br>
+  Long 90 call: $110−$90 = +$20<br>
+  Short 120 call: $0 (worthless)<br>
+  Net = $20 − $5 cost = <strong>+$15</strong> ✅<br><br>
+If stock at $200 on expiry:<br>
+  Long 90 call: $200−$90 = +$110<br>
+  Short 120 call: −($200−$120) = −$80<br>
+  Net = $110 − $80 − $5 = <strong>+$25</strong> (capped!)<br><br>
+Max profit = ($120−$90) − $5 = $25<br>
+Max loss = $5 (net premium paid)</p>
+        <p class="mt-1"><strong>When to use:</strong> You're bullish but believe stock won't go above $120 → save premium by selling the upside you don't expect.</p>
+      </div>
+
+      <div class="bg-white border-2 border-blue-300 rounded p-3">
+        <h3 class="font-bold text-blue-800 mb-2">STRADDLE vs STRANGLE</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-blue-100">
+            <tr><th class="border px-1 py-1">Feature</th><th class="border px-1 py-1">Straddle</th><th class="border px-1 py-1">Strangle</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-bold">Position</td><td class="border px-1 py-1">ATM call + ATM put</td><td class="border px-1 py-1">OTM call + OTM put</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">Cost</td><td class="border px-1 py-1 text-red-700">Expensive</td><td class="border px-1 py-1 text-green-700">Cheaper</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">Profit zone</td><td class="border px-1 py-1">Any direction beyond premium</td><td class="border px-1 py-1">Only on extreme moves</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">Use case</td><td class="border px-1 py-1">Unknown direction, expect big move</td><td class="border px-1 py-1">Same, but budget-friendly</td></tr>
+          </tbody>
+        </table>
+        <p><strong>When:</strong> Before Fed rate decisions, budget announcements, earnings — you don't know direction but expect high volatility. <strong>Can't do this with equities</strong> (hands tied if you don't know direction).</p>
+
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ 1×2 CALL SPREAD TRAP:</strong> Buying 1 call + selling 2 higher calls to "finance" the position. If stock goes way up (your direction was RIGHT), you LOSE money because the extra short call creates unlimited downside. <strong>Never overuse combinations just to collect premium.</strong></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: PUT-CALL PARITY -->
+  <section class="border-2 border-teal-500 rounded-lg p-3 mb-4 bg-teal-50">
+    <h2 class="font-bold text-teal-900 mb-3 bg-teal-200 rounded px-2 py-1">3️⃣ PUT-CALL PARITY — The Fundamental Equation That Ties Everything Together</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">THE EQUATION</h3>
+        <p class="font-mono text-lg text-center bg-teal-100 p-3 rounded mb-2 font-bold">C − P = S − X × e<sup>−rT</sup></p>
+        <table class="w-full border border-gray-300 mb-2">
+          <tbody>
+            <tr><td class="border px-2 py-1 font-mono font-bold">C</td><td class="border px-2 py-1">Call premium</td></tr>
+            <tr><td class="border px-2 py-1 font-mono font-bold">P</td><td class="border px-2 py-1">Put premium</td></tr>
+            <tr><td class="border px-2 py-1 font-mono font-bold">S</td><td class="border px-2 py-1">Spot price of underlying</td></tr>
+            <tr><td class="border px-2 py-1 font-mono font-bold">X</td><td class="border px-2 py-1">Strike price</td></tr>
+            <tr><td class="border px-2 py-1 font-mono font-bold">r</td><td class="border px-2 py-1">Risk-free rate (from 91-day Treasury)</td></tr>
+            <tr><td class="border px-2 py-1 font-mono font-bold">T</td><td class="border px-2 py-1">Time to expiry (in years)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-teal-800 mb-2">PROOF — Portfolio Value at Expiry</h3>
+        <p class="font-mono bg-teal-100 p-2 rounded">Portfolio = Long Put + Short Call + Long Stock<br>
+Initial value = P(x) − C(x) + S<br><br>
+<strong>If S &lt; X at expiry (market fell):</strong><br>
+  Long put payoff = X − S<br>
+  Short call payoff = 0 (worthless)<br>
+  Stock value = S<br>
+  Total = (X − S) + 0 + S = <strong>X</strong><br><br>
+<strong>If S &gt; X at expiry (market rose):</strong><br>
+  Long put payoff = 0 (worthless)<br>
+  Short call payoff = −(S − X)<br>
+  Stock value = S<br>
+  Total = 0 − (S − X) + S = <strong>X</strong><br><br>
+Both = X → portfolio value is CONSTANT<br>
+regardless of direction → parity holds ✅</p>
+      </div>
+
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">KEY IMPLICATIONS</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-teal-100">
+            <tr><th class="border px-2 py-1">Implication</th><th class="border px-2 py-1">Why It Matters</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Change in call → change in put</td><td class="border px-2 py-1">If volatility spikes, BOTH premiums change (not just calls)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Know C → calculate P</td><td class="border px-2 py-1">BSM gives C, put-call parity gives P</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Find strike where C = P</td><td class="border px-2 py-1">Set C−P=0 → X = S × e<sup>rT</sup></td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Combinations work</td><td class="border px-2 py-1">Spreads, straddles, hedging all possible BECAUSE parity holds</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">If violated → arbitrage</td><td class="border px-2 py-1">Market makers quickly close any gap</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-teal-800 mb-2">WORKED EXAMPLE</h3>
+        <p class="font-mono bg-teal-100 p-2 rounded mb-2">S = $100, X = $90, r = 0%, T = 30 days<br>
+C − P = S − X × e<sup>−rT</sup><br>
+C − P = 100 − 90 × e<sup>0</sup> = 100 − 90 = <strong>$10</strong><br><br>
+If C = $14 → P = $14 − $10 = <strong>$4</strong><br>
+If C = $10 → P = $10 − $10 = <strong>$0</strong></p>
+
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500">
+          <p><strong>⚠️ AMERICAN OPTIONS:</strong> Put-call parity does NOT hold for American options. T is not constant (can exercise anytime). Therefore BSM (Black-Scholes-Merton) doesn't work for American options either. American options need different mathematical methods (e.g., binomial trees).</p>
+        </div>
+
+        <h3 class="font-bold text-teal-800 mt-2 mb-2">MODEL-INDEPENDENT RELATIONSHIPS</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-1 py-1">American options &gt; European options</td><td class="border px-1 py-1">More optionality = more cost</td></tr>
+            <tr><td class="border px-1 py-1">Longer expiry &gt; shorter expiry</td><td class="border px-1 py-1">More time = more cost</td></tr>
+            <tr><td class="border px-1 py-1">Call premium ≤ underlying price</td><td class="border px-1 py-1">If C &gt; S → free arbitrage</td></tr>
+            <tr><td class="border px-1 py-1">Put premium ≤ strike price</td><td class="border px-1 py-1">Same logic</td></tr>
+            <tr><td class="border px-1 py-1">Lower strike call &gt; higher strike call</td><td class="border px-1 py-1">Deeper ITM = more premium</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 2 ====================== -->
+
+  <!-- SECTION 4: BLACK-SCHOLES MODEL -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">4️⃣ BLACK-SCHOLES MODEL — The Closed-Form Equation for Options Pricing</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">THE EQUATION</h3>
+        <p class="font-mono bg-purple-100 p-3 rounded mb-2 font-bold text-center">C = S × N(d₁) − X × e<sup>−rT</sup> × N(d₂)</p>
+        <p class="font-mono bg-purple-100 p-2 rounded mb-2">d₁ = [ln(S/X) + (r + σ²/2) × T] / (σ × √T)<br>
+d₂ = d₁ − σ × √T</p>
+        <table class="w-full border border-gray-300 mb-2">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">N()</td><td class="border px-1 py-1">Cumulative standard normal distribution function</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">N(d₁)</td><td class="border px-1 py-1">Hedge ratio (delta) — how many shares to hedge</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">N(d₂)</td><td class="border px-1 py-1">Probability of finishing ITM (theoretical, risk-neutral only)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">σ</td><td class="border px-1 py-1">Annualized volatility (std dev of daily returns × √252)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">ln()</td><td class="border px-1 py-1">Natural logarithm</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Structure:</strong> At its core, BSM (Black-Scholes-Merton) is S − X (spot minus strike), but each term is multiplied by risk-adjustment factors (N(d₁), N(d₂), e<sup>−rT</sup>) that incorporate volatility, time, and interest rates.</p>
+        <p class="mt-1"><strong>Put from BSM:</strong> Calculate call C from BSM → plug into put-call parity → P = C − S + X × e<sup>−rT</sup></p>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">BSM ASSUMPTIONS (Limitations)</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-purple-100">
+            <tr><th class="border px-2 py-1">Assumption</th><th class="border px-2 py-1">Reality</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold text-red-700">Constant volatility</td><td class="border px-2 py-1">Biggest issue! Vol changes every second → premium changes too</td></tr>
+            <tr><td class="border px-2 py-1">Continuous trading</td><td class="border px-2 py-1">Markets close, have illiquid hours</td></tr>
+            <tr><td class="border px-2 py-1">Log-normal distribution</td><td class="border px-2 py-1">Fat tails exist in real markets</td></tr>
+            <tr><td class="border px-2 py-1">No dividends</td><td class="border px-2 py-1">Dividends affect pricing (modified BSM exists)</td></tr>
+            <tr><td class="border px-2 py-1">No transaction costs</td><td class="border px-2 py-1">Lot sizes, commissions, taxes are real</td></tr>
+            <tr><td class="border px-2 py-1">Risk-free rate constant</td><td class="border px-2 py-1">Rates change (recalibrate inputs)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">European options only</td><td class="border px-2 py-1">Fixed T required (American: variable T)</td></tr>
+            <tr><td class="border px-2 py-1">Efficient markets</td><td class="border px-2 py-1">Not always true</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-purple-800 mb-2">PYTHON — CALCULATE PREMIUM WITH mibian</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# pip install mibian              # Install if needed
+import mibian                     # Options pricing library
+
+# Define inputs
+stock_price = 100                 # Current spot (S)
+strike_price = 90                 # Strike (X)
+interest_rate = 0                 # Risk-free rate (r) in %
+days_to_expiry = 30               # Days until expiry (T)
+volatility = 10                   # Annualized vol (σ) in %
+
+# Calculate call premium using BSM
+bs = mibian.BS(                   # Black-Scholes model
+    [stock_price, strike_price,   # S, X
+     interest_rate, days_to_expiry], # r, T
+    volatility=volatility)        # σ
+
+call_price = bs.callPrice         # Theoretical call value
+put_price = bs.putPrice           # Theoretical put value
+# call_price ≈ $10.03
+# put_price  ≈ $0.03
+</pre>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 WHY NOT RETURNS?</strong> Returns are about the PAST. Options are about the FUTURE. In the lecture's pricing discussion, the direct focus was on volatility rather than historical return series.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: OPTIONS GREEKS -->
+  <section class="border-2 border-green-500 rounded-lg p-3 mb-4 bg-green-50">
+    <h2 class="font-bold text-green-900 mb-3 bg-green-200 rounded px-2 py-1">5️⃣ OPTIONS GREEKS — Partial Derivatives of Premium: How Each Factor Moves Your Position</h2>
+
+    <!-- VISUAL: Greeks Across Moneyness -->
+    <div class="bg-white border-2 border-green-300 rounded p-3 mb-3">
+      <svg viewBox="0 0 620 170" class="w-full">
+        <text x="310" y="14" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">HOW GREEKS CHANGE: OTM → ATM → ITM</text>
+        <!-- Delta: 0→0.5→1 (S-curve) -->
+        <rect x="10" y="25" width="140" height="120" rx="4" fill="#f0fdf4" stroke="#86efac"/>
+        <text x="80" y="40" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">DELTA (Δ)</text>
+        <line x1="30" y1="130" x2="130" y2="130" stroke="#d1d5db" stroke-width="0.5"/>
+        <polyline points="30,120 50,118 65,110 80,90 95,70 110,62 130,60" stroke="#16a34a" stroke-width="2" fill="none"/>
+        <text x="25" y="125" font-size="5" fill="#6b7280">0</text><text x="72" y="125" font-size="5" fill="#6b7280">0.5</text><text x="125" y="58" font-size="5" fill="#6b7280">1.0</text>
+        <text x="30" y="140" font-size="5" fill="#9ca3af">OTM</text><text x="72" y="140" font-size="5" fill="#9ca3af">ATM</text><text x="118" y="140" font-size="5" fill="#9ca3af">ITM</text>
+        <!-- Gamma: peaks at ATM (bell curve) -->
+        <rect x="165" y="25" width="140" height="120" rx="4" fill="#fff7ed" stroke="#fdba74"/>
+        <text x="235" y="40" text-anchor="middle" font-size="8" font-weight="bold" fill="#9a3412">GAMMA (Γ)</text>
+        <polyline points="185,120 200,115 215,100 230,65 245,55 250,55 260,65 275,100 290,115" stroke="#ea580c" stroke-width="2" fill="none"/>
+        <text x="245" y="50" font-size="5" fill="#ea580c" font-weight="bold">PEAK</text>
+        <text x="185" y="140" font-size="5" fill="#9ca3af">OTM</text><text x="227" y="140" font-size="5" fill="#9ca3af">ATM</text><text x="275" y="140" font-size="5" fill="#9ca3af">ITM</text>
+        <!-- Theta: most negative at ATM (inverted bell) -->
+        <rect x="320" y="25" width="140" height="120" rx="4" fill="#fef2f2" stroke="#fca5a5"/>
+        <text x="390" y="40" text-anchor="middle" font-size="8" font-weight="bold" fill="#991b1b">THETA (Θ)</text>
+        <polyline points="340,70 355,75 370,90 385,120 395,125 400,125 410,120 425,90 440,75 445,70" stroke="#dc2626" stroke-width="2" fill="none"/>
+        <text x="395" y="138" font-size="5" fill="#dc2626" font-weight="bold">MAX DECAY</text>
+        <text x="340" y="65" font-size="5" fill="#9ca3af">OTM</text><text x="382" y="65" font-size="5" fill="#9ca3af">ATM</text><text x="430" y="65" font-size="5" fill="#9ca3af">ITM</text>
+        <!-- Vega: peaks at ATM (bell curve) -->
+        <rect x="475" y="25" width="140" height="120" rx="4" fill="#f5f3ff" stroke="#c4b5fd"/>
+        <text x="545" y="40" text-anchor="middle" font-size="8" font-weight="bold" fill="#5b21b6">VEGA (ν)</text>
+        <polyline points="495,120 510,115 525,100 540,65 555,55 560,55 570,65 585,100 600,115" stroke="#7c3aed" stroke-width="2" fill="none"/>
+        <text x="555" y="50" font-size="5" fill="#7c3aed" font-weight="bold">PEAK</text>
+        <text x="495" y="140" font-size="5" fill="#9ca3af">OTM</text><text x="537" y="140" font-size="5" fill="#9ca3af">ATM</text><text x="585" y="140" font-size="5" fill="#9ca3af">ITM</text>
+        <!-- Key insight -->
+        <text x="310" y="163" text-anchor="middle" font-size="6" fill="#374151" font-weight="bold">ATM = highest Gamma, Theta, Vega → most dynamic. Deep ITM/OTM = stable but less responsive.</text>
+      </svg>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-green-300 rounded p-3">
+        <h3 class="font-bold text-green-800 mb-2">DELTA (Δ) — Impact of Price Change</h3>
+        <p class="font-mono bg-green-100 p-2 rounded mb-2">Δ = ∂Premium / ∂Spot = N(d₁) for call<br>
+Δ_put = N(d₁) − 1<br>
+Δ_call − Δ_put = 1 (from put-call parity)</p>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-green-100">
+            <tr><th class="border px-1 py-1">Δ_call</th><th class="border px-1 py-1">Δ_put</th><th class="border px-1 py-1">Meaning</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">0.9</td><td class="border px-1 py-1 font-mono">−0.1</td><td class="border px-1 py-1">Deep ITM call: $1 up → $0.90 premium increase</td></tr>
+            <tr><td class="border px-1 py-1 font-mono font-bold">0.5</td><td class="border px-1 py-1 font-mono font-bold">−0.5</td><td class="border px-1 py-1 font-bold">≈ ATM: $1 up → $0.50 premium increase</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">0.1</td><td class="border px-1 py-1 font-mono">−0.9</td><td class="border px-1 py-1">Deep OTM call: $1 up → $0.10 increase</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Trader jargon:</strong> "I have a 90 delta call" = delta = 0.9 = very responsive to price. Also serves as <strong>hedge ratio</strong> (how many shares to buy/sell to hedge).</p>
+
+        <h3 class="font-bold text-green-800 mt-3 mb-2">GAMMA (Γ) — Stability of Delta</h3>
+        <p class="font-mono bg-green-100 p-2 rounded mb-2">Γ = ∂Δ / ∂Spot (second derivative of premium)</p>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-green-100">
+            <tr><th class="border px-1 py-1">Scenario</th><th class="border px-1 py-1">Gamma</th><th class="border px-1 py-1">Delta Behavior</th></tr>
+          </thead>
+          <tbody>
+            <tr class="bg-yellow-50"><td class="border px-1 py-1 font-bold">ATM contract</td><td class="border px-1 py-1 font-mono font-bold">HIGHEST</td><td class="border px-1 py-1">Delta changes rapidly</td></tr>
+            <tr><td class="border px-1 py-1">Deep ITM / OTM</td><td class="border px-1 py-1 font-mono">LOW</td><td class="border px-1 py-1">Delta very stable</td></tr>
+            <tr class="bg-yellow-50"><td class="border px-1 py-1 font-bold">Near-term expiry</td><td class="border px-1 py-1 font-mono font-bold">HIGHEST</td><td class="border px-1 py-1">Explosive delta swings</td></tr>
+            <tr><td class="border px-1 py-1">Long-term expiry</td><td class="border px-1 py-1 font-mono">LOW</td><td class="border px-1 py-1">Smooth delta changes</td></tr>
+          </tbody>
+        </table>
+        <p class="mt-1"><strong>Decision:</strong> Want stable delta → go deep ITM/OTM + recent expiry. Want high gamma (volatile delta) → go ATM + near-term.</p>
+      </div>
+
+      <div class="bg-white border-2 border-green-300 rounded p-3">
+        <h3 class="font-bold text-green-800 mb-2">THETA (Θ) — Time Decay</h3>
+        <p class="font-mono bg-green-100 p-2 rounded mb-2">Θ = ∂Premium / ∂Time</p>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-green-100">
+            <tr><th class="border px-1 py-1">Scenario</th><th class="border px-1 py-1">Theta</th><th class="border px-1 py-1">Decay Speed</th></tr>
+          </thead>
+          <tbody>
+            <tr class="bg-red-50"><td class="border px-1 py-1 font-bold">ATM contract</td><td class="border px-1 py-1 font-mono font-bold">HIGHEST</td><td class="border px-1 py-1 text-red-700">Decays fastest</td></tr>
+            <tr><td class="border px-1 py-1">Deep ITM / OTM</td><td class="border px-1 py-1 font-mono">LOW</td><td class="border px-1 py-1">Slower decay</td></tr>
+            <tr class="bg-red-50"><td class="border px-1 py-1 font-bold">Near expiry</td><td class="border px-1 py-1 font-mono font-bold">HIGHEST</td><td class="border px-1 py-1 text-red-700">Accelerating decay</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Jargon:</strong> "Short 500 theta" = losing $500/day from time decay. The lecture used this mainly to show how traders talk about daily time-decay exposure in dollar terms.</p>
+
+        <h3 class="font-bold text-green-800 mt-3 mb-2">VEGA (ν) — Volatility Sensitivity</h3>
+        <p class="font-mono bg-green-100 p-2 rounded mb-2">ν = ∂Premium / ∂Volatility</p>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-green-100">
+            <tr><th class="border px-1 py-1">Scenario</th><th class="border px-1 py-1">Vega</th><th class="border px-1 py-1">Vol Sensitivity</th></tr>
+          </thead>
+          <tbody>
+            <tr class="bg-yellow-50"><td class="border px-1 py-1 font-bold">ATM contract</td><td class="border px-1 py-1 font-mono font-bold">HIGHEST</td><td class="border px-1 py-1">Most affected by vol change</td></tr>
+            <tr><td class="border px-1 py-1">Deep ITM / OTM</td><td class="border px-1 py-1 font-mono">LOW</td><td class="border px-1 py-1">Less affected</td></tr>
+            <tr class="bg-yellow-50"><td class="border px-1 py-1 font-bold">Longer expiry</td><td class="border px-1 py-1 font-mono font-bold">HIGHER</td><td class="border px-1 py-1">More time for vol to impact</td></tr>
+            <tr><td class="border px-1 py-1">Near expiry</td><td class="border px-1 py-1 font-mono">LOW</td><td class="border px-1 py-1">Less time for vol to matter</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Jargon:</strong> "Long 1000 Vega" = if volatility goes up 1%, I make $1,000. <strong>CRUCIAL for volatility trading</strong> (OTS-04 focus).</p>
+
+        <h3 class="font-bold text-green-800 mt-2 mb-2">RHO (ρ) — Interest Rate Impact</h3>
+        <p>Minor Greek. ρ = ∂Premium/∂Rate. Relevant only for long-dated positions (months/years) since interest rates change infrequently. Use 91-day Treasury rate.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: GREEKS IN PRACTICE -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">6️⃣ GREEKS IN PRACTICE — Decision Framework &amp; Trader Jargon</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">GREEK DECISION MATRIX</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-orange-100">
+            <tr><th class="border px-1 py-1">I Want...</th><th class="border px-1 py-1">Use Greek</th><th class="border px-1 py-1">Choose Contract</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">Highest price sensitivity</td><td class="border px-1 py-1">High Δ</td><td class="border px-1 py-1">Deep ITM, long expiry</td></tr>
+            <tr><td class="border px-1 py-1">Stable hedge ratio</td><td class="border px-1 py-1">Low Γ</td><td class="border px-1 py-1">Deep ITM/OTM, recent expiry</td></tr>
+            <tr><td class="border px-1 py-1">Explosive delta swings</td><td class="border px-1 py-1">High Γ</td><td class="border px-1 py-1">ATM, near-term weekly</td></tr>
+            <tr><td class="border px-1 py-1">Minimize time decay</td><td class="border px-1 py-1">Low Θ</td><td class="border px-1 py-1">Deep ITM/OTM</td></tr>
+            <tr><td class="border px-1 py-1">Profit from vol spike</td><td class="border px-1 py-1">High ν</td><td class="border px-1 py-1">ATM, long-dated expiry</td></tr>
+            <tr><td class="border px-1 py-1">Minimize vol risk</td><td class="border px-1 py-1">Low ν</td><td class="border px-1 py-1">Deep ITM/OTM, near expiry</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-orange-800 mt-2 mb-2">TRADER JARGON DECODED</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-orange-100">
+            <tr><th class="border px-2 py-1">Jargon</th><th class="border px-2 py-1">Translation</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-mono">"Long 5000 Delta"</td><td class="border px-2 py-1">$1 underlying up → I make $5,000</td></tr>
+            <tr><td class="border px-2 py-1 font-mono">"Long 100 Gamma"</td><td class="border px-2 py-1">$1 underlying up → my delta increases by 100</td></tr>
+            <tr><td class="border px-2 py-1 font-mono">"Short 500 Theta"</td><td class="border px-2 py-1">I lose $500 per day from time decay</td></tr>
+            <tr><td class="border px-2 py-1 font-mono">"Long 1000 Vega"</td><td class="border px-2 py-1">1% vol increase → I make $1,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">PORTFOLIO-LEVEL GREEKS (Linear!)</h3>
+        <p>All Greeks are <strong>additive</strong> across positions. Sum individual Greeks to get portfolio Greek:</p>
+        <p class="font-mono bg-orange-100 p-2 rounded mb-2">Portfolio Δ = Δ₁ + Δ₂ + ... + Δₙ<br>
+Portfolio Γ = Γ₁ + Γ₂ + ... + Γₙ<br>
+Same for Θ, ν, ρ</p>
+
+        <h3 class="font-bold text-orange-800 mt-2 mb-2">SECOND-ORDER GREEKS</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Vanna</td><td class="border px-2 py-1">∂Δ/∂Volatility — how delta changes with vol</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">∂Vega/∂Time</td><td class="border px-2 py-1">How Vega changes as you near expiry</td></tr>
+          </tbody>
+        </table>
+        <p>You can create custom Greeks by taking partial derivatives of BSM with respect to any variable. Quants do this for specific trading strategies.</p>
+
+        <h3 class="font-bold text-orange-800 mt-3 mb-2">VOLATILITY TRADING AROUND EVENTS</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-orange-100">
+            <tr><th class="border px-1 py-1">Phase</th><th class="border px-1 py-1">Strategy</th><th class="border px-1 py-1">Logic</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-bold">10 days before</td><td class="border px-1 py-1">Buy straddle (long vol)</td><td class="border px-1 py-1">Vol rises as event nears → premiums increase</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">Event day</td><td class="border px-1 py-1">Sell near-term, buy long-term (calendar spread)</td><td class="border px-1 py-1">Near-term vol peaks, long-term stable</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">After event</td><td class="border px-1 py-1">PEAD (Post-Earnings Announcement Drift)</td><td class="border px-1 py-1">If market moves one direction, drift continues for months</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 PRACTICAL BSM USE:</strong> You don't need BSM to find premium (just look at the option chain). You need BSM to calculate <strong>Greeks</strong> — and Greeks tell you HOW to manage risk, WHEN to hedge, and WHICH contract to pick. That's the real value.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 3 ====================== -->
+
+  <!-- SECTION 7: FACTORS AFFECTING PREMIUM -->
+  <section class="border-2 border-indigo-500 rounded-lg p-3 mb-4 bg-indigo-50">
+    <h2 class="font-bold text-indigo-900 mb-3 bg-indigo-200 rounded px-2 py-1">7️⃣ ALL FACTORS THAT MOVE OPTIONS PREMIUM — A Complete Reference</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-indigo-300 rounded p-3">
+        <table class="w-full border border-gray-300">
+          <thead class="bg-indigo-100">
+            <tr><th class="border px-2 py-1">Factor</th><th class="border px-2 py-1">↑ Factor</th><th class="border px-2 py-1">Call C</th><th class="border px-2 py-1">Put P</th><th class="border px-2 py-1">Greek</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Spot price (S)</td><td class="border px-2 py-1">S ↑</td><td class="border px-2 py-1 text-green-700 font-bold">↑</td><td class="border px-2 py-1 text-red-700 font-bold">↓</td><td class="border px-2 py-1 font-mono">Δ (Delta)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Strike (X)</td><td class="border px-2 py-1">X ↑</td><td class="border px-2 py-1 text-red-700 font-bold">↓</td><td class="border px-2 py-1 text-green-700 font-bold">↑</td><td class="border px-2 py-1 font-mono">—</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Time to expiry (T)</td><td class="border px-2 py-1">T ↑</td><td class="border px-2 py-1 text-green-700 font-bold">↑</td><td class="border px-2 py-1 text-green-700 font-bold">↑</td><td class="border px-2 py-1 font-mono">Θ (Theta)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Volatility (σ)</td><td class="border px-2 py-1">σ ↑</td><td class="border px-2 py-1 text-green-700 font-bold">↑</td><td class="border px-2 py-1 text-green-700 font-bold">↑</td><td class="border px-2 py-1 font-mono">ν (Vega)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Interest rate (r)</td><td class="border px-2 py-1">r ↑</td><td class="border px-2 py-1 text-green-700 font-bold">↑</td><td class="border px-2 py-1 text-red-700 font-bold">↓</td><td class="border px-2 py-1 font-mono">ρ (Rho)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Dividends</td><td class="border px-2 py-1">Div ↑</td><td class="border px-2 py-1 text-red-700 font-bold">↓</td><td class="border px-2 py-1 text-green-700 font-bold">↑</td><td class="border px-2 py-1 font-mono">—</td></tr>
+          </tbody>
+        </table>
+        <p class="mt-2"><strong>Insurance analogy:</strong> Higher volatility = more road accidents = higher car insurance premium. Similarly, higher market volatility = higher option premium. Beach house = higher cyclone risk = higher home insurance premium.</p>
+      </div>
+
+      <div class="bg-white border-2 border-indigo-300 rounded p-3">
+        <h3 class="font-bold text-indigo-800 mb-2">ATM IS THE SWEET SPOT (AND THE DANGER ZONE)</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-indigo-100">
+            <tr><th class="border px-2 py-1">Greek</th><th class="border px-2 py-1">Highest at ATM?</th><th class="border px-2 py-1">What It Means</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Gamma Γ</td><td class="border px-2 py-1 text-red-700 font-bold">YES</td><td class="border px-2 py-1">Delta changes most rapidly at ATM</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Theta Θ</td><td class="border px-2 py-1 text-red-700 font-bold">YES</td><td class="border px-2 py-1">ATM decays fastest</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Vega ν</td><td class="border px-2 py-1 text-red-700 font-bold">YES</td><td class="border px-2 py-1">ATM most sensitive to vol changes</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Implication:</strong> ATM contracts are the most "active" — highest gamma, highest theta, highest vega. Great for strategies that need responsiveness, dangerous for strategies that need stability.</p>
+
+        <h3 class="font-bold text-indigo-800 mt-3 mb-2">DIRECTIONAL TRADING: WHY STRIKE CHOICE MATTERS</h3>
+        <p class="font-mono bg-indigo-100 p-2 rounded">Stock at $100, you buy a call for 1 year:<br><br>
+Buy $100 call (ATM) → high premium, high Δ,<br>
+  but high Θ decay and expensive<br>
+  P(finishing ITM) = moderate<br><br>
+Buy $140 call (OTM) → cheap premium, low Δ,<br>
+  but stock must rise 40% to profit!<br>
+  P(finishing ITM) = very low<br><br>
+<strong>Beginners buy cheapest (OTM) → low probability</strong><br>
+<strong>Better: pick strike based on Greeks, not price!</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK REFERENCE -->
+  <section class="border-2 border-gray-600 rounded-lg p-3 bg-gray-100">
+    <h2 class="font-bold text-gray-900 mb-3 bg-gray-300 rounded px-2 py-1">📋 QUICK REFERENCE — All In One Place</h2>
+
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Col 1: Key Equations -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">KEY EQUATIONS</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-bold bg-gray-50">Call payoff</td><td class="border px-1 py-1 font-mono">max(S − X, 0)</td></tr>
+            <tr><td class="border px-1 py-1 font-bold bg-gray-50">Put payoff</td><td class="border px-1 py-1 font-mono">max(X − S, 0)</td></tr>
+            <tr><td class="border px-1 py-1 font-bold bg-gray-50">Put-call parity</td><td class="border px-1 py-1 font-mono">C − P = S − Xe<sup>−rT</sup></td></tr>
+            <tr><td class="border px-1 py-1 font-bold bg-gray-50">BSM call</td><td class="border px-1 py-1 font-mono">SN(d₁) − Xe<sup>−rT</sup>N(d₂)</td></tr>
+            <tr><td class="border px-1 py-1 font-bold bg-gray-50">Delta (call)</td><td class="border px-1 py-1 font-mono">N(d₁)</td></tr>
+            <tr><td class="border px-1 py-1 font-bold bg-gray-50">Delta (put)</td><td class="border px-1 py-1 font-mono">N(d₁) − 1</td></tr>
+            <tr><td class="border px-1 py-1 font-bold bg-gray-50">Premium</td><td class="border px-1 py-1 font-mono">Intrinsic + Extrinsic</td></tr>
+            <tr><td class="border px-1 py-1 font-bold bg-gray-50">Δ_call − Δ_put</td><td class="border px-1 py-1 font-mono">= 1</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 2: Common Mistakes -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">COMMON MISTAKES</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Mistake</th><th class="border px-1 py-1">Fix</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">Buying cheapest (OTM) call</td><td class="border px-1 py-1">Select strike by Greeks, not premium</td></tr>
+            <tr><td class="border px-1 py-1">Selling extra calls to "finance" position</td><td class="border px-1 py-1">1×2 spreads create unlimited risk</td></tr>
+            <tr><td class="border px-1 py-1">Confusing payoff vs P&amp;L</td><td class="border px-1 py-1">P&amp;L = payoff − premium paid</td></tr>
+            <tr><td class="border px-1 py-1">Using BSM for American options</td><td class="border px-1 py-1">BSM = European only (fixed T)</td></tr>
+            <tr><td class="border px-1 py-1">Treating delta as probability</td><td class="border px-1 py-1">Only true in risk-neutral world (theory)</td></tr>
+            <tr><td class="border px-1 py-1">Ignoring theta when buying options</td><td class="border px-1 py-1">Time decays premium daily, especially ATM</td></tr>
+            <tr><td class="border px-1 py-1">Assuming constant volatility</td><td class="border px-1 py-1">Vol changes → premium changes → recalibrate</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 3: Terminology -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">TERMINOLOGY</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">BSM</td><td class="border px-1 py-1">Black-Scholes-Merton (pricing model)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">ITM/ATM/OTM</td><td class="border px-1 py-1">In/At/Out of The Money (moneyness)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">IV</td><td class="border px-1 py-1">Implied Volatility (market's vol estimate)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">N(d₁), N(d₂)</td><td class="border px-1 py-1">Cumulative Normal Distribution values</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">mibian</td><td class="border px-1 py-1">Python library for BSM pricing</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">PEAD</td><td class="border px-1 py-1">Post-Earnings Announcement Drift</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Vanna</td><td class="border px-1 py-1">∂Delta/∂Volatility (2nd order Greek)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">PCR</td><td class="border px-1 py-1">Put-Call Ratio (sentiment indicator)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Drift</td><td class="border px-1 py-1">Natural directional momentum in market</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Heston model</td><td class="border px-1 py-1">Stochastic volatility model (alternative to BSM)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="bg-yellow-100 rounded p-3 mt-3">
+      <p class="font-bold text-yellow-900 mb-2">🎯 KEY TAKEAWAYS</p>
+      <div class="grid grid-cols-4 gap-3">
+        <p>1. <strong>Premium = Intrinsic + Extrinsic.</strong> Intrinsic is the exercise-now value (S−X for calls). Extrinsic is the time value — what you pay for the right to act. Theta measures how fast the extrinsic portion decays daily, and ATM contracts decay fastest.</p>
+        <p>2. <strong>Put-call parity (C−P = S−Xe<sup>−rT</sup>) is the foundation.</strong> It ties calls and puts together so that combinations (spreads, straddles, hedging) work predictably. It was presented here for European options; American-style contracts need different mathematical treatment.</p>
+        <p>3. <strong>BSM's real value isn't computing premium — it's computing Greeks.</strong> You can see premium in any option chain. But Greeks (Delta, Gamma, Theta, Vega) tell you HOW your premium changes as price/time/volatility shift. All Greeks are partial derivatives of the BSM equation.</p>
+        <p>4. <strong>ATM is the epicenter of all Greeks.</strong> Highest gamma (delta most volatile), highest theta (decays fastest), highest vega (most sensitive to vol). Choose ITM/OTM + long/short expiry based on which Greek behavior your strategy needs. Don't buy the cheapest option — buy the right strike.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="mt-3 text-center text-gray-600 border-t-2 border-gray-300 pt-2">
+    <p><strong>THE MASTER FORMULA:</strong> C = S×N(d₁) − X×e<sup>−rT</sup>×N(d₂) — every options Greek (Δ, Γ, Θ, ν, ρ) is a partial derivative of this equation. Understand what each Greek measures, then pick contracts where the Greek behavior matches your trading objective.</p>
+    <p class="mt-1"><strong>THE ONE THING TO NEVER FORGET:</strong> Options are complex but trading them is simple — IF you think in terms of Greeks. Delta tells you price exposure, Gamma tells you delta stability, Theta tells you time cost, and Vega tells you volatility bet. Before any options trade, know all four numbers for your position.</p>
+  </footer>
+
+</body>
+</html>

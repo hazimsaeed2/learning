@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[WEEK 14-1] — Quantitative Momentum Strategies I (EFS-03) — Cheat Sheet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+           font-size: 11px; line-height: 1.5; }
+    @media print { body { font-size: 9px; } .page-break { page-break-before: always; } }
+    h1 { font-size: 18px; }
+    h2 { font-size: 13px; }
+    h3 { font-size: 11px; }
+    table { font-size: 10px; }
+    pre  { font-size: 9px; line-height: 1.45; }
+  </style>
+</head>
+<body class="bg-white p-4 max-w-6xl mx-auto">
+
+  <!-- ====================== PAGE 1 ====================== -->
+
+  <!-- HEADER -->
+  <header class="text-center border-b-4 border-blue-600 pb-3 mb-4">
+    <h1 class="font-extrabold text-blue-900">QUANTITATIVE MOMENTUM IN FUTURES — ROLL RETURN, TERM STRUCTURE &amp; ARBITRAGE — COMPLETE CHEAT SHEET</h1>
+    <p class="text-gray-600 mt-1">EPAT Week 14-1 — EFS-03: Quantitative Momentum Strategies I — Equity, FX &amp; Futures | Ernie Chan (QTS Capital, 5 books)</p>
+    <p class="text-gray-700 mt-2">
+      <strong>The Problem:</strong> Traders observe momentum but don't understand WHY it exists — leading to overfitting and inability to predict regime changes. Data mining finds noise, not signal, in low signal-to-noise markets.<br>
+      <strong>Your Goal:</strong> Build a causal model of momentum in futures: the sign of the Roll Return persists for weeks/months/years because its drivers (storage costs, tariffs, macro) change slowly. Exploit this persistence for 20%+ annualized returns.
+    </p>
+  </header>
+
+  <!-- SECTION 1: CORE EXAMPLE -->
+  <section class="border-2 border-amber-500 rounded-lg p-3 mb-4 bg-amber-50">
+    <h2 class="font-bold text-amber-900 mb-3 bg-amber-200 rounded px-2 py-1">1️⃣ CORE EXAMPLE — Corn Futures Forward Curve → Roll Return = 24% Annualized (These Numbers Drive All Concepts Below)</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <!-- Left: Arbitrage Derivation -->
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">DERIVING ROLL RETURN (Arbitrage Argument)</h3>
+        <div class="bg-amber-100 rounded p-2 mb-2">
+          <p class="font-bold">Two portfolios, $1M cash, MUST have same total return:</p>
+          <table class="w-full border border-gray-300 mt-1">
+            <thead class="bg-amber-200">
+              <tr><th class="border px-2 py-1">Portfolio</th><th class="border px-2 py-1">Holdings</th><th class="border px-2 py-1">Total Return</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="border px-2 py-1 font-bold">A: Buy SPY ETF</td><td class="border px-2 py-1">$1M → SPY (cash gone)</td><td class="border px-2 py-1 font-mono">SPX return + Dividend</td></tr>
+              <tr><td class="border px-2 py-1 font-bold">B: Buy ES Futures</td><td class="border px-2 py-1">$1M as margin (cash earns interest)</td><td class="border px-2 py-1 font-mono">SPX return + Roll + Interest</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="bg-amber-100 rounded p-2 mb-2">
+          <p class="font-bold">SOLVING FOR ROLL RETURN:</p>
+          <p class="font-mono">SPX + Dividend = SPX + Roll + Interest</p>
+          <p class="font-mono">Dividend = Roll + Interest</p>
+          <p class="font-mono font-bold">Roll = Dividend − Interest</p>
+        </div>
+        <p><strong>WHY futures have no funding cost:</strong> When you buy ES futures, your $1M stays in the account as margin collateral — it earns interest. Unlike buying SPY where your cash disappears.</p>
+
+        <h3 class="font-bold text-amber-800 mt-3 mb-2">PESO FUTURES (Homework Answer)</h3>
+        <div class="bg-amber-100 rounded p-2">
+          <p class="font-bold">Same arbitrage logic, two currencies:</p>
+          <p class="font-mono">Roll(MXN futures) = MXN interest rate − USD interest rate</p>
+          <p class="font-mono">(Interest rate differential between two countries)</p>
+        </div>
+
+        <h3 class="font-bold text-amber-800 mt-3 mb-2">TERMINOLOGY / DECODING THE SHORTHAND</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-2 py-1 font-mono font-bold">CTA</td><td class="border px-2 py-1">Commodity Trading Advisor — often conflated with "momentum trader"</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-mono font-bold">γ (gamma)</td><td class="border px-2 py-1">Roll return coefficient in futures price model</td></tr>
+            <tr><td class="border px-2 py-1 font-mono font-bold">α (alpha)</td><td class="border px-2 py-1">Spot return (constant in simplified model)</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-mono font-bold">VWAP</td><td class="border px-2 py-1">Volume Weighted Average Price</td></tr>
+            <tr><td class="border px-2 py-1 font-mono font-bold">T / t</td><td class="border px-2 py-1">T = forward-curve maturity coordinate (time-to-expiry / expiry month), t = current time</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Right: Corn Forward Curve -->
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">CORN FUTURES: Estimating γ from Forward Curve</h3>
+        <p><strong>Date:</strong> Row 6387 = 2012-03-14 | <strong>Contracts:</strong> H(Mar), K(May), N(Jul), U(Sep), Z(Dec)</p>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-2 py-1">Contract</th><th class="border px-2 py-1">Month Code</th><th class="border px-2 py-1">T (months)</th><th class="border px-2 py-1">Price</th><th class="border px-2 py-1">Log Price</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Front (H)</td><td class="border px-2 py-1">Mar</td><td class="border px-2 py-1 font-mono">3</td><td class="border px-2 py-1 font-mono">669</td><td class="border px-2 py-1 font-mono">6.506</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1">K</td><td class="border px-2 py-1">May</td><td class="border px-2 py-1 font-mono">5</td><td class="border px-2 py-1 font-mono">—</td><td class="border px-2 py-1 font-mono">—</td></tr>
+            <tr><td class="border px-2 py-1">N</td><td class="border px-2 py-1">Jul</td><td class="border px-2 py-1 font-mono">7</td><td class="border px-2 py-1 font-mono">—</td><td class="border px-2 py-1 font-mono">—</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1">U</td><td class="border px-2 py-1">Sep</td><td class="border px-2 py-1 font-mono">9</td><td class="border px-2 py-1 font-mono">—</td><td class="border px-2 py-1 font-mono">—</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Back (Z)</td><td class="border px-2 py-1">Dec</td><td class="border px-2 py-1 font-mono">12</td><td class="border px-2 py-1 font-mono">564</td><td class="border px-2 py-1 font-mono">6.336</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-amber-100 rounded p-2 mb-2">
+          <p class="font-bold">STEP-BY-STEP ESTIMATION:</p>
+          <p class="font-mono">1. Extract prices for active contracts (cols 26-30)</p>
+          <p class="font-mono">2. Take log: ft = log(prices)</p>
+          <p class="font-mono">3. Create T array: [3, 5, 7, 9, 12] (month codes!)</p>
+          <p class="font-mono">   ⚠️ NOT [3,5,7,9,11] — corn has no Nov contract</p>
+          <p class="font-mono">4. SCATTER PLOT first (cardinal sin: skip this)</p>
+          <p class="font-mono">5. Linear regression: mdl = fitlm(T, ft)</p>
+          <p class="font-mono">6. Slope = mdl.Coefficients.Estimate(2)</p>
+          <p class="font-mono">7. γ = −slope (forward curve slope = −γ)</p>
+          <p class="font-mono">8. Annualize: γ_annual = γ × 12</p>
+          <p class="font-mono">   = <strong>0.02 × 12 ≈ 24%</strong></p>
+        </div>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500">
+          <p><strong>⚠️ FORWARD CURVE SLOPE = NEGATIVE ROLL RETURN.</strong> Backwardation (positive γ) → forward curve slopes DOWN. Contango (negative γ) → forward curve slopes UP. The sign flips!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: CAUSAL MODELING -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">2️⃣ CAUSAL MODELING — The Scientific Approach to Momentum Trading</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">Three Approaches Compared</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-orange-100">
+            <tr><th class="border px-2 py-1">Approach</th><th class="border px-2 py-1">How</th><th class="border px-2 py-1">Problem</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Discretionary</td><td class="border px-2 py-1">Intuition, instinct</td><td class="border px-2 py-1">Not testable</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Data Mining/ML</td><td class="border px-2 py-1">150 indicators → ML</td><td class="border px-2 py-1">Learns noise, not signal</td></tr>
+            <tr><td class="border px-2 py-1 font-bold text-green-700">Causal Model ✓</td><td class="border px-2 py-1">Propose WHY → test</td><td class="border px-2 py-1">Hard to verify (no control exp.)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">Newton's Apple Analogy</h3>
+        <p><strong>Observation:</strong> "Apple falls on head" = momentum exists</p>
+        <p><strong>Model:</strong> "Gravity explains why the apple falls" = roll return persists because storage/tariffs don't change daily</p>
+        <p class="mt-2"><strong>Power of causal model:</strong> Predicts things you haven't observed yet (moon orbits, other futures)</p>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 ACCURACY EXPECTATION:</strong> Physics models: 100%. Finance models: 50–60%. Renaissance Technologies: edge in decimal places above 50%. If you get 55% accuracy, you're in business.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">Four Causes of Momentum</h3>
+        <p>1. <strong>Roll return persistence</strong> (futures) — storage, transport, tariffs</p>
+        <p>2. <strong>Factor return persistence</strong> (stocks) — analog of roll return</p>
+        <p>3. <strong>Slow news diffusion</strong> — acceptance/interpretation lag (has severe alpha decay)</p>
+        <p>4. <strong>Institutional vehicle flows</strong> — index funds, leveraged ETFs, hedge funds forced to buy/sell</p>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ MOMENTUM IGNITION (HFT):</strong> Market manipulation — illegal in most jurisdictions. People have gone to jail. Skip this category entirely.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: ROLL RETURN -->
+  <section class="border-2 border-teal-500 rounded-lg p-3 mb-4 bg-teal-50">
+    <h2 class="font-bold text-teal-900 mb-3 bg-teal-200 rounded px-2 py-1">3️⃣ ROLL RETURN — The Engine of Futures Momentum</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">WHAT: Decomposing Futures Return</h3>
+        <div class="bg-teal-100 rounded p-2 mb-2">
+          <p class="font-bold">THE DECOMPOSITION:</p>
+          <p class="font-mono text-lg">Total Futures Return = Spot Return + Roll Return</p>
+        </div>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-teal-200">
+            <tr><th class="border px-2 py-1">Component</th><th class="border px-2 py-1">Behavior</th><th class="border px-2 py-1">Corn Example</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Spot Return</td><td class="border px-2 py-1">Noisy white noise — changes sign every second/day. Averages out over time.</td><td class="border px-2 py-1 font-mono">~2%/yr</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Roll Return (γ)</td><td class="border px-2 py-1">PERSISTENT — same sign for weeks/months/YEARS. Does NOT average out.</td><td class="border px-2 py-1 font-mono">~24%/yr</td></tr>
+          </tbody>
+        </table>
+        <p class="font-bold text-teal-800">WHY roll return sign persists:</p>
+        <p>Driven by: storage costs, transportation costs, long-term demand/supply, tariffs, geopolitics. These don't change overnight (unlike weather/spot).</p>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 TIME IS YOUR FRIEND:</strong> Time is the friend of roll return (accumulates) and the enemy of spot return (cancels out). This is why hold-and-wait works for futures momentum.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">Backwardation vs. Contango</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <thead class="bg-teal-200">
+            <tr><th class="border px-2 py-1"></th><th class="border px-2 py-1">Backwardation</th><th class="border px-2 py-1">Contango</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Roll return (γ)</td><td class="border px-2 py-1 font-mono text-green-700 font-bold">Positive (+)</td><td class="border px-2 py-1 font-mono text-red-700 font-bold">Negative (−)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Futures over time</td><td class="border px-2 py-1">Prices rise to expiry</td><td class="border px-2 py-1">Prices fall to expiry</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Forward curve slope</td><td class="border px-2 py-1 font-mono">Negative ↘</td><td class="border px-2 py-1 font-mono">Positive ↗</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Action</td><td class="border px-2 py-1">GO LONG futures</td><td class="border px-2 py-1">GO SHORT futures</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Mnemonic</td><td class="border px-2 py-1 font-mono">"Normal" (Keynes)</td><td class="border px-2 py-1 font-mono">—</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Keynes' story (mnemonic only):</strong> Wheat farmer naturally shorts futures to lock in price. Speculator (hedge fund) must be INCENTIVIZED to buy → needs positive roll return → backwardation is "normal." Good story, not always true in practice.</p>
+        <div class="bg-teal-100 rounded p-2 mt-2">
+          <p class="font-bold">CORN ROLL RETURN OVER TIME:</p>
+          <p class="font-mono">Period 1: Contango (γ &lt; 0) for <strong>3 YEARS</strong> → short &amp; earn</p>
+          <p class="font-mono">Then sign switches → briefly lose money</p>
+          <p class="font-mono">Period 2: Backwardation (γ &gt; 0) for ~1 year → long &amp; earn</p>
+          <p class="font-mono">Magnitude varies (20-30%) but SIGN persists</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 2 ====================== -->
+
+  <!-- SECTION 4: FORWARD CURVE & ESTIMATION -->
+  <section class="border-2 border-teal-500 rounded-lg p-3 mb-4 bg-teal-50">
+    <h2 class="font-bold text-teal-900 mb-3 bg-teal-200 rounded px-2 py-1">4️⃣ FORWARD CURVE (TERM STRUCTURE) — Estimating γ from Data</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">The Futures Price Model</h3>
+        <div class="bg-teal-100 rounded p-2 mb-2">
+          <p class="font-bold">ALGEBRAIC MODEL:</p>
+          <p class="font-mono">F(t, T) = exp(α·t − γ·T + const)</p>
+          <p class="font-mono">Take log: log F(t,T) = α·t − γ·T + const</p>
+          <p class="font-mono">This is a linear model in two variables (t, T)</p>
+        </div>
+
+        <!-- VISUAL: Backwardation vs Contango Forward Curves -->
+        <svg viewBox="0 0 530 140" class="w-full my-2">
+          <text x="265" y="12" text-anchor="middle" font-size="9" font-weight="bold" fill="#0f766e">FORWARD CURVE SHAPES — Backwardation vs Contango</text>
+          <!-- Left: Backwardation -->
+          <rect x="5" y="18" width="255" height="110" rx="5" fill="#f0fdf4" stroke="#86efac"/>
+          <text x="132" y="32" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">BACKWARDATION (γ &gt; 0) ✓ PROFIT</text>
+          <line x1="30" y1="42" x2="30" y2="110" stroke="#94a3b8" stroke-width="0.5"/>
+          <line x1="30" y1="110" x2="245" y2="110" stroke="#94a3b8" stroke-width="0.5"/>
+          <text x="28" y="50" text-anchor="end" font-size="6" fill="#94a3b8">High</text>
+          <text x="28" y="108" text-anchor="end" font-size="6" fill="#94a3b8">Low</text>
+          <text x="137" y="122" text-anchor="middle" font-size="7" fill="#6b7280">Months to Expiry →</text>
+          <!-- Downward sloping line -->
+          <polyline points="40,52 90,62 140,74 190,88 235,100" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linejoin="round"/>
+          <text x="50" y="48" font-size="6" fill="#16a34a" font-weight="bold">Near = Expensive</text>
+          <text x="180" y="98" font-size="6" fill="#16a34a">Far = Cheap</text>
+          <text x="132" y="78" text-anchor="middle" font-size="7" fill="#166534" font-weight="bold">Roll = BUY cheap, SELL dear → Profit!</text>
+
+          <!-- Right: Contango -->
+          <rect x="270" y="18" width="255" height="110" rx="5" fill="#fef2f2" stroke="#fca5a5"/>
+          <text x="397" y="32" text-anchor="middle" font-size="8" font-weight="bold" fill="#991b1b">CONTANGO (γ &lt; 0) ✗ LOSS</text>
+          <line x1="295" y1="42" x2="295" y2="110" stroke="#94a3b8" stroke-width="0.5"/>
+          <line x1="295" y1="110" x2="510" y2="110" stroke="#94a3b8" stroke-width="0.5"/>
+          <text x="293" y="50" text-anchor="end" font-size="6" fill="#94a3b8">High</text>
+          <text x="293" y="108" text-anchor="end" font-size="6" fill="#94a3b8">Low</text>
+          <text x="402" y="122" text-anchor="middle" font-size="7" fill="#6b7280">Months to Expiry →</text>
+          <!-- Upward sloping line -->
+          <polyline points="305,100 355,88 405,74 455,62 500,52" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linejoin="round"/>
+          <text x="315" y="96" font-size="6" fill="#dc2626">Near = Cheap</text>
+          <text x="460" y="48" font-size="6" fill="#dc2626" font-weight="bold">Far = Expensive</text>
+          <text x="397" y="78" text-anchor="middle" font-size="7" fill="#991b1b" font-weight="bold">Roll = BUY dear, SELL cheap → Loss!</text>
+        </svg>
+
+        <p><strong>Two views of the same data:</strong></p>
+        <table class="w-full border border-gray-300 mt-2">
+          <thead class="bg-teal-200">
+            <tr><th class="border px-2 py-1">Graph Type</th><th class="border px-2 py-1">X-axis</th><th class="border px-2 py-1">Each line is</th><th class="border px-2 py-1">Slope</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Time series</td><td class="border px-2 py-1">Time (t)</td><td class="border px-2 py-1">One contract</td><td class="border px-2 py-1 font-mono">α + γ (total)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Forward curve</td><td class="border px-2 py-1">Time-to-expiry (T)</td><td class="border px-2 py-1">Snapshot in time</td><td class="border px-2 py-1 font-mono">−γ (neg. roll)</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ CARDINAL SIN OF DATA SCIENCE:</strong> Never fit a linear regression without plotting a scatter plot first. If X,Y isn't linear and you force it, you get a meaningless number.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">WHY Log Returns (Not Net Returns)</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <thead class="bg-teal-100">
+            <tr><th class="border px-2 py-1">Property</th><th class="border px-2 py-1">Log Return</th><th class="border px-2 py-1">Net Return</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Additive?</td><td class="border px-2 py-1 text-green-700 font-bold">YES: 1% + 2% = 3%</td><td class="border px-2 py-1 text-red-700">NO: compounding</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Range</td><td class="border px-2 py-1">(−∞, +∞)</td><td class="border px-2 py-1">[−1, +∞)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Normal dist?</td><td class="border px-2 py-1 text-green-700 font-bold">Possible (in theory)</td><td class="border px-2 py-1 text-red-700">Impossible</td></tr>
+          </tbody>
+        </table>
+        <p><strong>WHY net return can't be normal:</strong> Price can't go below 0, so net return ≥ −1. Normal distribution requires (−∞, +∞) range. Log(price) → −∞ as price → 0, so log return CAN span (−∞, +∞).</p>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 NET RETURN FORMULA:</strong></p>
+          <p class="font-mono">Net return = (P_t − P_{t-1}) / P_{t-1}</p>
+          <p class="font-mono">If P_t = 0: return = −P_{t-1}/P_{t-1} = −1 (minimum)</p>
+          <p class="font-mono">Log return = log(P_t / P_{t-1}) → −∞ when P_t → 0</p>
+        </div>
+        <div class="bg-teal-100 rounded p-2 mt-2">
+          <p class="font-bold">MONTH CODES (CME futures):</p>
+          <p class="font-mono">F=Jan G=Feb H=Mar J=Apr K=May M=Jun</p>
+          <p class="font-mono">N=Jul Q=Aug U=Sep V=Oct X=Nov Z=Dec</p>
+          <p class="font-bold mt-1">Corn: H,K,N,U,Z only (harvest cycle → no Nov)</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: HEDGING SPOT RETURN -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">5️⃣ HEDGING SPOT RETURN — Isolating Pure Roll Return via ETFs</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">WHAT: The Spot Return Problem</h3>
+        <p>Total futures return = spot + roll. We want ONLY the roll. Spot is noise. How to remove it?</p>
+        <p class="mt-2"><strong>ANSWER:</strong> Buy/sell an instrument that tracks the SPOT price (not futures). That hedges out spot return, leaving pure roll return.</p>
+
+        <table class="w-full border border-gray-300 mt-2 mb-2">
+          <thead class="bg-purple-100">
+            <tr><th class="border px-2 py-1">ETF</th><th class="border px-2 py-1">Holds</th><th class="border px-2 py-1">Hedge Spot?</th><th class="border px-2 py-1">Verdict</th></tr>
+          </thead>
+          <tbody>
+            <tr class="bg-green-50"><td class="border px-2 py-1 font-bold">GLD</td><td class="border px-2 py-1">Physical gold bars (London vault)</td><td class="border px-2 py-1 text-green-700 font-bold">YES ✓</td><td class="border px-2 py-1">Tracks gold spot price</td></tr>
+            <tr class="bg-green-50"><td class="border px-2 py-1 font-bold">XLE</td><td class="border px-2 py-1">Energy stocks (Chevron, Exxon)</td><td class="border px-2 py-1 text-green-700 font-bold">YES ✓</td><td class="border px-2 py-1">Companies have physical oil on balance sheet</td></tr>
+            <tr class="bg-red-50"><td class="border px-2 py-1 font-bold">USO</td><td class="border px-2 py-1">Oil FUTURES</td><td class="border px-2 py-1 text-red-700 font-bold">NO ✗</td><td class="border px-2 py-1">Buying futures = cancels your roll return!</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500">
+          <p><strong>⚠️ USO TRAP:</strong> USO holds futures, not physical oil. If you short oil futures and long USO, you're long AND short futures exposure, so you largely cancel the roll return you were trying to isolate. XLE works because energy stocks track PHYSICAL oil via reserves on balance sheets.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">WORKED EXAMPLE: Gold Arbitrage Strategy</h3>
+        <div class="bg-purple-100 rounded p-2 mb-2">
+          <p class="font-bold">STRATEGY: Short GC (gold futures) + Long GLD</p>
+          <p class="font-mono">Gold is almost always in contango (γ &lt; 0)</p>
+          <p class="font-mono">Short GC → earn positive roll return</p>
+          <p class="font-mono">Long GLD → hedge spot return to zero</p>
+          <p class="font-mono">Net return ≈ pure roll return</p>
+        </div>
+        <p><strong>Homework:</strong> Compute the Sharpe ratio with 2% risk-free rate subtracted (because buying GLD uses cash → has funding cost).</p>
+
+        <h3 class="font-bold text-purple-800 mt-3 mb-2">WHY Options Don't Work as Hedge</h3>
+        <p>Options introduce additional risk factors (Greeks): theta (time decay), gamma (convexity), vega (volatility). These create additional sources of P&amp;L noise. Just use ETFs — much simpler.</p>
+
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 CAN'T HEDGE ROLL RETURN CHANGES:</strong> You can hedge SPOT return (using ETFs). You CANNOT hedge changes in roll return sign. When the sign flips, you lose money for some days/weeks until you switch. Accept it — this is the strategy's risk.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: DATA NUANCES -->
+  <section class="border-2 border-green-500 rounded-lg p-3 mb-4 bg-green-50">
+    <h2 class="font-bold text-green-900 mb-3 bg-green-200 rounded px-2 py-1">6️⃣ FUTURES DATA — Settlement Prices, Back Adjustment &amp; Timestamp Matching</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-white border-2 border-green-300 rounded p-3">
+        <h3 class="font-bold text-green-800 mb-2">Settlement Price ≠ Last Price</h3>
+        <p><strong>WHAT:</strong> Daily futures prices are SETTLEMENT prices, not last trade prices.</p>
+        <p class="mt-1"><strong>WHY:</strong> E-mini tick = $50. Last trade could be noisy. Settlement = VWAP (Volume Weighted Average Price) of last few minutes.</p>
+        <p class="mt-1"><strong>Edge cases:</strong> Illiquid contracts (e.g., lumber) → use bid-ask midpoint if no trades.</p>
+        <p class="mt-2"><strong>GC settlement time:</strong> 1:30 PM ET</p>
+        <p><strong>US stock market close:</strong> 4:00 PM ET</p>
+      </div>
+
+      <div class="bg-white border-2 border-green-300 rounded p-3">
+        <h3 class="font-bold text-green-800 mb-2">Back-Adjusted Continuous Contracts</h3>
+        <p><strong>Problem:</strong> Raw futures have price GAPS at rollover (different contracts, different prices). Naïve stitching → fake P&amp;L from gaps.</p>
+        <p class="mt-1"><strong>Solution:</strong> Back-adjust: shift older contracts so gaps disappear.</p>
+        <p class="mt-1"><strong>Two methods:</strong></p>
+        <p>1. <strong>Additive:</strong> Add/subtract gap amount</p>
+        <p>2. <strong>Multiplicative:</strong> Multiply by ratio</p>
+        <p class="mt-1">(Pros/cons in Ernie's "Algorithmic Trading" book)</p>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ CAN'T USE BACK-ADJUSTED DATA TO ESTIMATE ROLL RETURN.</strong> Back adjustment destroys the forward curve structure. Use raw contract data for γ estimation, back-adjusted for backtesting P&amp;L.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-green-300 rounded p-3">
+        <h3 class="font-bold text-green-800 mb-2">TIMESTAMP MATCHING (Critical)</h3>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mb-2">
+          <p><strong>⚠️ #1 ARBITRAGE BUG:</strong> If two instruments have closing prices captured at DIFFERENT times, your arbitrage backtest is FICTITIOUS. The P&amp;L from the time gap is not real.</p>
+        </div>
+        <p><strong>WORKED EXAMPLE:</strong></p>
+        <p class="font-mono">GC settlement: 1:30 PM ET</p>
+        <p class="font-mono">GLD close: 4:00 PM ET</p>
+        <p class="font-mono">→ 2.5 hour gap!</p>
+        <p class="font-mono">→ Must use GC intraday price AT 4:00 PM</p>
+        <p class="font-mono">   OR use GLD intraday price AT 1:30 PM</p>
+        <p class="mt-2"><strong>Peso futures example:</strong> Spot at 5 PM, futures at 4 PM → 1 hour gap → "amazing" profits that are 100% fictitious.</p>
+        <p class="mt-2"><strong>Data vendor:</strong> CSI Data (csidata.com) — cheapest, cleanest daily futures data. The instructor also noted it historically powered Yahoo Finance data for a long time.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 3 ====================== -->
+
+  <!-- SECTION 7: SHARPE RATIO NUANCES -->
+  <section class="border-2 border-teal-500 rounded-lg p-3 mb-4 bg-teal-50">
+    <h2 class="font-bold text-teal-900 mb-3 bg-teal-200 rounded px-2 py-1">7️⃣ SHARPE RATIO — When To Subtract the Risk-Free Rate</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">THE RULE: Subtract Risk-Free Rate Only When There's Funding Cost</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-teal-200">
+            <tr><th class="border px-2 py-1">Strategy</th><th class="border px-2 py-1">Subtract R_f?</th><th class="border px-2 py-1">Why</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Futures only (long or short)</td><td class="border px-2 py-1 text-green-700 font-bold">NO</td><td class="border px-2 py-1">Cash stays in account as margin → earns interest. No funding cost.</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Long/short stocks ($-neutral)</td><td class="border px-2 py-1 text-green-700 font-bold">NO</td><td class="border px-2 py-1">Short side generates credit interest, long side costs debit interest → roughly cancel.</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Short futures + long ETF</td><td class="border px-2 py-1 text-red-700 font-bold">YES</td><td class="border px-2 py-1">Buying ETF uses cash → cash disappears → losing interest. Must subtract R_f.</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Long stocks only</td><td class="border px-2 py-1 text-red-700 font-bold">YES</td><td class="border px-2 py-1">Cash used to buy stocks → opportunity cost of interest.</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-teal-100 rounded p-2 mt-3">
+          <p class="font-bold">SHARPE RATIO FORMULA:</p>
+          <p class="font-mono">Sharpe = (R_strategy − R_f) / σ_strategy</p>
+          <p class="font-mono">But if no funding cost: R_f = 0 in the formula</p>
+          <p class="font-mono">Gold arb: Sharpe = (R_GC_short + R_GLD − 2%) / σ</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">WORKED EXAMPLE: Why Futures = No Funding Cost</h3>
+        <p class="font-mono">You have $1,000,000 in your brokerage account.</p>
+        <p class="font-mono">You buy 10 ES futures ($500K notional).</p>
+        <p class="font-mono">Cash used? $0 (futures = derivative contract)</p>
+        <p class="font-mono">Your $1M is still in the account as margin.</p>
+        <p class="font-mono">$1M × 2% interest = $20,000/year earned</p>
+        <p class="font-mono">Strategy return = futures P&amp;L</p>
+        <p class="font-mono">Total return = futures P&amp;L + $20,000 interest</p>
+        <p class="font-mono">→ Interest already included → don't subtract R_f</p>
+
+        <p class="mt-3 font-bold">Contrast with stocks:</p>
+        <p class="font-mono">You have $1,000,000 in your brokerage account.</p>
+        <p class="font-mono">You buy $1M of SPY.</p>
+        <p class="font-mono">Cash used? ALL OF IT. $1M → SPY shares.</p>
+        <p class="font-mono">Interest earned on cash? $0.</p>
+        <p class="font-mono">Opportunity cost = $20,000/year.</p>
+        <p class="font-mono">→ Must subtract R_f from strategy return</p>
+
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 PRACTICAL NUANCE:</strong> In a long/short stock strategy, credit interest (from short sales) ≈ debit interest (from long purchases). Not exact — typically ~75 bps difference. But close enough to ignore for Sharpe purposes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: QUICK REFERENCE -->
+  <section class="border-2 border-gray-600 rounded-lg p-3 bg-gray-100">
+    <h2 class="font-bold text-gray-900 mb-3 bg-gray-300 rounded px-2 py-1">📋 QUICK REFERENCE — All In One Place</h2>
+
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Col 1: Key Formulas -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">KEY FORMULAS</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Formula</th><th class="border px-1 py-1">Expression</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">Total return</td><td class="border px-1 py-1">Spot + Roll</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">E-mini roll</td><td class="border px-1 py-1">Dividend − Interest</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">FX roll</td><td class="border px-1 py-1">Foreign rate − Domestic rate</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">γ from fwd curve</td><td class="border px-1 py-1">−slope of log(F) vs T</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Annualize (monthly)</td><td class="border px-1 py-1">γ_monthly × 12</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Log return</td><td class="border px-1 py-1">log(P_t / P_{t-1})</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Net return</td><td class="border px-1 py-1">(P_t − P_{t-1}) / P_{t-1}</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Sharpe</td><td class="border px-1 py-1">(R − R_f) / σ (if funding)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">F(t,T) model</td><td class="border px-1 py-1">exp(αt − γT + c)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 2: Common Mistakes -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">COMMON MISTAKES</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Mistake</th><th class="border px-1 py-1">Fix</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">Fwd curve slope = γ</td><td class="border px-1 py-1">It's −γ (negative!)</td></tr>
+            <tr><td class="border px-1 py-1">Assume even month spacing</td><td class="border px-1 py-1">Corn: H,K,N,U,Z = 3,5,7,9,12</td></tr>
+            <tr><td class="border px-1 py-1">Skip scatter plot</td><td class="border px-1 py-1">ALWAYS plot before regression</td></tr>
+            <tr><td class="border px-1 py-1">Use net return for model</td><td class="border px-1 py-1">Use log return (additive, normal)</td></tr>
+            <tr><td class="border px-1 py-1">Hedge with futures ETF (USO)</td><td class="border px-1 py-1">Use physical-asset ETF (XLE, GLD)</td></tr>
+            <tr><td class="border px-1 py-1">Mismatched timestamps</td><td class="border px-1 py-1">GC=1:30PM, GLD=4PM → use intraday</td></tr>
+            <tr><td class="border px-1 py-1">Always subtract R_f</td><td class="border px-1 py-1">Only if strategy has funding cost</td></tr>
+            <tr><td class="border px-1 py-1">Use back-adj for γ</td><td class="border px-1 py-1">Use raw contracts for γ estimation</td></tr>
+            <tr><td class="border px-1 py-1">Expect 100% accuracy</td><td class="border px-1 py-1">Finance: 50-60% is great</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 3: Numbers + Terminology -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">NUMBERS &amp; SHORTHAND</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <tbody>
+            <tr><td class="border px-1 py-1 bg-gray-50">Corn γ (2012-03-14)</td><td class="border px-1 py-1 font-mono">~24%/yr</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Corn spot return</td><td class="border px-1 py-1 font-mono">~2%/yr</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Sign persistence</td><td class="border px-1 py-1 font-mono">Weeks to years</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">E-mini tick</td><td class="border px-1 py-1 font-mono">$50 per tick</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">GC settlement</td><td class="border px-1 py-1 font-mono">1:30 PM ET</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Accuracy target</td><td class="border px-1 py-1 font-mono">50-60%</td></tr>
+          </tbody>
+        </table>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">CTA</td><td class="border px-1 py-1">Commodity Trading Advisor</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">γ</td><td class="border px-1 py-1">Roll return (gamma)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">α</td><td class="border px-1 py-1">Spot return (alpha)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">VWAP</td><td class="border px-1 py-1">Volume Wtd Avg Price</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">GC</td><td class="border px-1 py-1">Gold futures (CME)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">ES</td><td class="border px-1 py-1">E-mini S&amp;P 500 futures</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">GLD</td><td class="border px-1 py-1">Gold ETF (physical bars)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">XLE</td><td class="border px-1 py-1">Energy sector ETF (stocks)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">USO</td><td class="border px-1 py-1">Oil ETF (holds futures!)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="bg-yellow-100 rounded p-3 mt-3">
+      <p class="font-bold text-yellow-900 mb-2">🎯 KEY TAKEAWAYS</p>
+      <div class="grid grid-cols-4 gap-3">
+        <p>1. Futures total return = spot return + roll return (γ). Spot is white noise (~2%/yr corn), roll is persistent (~24%/yr). The SIGN of γ holds for weeks/months/years because its drivers (storage, tariffs, macro) change slowly. This persistence = momentum.</p>
+        <p>2. Estimate γ from the forward curve: plot log(price) vs time-to-expiry → slope = −γ. Always scatter-plot first (cardinal sin: skip this). Backwardation = positive γ (fwd curve slopes DOWN). Contango = negative γ (fwd curve slopes UP). Sign flips!</p>
+        <p>3. To isolate pure roll return, hedge spot with an ETF that holds PHYSICAL assets (GLD for gold, XLE for oil). NOT futures-based ETFs (USO) — those cancel your roll return. Match timestamps: GC settles at 1:30 PM but GLD closes at 4:00 PM.</p>
+        <p>4. Subtract risk-free rate from Sharpe ONLY when the strategy has funding cost (buying stocks/ETFs). Futures-only strategies earn interest on margin → no funding cost → don't subtract. Use causal modeling (not data mining) to predict momentum.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="mt-3 text-center text-gray-600 border-t-2 border-gray-300 pt-2">
+    <p><strong>THE MASTER FORMULA:</strong> Total Futures Return = Spot Return (α, white noise) + Roll Return (γ, persistent) — Estimate γ = −slope of log forward curve — When γ &gt; 0 (backwardation): go long. When γ &lt; 0 (contango): go short.</p>
+    <p class="mt-1"><strong>THE ONE THING TO NEVER FORGET:</strong> The sign of roll return persists because its drivers (storage costs, transportation, tariffs, geopolitics) change slowly. <em>Time is your friend</em> — roll return accumulates while spot noise cancels out. This is the causal model of futures momentum.</p>
+  </footer>
+
+</body>
+</html>

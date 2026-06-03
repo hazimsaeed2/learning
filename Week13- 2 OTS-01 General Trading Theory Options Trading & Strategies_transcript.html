@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[WEEK 13-2] — General Trading Theory (OTS-01) — Cheat Sheet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+           font-size: 11px; line-height: 1.5; }
+    @media print { body { font-size: 9px; } .page-break { page-break-before: always; } }
+    h1 { font-size: 18px; }
+    h2 { font-size: 13px; }
+    h3 { font-size: 11px; }
+    table { font-size: 10px; }
+    pre  { font-size: 9px; line-height: 1.45; }
+  </style>
+</head>
+<body class="bg-white p-4 max-w-6xl mx-auto">
+
+  <!-- ====================== PAGE 1 ====================== -->
+
+  <!-- HEADER -->
+  <header class="text-center border-b-4 border-blue-600 pb-3 mb-4">
+    <h1 class="font-extrabold text-blue-900">GENERAL TRADING THEORY — EDGE, RISK &amp; PSYCHOLOGY — COMPLETE CHEAT SHEET</h1>
+    <p class="text-gray-600 mt-1">EPAT Week 13-2 — OTS-01: General Trading Theory — Options Trading &amp; Strategies | Ewan Sinclair (30yr, PhD Physics, Goldman/HF/Prop)</p>
+    <p class="text-gray-700 mt-2">
+      <strong>The Problem:</strong> Most traders fail because they confuse winning percentage with edge, think mathematics or AI will find edge for them, or skip from observation straight to back-testing — all of which lead to P-hacking and overfitting.<br>
+      <strong>Your Goal:</strong> Understand the Trading Pyramid (Edge → Risk → Psychology), learn to find edge through observations &amp; the ARCTIC framework, and manage risk based on <em>consequences</em> not probabilities.
+    </p>
+  </header>
+
+  <!-- SECTION 1: CORE EXAMPLE -->
+  <section class="border-2 border-amber-500 rounded-lg p-3 mb-4 bg-amber-50">
+    <h2 class="font-bold text-amber-900 mb-3 bg-amber-200 rounded px-2 py-1">1️⃣ CORE EXAMPLE — Expected Value (Edge) &amp; The NASDAQ/S&amp;P VIX Spread Trade (These Numbers Drive All Concepts Below)</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <!-- Left: EV Calculations -->
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">EXPECTED VALUE — Two Coins</h3>
+        <div class="bg-amber-100 rounded p-2 mb-3">
+          <p class="font-bold">COIN A: Wins 55% of the time, pays $1</p>
+          <p class="font-mono">EV = P(win) × payoff + P(lose) × payoff</p>
+          <p class="font-mono">EV = 0.55 × (+$1) + 0.45 × (−$1)</p>
+          <p class="font-mono">EV = $0.55 − $0.45 = <strong>+$0.10</strong> ✓ Positive edge</p>
+        </div>
+        <div class="bg-amber-100 rounded p-2 mb-3">
+          <p class="font-bold">COIN B: Wins 10% of the time, pays $10</p>
+          <p class="font-mono">EV = 0.10 × (+$10) + 0.90 × (−$1)</p>
+          <p class="font-mono">EV = $1.00 − $0.90 = <strong>+$0.10</strong> ✓ Same edge!</p>
+        </div>
+        <p class="font-bold mt-2">DICE — Winning % ≠ Edge:</p>
+        <div class="bg-amber-100 rounded p-2">
+          <p class="font-mono">6-sided die: 1-4 wins (2/3), pays $0.40</p>
+          <p class="font-mono">5-6 loses (1/3), costs $1.00</p>
+          <p class="font-mono">EV = (2/3 × $0.40) + (1/3 × −$1.00)</p>
+          <p class="font-mono">EV = $0.2667 − $0.3333 = <strong>−$0.0667 ≈ −$0.07</strong> ✗ NEGATIVE edge</p>
+          <p class="font-mono font-bold text-red-700">→ Win 67% of the time but LOSE money!</p>
+        </div>
+
+        <!-- VISUAL: EV vs Win Rate -->
+        <svg viewBox="0 0 520 130" class="w-full mt-2">
+          <text x="260" y="12" text-anchor="middle" font-size="9" font-weight="bold" fill="#92400e">WIN RATE vs EXPECTED VALUE — They Are NOT The Same!</text>
+          <!-- Coin A -->
+          <rect x="20" y="25" width="140" height="90" rx="5" fill="#f0fdf4" stroke="#86efac"/>
+          <text x="90" y="40" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">COIN A</text>
+          <rect x="35" y="48" width="50" height="27" rx="3" fill="#bbf7d0"/>
+          <text x="60" y="66" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">55%</text>
+          <text x="60" y="78" text-anchor="middle" font-size="7" fill="#166534">Win Rate</text>
+          <rect x="100" y="48" width="45" height="27" rx="3" fill="#86efac"/>
+          <text x="122" y="66" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">+$0.10</text>
+          <text x="122" y="78" text-anchor="middle" font-size="7" fill="#166534">EV</text>
+          <text x="90" y="100" text-anchor="middle" font-size="7" fill="#166534">✓ Moderate wins, small edge</text>
+
+          <!-- Coin B -->
+          <rect x="190" y="25" width="140" height="90" rx="5" fill="#f0fdf4" stroke="#86efac"/>
+          <text x="260" y="40" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">COIN B</text>
+          <rect x="205" y="48" width="50" height="14" rx="3" fill="#bbf7d0"/>
+          <text x="230" y="59" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">10%</text>
+          <text x="230" y="78" text-anchor="middle" font-size="7" fill="#166534">Win Rate</text>
+          <rect x="270" y="48" width="45" height="27" rx="3" fill="#86efac"/>
+          <text x="292" y="66" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">+$0.10</text>
+          <text x="292" y="78" text-anchor="middle" font-size="7" fill="#166534">EV</text>
+          <text x="260" y="100" text-anchor="middle" font-size="7" fill="#166534">✓ Rare wins, BIG payoff = same edge!</text>
+
+          <!-- Dice -->
+          <rect x="360" y="25" width="140" height="90" rx="5" fill="#fef2f2" stroke="#fca5a5"/>
+          <text x="430" y="40" text-anchor="middle" font-size="8" font-weight="bold" fill="#991b1b">DICE 🎲</text>
+          <rect x="375" y="48" width="50" height="34" rx="3" fill="#fecaca"/>
+          <text x="400" y="66" text-anchor="middle" font-size="9" font-weight="bold" fill="#991b1b">67%</text>
+          <text x="400" y="78" text-anchor="middle" font-size="7" fill="#991b1b">Win Rate</text>
+          <rect x="440" y="58" width="45" height="17" rx="3" fill="#fca5a5"/>
+          <text x="462" y="70" text-anchor="middle" font-size="9" font-weight="bold" fill="#991b1b">−$0.07</text>
+          <text x="462" y="78" text-anchor="middle" font-size="7" fill="#991b1b">EV</text>
+          <text x="430" y="100" text-anchor="middle" font-size="7" fill="#991b1b">✗ HIGHEST win rate = LOSES money!</text>
+
+          <text x="260" y="126" text-anchor="middle" font-size="8" font-weight="bold" fill="#92400e">🔑 67% wins but negative EV → Selling far OTM options is the SAME trap</text>
+        </svg>
+
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-3">
+          <p><strong>⚠️ WINNING % IS NOT EDGE.</strong> Selling far out-of-the-money options wins 95%+ of the time. That does NOT mean it has positive edge. Betting on favorites ≠ edge. Edge = probability-weighted average of ALL outcomes.</p>
+        </div>
+      </div>
+
+      <!-- Right: VIX Spread Trade -->
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">REAL TRADE: NASDAQ VIX / S&amp;P VIX (Aug 2024)</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-2 py-1">Metric</th><th class="border px-2 py-1">Value</th><th class="border px-2 py-1">Significance</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Normal ratio</td><td class="border px-2 py-1 font-mono">~1.24</td><td class="border px-2 py-1">NASDAQ VIX 24% above S&amp;P VIX</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">Historical min</td><td class="border px-2 py-1 font-mono">0.90</td><td class="border px-2 py-1">Lowest ever recorded</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Below 1.0</td><td class="border px-2 py-1 font-mono">3% of time</td><td class="border px-2 py-1">Extremely rare</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">Aug 5 close</td><td class="border px-2 py-1 font-mono">0.91</td><td class="border px-2 py-1">After Nikkei crash overnight</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Aug 6 open</td><td class="border px-2 py-1 font-mono">0.96</td><td class="border px-2 py-1">Already correcting (good sign)</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-amber-100 rounded p-2 mb-2">
+          <p class="font-bold">THE TRADE (ARCTIC applied):</p>
+          <p class="font-mono"><strong>A</strong>nomaly: NASDAQ VIX &lt; S&amp;P VIX (3% event)</p>
+          <p class="font-mono"><strong>R</strong>ationale: Liquidation event, not fundamental shift</p>
+          <p class="font-mono"><strong>C</strong>ounterparty: Forced sellers (not dumb)</p>
+          <p class="font-mono"><strong>T</strong>rade: Buy QQQ straddles, sell SPY straddles</p>
+          <p class="font-mono">   QQQ at-the-money Sep 20 straddle (LONG)</p>
+          <p class="font-mono">   SPY at-the-money Sep 20 straddle (SHORT)</p>
+          <p class="font-mono"><strong>I</strong>nvestigate: Could be new regime (model risk)</p>
+          <p class="font-mono"><strong>C</strong>onsiderations: Time decay offsets (long vs short)</p>
+        </div>
+        <p class="font-bold">RESULT:</p>
+        <p class="font-mono">Entry: Aug 6 | Exit: Aug 13 (ratio back to normal)</p>
+        <p class="font-mono">Exited because edge disappeared, NOT because of P&amp;L</p>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 WHY AT-THE-MONEY?</strong> ATM straddles give the cleanest volatility exposure. Testing different strikes = overfitting. If it doesn't work in the "dumbest" way, give up.</p>
+        </div>
+
+        <!-- VISUAL: Long vs Short Straddle Payoff -->
+        <div class="bg-white rounded p-2 mt-2 border border-amber-200">
+          <p class="font-bold text-amber-800 mb-1" style="font-size:9px;">📈 VISUAL: What a Straddle Looks Like at Expiry</p>
+          <svg viewBox="0 0 500 140" class="w-full">
+            <!-- Left: Long Straddle -->
+            <rect x="5" y="8" width="235" height="120" rx="5" fill="#f0fdf4" stroke="#86efac"/>
+            <text x="122" y="20" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">LONG Straddle (QQQ) — Buy Call + Buy Put</text>
+            <!-- Axes -->
+            <line x1="30" y1="95" x2="225" y2="95" stroke="#94a3b8" stroke-width="1"/>
+            <line x1="127" y1="30" x2="127" y2="115" stroke="#d1d5db" stroke-width="0.5" stroke-dasharray="3,3"/>
+            <text x="127" y="122" text-anchor="middle" font-size="7" fill="#6b7280">Strike (ATM)</text>
+            <text x="28" y="93" text-anchor="end" font-size="6" fill="#94a3b8">$0</text>
+            <text x="28" y="45" text-anchor="end" font-size="6" fill="#94a3b8">Profit</text>
+            <text x="28" y="108" text-anchor="end" font-size="6" fill="#94a3b8">Loss</text>
+            <!-- V-shape (profit at extremes, max loss = premium at strike) -->
+            <polyline points="35,35 127,100 220,35" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linejoin="round"/>
+            <!-- Max loss label -->
+            <text x="145" y="107" font-size="6" fill="#dc2626">Max Loss = Premium Paid</text>
+            <text x="60" y="50" font-size="6" fill="#16a34a">↙ Profit if crash</text>
+            <text x="175" y="50" font-size="6" fill="#16a34a">Profit if rally ↗</text>
+
+            <!-- Right: Short Straddle -->
+            <rect x="255" y="8" width="235" height="120" rx="5" fill="#fef2f2" stroke="#fca5a5"/>
+            <text x="372" y="20" text-anchor="middle" font-size="8" font-weight="bold" fill="#991b1b">SHORT Straddle (SPY) — Sell Call + Sell Put</text>
+            <line x1="280" y1="65" x2="475" y2="65" stroke="#94a3b8" stroke-width="1"/>
+            <line x1="377" y1="30" x2="377" y2="115" stroke="#d1d5db" stroke-width="0.5" stroke-dasharray="3,3"/>
+            <text x="377" y="122" text-anchor="middle" font-size="7" fill="#6b7280">Strike (ATM)</text>
+            <text x="278" y="63" text-anchor="end" font-size="6" fill="#94a3b8">$0</text>
+            <!-- Inverted V (profit at strike, loss at extremes) -->
+            <polyline points="285,115 377,55 470,115" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linejoin="round"/>
+            <text x="395" y="52" font-size="6" fill="#16a34a">Max Profit = Premium Received</text>
+            <text x="305" y="110" font-size="6" fill="#dc2626">↙ Unlimited loss</text>
+            <text x="430" y="110" font-size="6" fill="#dc2626">Unlimited loss ↗</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: THE TRADING PYRAMID -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">2️⃣ THE TRADING PYRAMID — Edge &gt; Risk &gt; Psychology (In That Order)</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">EDGE (Most Important)</h3>
+        <p><strong>WHAT:</strong> A trade with positive Expected Value (EV) = probability-weighted average outcome. Same as "average result over many trials."</p>
+        <p class="mt-2"><strong>WORKED EXAMPLE (from Core):</strong></p>
+        <p class="font-mono">EV = Σ P(outcome_i) × payoff_i</p>
+        <p class="font-mono">Coin A: 0.55 × $1 + 0.45 × (−$1) = <strong>+$0.10</strong></p>
+        <p class="mt-2"><strong>WHY it matters:</strong> Without edge, risk management and psychology are useless. You can't Zen your way to profits. Lottery tickets have no edge no matter how calm you are.</p>
+        <p class="mt-2"><strong>GOTCHA:</strong> Edge is realized on AVERAGE over MANY trials. You'll NEVER get exactly $0.10 on a single coin toss. You need the long run → you need to survive → survival = risk management.</p>
+        <p class="mt-2"><strong>Jim Simons (Renaissance):</strong> "Most common tool we use is linear regression — just OLS."</p>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">RISK (Second Most Important)</h3>
+        <p><strong>WHAT:</strong> Everything that ISN'T edge. One thing can go right (your prediction). Everything else can go wrong.</p>
+        <p class="mt-2"><strong>WHY risk is personal:</strong></p>
+        <p>1. <strong>Risk tolerance differs:</strong> You accept $100K potential loss, I don't. Neither is wrong.</p>
+        <p>2. <strong>Edge differs:</strong> Your risk ≠ my risk because your edge ≠ my edge. Brain surgeon vs. you doing brain surgery = different risk.</p>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 SHARPE 1.5 REALITY CHECK:</strong> Even with Sharpe = 1.5, you lose money 7% of the time after a FULL YEAR. Warren Buffett's best 20 years: Sharpe ≈ 0.8. Don't demand Sharpe &gt; 2 as a rule.</p>
+        </div>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ HEDGE CONSEQUENCES, NOT PROBABILITIES.</strong> "Stock won't crash 50%" — who cares? The CONSEQUENCE of a 50% crash matters. Black swans: you don't know the probability. Hedge what ruins your life, accept what merely sucks.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">PSYCHOLOGY (Least Important)</h3>
+        <p><strong>WHAT:</strong> Managing emotions so they don't destroy edge or your life. Necessary but NOT sufficient.</p>
+        <p class="mt-2"><strong>Common problems:</strong></p>
+        <p>• Trader's block (scared to trade)</p>
+        <p>• Over-trading (esp. when losing)</p>
+        <p>• Staying in no-edge trades hoping to "make it back"</p>
+        <p>• Never asking "where could I be wrong?"</p>
+        <p class="mt-2"><strong>CBT (Cognitive Behavioral Therapy) for trading:</strong></p>
+        <p>1. Talk to yourself as a friend (supportive, not berating)</p>
+        <p>2. Write down bad thoughts — they look silly on paper</p>
+        <p>3. Visualize worst case BEFORE opening screen</p>
+        <p>4. Set realistic goals (anchors, not fantasies)</p>
+        <p>5. Don't watch P&amp;L in real-time — monitor the EDGE</p>
+        <p>6. Get a life outside trading (get a dog)</p>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ "FIND YOUR OWN STYLE" IS BAD ADVICE.</strong> If selling options is the edge and it makes you uncomfortable — that's WHY it's an edge. You get paid for doing uncomfortable things others won't.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: FIVE TYPES OF RISK -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">3️⃣ FIVE TYPES OF RISK — Why "Risk = Standard Deviation" Is Incomplete</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <table class="w-full border border-gray-300">
+          <thead class="bg-orange-100">
+            <tr><th class="border px-2 py-1">Risk Type</th><th class="border px-2 py-1">What It Is</th><th class="border px-2 py-1">Example</th><th class="border px-2 py-1">Can You Hedge?</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">1. Model Risk</td><td class="border px-2 py-1">Your edge doesn't exist or stopped existing</td><td class="border px-2 py-1">Observation was noise, or market adapted</td><td class="border px-2 py-1">Have a REASON for edge (not just stats)</td></tr>
+            <tr class="bg-orange-50"><td class="border px-2 py-1 font-bold">2. Variance (Luck)</td><td class="border px-2 py-1">Random outcomes on any single trade</td><td class="border px-2 py-1">Sharpe 1.5 → lose money 7%/year</td><td class="border px-2 py-1">Size small, trade many times</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">3. Unhedged Factors</td><td class="border px-2 py-1">Things you don't predict but affect you</td><td class="border px-2 py-1">Interest rates, dividends, FX</td><td class="border px-2 py-1">Hedge stock δ; rates at treasury level</td></tr>
+            <tr class="bg-orange-50"><td class="border px-2 py-1 font-bold">4. Meta Risks</td><td class="border px-2 py-1">Outside the game entirely</td><td class="border px-2 py-1">9/11 (market closed), FTX fraud, inflation</td><td class="border px-2 py-1">Diversify, due diligence, don't put eggs in 1 basket</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">5. Black Swans</td><td class="border px-2 py-1">Events outside your IMAGINATION (not just "big")</td><td class="border px-2 py-1">Index restructuring changing dividends</td><td class="border px-2 py-1">Can't predict, but hedge CONSEQUENCES</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">BLACK SWAN ≠ "BIG EVENT"</h3>
+        <p><strong>WHAT:</strong> A Black Swan (Nassim Taleb) is something outside your imagination — not just something rare. Market crashes are NOT black swans (they happen regularly).</p>
+        <p class="mt-2"><strong>Real black swans (from instructor's career):</strong></p>
+        <p>1. Dow Jones restructured Euro Stoxx index from pan-European to pure market-cap → changed dividend exposure overnight</p>
+        <p>2. ETF restructuring that changed basket composition unexpectedly</p>
+        <p class="mt-2"><strong>THE RULE:</strong> Risk management is about CONSEQUENCES, not probabilities. You don't know the probability of a black swan. You CAN limit the consequence.</p>
+
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-3">
+          <p><strong>⚠️ BIGGEST LOSSES = FRAUD, NOT GREEKS.</strong> Nick Leeson (Barings), Jerome Kerviel, Bernie Madoff, FTX — all fraud/theft. Higher-order option Greeks are easy to hedge. Separating trader from risk manager = essential organizational structure.</p>
+        </div>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 HEDGING TOO MUCH:</strong> If you cap losses at 20% by buying protective options, you might throw away ALL your edge (net EV → negative). Accept some losses as cost of doing business. Only hedge what ruins your life.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 2 ====================== -->
+
+  <!-- SECTION 4: EFFICIENT MARKET HYPOTHESIS -->
+  <section class="border-2 border-teal-500 rounded-lg p-3 mb-4 bg-teal-50">
+    <h2 class="font-bold text-teal-900 mb-3 bg-teal-200 rounded px-2 py-1">4️⃣ EFFICIENT MARKET HYPOTHESIS (EMH) — The Sphere With Mountains</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">WHAT: EMH as Organizing Principle</h3>
+        <p><strong>Formal:</strong> A market is efficient with respect to information set X if you can't profit using X.</p>
+        <p><strong>Practical:</strong> Making money is really hard, but not impossible. EMH is a very good approximation — like "the Earth is a sphere." True at the big level, but there are mountains and lakes (= where traders make money).</p>
+        <p class="mt-2"><strong>WHY it matters to us:</strong></p>
+        <p>1. It lets us price derivatives (no-arbitrage → unique prices)</p>
+        <p>2. It literally tells us WHERE to look for edge (where its conditions fail)</p>
+        <div class="bg-teal-100 rounded p-2 mt-2">
+          <p class="font-bold">EMH REQUIRES (when these fail → edge possible):</p>
+          <p>• Low barriers to entry → <strong>Crypto: high barriers → less efficient</strong></p>
+          <p>• No information asymmetry → <strong>FX: dealers front-run = asymmetry</strong></p>
+          <p>• No transaction costs → <strong>Illiquid options: high costs = less efficient</strong></p>
+          <p>• Rational participants → <strong>Forced sellers: not rational by choice</strong></p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">WHERE TO LOOK (EMH Exceptions)</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-teal-200">
+            <tr><th class="border px-2 py-1">Condition</th><th class="border px-2 py-1">Good to Look</th><th class="border px-2 py-1">Bad to Look</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Barriers</td><td class="border px-2 py-1">Crypto, illiquid markets</td><td class="border px-2 py-1">Apple, Tesla (anyone with a phone can trade)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Info Asymmetry</td><td class="border px-2 py-1">FX options, commodities</td><td class="border px-2 py-1">Large-cap stocks (regulated)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Different Goals</td><td class="border px-2 py-1">Insurance buyers, mutual fund rebalancing</td><td class="border px-2 py-1">Competing against same-goal traders</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Forced Participants</td><td class="border px-2 py-1">Month-end rebalancing, index reconstitutions</td><td class="border px-2 py-1">Discretionary traders</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500">
+          <p><strong>⚠️ CONSTRAINED ≠ EDGE.</strong> "Small caps are less followed" → that's a place to LOOK, not an edge itself. You still have to find something specific. Finding a good place to look is Step 1, not the finish line.</p>
+        </div>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 RETAIL ADVANTAGE:</strong> You don't HAVE to trade. Institutions must trade their mandate daily. You can wait for crazy situations (like Aug 5 VIX event) and jump in. Switch markets freely. This is your edge over institutions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: INEFFICIENCIES VS RISK PREMIA -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">5️⃣ THE TWO TYPES OF EDGE — Inefficiencies vs. Risk Premia</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">INEFFICIENCIES (Transient — Trade Hard)</h3>
+        <p><strong>WHAT:</strong> An inconsistency — buy X here, sell for more there. Like buying 6 beers cheaper than a 6-pack.</p>
+        <p class="mt-2"><strong>Characteristics:</strong></p>
+        <p>• Temporary — will disappear as others notice</p>
+        <p>• When found → trade AGGRESSIVELY (max size you can)</p>
+        <p>• Can't base a career on them (too rare)</p>
+        <p>• Good traders under-trade these (leave money on table)</p>
+        <p class="mt-2"><strong>WORKED EXAMPLE:</strong> NASDAQ/S&amp;P VIX spread (from Core Example). Appeared Aug 5, corrected by Aug 13. One opportunity in 5 years.</p>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 EDGE DECAYING IS GOOD:</strong> If you see the spread normalizing, that's CONFIRMATION your thesis is correct. Don't panic. Only panic if it's getting worse.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">RISK PREMIA (Persistent — Build Career On)</h3>
+        <p><strong>WHAT:</strong> Someone PAYS you to take a risk they don't want. Like house insurance — you KNOW you're overpaying, but you want the protection.</p>
+        <p class="mt-2"><strong>THE BIG ONE:</strong></p>
+        <div class="bg-purple-100 rounded p-2 mb-2">
+          <p class="font-bold text-purple-900">OPTIONS TEND TO BE OVERPRICED.</p>
+          <p>You make money selling options. Not always, not blindly, but on average. This has been documented since the 1890s (130+ years). Dimensional Fund, insurance companies, all exploit risk premia.</p>
+        </div>
+        <p><strong>Other risk premia:</strong></p>
+        <p>• Equity premium: stocks go up (oldest known effect, data from 1600s)</p>
+        <p>• End-of-month: mutual fund inflows → stocks up last few days</p>
+        <p>• 60/40 rebalancing: if stocks outperform bonds → buy bonds before month-end</p>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ YOU CAN'T CONSISTENTLY BUY OPTIONS AND MAKE MONEY.</strong> Insurance is overpriced by design. Buying options = buying insurance = negative EV on average. You might hit a black swan every 10 years, but that's a terrible business model.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: ARCTIC METHOD -->
+  <section class="border-2 border-blue-500 rounded-lg p-3 mb-4 bg-blue-50">
+    <h2 class="font-bold text-blue-900 mb-3 bg-blue-200 rounded px-2 py-1">6️⃣ ARCTIC METHOD — A Recipe for Finding Inefficiencies (Andrew Mac)</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-blue-300 rounded p-3">
+        <table class="w-full border border-gray-300 mb-3">
+          <thead class="bg-blue-100">
+            <tr><th class="border px-2 py-1">Letter</th><th class="border px-2 py-1">Step</th><th class="border px-2 py-1">What To Do</th><th class="border px-2 py-1">VIX Trade Example</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold font-mono">A</td><td class="border px-2 py-1 font-bold">Anomaly</td><td class="border px-2 py-1">Spot something unusual. Requires knowing what "usual" is (experience).</td><td class="border px-2 py-1">NASDAQ VIX &lt; S&amp;P VIX (3% event)</td></tr>
+            <tr class="bg-blue-50"><td class="border px-2 py-1 font-bold font-mono">R</td><td class="border px-2 py-1 font-bold">Rationale</td><td class="border px-2 py-1">WHY does this make sense? Need a REASON (not just stats).</td><td class="border px-2 py-1">Liquidation event, options panic, stocks fine</td></tr>
+            <tr><td class="border px-2 py-1 font-bold font-mono">C</td><td class="border px-2 py-1 font-bold">Counterparty</td><td class="border px-2 py-1">Who's on the other side? "They're dumb" = bad reason. "They're forced" = great reason.</td><td class="border px-2 py-1">Forced sellers liquidating positions</td></tr>
+            <tr class="bg-blue-50"><td class="border px-2 py-1 font-bold font-mono">T</td><td class="border px-2 py-1 font-bold">Test / Trade</td><td class="border px-2 py-1">Quick &amp; dirty analysis. Speed &gt; perfection. Trade the DUMBEST version first.</td><td class="border px-2 py-1">ATM straddle vs straddle, Sep expiry</td></tr>
+            <tr><td class="border px-2 py-1 font-bold font-mono">I</td><td class="border px-2 py-1 font-bold">Investigate</td><td class="border px-2 py-1">Look for why you're WRONG. Good traders say "on the other hand…" Bad traders say "and furthermore…"</td><td class="border px-2 py-1">Could be new regime, realized vol risk</td></tr>
+            <tr class="bg-blue-50"><td class="border px-2 py-1 font-bold font-mono">C</td><td class="border px-2 py-1 font-bold">Considerations</td><td class="border px-2 py-1">Implementation issues: can you actually trade it? Liquidity? Shorting constraints?</td><td class="border px-2 py-1">QQQ/SPY options = very liquid ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bg-white border-2 border-blue-300 rounded p-3">
+        <h3 class="font-bold text-blue-800 mb-2">THE "DUMBEST VERSION" RULE</h3>
+        <p><strong>WHAT:</strong> If your idea doesn't work in the simplest, dumbest implementation, give up. Don't optimize strikes, tenors, or timing to MAKE it work — you'll overfit.</p>
+        <p class="mt-2"><strong>WORKED EXAMPLE:</strong> "Options are overpriced before earnings."</p>
+        <p class="font-mono">Dumbest test: Sell ANY straddle before earnings</p>
+        <p class="font-mono">If that doesn't work → STOP</p>
+        <p class="font-mono">If that works → now refine (which delta, which tenor)</p>
+        <p class="mt-2"><strong>WHY:</strong> With options, there are infinite combinations (10Δ, 20Δ, 1wk, 1mo, 3mo…). Testing many → guaranteed to find something that "works" = P-hacking.</p>
+
+        <h3 class="font-bold text-blue-800 mt-3 mb-2">HAVING A REASON (Model Risk Hedge)</h3>
+        <p><strong>WHY a reason matters:</strong> Statistics can't tell you a trade stopped working. 1000 obs with t=5 → need 1000+ more obs to disprove at same confidence. That takes YEARS.</p>
+        <p class="mt-1"><strong>With a reason:</strong> If the reason disappears, exit immediately. No need to wait for statistics.</p>
+        <p class="mt-1"><strong>End-of-month example:</strong> Reason = US workers get paid monthly → contribute to retirement → mutual funds buy stocks end-of-month. If workers start getting paid daily → reason gone → stop trading it.</p>
+
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ EXIT WHEN EDGE DISAPPEARS, NOT AT PROFIT/LOSS TARGET.</strong> Don't use stop losses. Don't use profit targets. Monitor the EDGE. When edge = 0, exit — regardless of P&amp;L.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 3 ====================== -->
+
+  <!-- SECTION 7: WHAT IS NOT EDGE -->
+  <section class="border-2 border-red-500 rounded-lg p-3 mb-4 bg-red-50">
+    <h2 class="font-bold text-red-900 mb-3 bg-red-200 rounded px-2 py-1">7️⃣ WHAT IS NOT EDGE — Things That Will Waste Your Time</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-red-300 rounded p-3">
+        <table class="w-full border border-gray-300">
+          <thead class="bg-red-100">
+            <tr><th class="border px-2 py-1">Not An Edge</th><th class="border px-2 py-1">Why Not</th><th class="border px-2 py-1">What To Do Instead</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Intuition / "feel"</td><td class="border px-2 py-1">Can't learn it; maybe 1 in 100 traders has it</td><td class="border px-2 py-1">Use observations + ARCTIC</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Technical Analysis</td><td class="border px-2 py-1">No major firm has a "TA desk." Confounds phenomenon with tool.</td><td class="border px-2 py-1">Identify the phenomenon first (trending? mean-reverting?)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Public news / fundamentals</td><td class="border px-2 py-1">Everyone reads the same newspaper. Already priced in.</td><td class="border px-2 py-1">Even knowing TOMORROW's headlines loses money (study)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Risk management alone</td><td class="border px-2 py-1">Necessary but not sufficient. Casino + great risk mgmt = still losing.</td><td class="border px-2 py-1">Find edge FIRST, then manage risk</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">ML / AI / math alone</td><td class="border px-2 py-1">Tools, not edge. Like a mechanic's wrench — doesn't fix the car by itself.</td><td class="border px-2 py-1">Start with observation, then apply math</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Being smart</td><td class="border px-2 py-1">Advantage, not edge. Smart + arrogant = blown up.</td><td class="border px-2 py-1">Use intelligence to find edge faster</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">High winning %</td><td class="border px-2 py-1">Dice example: win 67%, lose money. Selling far OTM options: win 95%, may have no edge.</td><td class="border px-2 py-1">Calculate EV, not win rate</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bg-white border-2 border-red-300 rounded p-3">
+        <h3 class="font-bold text-red-800 mb-2">THE TWO IDIOTS (And The Sweet Spot)</h3>
+        <div class="bg-red-100 rounded p-2 mb-3">
+          <table class="w-full border border-gray-300">
+            <tr><td class="border px-2 py-1 font-bold text-center">🤡 Idiot #1</td><td class="border px-2 py-1 font-bold text-center">🎯 Sweet Spot</td><td class="border px-2 py-1 font-bold text-center">🤡 Idiot #2</td></tr>
+            <tr><td class="border px-2 py-1">"Edge is everywhere! Follow 3 Twitter accounts!"</td><td class="border px-2 py-1">"It's hard but not impossible. Markets are adaptive. I need robust, simple ideas."</td><td class="border px-2 py-1">"I'm a genius. My model will beat the market forever."</td></tr>
+            <tr><td class="border px-2 py-1 text-red-600">Tries to monetize edges that don't exist</td><td class="border px-2 py-1 text-green-700">Finds obvious observations, tests dumbest version</td><td class="border px-2 py-1 text-red-600">One model for life. Doesn't adapt.</td></tr>
+          </table>
+        </div>
+
+        <h3 class="font-bold text-red-800 mb-2">P-HACKING WARNING</h3>
+        <p><strong>WHAT:</strong> Testing many things until you find one that "works" statistically. Cross-validation and walk-forward DON'T protect you if you have no prior reason.</p>
+        <p class="mt-1"><strong>WHY options are dangerous:</strong> Infinite strike × tenor × delta × structure combinations. You WILL find something that backtests well. It WILL fail live.</p>
+        <p class="mt-1"><strong>THE FIX:</strong> Start with a hypothesis (like science). Test the dumbest version. If it doesn't work → move on. Don't wrestle the technique into working.</p>
+
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 SAMPLING ERROR IN FINANCE:</strong> You measured exactly $30 profit. That's real. But you don't know how representative it is of your TRUE edge. Like a cricketer scoring 100 — real score, but his average is probably 35. (Don Bradman: 99.94 test average — the outlier of outliers.)</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: TRADE REVIEW & ACTIVE MONITORING -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">8️⃣ TRADE REVIEW &amp; ACTIVE MONITORING — The 15-Minute Daily Ritual</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">WHY: Manual &gt; Automated</h3>
+        <p><strong>WHAT the instructor does daily:</strong></p>
+        <p>1. Types NASDAQ VIX, S&amp;P VIX, Dow VIX, forward vols, skews into a spreadsheet manually (15 min)</p>
+        <p>2. Types P&amp;L of every strategy/sub-strategy at end of day</p>
+        <p>3. Plots time series, checks ratios</p>
+        <p class="mt-2"><strong>WHY not automate?</strong></p>
+        <p>• "Automate needs, not wants." If you CAN do it manually, DO.</p>
+        <p>• Manual → forces engagement → you NOTICE things</p>
+        <p>• Auto-generated reports → you'll start hitting Delete</p>
+        <p>• Automation introduces bugs that can wipe out the time savings</p>
+        <p>• Only automate what you MUST (e.g., quoting 100s of options)</p>
+
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 "CHI BY EYE":</strong> Eyeballing a time series gives more info faster than a statistical test. Statisticians hate this. Traders love it. Always PLOT your data first, then run formal tests.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">GOTCHA: Don't Change Strategy Based on 20 Observations</h3>
+        <p><strong>THE TRAP (worked example):</strong></p>
+        <p class="font-mono">Backtest: 1000 obs → edge confirmed (t=5)</p>
+        <p class="font-mono">Live trading: 20 obs → losing money</p>
+        <p class="font-mono">You notice: "All losses are on Thursdays!"</p>
+        <p class="font-mono">Temptation: "Don't trade Thursdays"</p>
+        <p class="font-mono text-red-700 font-bold">→ THIS IS P-HACKING YOUR OWN LIVE RESULTS</p>
+        <p class="mt-2">You're attaching a narrative to noise. 20 observations tell you NOTHING statistically. You validated over 1000 obs — trust that, not 20.</p>
+        <p class="mt-2"><strong>WHAT you CAN learn from live trading:</strong></p>
+        <p>• Execution is harder than backtested (adverse selection)</p>
+        <p>• Fills differ from historical bid/ask (your trades move the market)</p>
+        <p>• Implementation costs you didn't model</p>
+
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-3">
+          <p><strong>⚠️ WHEN TO STOP A STRATEGY:</strong> Sharpe=5 strategy loses money for 1 month? Investigate hard. Sharpe=1.5 loses for 1 month? That can still happen. Loses for 2 years? Now investigate seriously. Better: check if the REASON still exists.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 9: QUICK REFERENCE -->
+  <section class="border-2 border-gray-600 rounded-lg p-3 bg-gray-100">
+    <h2 class="font-bold text-gray-900 mb-3 bg-gray-300 rounded px-2 py-1">📋 QUICK REFERENCE — All In One Place</h2>
+
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Col 1: Key Formulas -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">KEY FORMULAS &amp; RULES</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Formula / Rule</th><th class="border px-1 py-1">Expression</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">Expected Value</td><td class="border px-1 py-1">Σ P(i) × payoff(i)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Good trade</td><td class="border px-1 py-1">+EV + acceptable risk</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Exit rule</td><td class="border px-1 py-1">When edge = 0 (not P&amp;L)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Hedge target</td><td class="border px-1 py-1">Consequences (not probability)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Test order</td><td class="border px-1 py-1">Observation → hypothesis → dumbest test</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Pyramid</td><td class="border px-1 py-1">Edge &gt; Risk &gt; Psychology</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Automation rule</td><td class="border px-1 py-1">Automate needs, not wants</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 2: Common Mistakes -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">COMMON MISTAKES</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Mistake</th><th class="border px-1 py-1">Fix</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">Winning % = edge</td><td class="border px-1 py-1">Calculate EV (dice: 67% wins, negative EV)</td></tr>
+            <tr><td class="border px-1 py-1">Start with math/ML</td><td class="border px-1 py-1">Start with observation/phenomenon</td></tr>
+            <tr><td class="border px-1 py-1">Backtest first</td><td class="border px-1 py-1">Hypothesis first, confirm with data</td></tr>
+            <tr><td class="border px-1 py-1">Optimize to make it work</td><td class="border px-1 py-1">If dumbest version fails → stop</td></tr>
+            <tr><td class="border px-1 py-1">Change strategy after 20 obs</td><td class="border px-1 py-1">Narrative on noise. Trust 1000 obs backtest</td></tr>
+            <tr><td class="border px-1 py-1">Stop/profit targets</td><td class="border px-1 py-1">Exit when edge = 0</td></tr>
+            <tr><td class="border px-1 py-1">Hedge everything</td><td class="border px-1 py-1">Only hedge what ruins your life</td></tr>
+            <tr><td class="border px-1 py-1">"Find your own style"</td><td class="border px-1 py-1">Edge is uncomfortable by design</td></tr>
+            <tr><td class="border px-1 py-1">Watch P&amp;L all day</td><td class="border px-1 py-1">Monitor edge, not dollars</td></tr>
+            <tr><td class="border px-1 py-1">Automate everything</td><td class="border px-1 py-1">Manual → engagement → notice anomalies</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 3: Numbers + Terminology -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">NUMBERS &amp; SHORTHAND</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <tbody>
+            <tr><td class="border px-1 py-1 bg-gray-50">Coin A EV</td><td class="border px-1 py-1 font-mono">+$0.10 (55% win)</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Dice EV</td><td class="border px-1 py-1 font-mono">−$0.07 (67% win!)</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Sharpe 1.5 → P(loss/yr)</td><td class="border px-1 py-1 font-mono">7%</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Buffett Sharpe</td><td class="border px-1 py-1 font-mono">~0.8 (best 20yr)</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">NASDAQ/SPX VIX avg</td><td class="border px-1 py-1 font-mono">~1.24</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">VIX ratio &lt; 1</td><td class="border px-1 py-1 font-mono">3% of time</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Options overpriced since</td><td class="border px-1 py-1 font-mono">1890s (130+ yr)</td></tr>
+          </tbody>
+        </table>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">EV</td><td class="border px-1 py-1">Expected Value</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">EMH</td><td class="border px-1 py-1">Efficient Market Hypothesis</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">ARCTIC</td><td class="border px-1 py-1">Anomaly Rationale Counterparty Test Investigate Considerations</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">CBT</td><td class="border px-1 py-1">Cognitive Behavioral Therapy</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">ATM</td><td class="border px-1 py-1">At-The-Money</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">OTM</td><td class="border px-1 py-1">Out-of-The-Money</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">VIX</td><td class="border px-1 py-1">Volatility Index (CBOE)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">OLS</td><td class="border px-1 py-1">Ordinary Least Squares</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">P&amp;L</td><td class="border px-1 py-1">Profit and Loss</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="bg-yellow-100 rounded p-3 mt-3">
+      <p class="font-bold text-yellow-900 mb-2">🎯 KEY TAKEAWAYS</p>
+      <div class="grid grid-cols-4 gap-3">
+        <p>1. Edge = positive EV = probability-weighted average outcome. Winning % ≠ edge (dice: win 67%, lose money). The BIG edge: options tend to be overpriced — sell them. Documented since 1890s. If you know nothing else, sell options.</p>
+        <p>2. Risk has 5 types: model risk (you're wrong), variance (luck), unhedged factors (rates, dividends), meta risks (fraud, war), black swans (unimaginable). Hedge CONSEQUENCES, not probabilities. Biggest losses = fraud, not Greeks.</p>
+        <p>3. Use ARCTIC to find inefficiencies: Anomaly → Rationale → Counterparty → Test → Investigate → Considerations. Start with observation, not math. Test the dumbest version first. If it doesn't work simply → give up. Speed beats perfection.</p>
+        <p>4. Exit when edge = 0, not at profit/loss targets. Don't change strategy based on 20 observations (narrative on noise). Monitor actively (15 min/day manual entry). Automate needs, not wants. Have a life outside trading. Get a dog.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="mt-3 text-center text-gray-600 border-t-2 border-gray-300 pt-2">
+    <p><strong>THE MASTER FORMULA:</strong> EV = Σ P(outcome_i) × payoff(outcome_i) — If EV &gt; 0, you have edge. If EV &lt; 0, no amount of risk management or psychology saves you. Observation → Hypothesis → Dumbest Test → Trade.</p>
+    <p class="mt-1"><strong>THE ONE THING TO NEVER FORGET:</strong> You are a <em>trader</em> first, an options trader second. There is nothing magical about options — they are just the instrument. Start with the observation, use the simplest tool, and run towards the fire: you get paid for doing uncomfortable things others won't.</p>
+  </footer>
+
+</body>
+</html>

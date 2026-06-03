@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[WEEK 8-1] — Python Tutorial: Doubt Solving after DMP-01 — Cheat Sheet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+           font-size: 11px; line-height: 1.5; }
+    @media print { body { font-size: 9px; } .page-break { page-break-before: always; } }
+    h1 { font-size: 18px; }
+    h2 { font-size: 13px; }
+    h3 { font-size: 11px; }
+    table { font-size: 10px; }
+    pre  { font-size: 9px; line-height: 1.45; }
+  </style>
+</head>
+<body class="bg-white p-4 max-w-6xl mx-auto">
+
+  <!-- ====================== PAGE 1 ====================== -->
+
+  <!-- HEADER -->
+  <header class="text-center border-b-4 border-blue-600 pb-3 mb-4">
+    <h1 class="font-extrabold text-blue-900">PYTHON TUTORIAL: LIBRARIES, DATA, CSV, STRATEGY &amp; BACKTESTING — COMPLETE CHEAT SHEET</h1>
+    <p class="text-gray-600 mt-1">EPAT Week 8-1 — Tutorial Session: Doubt Solving on Python after DMP-01 | Instructor: Manusha Rao</p>
+    <p class="text-gray-700 mt-2">
+      <strong>The Problem:</strong> You know some Python basics from DMP-01, but you can't yet download data, calculate indicators, generate signals, or evaluate a strategy end-to-end.<br>
+      <strong>Your Goal:</strong> Build a complete vectorized backtesting workflow — from importing libraries through generating signals to comparing strategy returns vs. buy-and-hold — all in Python.
+    </p>
+  </header>
+
+  <!-- SECTION 1: CORE EXAMPLE -->
+  <section class="border-2 border-amber-500 rounded-lg p-3 mb-4 bg-amber-50">
+    <h2 class="font-bold text-amber-900 mb-3 bg-amber-200 rounded px-2 py-1">1️⃣ CORE EXAMPLE — These Numbers Are Used In Every Calculation Below</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+
+      <!-- Left: Sample Price Data -->
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">SAMPLE PRICE DATA (Nifty 50 — ^NSEI)</h3>
+        <p class="mb-2"><strong>^NSEI</strong> = Yahoo Finance ticker symbol for the <strong>Nifty 50</strong> index (India's benchmark large-cap stock market index comprising 50 companies on the National Stock Exchange).</p>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-amber-100">
+            <tr>
+              <th class="border px-2 py-1">Day</th>
+              <th class="border px-2 py-1">Date</th>
+              <th class="border px-2 py-1">Close</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">1</td><td class="border px-2 py-1">Jan 2</td><td class="border px-2 py-1 font-mono font-bold">100.00</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">2</td><td class="border px-2 py-1">Jan 3</td><td class="border px-2 py-1 font-mono font-bold">102.00</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">3</td><td class="border px-2 py-1">Jan 4</td><td class="border px-2 py-1 font-mono font-bold">98.00</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">4</td><td class="border px-2 py-1">Jan 5</td><td class="border px-2 py-1 font-mono font-bold">105.00</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">5</td><td class="border px-2 py-1">Jan 6</td><td class="border px-2 py-1 font-mono font-bold">103.00</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">6</td><td class="border px-2 py-1">Jan 9</td><td class="border px-2 py-1 font-mono font-bold">107.00</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">7</td><td class="border px-2 py-1">Jan 10</td><td class="border px-2 py-1 font-mono font-bold">104.00</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">8</td><td class="border px-2 py-1">Jan 11</td><td class="border px-2 py-1 font-mono font-bold">108.00</td></tr>
+          </tbody>
+        </table>
+        <p class="mt-2 text-gray-600">Full dataset: 962 rows (2017-01-02 to 2020-12-31).<br>After dropping NaN rows: 899 rows remain.</p>
+      </div>
+
+      <!-- Right: Strategy Settings & Key Values -->
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">STRATEGY SETTINGS &amp; KEY VALUES</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <thead class="bg-amber-100">
+            <tr>
+              <th class="border px-2 py-1">Parameter</th>
+              <th class="border px-2 py-1">Value</th>
+              <th class="border px-2 py-1">Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Ticker</td><td class="border px-2 py-1 font-mono">^NSEI</td><td class="border px-2 py-1">Nifty 50 Index</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">Start Date</td><td class="border px-2 py-1 font-mono">2017-01-01</td><td class="border px-2 py-1">Download from</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">End Date</td><td class="border px-2 py-1 font-mono">2020-01-01</td><td class="border px-2 py-1">Download until</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">Short Window</td><td class="border px-2 py-1 font-mono">21 days</td><td class="border px-2 py-1">SMA lookback period</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Long Window</td><td class="border px-2 py-1 font-mono">63 days</td><td class="border px-2 py-1">LMA lookback period</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">Total Signals</td><td class="border px-2 py-1 font-mono">8</td><td class="border px-2 py-1">4 Long + 4 Short</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-amber-800 mb-2">TERMINOLOGY / DECODING THE SHORTHAND</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold font-mono">SMA</td><td class="border px-2 py-1">Simple Moving Average — the average of the last N closing prices</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold font-mono">LMA</td><td class="border px-2 py-1">Long Moving Average — SMA with a longer window (63 days here)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold font-mono">OHLCV</td><td class="border px-2 py-1">Open, High, Low, Close, Volume — the 5 standard market data columns</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold font-mono">NaN</td><td class="border px-2 py-1">Not a Number — placeholder for missing values in pandas</td></tr>
+            <tr><td class="border px-2 py-1 font-bold font-mono">UTC</td><td class="border px-2 py-1">Coordinated Universal Time — the base time zone used by many data APIs</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold font-mono">CSV</td><td class="border px-2 py-1">Comma-Separated Values — a plain text file format for tabular data</td></tr>
+          </tbody>
+        </table>
+
+        <div class="bg-amber-100 rounded p-2 mt-3">
+          <p class="font-bold text-amber-900">📌 CORE EXAMPLE ARITHMETIC (SMA with window = 3 for illustration):</p>
+          <p class="font-mono mt-1">SMA(3) Day 3 = (100 + 102 + 98) / 3 = 300 / 3 = <strong>100.00</strong></p>
+          <p class="font-mono">SMA(3) Day 4 = (102 + 98 + 105) / 3 = 305 / 3 = <strong>101.67</strong></p>
+          <p class="font-mono">SMA(3) Day 5 = (98 + 105 + 103) / 3 = 306 / 3 = <strong>102.00</strong></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: LIBRARIES & SETUP -->
+  <section class="border-2 border-blue-500 rounded-lg p-3 mb-4 bg-blue-50">
+    <h2 class="font-bold text-blue-900 mb-3 bg-blue-200 rounded px-2 py-1">2️⃣ LIBRARIES &amp; SETUP — The Toolbox You Need</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+
+      <!-- Left: Core Libraries -->
+      <div class="bg-white border-2 border-blue-300 rounded p-3">
+        <h3 class="font-bold text-blue-800 mb-2">WHAT: The 7 Essential Libraries</h3>
+        <p><strong>WHY:</strong> Each library does one job. You import them all at the top of every quant script.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+import pandas as pd              # Data analysis &amp; manipulation (DataFrames)
+import numpy as np               # Arrays, linear algebra, math operations
+import datetime as dt             # Manipulate dates &amp; times
+import yfinance as yf             # Download OHLCV data from Yahoo Finance
+import warnings                   # Suppress Python warning messages
+import matplotlib.pyplot as plt   # Static plotting &amp; visualization
+import cufflinks as cf            # Bridge between pandas &amp; Plotly (interactive plots)
+
+warnings.filterwarnings("ignore") # Tell Python: hide all warning messages
+</pre>
+        <div class="bg-blue-100 rounded p-2 mt-2">
+          <p><strong>💡 cufflinks</strong> lets you call <code>.iplot()</code> on any DataFrame to create interactive Plotly charts — zoom, hover, pan — instead of static matplotlib graphs.</p>
+        </div>
+      </div>
+
+      <!-- Right: Data Types Refresher -->
+      <div class="bg-white border-2 border-blue-300 rounded p-3">
+        <h3 class="font-bold text-blue-800 mb-2">HOW: Data Types &amp; Date Initialization</h3>
+        <p><strong>WHAT:</strong> Python distinguishes between tuples, lists, strings, and datetime objects. You must explicitly create datetime objects for date-based functions.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# Tuple (round brackets) — immutable, ordered
+start_date = (2017, 1, 1)          # type: tuple — yf CANNOT use this!
+
+# String (quotes) — yf CAN use this
+start_date = "2017-01-01"          # type: str — yf accepts this format
+
+# Datetime (explicit) — most reliable
+start_date = dt.date(2017, 1, 1)   # type: datetime.date — yf accepts this
+end_date   = dt.date(2020, 1, 1)   # year=2020, month=1, day=1
+</pre>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ WARNING — Tuple dates crash yf.download():</strong> If you pass a tuple like <code>(2017, 1, 1)</code> to <code>yf.download()</code>, you get: <code>AttributeError: 'tuple' object has no attribute 'timestamp'</code>. Always use a string <code>"2017-01-01"</code> or <code>dt.date()</code> object.</p>
+        </div>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 TIP — Get help on any function:</strong> Type <code>yf.download?</code> or <code>help(yf.download)</code> in Jupyter to see all parameters, types, and usage.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: DATA FETCHING WITH YFINANCE -->
+  <section class="border-2 border-green-500 rounded-lg p-3 mb-4 bg-green-50">
+    <h2 class="font-bold text-green-900 mb-3 bg-green-200 rounded px-2 py-1">3️⃣ DATA FETCHING WITH YFINANCE — Download Market Data Into Python</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+
+      <!-- Left: Basic Download -->
+      <div class="bg-white border-2 border-green-300 rounded p-3">
+        <h3 class="font-bold text-green-800 mb-2">WHAT &amp; HOW: Download Daily OHLCV Data</h3>
+        <p><strong>WHY:</strong> <code>yf.download()</code> is the fastest way to get free historical price data into a pandas DataFrame.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+import yfinance as yf                   # Import Yahoo Finance library
+import datetime as dt                    # Import datetime for dates
+
+start_date = dt.date(2017, 1, 1)        # Start: Jan 1, 2017
+end_date   = dt.date(2020, 1, 1)        # End: Jan 1, 2020
+
+df = yf.download(                        # Fetch historical price data
+    "^NSEI",                             # Ticker for Nifty 50 index
+    start=start_date,                    # Start date
+    end=end_date,                        # End date
+    multi_level_index=False              # ALWAYS add — keeps columns clean
+)
+# Output: DataFrame with 962 rows × 5 columns
+</pre>
+        <p class="mt-2"><strong>WORKED EXAMPLE — What df looks like:</strong></p>
+        <table class="w-full border border-gray-300 mt-1">
+          <thead class="bg-green-100">
+            <tr>
+              <th class="border px-1 py-1">Date</th>
+              <th class="border px-1 py-1">Open</th>
+              <th class="border px-1 py-1">High</th>
+              <th class="border px-1 py-1">Low</th>
+              <th class="border px-1 py-1">Close</th>
+              <th class="border px-1 py-1">Volume</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">2017-01-02</td><td class="border px-1 py-1 font-mono">100.20</td><td class="border px-1 py-1 font-mono">101.50</td><td class="border px-1 py-1 font-mono">99.80</td><td class="border px-1 py-1 font-mono font-bold">100.00</td><td class="border px-1 py-1 font-mono">185000</td></tr>
+            <tr class="bg-green-50"><td class="border px-1 py-1 font-mono">2017-01-03</td><td class="border px-1 py-1 font-mono">100.50</td><td class="border px-1 py-1 font-mono">103.00</td><td class="border px-1 py-1 font-mono">100.10</td><td class="border px-1 py-1 font-mono font-bold">102.00</td><td class="border px-1 py-1 font-mono">220000</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">2017-01-04</td><td class="border px-1 py-1 font-mono">101.80</td><td class="border px-1 py-1 font-mono">102.30</td><td class="border px-1 py-1 font-mono">97.50</td><td class="border px-1 py-1 font-mono font-bold">98.00</td><td class="border px-1 py-1 font-mono">310000</td></tr>
+            <tr class="bg-green-50"><td class="border px-1 py-1 font-mono">2017-01-05</td><td class="border px-1 py-1 font-mono">98.20</td><td class="border px-1 py-1 font-mono">106.00</td><td class="border px-1 py-1 font-mono">98.00</td><td class="border px-1 py-1 font-mono font-bold">105.00</td><td class="border px-1 py-1 font-mono">275000</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">2017-01-06</td><td class="border px-1 py-1 font-mono">104.80</td><td class="border px-1 py-1 font-mono">104.90</td><td class="border px-1 py-1 font-mono">102.50</td><td class="border px-1 py-1 font-mono font-bold">103.00</td><td class="border px-1 py-1 font-mono">195000</td></tr>
+          </tbody>
+        </table>
+        <p class="mt-1 text-gray-600 font-mono">df.shape → (962, 5) &nbsp;|&nbsp; df.shape[0] → 962 rows &nbsp;|&nbsp; df.shape[1] → 5 cols</p>
+        <p class="text-gray-600 font-mono">df.head(6) → top 6 rows &nbsp;|&nbsp; df.info() → index type, column types</p>
+      </div>
+
+      <!-- Right: multi_level_index, auto_adjust, intraday -->
+      <div class="bg-white border-2 border-green-300 rounded p-3">
+        <h3 class="font-bold text-green-800 mb-2">KEY ARGUMENTS &amp; INTRADAY DATA</h3>
+
+        <p class="font-bold text-green-800 mb-1">multi_level_index=False</p>
+        <p><strong>WHAT:</strong> Removes the extra "Ticker" row Yahoo Finance adds by default.</p>
+        <p><strong>WHY:</strong> Without it, column names become <code>('Close', '^NSEI')</code> instead of just <code>'Close'</code>.</p>
+        <p class="mt-1"><strong>GOTCHA:</strong> If you forget this, every <code>df['Close']</code> call will fail with a KeyError.</p>
+
+        <p class="font-bold text-green-800 mt-3 mb-1">auto_adjust (Adjusted Close vs. Close)</p>
+        <p><strong>WHAT:</strong> The Adjusted Close price reflects corporate actions (dividends, stock splits, mergers) applied retroactively to historical prices. For long-term analysis, use adjusted prices.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono mt-1">
+# DEFAULT (auto_adjust=True): all prices ARE adjusted
+df = yf.download("^NSEI", start=start_date,
+     end=end_date, multi_level_index=False)
+# → 5 columns: Open High Low Close Volume (all adjusted)
+
+# EXPLICIT (auto_adjust=False): get BOTH adjusted &amp; unadjusted
+df1 = yf.download("^NSEI", start=start_date,
+      end=end_date, multi_level_index=False,
+      auto_adjust=False)
+# → 6 columns: Open High Low Close Adj Close Volume
+</pre>
+
+        <p class="font-bold text-green-800 mt-3 mb-1">Intraday Data (5-min, 15-min, etc.)</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono mt-1">
+intraday = yf.download(           # Download intraday data
+    "^NSEI",                      # Same ticker
+    period="60d",                 # Max 60 days for intraday!
+    interval="5m",                # 5-minute bars
+    multi_level_index=False       # Clean columns
+)
+# Valid intervals: 1m 2m 5m 15m 30m 60m 90m 1h 1d 5d 1wk 1mo 3mo
+</pre>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ WARNING — 60-day limit:</strong> Yahoo Finance only serves intraday data for the last 60 days. If you request 61+ days, you get: <code>Failed download — requested range must be within the last 60 days</code>.</p>
+        </div>
+
+        <p class="font-bold text-green-800 mt-3 mb-1">Time Zone Conversion</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono mt-1">
+import pytz                              # Time zone library
+
+# Yahoo Finance returns timestamps in UTC (+0000)
+# Convert to Indian Standard Time (IST):
+intraday.index = intraday.index.tz_convert("Asia/Kolkata")
+
+# List ALL available time zones:
+print(pytz.all_timezones)                # Hundreds of entries
+</pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 2 ====================== -->
+
+  <!-- SECTION 4: CSV FILE I/O -->
+  <section class="border-2 border-indigo-500 rounded-lg p-3 mb-4 bg-indigo-50">
+    <h2 class="font-bold text-indigo-900 mb-3 bg-indigo-200 rounded px-2 py-1">4️⃣ CSV FILE I/O — Save &amp; Load Data From Files</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+
+      <!-- Left: Write to CSV -->
+      <div class="bg-white border-2 border-indigo-300 rounded p-3">
+        <h3 class="font-bold text-indigo-800 mb-2">WHAT: Save a DataFrame to CSV</h3>
+        <p><strong>WHY:</strong> You download data once from yfinance, save it as a CSV (Comma-Separated Values) file, and reload it later without re-downloading. Brokers also provide data as CSV files.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# Step 1: Download data with unadjusted prices
+df1 = yf.download("^NSEI",              # Ticker
+    start=start_date, end=end_date,      # Date range
+    multi_level_index=False,             # Clean columns
+    auto_adjust=False)                   # Keep Adj Close separate
+
+# Step 2: Save to CSV file in current directory
+df1.to_csv("DMP_01_tutorial_data_NSE_saved.csv")
+# Creates a .csv file you can open in Excel
+</pre>
+        <p class="mt-2"><strong>WORKED EXAMPLE — CSV file content:</strong></p>
+        <table class="w-full border border-gray-300 mt-1">
+          <thead class="bg-indigo-100">
+            <tr><th class="border px-1 py-1">Date</th><th class="border px-1 py-1">Open</th><th class="border px-1 py-1">High</th><th class="border px-1 py-1">Low</th><th class="border px-1 py-1">Close</th><th class="border px-1 py-1">Adj Close</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">2017-01-02</td><td class="border px-1 py-1 font-mono">100.20</td><td class="border px-1 py-1 font-mono">101.50</td><td class="border px-1 py-1 font-mono">99.80</td><td class="border px-1 py-1 font-mono">100.00</td><td class="border px-1 py-1 font-mono">100.00</td></tr>
+            <tr class="bg-indigo-50"><td class="border px-1 py-1 font-mono">2017-01-03</td><td class="border px-1 py-1 font-mono">100.50</td><td class="border px-1 py-1 font-mono">103.00</td><td class="border px-1 py-1 font-mono">100.10</td><td class="border px-1 py-1 font-mono">102.00</td><td class="border px-1 py-1 font-mono">102.00</td></tr>
+          </tbody>
+        </table>
+        <p class="text-gray-600 mt-1">For Nifty 50 (an index, not a stock), Close and Adj Close are identical — indices don't have dividends or stock splits.</p>
+      </div>
+
+      <!-- Right: Read from CSV -->
+      <div class="bg-white border-2 border-indigo-300 rounded p-3">
+        <h3 class="font-bold text-indigo-800 mb-2">HOW: Read a CSV Into a DataFrame</h3>
+        <p><strong>WHY:</strong> When you receive data from brokers as CSV files, you load it into pandas for analysis.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# Basic read — PROBLEM: Date becomes a regular column, not the index
+df1 = pd.read_csv("DMP_01_tutorial_data_NSE_saved.csv")
+df1.info()
+# RangeIndex: 962 entries, 0 to 961  ← NOT DatetimeIndex!
+# Date is column 0, NOT the index
+
+# FIXED: Set date column as index + parse as datetime
+df1_from_csv = pd.read_csv(
+    "DMP_01_tutorial_data_NSE_saved.csv",  # File name
+    index_col=0,              # Column 0 ("Date") becomes the index
+    parse_dates=True          # Convert date strings → datetime objects
+)
+df1_from_csv.info()
+# DatetimeIndex: 962 entries, 2017-01-02 to 2019-12-31  ✓
+</pre>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ WARNING — Forgetting index_col:</strong> Without <code>index_col=0</code>, pandas creates a numeric index (0, 1, 2…) and Date becomes a plain text column. All time-series operations break.</p>
+        </div>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ WARNING — Forgetting parse_dates:</strong> Without <code>parse_dates=True</code>, dates remain as strings. Index type shows "Index" not "DatetimeIndex". Time-based slicing won't work.</p>
+        </div>
+
+        <p class="font-bold text-indigo-800 mt-3 mb-1">File Paths for CSV Not in Current Directory</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# Method 1: Raw string (r prefix) — prevents escape sequences
+df = pd.read_csv(r"C:\Users\data\my_file.csv")
+
+# Method 2: Double backslashes
+df = pd.read_csv("C:\\Users\\data\\my_file.csv")
+</pre>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 TIP — index_col accepts names too:</strong> Instead of <code>index_col=0</code>, you can write <code>index_col="Date"</code> — same result, more readable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: ARRAYS VS LISTS & VECTORIZATION INTRO -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">5️⃣ ARRAYS VS. LISTS — Why NumPy Arrays Enable Fast Math</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+
+      <!-- Left: The Difference -->
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">WHAT: Lists Can't Do Element-wise Math</h3>
+        <p><strong>WHY:</strong> Lists repeat on <code>*</code>; arrays multiply each element. This matters because strategy signals require element-wise operations on thousands of rows simultaneously.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+number_list = [1, 2, 11, 22, 5, 6, 8]   # Python list
+
+number_list * 3                          # Repeats the list 3 times!
+# Output: [1, 2, 11, 22, 5, 6, 8, 1, 2, 11, 22, 5, 6, 8,
+#          1, 2, 11, 22, 5, 6, 8]
+
+number_array = np.array(number_list)     # Convert list → NumPy array
+
+number_array * 3                         # Multiplies EACH element by 3
+# Output: array([ 3,  6, 33, 66, 15, 18, 24])
+</pre>
+        <p class="mt-2"><strong>WORKED EXAMPLE with Core Data (first 5 Close prices):</strong></p>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-orange-100">
+            <tr><th class="border px-1 py-1">Close Price</th><th class="border px-1 py-1">List × 2</th><th class="border px-1 py-1">Array × 2</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">100</td><td class="border px-1 py-1 font-mono">100 (just repeats)</td><td class="border px-1 py-1 font-mono font-bold">200</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">102</td><td class="border px-1 py-1 font-mono">102 (just repeats)</td><td class="border px-1 py-1 font-mono font-bold">204</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">98</td><td class="border px-1 py-1 font-mono">98 (just repeats)</td><td class="border px-1 py-1 font-mono font-bold">196</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">105</td><td class="border px-1 py-1 font-mono">105 (just repeats)</td><td class="border px-1 py-1 font-mono font-bold">210</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">103</td><td class="border px-1 py-1 font-mono">103 (just repeats)</td><td class="border px-1 py-1 font-mono font-bold">206</td></tr>
+          </tbody>
+        </table>
+        <p class="mt-1 text-gray-600">List × 2 gives [100,102,98,105,103,100,102,98,105,103] — doubled in length, not value!</p>
+      </div>
+
+      <!-- Right: For Loop Equivalent -->
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">HOW: The For-Loop Alternative (Slower)</h3>
+        <p><strong>WHAT:</strong> Without arrays, you must iterate with a <code>for</code> loop — one element at a time.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# The SLOW way — iterate one by one
+for value in number_list:        # Loop through each element
+    print(value * 3)             # Multiply one at a time
+# Output (one per line): 3, 6, 33, 66, 15, 18, 24
+
+# The FAST way — vectorized (all at once)
+result = np.array(number_list) * 3  # Done concurrently
+# Output: array([ 3,  6, 33, 66, 15, 18, 24])
+</pre>
+        <div class="bg-orange-100 rounded p-2 mt-2">
+          <p><strong>KEY INSIGHT — Vectorized vs. Event-Driven:</strong></p>
+          <p>• <strong>Vectorized</strong> = all elements processed <em>concurrently</em> (fast, no loop)</p>
+          <p>• <strong>Event-driven</strong> = elements processed <em>one by one</em> via for-loop (slow, sequential)</p>
+          <p>• This same distinction applies to backtesting strategies — see Section 8.</p>
+        </div>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 TIP — Tab completion:</strong> Type <code>number_array.</code> then press <strong>Tab</strong> in Jupyter to see all available methods/attributes. Works with any variable, module, or function.</p>
+        </div>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 TIP — .copy() for safety:</strong> Before modifying a DataFrame, make a copy with <code>data = df.copy()</code>. This preserves the original data so you don't have to re-download if something goes wrong.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: MOVING AVERAGE CROSSOVER STRATEGY -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">6️⃣ MOVING AVERAGE CROSSOVER STRATEGY — The Full Workflow</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+
+      <!-- Col 1: Indicators (SMA/LMA) -->
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">STEP 1: Calculate Indicators</h3>
+        <p><strong>WHAT:</strong> <code>.rolling(N).mean()</code> computes the Simple Moving Average (SMA) — the arithmetic mean of the last N closing prices.</p>
+        <p><strong>WHY:</strong> The crossover of short SMA and long LMA generates buy/sell signals.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+short_window = 21               # Short lookback
+long_window  = 63               # Long lookback
+
+# SMA: average of last 21 Close prices
+data['SMA'] = data['Close'].rolling(
+    short_window).mean()
+
+# LMA: average of last 63 Close prices
+data['LMA'] = data['Close'].rolling(
+    long_window).mean()
+</pre>
+        <p class="mt-2"><strong>WORKED EXAMPLE (window=3):</strong></p>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-purple-100">
+            <tr><th class="border px-1 py-1">Day</th><th class="border px-1 py-1">Close</th><th class="border px-1 py-1">SMA(3)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">1</td><td class="border px-1 py-1 font-mono">100</td><td class="border px-1 py-1 font-mono text-gray-400">NaN</td></tr>
+            <tr><td class="border px-1 py-1">2</td><td class="border px-1 py-1 font-mono">102</td><td class="border px-1 py-1 font-mono text-gray-400">NaN</td></tr>
+            <tr class="bg-yellow-50"><td class="border px-1 py-1 font-bold">3</td><td class="border px-1 py-1 font-mono">98</td><td class="border px-1 py-1 font-mono font-bold">100.00</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">4</td><td class="border px-1 py-1 font-mono">105</td><td class="border px-1 py-1 font-mono font-bold">101.67</td></tr>
+            <tr class="bg-yellow-50"><td class="border px-1 py-1 font-bold">5</td><td class="border px-1 py-1 font-mono">103</td><td class="border px-1 py-1 font-mono font-bold">102.00</td></tr>
+          </tbody>
+        </table>
+        <p class="font-mono mt-1 text-gray-700">Day 3: (100+102+98)/3 = 100.00</p>
+        <p class="font-mono text-gray-700">Day 4: (102+98+105)/3 = 101.67</p>
+        <p class="font-mono text-gray-700">Day 5: (98+105+103)/3 = 102.00</p>
+        <p class="mt-1 text-gray-600">First N−1 rows are NaN. SMA(21): first 20 = NaN. LMA(63): first 62 = NaN.</p>
+      </div>
+
+      <!-- Col 2: Shift & Signals -->
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">STEP 2: Shift &amp; Generate Signals</h3>
+        <p><strong>WHAT:</strong> <code>.shift(1)</code> moves all values down by 1 row — giving "yesterday's" value in today's row.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# Get yesterday's SMA &amp; LMA
+data['SMA_prev'] = data['SMA'].shift(1)
+data['LMA_prev'] = data['LMA'].shift(1)
+
+# Drop rows with NaN (first 63 rows)
+data.dropna(inplace=True)
+# 962 rows → 899 rows
+</pre>
+        <p class="mt-1"><strong>shift(1) visualized:</strong></p>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-purple-100">
+            <tr><th class="border px-1 py-1">Day</th><th class="border px-1 py-1">SMA</th><th class="border px-1 py-1">SMA_prev</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">3</td><td class="border px-1 py-1 font-mono">100.00</td><td class="border px-1 py-1 font-mono text-gray-400">NaN</td></tr>
+            <tr class="bg-yellow-50"><td class="border px-1 py-1">4</td><td class="border px-1 py-1 font-mono">101.67</td><td class="border px-1 py-1 font-mono font-bold">100.00</td></tr>
+            <tr><td class="border px-1 py-1">5</td><td class="border px-1 py-1 font-mono">102.00</td><td class="border px-1 py-1 font-mono font-bold">101.67</td></tr>
+          </tbody>
+        </table>
+        <p class="mt-2"><strong>Signal generation with np.where:</strong></p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# LONG signal: SMA crosses ABOVE LMA
+data['signal'] = np.where(
+  (data['SMA'] &gt; data['LMA']) &amp;
+  (data['SMA_prev'] &lt; data['LMA_prev']),
+  1, 0)                    # 1=BUY, else 0
+
+# SHORT signal: SMA crosses BELOW LMA
+data['signal'] = np.where(
+  (data['SMA'] &lt; data['LMA']) &amp;
+  (data['SMA_prev'] &gt; data['LMA_prev']),
+  -1, data['signal'])      # -1=SELL, else keep
+
+data['signal'].value_counts()
+# 0     891 (no signal)
+# 1       4 (4 BUY crossovers)
+# -1      4 (4 SELL crossovers)
+</pre>
+      </div>
+
+      <!-- Col 3: Positions & Forward Fill -->
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">STEP 3: Signals → Positions</h3>
+        <p><strong>WHAT:</strong> Hold each position until the next opposite signal. Fill zeros with forward-fill.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# Replace 0 → NaN, then forward-fill
+data['signal'].replace(
+    0, np.nan, inplace=True)
+data['signal'].fillna(
+    method='ffill', inplace=True)
+</pre>
+        <p class="mt-1"><strong>Forward fill visualized:</strong></p>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-purple-100">
+            <tr><th class="border px-1 py-1">Row</th><th class="border px-1 py-1">Before</th><th class="border px-1 py-1">After ffill</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">A</td><td class="border px-1 py-1 font-mono">0</td><td class="border px-1 py-1 font-mono text-gray-400">NaN</td></tr>
+            <tr class="bg-green-50"><td class="border px-1 py-1 font-bold">B</td><td class="border px-1 py-1 font-mono font-bold">1</td><td class="border px-1 py-1 font-mono font-bold text-green-700">1</td></tr>
+            <tr><td class="border px-1 py-1">C</td><td class="border px-1 py-1 font-mono">0</td><td class="border px-1 py-1 font-mono text-green-700">1 ←</td></tr>
+            <tr><td class="border px-1 py-1">D</td><td class="border px-1 py-1 font-mono">0</td><td class="border px-1 py-1 font-mono text-green-700">1 ←</td></tr>
+            <tr class="bg-red-50"><td class="border px-1 py-1 font-bold">E</td><td class="border px-1 py-1 font-mono font-bold">-1</td><td class="border px-1 py-1 font-mono font-bold text-red-700">-1</td></tr>
+            <tr><td class="border px-1 py-1">F</td><td class="border px-1 py-1 font-mono">0</td><td class="border px-1 py-1 font-mono text-red-700">-1 ←</td></tr>
+          </tbody>
+        </table>
+        <p class="mt-1 text-gray-600">← = filled forward from the last real signal.</p>
+
+        <p class="font-bold text-purple-800 mt-3 mb-1">Squaring Off (End of Backtest)</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+  # Force-close any open position on the last day
+  # Exit signal must be the OPPOSITE of the final open position
+  exit_signal = -data['signal'].iloc[-1]
+  data.iloc[-1, data.columns.get_loc(
+      'signal')] = exit_signal
+  # If final position was +1 (long), exit_signal becomes -1
+  # If final position was -1 (short), exit_signal becomes +1
+</pre>
+          <p class="mt-1 text-gray-600">In the lecture's worked example, the final open trade happened to be long, so the square-off signal was <code>-1</code>. That is an example, not a universal rule.</p>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ WARNING — inplace=True:</strong> <code>dropna()</code>, <code>replace()</code>, <code>fillna()</code> do NOT modify the DataFrame unless you pass <code>inplace=True</code>. Without it, the original stays unchanged.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISUAL: Rolling Window Concept -->
+    <div class="bg-white border-2 border-purple-300 rounded p-3 mt-3">
+      <h3 class="font-bold text-purple-800 mb-2">🔍 VISUAL: What "Rolling Window" Actually Does (SMA with window=3)</h3>
+      <p class="mb-2">The window <strong>slides</strong> one row at a time. Each position averages only the rows inside the window:</p>
+      <svg viewBox="0 0 620 155" class="w-full">
+        <style>
+          .rl { font-family: system-ui, sans-serif; }
+        </style>
+        <!-- Day labels -->
+        <text x="75" y="15" text-anchor="middle" font-size="9" class="rl" fill="#1e293b" font-weight="bold">Day 1</text>
+        <text x="155" y="15" text-anchor="middle" font-size="9" class="rl" fill="#1e293b" font-weight="bold">Day 2</text>
+        <text x="235" y="15" text-anchor="middle" font-size="9" class="rl" fill="#1e293b" font-weight="bold">Day 3</text>
+        <text x="315" y="15" text-anchor="middle" font-size="9" class="rl" fill="#1e293b" font-weight="bold">Day 4</text>
+        <text x="395" y="15" text-anchor="middle" font-size="9" class="rl" fill="#1e293b" font-weight="bold">Day 5</text>
+
+        <!-- Price boxes -->
+        <rect x="45" y="22" width="60" height="28" rx="4" fill="#fef3c7" stroke="#f59e0b"/>
+        <text x="75" y="41" text-anchor="middle" font-size="11" class="rl" font-weight="bold" fill="#92400e">100</text>
+        <rect x="125" y="22" width="60" height="28" rx="4" fill="#fef3c7" stroke="#f59e0b"/>
+        <text x="155" y="41" text-anchor="middle" font-size="11" class="rl" font-weight="bold" fill="#92400e">102</text>
+        <rect x="205" y="22" width="60" height="28" rx="4" fill="#fef3c7" stroke="#f59e0b"/>
+        <text x="235" y="41" text-anchor="middle" font-size="11" class="rl" font-weight="bold" fill="#92400e">98</text>
+        <rect x="285" y="22" width="60" height="28" rx="4" fill="#fef3c7" stroke="#f59e0b"/>
+        <text x="315" y="41" text-anchor="middle" font-size="11" class="rl" font-weight="bold" fill="#92400e">105</text>
+        <rect x="365" y="22" width="60" height="28" rx="4" fill="#fef3c7" stroke="#f59e0b"/>
+        <text x="395" y="41" text-anchor="middle" font-size="11" class="rl" font-weight="bold" fill="#92400e">103</text>
+
+        <!-- Window position 1 (Day 1-3) -->
+        <rect x="40" y="57" width="230" height="24" rx="6" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-dasharray="6,3"/>
+        <text x="460" y="67" font-size="9" class="rl" fill="#6b21a8">Window 1 → (100+102+98)/3 =</text>
+        <text x="582" y="67" font-size="10" class="rl" font-weight="bold" fill="#7c3aed">100.00</text>
+        <text x="600" y="67" font-size="8" class="rl" fill="#6b21a8">← Day 3</text>
+
+        <!-- Window position 2 (Day 2-4) -->
+        <rect x="120" y="87" width="230" height="24" rx="6" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-dasharray="6,3"/>
+        <text x="460" y="97" font-size="9" class="rl" fill="#1e40af">Window 2 → (102+98+105)/3 =</text>
+        <text x="582" y="97" font-size="10" class="rl" font-weight="bold" fill="#2563eb">101.67</text>
+        <text x="600" y="97" font-size="8" class="rl" fill="#1e40af">← Day 4</text>
+
+        <!-- Window position 3 (Day 3-5) -->
+        <rect x="200" y="117" width="230" height="24" rx="6" fill="none" stroke="#059669" stroke-width="2.5" stroke-dasharray="6,3"/>
+        <text x="460" y="127" font-size="9" class="rl" fill="#065f46">Window 3 → (98+105+103)/3 =</text>
+        <text x="582" y="127" font-size="10" class="rl" font-weight="bold" fill="#059669">102.00</text>
+        <text x="600" y="127" font-size="8" class="rl" fill="#065f46">← Day 5</text>
+
+        <!-- Arrow showing slide direction -->
+        <text x="25" y="97" font-size="14" fill="#6b7280">↓</text>
+        <text x="5" y="97" font-size="7" class="rl" fill="#6b7280">slides</text>
+
+        <text x="155" y="152" text-anchor="middle" font-size="8" class="rl" fill="#9ca3af">First N−1 values = NaN (not enough data yet)</text>
+      </svg>
+    </div>
+
+    <!-- VISUAL: Crossover Chart -->
+    <div class="bg-white border-2 border-purple-300 rounded p-3 mt-3">
+      <h3 class="font-bold text-purple-800 mb-2">📈 VISUAL: SMA / LMA Crossover — What It Looks Like On A Chart</h3>
+      <p class="mb-1 text-gray-700">The <strong>short SMA</strong> (green) reacts faster to price changes. The <strong>long LMA</strong> (red) is slower. When SMA crosses <em>above</em> LMA → <strong>BUY</strong>. When SMA crosses <em>below</em> LMA → <strong>SELL</strong>.</p>
+      <svg viewBox="0 0 620 270" class="w-full">
+        <defs>
+          <linearGradient id="profitFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#22c55e" stop-opacity="0.12"/>
+            <stop offset="100%" stop-color="#22c55e" stop-opacity="0.03"/>
+          </linearGradient>
+        </defs>
+        <!-- Chart area -->
+        <rect x="40" y="22" width="545" height="195" rx="4" fill="#f8fafc" stroke="#e2e8f0"/>
+
+        <!-- Grid lines -->
+        <line x1="40" y1="60" x2="585" y2="60" stroke="#e2e8f0"/>
+        <line x1="40" y1="105" x2="585" y2="105" stroke="#e2e8f0"/>
+        <line x1="40" y1="150" x2="585" y2="150" stroke="#e2e8f0"/>
+        <line x1="40" y1="195" x2="585" y2="195" stroke="#e2e8f0"/>
+        <text x="35" y="63" text-anchor="end" font-size="8" fill="#94a3b8">112</text>
+        <text x="35" y="108" text-anchor="end" font-size="8" fill="#94a3b8">105</text>
+        <text x="35" y="153" text-anchor="end" font-size="8" fill="#94a3b8">98</text>
+        <text x="35" y="198" text-anchor="end" font-size="8" fill="#94a3b8">91</text>
+
+        <!-- Profit zone shading -->
+        <rect x="225" y="22" width="200" height="195" fill="url(#profitFill)"/>
+
+        <!-- Close price (blue solid) -->
+        <polyline points="50,150 90,168 130,183 170,200 210,172 250,140 290,108 330,72 370,40 410,55 450,82 490,118 530,145 570,158"
+          fill="none" stroke="#3b82f6" stroke-width="2" stroke-linejoin="round"/>
+
+        <!-- SMA (green dashed — reacts faster) -->
+        <polyline points="130,165 170,183 210,185 250,168 290,140 330,105 370,73 410,58 450,63 490,88 530,115 570,145"
+          fill="none" stroke="#16a34a" stroke-width="2.5" stroke-dasharray="8,4" stroke-linejoin="round"/>
+
+        <!-- LMA (red dashed — reacts slower) -->
+        <polyline points="210,178 250,173 290,160 330,138 370,108 410,85 450,75 490,80 530,100 570,125"
+          fill="none" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="12,4" stroke-linejoin="round"/>
+
+        <!-- BUY signal -->
+        <circle cx="245" cy="170" r="9" fill="#22c55e" stroke="white" stroke-width="2"/>
+        <text x="245" y="174" text-anchor="middle" font-size="9" font-weight="bold" fill="white">B</text>
+        <line x1="245" y1="22" x2="245" y2="217" stroke="#22c55e" stroke-width="1" stroke-dasharray="4,4" opacity="0.4"/>
+        <text x="245" y="232" text-anchor="middle" font-size="9" font-weight="bold" fill="#16a34a">▲ BUY SIGNAL</text>
+        <text x="245" y="242" text-anchor="middle" font-size="7" fill="#16a34a">SMA crosses ABOVE LMA</text>
+
+        <!-- SELL signal -->
+        <circle cx="455" cy="68" r="9" fill="#ef4444" stroke="white" stroke-width="2"/>
+        <text x="455" y="72" text-anchor="middle" font-size="9" font-weight="bold" fill="white">S</text>
+        <line x1="455" y1="22" x2="455" y2="217" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,4" opacity="0.4"/>
+        <text x="455" y="232" text-anchor="middle" font-size="9" font-weight="bold" fill="#dc2626">▼ SELL SIGNAL</text>
+        <text x="455" y="242" text-anchor="middle" font-size="7" fill="#dc2626">SMA crosses BELOW LMA</text>
+
+        <!-- Profit annotation -->
+        <text x="345" y="35" text-anchor="middle" font-size="9" font-weight="bold" fill="#16a34a">← LONG POSITION (PROFIT) →</text>
+
+        <!-- Legend -->
+        <line x1="50" y1="260" x2="75" y2="260" stroke="#3b82f6" stroke-width="2"/>
+        <text x="80" y="263" font-size="8" fill="#1e293b">Close Price</text>
+        <line x1="170" y1="260" x2="195" y2="260" stroke="#16a34a" stroke-width="2.5" stroke-dasharray="8,4"/>
+        <text x="200" y="263" font-size="8" fill="#1e293b">SMA (21-day, fast)</text>
+        <line x1="310" y1="260" x2="335" y2="260" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="12,4"/>
+        <text x="340" y="263" font-size="8" fill="#1e293b">LMA (63-day, slow)</text>
+        <rect x="445" y="254" width="12" height="12" fill="#22c55e" opacity="0.15" stroke="#22c55e"/>
+        <text x="462" y="263" font-size="8" fill="#1e293b">Profit Zone</text>
+      </svg>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 3 ====================== -->
+
+  <!-- SECTION 7: RETURNS — SIMPLE VS LOG -->
+  <section class="border-2 border-teal-500 rounded-lg p-3 mb-4 bg-teal-50">
+    <h2 class="font-bold text-teal-900 mb-3 bg-teal-200 rounded px-2 py-1">7️⃣ RETURNS — Simple vs. Log &amp; Strategy Evaluation</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+
+      <!-- Left: Return Calculations -->
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">WHAT: Simple Returns vs. Log Returns</h3>
+        <p><strong>Simple Return</strong> = (Today − Yesterday) / Yesterday = <code>.pct_change()</code></p>
+        <p><strong>Log Return</strong> = ln(Today / Yesterday) = <code>np.log(Close / Close.shift(1))</code></p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# Buy-and-hold return (simple daily % change)
+data['buy_hold_returns'] = data['Close'].pct_change()
+
+# Strategy return = position × buy-and-hold shifted by 2
+data['strategy_returns'] = (
+    data['signal'] *                  # Your position (+1 or -1)
+    data['buy_hold_returns'].shift(2) # Return shifted by 2 days
+)
+
+# Log returns (alternative):
+data['log_returns'] = np.log(
+    data['Close'] / data['Close'].shift(1))
+</pre>
+
+        <p class="mt-2"><strong>WORKED EXAMPLE (using Core Data):</strong></p>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-teal-100">
+            <tr><th class="border px-1 py-1">Day</th><th class="border px-1 py-1">Close</th><th class="border px-1 py-1">Simple Return</th><th class="border px-1 py-1">Log Return</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">1</td><td class="border px-1 py-1 font-mono">100</td><td class="border px-1 py-1 font-mono text-gray-400">NaN</td><td class="border px-1 py-1 font-mono text-gray-400">NaN</td></tr>
+            <tr><td class="border px-1 py-1">2</td><td class="border px-1 py-1 font-mono">102</td><td class="border px-1 py-1 font-mono font-bold">+2.00%</td><td class="border px-1 py-1 font-mono font-bold">+1.98%</td></tr>
+            <tr><td class="border px-1 py-1">3</td><td class="border px-1 py-1 font-mono">98</td><td class="border px-1 py-1 font-mono font-bold text-red-700">−3.92%</td><td class="border px-1 py-1 font-mono font-bold text-red-700">−4.00%</td></tr>
+            <tr><td class="border px-1 py-1">4</td><td class="border px-1 py-1 font-mono">105</td><td class="border px-1 py-1 font-mono font-bold">+7.14%</td><td class="border px-1 py-1 font-mono font-bold">+6.90%</td></tr>
+            <tr><td class="border px-1 py-1">5</td><td class="border px-1 py-1 font-mono">103</td><td class="border px-1 py-1 font-mono font-bold text-red-700">−1.90%</td><td class="border px-1 py-1 font-mono font-bold text-red-700">−1.92%</td></tr>
+          </tbody>
+        </table>
+        <p class="font-mono mt-1">Day 2 Simple: (102 − 100) / 100 = 2/100 = <strong>0.0200 = +2.00%</strong></p>
+        <p class="font-mono">Day 2 Log: ln(102/100) = ln(1.02) = <strong>0.0198 = +1.98%</strong></p>
+        <p class="font-mono">Day 3 Simple: (98 − 102) / 102 = −4/102 = <strong>−0.0392 = −3.92%</strong></p>
+        <p class="font-mono">Day 3 Log: ln(98/102) = ln(0.9608) = <strong>−0.0400 = −4.00%</strong></p>
+        <p class="mt-1 text-gray-600">For small daily moves, simple ≈ log. For large moves, they diverge.</p>
+      </div>
+
+      <!-- Right: Why shift(2), Compounding, Equity Curve -->
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">WHY shift(2)? — Avoiding Look-ahead Bias</h3>
+        <p><strong>WHAT:</strong> You shift returns by 2 because: shift(1) = signal appears next day, shift(2) = return measured the day after.</p>
+        <div class="bg-teal-100 rounded p-2 mt-1 mb-3">
+          <p class="font-mono">Day 4 (Jan 5): Signal generated at <strong>close</strong> = 105</p>
+          <p class="font-mono">Day 5 (Jan 6): You <strong>enter</strong> the trade at close = 103</p>
+          <p class="font-mono">Day 6 (Jan 9): close = 107 → Return = (107 − 103)/103 = <strong>+3.88%</strong></p>
+          <p class="mt-1 font-bold">Signal Day 4 → Enter Day 5 → Return Day 6 = <strong>2 shifts</strong></p>
+        </div>
+
+        <h3 class="font-bold text-teal-800 mb-2">Compounding Returns (Equity Curve)</h3>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# Simple returns: compound with cumprod
+data['buy_hold_equity'] = (
+    1 + data['buy_hold_returns']  # Add 1 to each return
+).cumprod()                       # Cumulative product
+
+data['strategy_equity'] = (
+    1 + data['strategy_returns']
+).cumprod()
+
+# Log returns: just add (cumsum)!
+data['log_equity'] = data['log_returns'].cumsum()
+
+# Total return percentage
+total_bh = (data['buy_hold_equity'].iloc[-1] - 1) * 100
+total_st = (data['strategy_equity'].iloc[-1] - 1) * 100
+</pre>
+        <p class="mt-2"><strong>WORKED EXAMPLE (compounding):</strong></p>
+        <p class="font-mono">Day 1: equity = 1.0000</p>
+        <p class="font-mono">Day 2: 1.0000 × (1 + 0.0200) = 1.0000 × 1.02 = <strong>1.0200</strong></p>
+        <p class="font-mono">Day 3: 1.0200 × (1 − 0.0392) = 1.0200 × 0.9608 = <strong>0.9800</strong></p>
+        <p class="font-mono">Day 4: 0.9800 × (1 + 0.0714) = 0.9800 × 1.0714 = <strong>1.0500</strong></p>
+
+        <!-- Equity Curve Visual -->
+        <div class="bg-teal-50 rounded p-2 mt-2 border border-teal-200">
+          <p class="font-bold text-teal-800 mb-1">📊 VISUAL: Equity Curve — Strategy vs Buy-and-Hold</p>
+          <svg viewBox="0 0 480 160" class="w-full">
+            <rect x="35" y="10" width="430" height="115" rx="4" fill="#f8fafc" stroke="#e2e8f0"/>
+            <!-- Grid -->
+            <line x1="35" y1="35" x2="465" y2="35" stroke="#e2e8f0"/>
+            <line x1="35" y1="65" x2="465" y2="65" stroke="#e2e8f0"/>
+            <line x1="35" y1="95" x2="465" y2="95" stroke="#e2e8f0"/>
+            <text x="30" y="38" text-anchor="end" font-size="7" fill="#94a3b8">1.20</text>
+            <text x="30" y="68" text-anchor="end" font-size="7" fill="#94a3b8">1.00</text>
+            <text x="30" y="98" text-anchor="end" font-size="7" fill="#94a3b8">0.80</text>
+
+            <!-- Buy-and-hold (blue — follows market ups and downs) -->
+            <polyline points="45,65 90,60 135,72 180,55 225,48 270,42 315,52 360,75 405,85 450,60"
+              fill="none" stroke="#3b82f6" stroke-width="1.5" opacity="0.7" stroke-linejoin="round"/>
+
+            <!-- Strategy (green — smoother, outperforms by avoiding drawdowns) -->
+            <polyline points="45,65 90,62 135,58 180,50 225,42 270,36 315,33 360,30 405,28 450,24"
+              fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linejoin="round"/>
+
+            <!-- Annotations -->
+            <text x="455" y="20" font-size="8" font-weight="bold" fill="#16a34a">+28%</text>
+            <text x="455" y="58" font-size="8" fill="#3b82f6">+8%</text>
+
+            <!-- Drawdown highlight -->
+            <rect x="305" y="40" width="90" height="50" rx="3" fill="#fef2f2" opacity="0.5"/>
+            <text x="350" y="55" text-anchor="middle" font-size="6" fill="#dc2626">Market drops,</text>
+            <text x="350" y="63" text-anchor="middle" font-size="6" fill="#dc2626">strategy avoids</text>
+
+            <!-- Legend -->
+            <line x1="50" y1="145" x2="72" y2="145" stroke="#16a34a" stroke-width="2.5"/>
+            <text x="77" y="148" font-size="7" fill="#1e293b">Strategy (SMA Crossover)</text>
+            <line x1="220" y1="145" x2="242" y2="145" stroke="#3b82f6" stroke-width="1.5" opacity="0.7"/>
+            <text x="247" y="148" font-size="7" fill="#1e293b">Buy-and-Hold (Nifty 50)</text>
+          </svg>
+          <p class="text-gray-600 mt-1" style="font-size:8px;">The strategy outperforms because it goes flat (or short) during market declines, avoiding drawdowns. The green line is smoother because losses are cut when SMA crosses below LMA.</p>
+        </div>
+
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 WHEN TO USE WHICH:</strong></p>
+          <p>• <strong>Simple returns</strong> = short-term, human-readable ("rose 5% today")</p>
+          <p>• <strong>Log returns</strong> = statistical models, time-additive (just add them)</p>
+          <p>• <strong>Log is cheaper:</strong> cumsum (addition) vs. cumprod (multiplication)</p>
+        </div>
+
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 QuantStats for deeper analysis:</strong></p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# pip install quantstats
+import quantstats as qs
+qs.reports.full(data['strategy_returns'])
+# → Sharpe, Sortino, max drawdown, monthly heatmap...
+</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: VECTORIZED VS EVENT-DRIVEN BACKTESTING -->
+  <section class="border-2 border-cyan-500 rounded-lg p-3 mb-4 bg-cyan-50">
+    <h2 class="font-bold text-cyan-900 mb-3 bg-cyan-200 rounded px-2 py-1">8️⃣ VECTORIZED vs. EVENT-DRIVEN BACKTESTING — Two Approaches Compared</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+
+      <!-- Left: Vectorized -->
+      <div class="bg-white border-2 border-cyan-300 rounded p-3">
+        <h3 class="font-bold text-cyan-800 mb-2">VECTORIZED (Fast, All-at-once)</h3>
+        <p><strong>WHAT:</strong> Apply conditions to the <em>entire</em> DataFrame at once using <code>np.where()</code>. No loop.</p>
+        <p><strong>WHY:</strong> ~100× faster than event-driven. Good for prototyping indicator-based strategies.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# ALL 899 rows checked simultaneously
+data['signal'] = np.where(
+    (data['SMA'] &gt; data['LMA']) &amp;
+    (data['SMA_prev'] &lt; data['LMA_prev']),
+    1,                          # Where True → 1
+    0                           # Where False → 0
+)
+# No for-loop. One operation. Done.
+</pre>
+        <p class="mt-2"><strong>WORKED EXAMPLE:</strong></p>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-cyan-100">
+            <tr><th class="border px-1 py-1">Row</th><th class="border px-1 py-1">SMA&gt;LMA?</th><th class="border px-1 py-1">prev SMA&lt;LMA?</th><th class="border px-1 py-1">Signal</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">100</td><td class="border px-1 py-1 font-mono text-red-700">No</td><td class="border px-1 py-1 font-mono text-red-700">No</td><td class="border px-1 py-1 font-mono">0</td></tr>
+            <tr class="bg-cyan-50"><td class="border px-1 py-1">101</td><td class="border px-1 py-1 font-mono text-red-700">No</td><td class="border px-1 py-1 font-mono text-red-700">No</td><td class="border px-1 py-1 font-mono">0</td></tr>
+            <tr class="bg-green-100"><td class="border px-1 py-1 font-bold">102</td><td class="border px-1 py-1 font-mono text-green-700 font-bold">Yes ✓</td><td class="border px-1 py-1 font-mono text-green-700 font-bold">Yes ✓</td><td class="border px-1 py-1 font-mono font-bold text-green-700">1 (BUY)</td></tr>
+            <tr><td class="border px-1 py-1">103</td><td class="border px-1 py-1 font-mono text-green-700">Yes</td><td class="border px-1 py-1 font-mono text-red-700">No</td><td class="border px-1 py-1 font-mono">0</td></tr>
+          </tbody>
+        </table>
+        <p class="text-gray-600 mt-1">All 899 rows evaluated in one step — no iteration.</p>
+      </div>
+
+      <!-- Right: Event-Driven -->
+      <div class="bg-white border-2 border-cyan-300 rounded p-3">
+        <h3 class="font-bold text-cyan-800 mb-2">EVENT-DRIVEN (Slow, Row-by-row)</h3>
+        <p><strong>WHAT:</strong> Loop through each row with <code>for</code>, checking conditions one at a time.</p>
+        <p><strong>WHY:</strong> Required for live trading, tick-by-tick strategies, and handling slippage/transaction costs dynamically.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+trade_price = []                  # Entry prices
+position = []                     # Positions (+1/-1)
+trade_date = []                   # Trade dates
+
+for i in range(len(df)):          # Each row, one by one
+    if (df['SMA'].iloc[i] &gt; df['LMA'].iloc[i] and
+        df['SMA'].iloc[i-1] &lt; df['LMA'].iloc[i-1]):
+        trade_price.append(df['Close'].iloc[i])
+        position.append(1)        # BUY
+        trade_date.append(df.index[i])
+    elif (df['SMA'].iloc[i] &lt; df['LMA'].iloc[i] and
+          df['SMA'].iloc[i-1] &gt; df['LMA'].iloc[i-1]):
+        trade_price.append(df['Close'].iloc[i])
+        position.append(-1)       # SELL
+        trade_date.append(df.index[i])
+# Same 8 signals — checked ONE ROW AT A TIME
+</pre>
+        <div class="bg-cyan-100 rounded p-2 mt-2">
+          <p class="font-bold text-cyan-900 mb-1">COMPARISON TABLE</p>
+          <table class="w-full border border-gray-300">
+            <thead class="bg-cyan-200">
+              <tr><th class="border px-2 py-1">Feature</th><th class="border px-2 py-1">Vectorized</th><th class="border px-2 py-1">Event-Driven</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="border px-2 py-1">Speed</td><td class="border px-2 py-1 text-green-700 font-bold">Fast ✓</td><td class="border px-2 py-1 text-red-700">Slow ✗</td></tr>
+              <tr><td class="border px-2 py-1">Method</td><td class="border px-2 py-1">np.where()</td><td class="border px-2 py-1">for loop</td></tr>
+              <tr><td class="border px-2 py-1">Processing</td><td class="border px-2 py-1">All at once</td><td class="border px-2 py-1">Row by row</td></tr>
+              <tr><td class="border px-2 py-1">Slippage</td><td class="border px-2 py-1 text-red-700">Can't ✗</td><td class="border px-2 py-1 text-green-700 font-bold">Can ✓</td></tr>
+              <tr><td class="border px-2 py-1">Live Trading</td><td class="border px-2 py-1 text-red-700">No ✗</td><td class="border px-2 py-1 text-green-700 font-bold">Yes ✓</td></tr>
+              <tr><td class="border px-2 py-1">Best For</td><td class="border px-2 py-1">Prototyping</td><td class="border px-2 py-1">Production</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-gray-600 mt-2">Event-driven covered in detail in DMP-03 and DMP-04.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 9: QUICK REFERENCE -->
+  <section class="border-2 border-gray-600 rounded-lg p-3 bg-gray-100">
+    <h2 class="font-bold text-gray-900 mb-3 bg-gray-300 rounded px-2 py-1">📋 QUICK REFERENCE — All In One Place</h2>
+
+    <div class="grid grid-cols-3 gap-4">
+
+      <!-- Col 1: Key Functions -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">KEY FUNCTIONS</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Function</th><th class="border px-1 py-1">What It Does</th><th class="border px-1 py-1">Gotcha</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">yf.download()</td><td class="border px-1 py-1">Fetch OHLCV from Yahoo</td><td class="border px-1 py-1">Always add multi_level_index=False</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">pd.read_csv()</td><td class="border px-1 py-1">Load CSV into DataFrame</td><td class="border px-1 py-1">Add index_col &amp; parse_dates</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">df.to_csv()</td><td class="border px-1 py-1">Save DataFrame to CSV</td><td class="border px-1 py-1">File saved in current dir</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">.rolling(N).mean()</td><td class="border px-1 py-1">N-day SMA</td><td class="border px-1 py-1">First N−1 rows = NaN</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">.shift(1)</td><td class="border px-1 py-1">Lag by 1 row</td><td class="border px-1 py-1">Creates NaN in row 0</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">np.where(c,T,F)</td><td class="border px-1 py-1">Vectorized if/else</td><td class="border px-1 py-1">Use &amp; not 'and'</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">.pct_change()</td><td class="border px-1 py-1">Simple daily return</td><td class="border px-1 py-1">First row = NaN</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">.cumprod()</td><td class="border px-1 py-1">Cumulative product</td><td class="border px-1 py-1">Add 1 to returns first</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">.cumsum()</td><td class="border px-1 py-1">Cumulative sum (logs)</td><td class="border px-1 py-1">Only for log returns</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">.dropna()</td><td class="border px-1 py-1">Remove NaN rows</td><td class="border px-1 py-1">Needs inplace=True</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">.iplot()</td><td class="border px-1 py-1">Interactive Plotly chart</td><td class="border px-1 py-1">Needs cufflinks</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 2: Common Mistakes -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">COMMON MISTAKES</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Mistake</th><th class="border px-1 py-1">What Happens</th><th class="border px-1 py-1">Fix</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">Tuple dates to yf</td><td class="border px-1 py-1">'tuple' no attr 'timestamp'</td><td class="border px-1 py-1">Use str or dt.date()</td></tr>
+            <tr><td class="border px-1 py-1">No multi_level_index=False</td><td class="border px-1 py-1">KeyError on column names</td><td class="border px-1 py-1">Always pass it</td></tr>
+            <tr><td class="border px-1 py-1">No inplace=True</td><td class="border px-1 py-1">NaN rows still there</td><td class="border px-1 py-1">Add inplace=True</td></tr>
+            <tr><td class="border px-1 py-1">No shift(2) for returns</td><td class="border px-1 py-1">Look-ahead bias</td><td class="border px-1 py-1">.shift(2)</td></tr>
+            <tr><td class="border px-1 py-1">Adding simple returns</td><td class="border px-1 py-1">Wrong cumulative total</td><td class="border px-1 py-1">(1+r).cumprod()</td></tr>
+            <tr><td class="border px-1 py-1">List × 3</td><td class="border px-1 py-1">Repeats, not multiplies</td><td class="border px-1 py-1">np.array() first</td></tr>
+            <tr><td class="border px-1 py-1">Intraday &gt;60 days</td><td class="border px-1 py-1">Download fails</td><td class="border px-1 py-1">Max 60-day period</td></tr>
+            <tr><td class="border px-1 py-1">Backslash in path</td><td class="border px-1 py-1">Escape sequence</td><td class="border px-1 py-1">r"..." or \\</td></tr>
+            <tr><td class="border px-1 py-1">No square-off at end</td><td class="border px-1 py-1">Open position at finish</td><td class="border px-1 py-1">Add the opposite exit signal for the final open position</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 3: Numbers at a Glance + Checklist + Shorthand -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">NUMBERS AT A GLANCE</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <tbody>
+            <tr><td class="border px-1 py-1 bg-gray-50">Ticker</td><td class="border px-1 py-1 font-mono font-bold">^NSEI (Nifty 50)</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Date Range</td><td class="border px-1 py-1 font-mono">2017-01-01 → 2020-01-01</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Total Rows</td><td class="border px-1 py-1 font-mono">962 (899 after dropna)</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Short Window</td><td class="border px-1 py-1 font-mono">21 days (SMA)</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Long Window</td><td class="border px-1 py-1 font-mono">63 days (LMA)</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Signals</td><td class="border px-1 py-1 font-mono">4 Long + 4 Short = 8</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-gray-800 mb-2">WORKFLOW CHECKLIST</h3>
+        <ol class="list-decimal list-inside space-y-1">
+          <li>Import libraries</li>
+          <li>Download: <code>yf.download()</code></li>
+          <li>Indicators: <code>.rolling().mean()</code></li>
+          <li>Previous day: <code>.shift(1)</code></li>
+          <li>Clean: <code>.dropna(inplace=True)</code></li>
+          <li>Signals: <code>np.where()</code></li>
+          <li>Positions: forward-fill</li>
+          <li>Returns: <code>.pct_change()</code></li>
+          <li>Equity: <code>(1+r).cumprod()</code></li>
+          <li>Square off any final open position with the opposite exit signal</li>
+        </ol>
+
+        <h3 class="font-bold text-gray-800 mt-3 mb-2">SHORTHAND DECODER</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">SMA</td><td class="border px-1 py-1">Simple Moving Average</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">LMA</td><td class="border px-1 py-1">Long Moving Average</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">OHLCV</td><td class="border px-1 py-1">Open High Low Close Volume</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">^NSEI</td><td class="border px-1 py-1">Nifty 50 Yahoo ticker</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">NaN</td><td class="border px-1 py-1">Not a Number (missing)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">UTC</td><td class="border px-1 py-1">Coordinated Universal Time</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">IST</td><td class="border px-1 py-1">Indian Standard Time</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">CSV</td><td class="border px-1 py-1">Comma-Separated Values</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">ffill</td><td class="border px-1 py-1">Forward Fill</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="bg-yellow-100 rounded p-3 mt-3">
+      <p class="font-bold text-yellow-900 mb-2">🎯 KEY TAKEAWAYS</p>
+      <div class="grid grid-cols-4 gap-3">
+        <p>1. Always use <code>multi_level_index=False</code> in <code>yf.download()</code> — default yfinance data is already adjusted for corporate actions (auto_adjust=True).</p>
+        <p>2. <code>.shift(2)</code> is critical: shift(1) for signal delay + shift(1) for return calculation = 2 total shifts to avoid look-ahead bias in strategy returns.</p>
+        <p>3. Simple returns compound with <code>(1+r).cumprod()</code>; log returns just add with <code>.cumsum()</code> — log is computationally cheaper and time-additive.</p>
+        <p>4. Vectorized (np.where) is fast for prototyping; event-driven (for loop) is needed for live trading with slippage and transaction costs (DMP-03/04).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="mt-3 text-center text-gray-600 border-t-2 border-gray-300 pt-2">
+    <p><strong>THE MASTER FORMULA:</strong> Data → Indicators (.rolling().mean()) → Signals (np.where crossover) → Positions (forward-fill) → Returns (.shift(2) × position) → Equity (.cumprod()) → Evaluate</p>
+    <p class="mt-1"><strong>THE ONE THING TO NEVER FORGET:</strong> Never calculate strategy returns without shifting by 2 — otherwise you're using tomorrow's prices today (look-ahead bias), making your backtest results meaningless.</p>
+  </footer>
+
+</body>
+</html>

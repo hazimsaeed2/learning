@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OTS-04 Volatility Measurement, Forecasting &amp; Structuring Trades — EPAT Cheat Sheet</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @media print {
+    body { font-size: 9px !important; }
+    .page-break { page-break-before: always; }
+    @page { margin: 0.3in; }
+  }
+  body { font-family: system-ui, -apple-system, sans-serif; font-size: 11px; }
+  pre { font-size: 10px; }
+  @media print { pre { font-size: 8px; } }
+</style>
+</head>
+<body class="bg-white text-gray-900 max-w-6xl mx-auto p-4">
+
+<!-- ============================================================ -->
+<!-- HEADER                                                        -->
+<!-- ============================================================ -->
+<header class="bg-indigo-700 text-white p-4 rounded-lg mb-4">
+  <div class="flex justify-between items-start">
+    <div>
+      <h1 class="text-lg font-bold tracking-tight">OTS-04 · Volatility Measurement, Forecasting &amp; Structuring Trades</h1>
+      <p class="text-indigo-200 text-xs mt-1">Options Trading &amp; Strategies · Instructor: Varun Kumar · EPAT Week 19-2</p>
+    </div>
+    <span class="bg-indigo-900 text-xs px-2 py-1 rounded">Estimators · GARCH · Weekend Premium · Earnings Vol</span>
+  </div>
+  <div class="mt-3 bg-indigo-800 rounded p-2 text-xs">
+    <strong>Problem / Goal:</strong> You know Black-Scholes and the Greeks from OTS-03, but how do you <em>measure</em> volatility accurately, <em>forecast</em> where it's heading, and <em>structure actual trades</em> to capture variance premium? This lecture bridges theory to practice — from Parkinson estimators to GARCH forecasting to a weekend-premium strategy refined through four iterations.
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- 1  CORE EXAMPLE  (amber)                                       -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-amber-500 bg-amber-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-amber-800 mb-1">① Core Example — Weekend Premium Strategy (4 Iterations)</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p>Idea: IV &gt; RV most of the time → sell straddles and capture premium. Deploy around weekends when fear of overnight/weekend risk can lift premiums. Sell on Friday, buy back Monday. Tested four iterations — in this lecture's backtest, the version with a VIX filter was the first one that looked reasonably viable.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>People may overpay for insurance before weekends because they fear gap-ups or gap-downs from weekend news. The lecture's framing is that Friday premiums can be richer and may ease by Monday once uncertainty passes. But selling blindly failed in crisis periods such as COVID and election shocks, when Monday premiums stayed elevated.</p>
+    </div>
+  </div>
+
+  <p class="font-semibold text-xs mb-1">HOW — Strategy Evolution</p>
+  <div class="grid grid-cols-2 gap-2 mb-2 text-xs">
+    <div class="bg-amber-100 p-2 rounded">
+      <p class="font-semibold">Iteration 1: Weekend SPY Straddle</p>
+      <p>Sell weekend spy ATM straddle Friday → expire Monday.</p>
+      <p class="text-red-700">❌ Lost heavily during COVID. Only data from 2018 — too short.</p>
+    </div>
+    <div class="bg-amber-100 p-2 rounded">
+      <p class="font-semibold">Iteration 2: Weekly SPY (Longer History)</p>
+      <p>Sell weekly contract (expires next Friday) on Friday → close Monday.</p>
+      <p class="text-red-700">❌ Worked 2011–2017 but crashed during US elections &amp; COVID.</p>
+    </div>
+    <div class="bg-amber-100 p-2 rounded">
+      <p class="font-semibold">Iteration 3: Weekly + VIX Filter ✓</p>
+      <p>Same as #2, but sell only when VIX is below the 98th percentile.</p>
+      <p class="text-green-700">✅ First viable strategy — 29 % return, 71 % win rate, 27 % vol.</p>
+    </div>
+    <div class="bg-amber-100 p-2 rounded">
+      <p class="font-semibold">Iteration 4: Hold Till Friday (Not Monday)</p>
+      <p>Sell Friday → hold entire week → expire next Friday.</p>
+      <p class="text-red-700">❌ Too long in this test — midweek events hurt positions. The lecture treats weekend premium as a short-lived window rather than a full-week hold.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2 text-xs">
+    <div class="bg-amber-100 p-1 rounded">
+      <strong>WORKED EXAMPLE</strong><br />
+      SPY at 450. Sell ATM straddle Friday: sell 450C + 450P = collect $8 premium. If Monday fear eases and the premium decays to $5, buy back → $3 profit. In the lecture's backtest, this was filtered to periods where VIX was below the 98th percentile.
+    </div>
+    <div class="bg-amber-100 p-1 rounded">
+      <strong>TERMINOLOGY</strong><br />
+      <strong>Weekend spy</strong> = contracts expiring Monday (new since 2018).<br />
+      <strong>ATM straddle</strong> = sell call + put at same strike = current price.<br />
+      <strong>VIX</strong> = CBOE Volatility Index (implied vol of S&amp;P 500, next 30 days).
+    </div>
+    <div class="bg-amber-100 p-1 rounded">
+      <strong>GOTCHA</strong><br />
+      The lecture presents weekend premium as real but narrow in this example. Friday→Monday held up better than a full-week hold, and the VIX filter improved the backtest by avoiding panic regimes where Monday premiums stayed high. Process: theoretical idea → backtest → diagnose failures → add filters → re-test.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 2  VOLATILITY MEASUREMENT  (blue)                              -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-blue-500 bg-blue-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-blue-800 mb-1">② Volatility Measurement — Estimators, Not Truth</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p>There is NO true measurement of volatility — only <strong>estimators</strong>. Standard deviation of log returns uses only close prices (sample, not population). Range-based estimators (Parkinson, Garman-Klass) use more data points per day for less error. All are biased in different ways.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>Stock prices are always a sample, never a full population (future prices unknown). More data points per day = less estimation error. But the key insight: it doesn't matter WHICH method — stick to ONE and use it consistently for comparison. Like measuring temperature — the unit doesn't matter, the context does.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2 mb-2 text-xs">
+    <div class="bg-blue-100 p-2 rounded">
+      <p class="font-semibold">Standard Deviation</p>
+      <p>σ = std(log returns). Uses only close prices (1 data point/day). Simple but highest error.</p>
+      <p>Apple example: 1.252 %</p>
+    </div>
+    <div class="bg-blue-100 p-2 rounded">
+      <p class="font-semibold">Parkinson Estimator</p>
+      <p>Uses High &amp; Low (2 data points/day). Inputs: N (total days), H (high), L (low).</p>
+      <p>Apple example: 1.12 % — biased LOW because the formula only sees the intraday High-Low range; overnight gaps are outside its input. With 10 days: captures ~81 % of true vol. More days → closer to true, but this overnight limitation never disappears.</p>
+    </div>
+    <div class="bg-blue-100 p-2 rounded">
+      <p class="font-semibold">Other Estimators</p>
+      <p><strong>Garman-Klass:</strong> OHLC (4 points/day).<br />
+      <strong>Rogers-Satchell:</strong> includes drift.<br />
+      <strong>Yang-Zhang:</strong> includes jumps.<br />
+      More data points = less error, but NO perfect method.</p>
+    </div>
+  </div>
+
+  <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# --- Standard deviation method ---
+def calculate_volatility(symbol, start, end):
+    data = yf.download(symbol, start=start, end=end)   # Yahoo Finance
+    returns = np.log(data['Close']).diff().dropna()      # log returns
+    vol = returns.std() * np.sqrt(252)                   # annualize: √252 trading days
+    return vol                                           # e.g., 0.30 = 30%
+
+# --- Parkinson estimator ---
+def calculate_parkinson_volatility(symbol, start, end):
+    data = yf.download(symbol, start=start, end=end)
+    N = len(data)
+    hl = np.log(data['High'] / data['Low']) ** 2         # ln(H/L) squared
+    vol = np.sqrt((1 / (4 * N * np.log(2))) * hl.sum())  # Parkinson formula
+    return vol * np.sqrt(252)                             # annualize
+  </pre>
+
+  <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
+    <div class="bg-blue-100 p-1 rounded">
+      <strong>WORKED EXAMPLE — Day vs Night Vol</strong><br />
+      Day vol: use High &amp; Low → measures intraday range.<br />
+      Night vol: use prev Close → current Open → measures gap.<br />
+      Total variance = weighted sum: (T₀/D)×σ²_night + (Tᵢ/D)×σ²_day.<br />
+      D=24h, T₀=18h (closed), Tᵢ=6h (open).
+    </div>
+    <div class="bg-blue-100 p-1 rounded">
+      <strong>TERMINOLOGY</strong><br />
+      <strong>Estimator</strong> = approximate measurement (not exact).<br />
+      <strong>Range-based</strong> = uses price range (H−L) vs close-only.<br />
+      <strong>Biased low</strong> = systematically underestimates true value.<br />
+      <strong>Population vs sample</strong> = all possible vs observed data.
+    </div>
+    <div class="bg-blue-100 p-1 rounded">
+      <strong>GOTCHA</strong><br />
+      High-frequency data does NOT solve the overnight problem — ticks only exist when market is open. A minute-by-minute AAPL dataset still misses 18h of overnight risk. More granular ≠ more accurate; match data frequency to your trading horizon.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 3  VOLATILITY FORECASTING  (green)                             -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-green-500 bg-green-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-green-800 mb-1">③ Volatility Forecasting — EWMA &amp; GARCH</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p><strong>Rolling window</strong> (30-day std): spikes/crashes from single events entering/leaving window — untradeable. <strong>EWMA</strong> (Exponential Weighted Moving Average): weights recent data more, smooth transitions. <strong>GARCH(1,1)</strong> (Generalized Autoregressive Conditional Heteroskedasticity): models all three volatility characteristics.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>Options trading needs FORWARD-LOOKING volatility. Rolling windows fail (Netflix example: 15 % price spike → vol doubles, sustains 30 days, then crashes). GARCH captures clustering, mean-reversion, and return-dependence — the three key volatility behaviors.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div class="bg-green-100 p-2 rounded text-xs">
+      <p class="font-semibold">Three Volatility Characteristics (→ GARCH terms)</p>
+      <table class="w-full mt-1">
+        <tr class="border-b font-semibold"><td>Characteristic</td><td>Meaning</td><td>GARCH Term</td></tr>
+        <tr class="border-b"><td>Clusters</td><td>High-vol stays high, low stays low for extended periods</td><td>β × σ²ₜ₋₁ (prev vol)</td></tr>
+        <tr class="border-b"><td>Mean-reverts</td><td>Tends to drift back toward a long-term average more than prices do</td><td>γ × V (long-term var)</td></tr>
+        <tr><td>Depends on recent returns</td><td>Recent price crashes change vol behavior</td><td>α × r²ₜ₋₁ (prev return²)</td></tr>
+      </table>
+
+      <!-- VISUAL: Volatility Characteristics -->
+      <svg viewBox="0 0 500 130" class="w-full mt-2">
+        <text x="250" y="12" text-anchor="middle" font-size="7" font-weight="bold" fill="#166534">THREE VOLATILITY CHARACTERISTICS</text>
+        <!-- Clustering -->
+        <rect x="10" y="20" width="150" height="95" rx="4" fill="#f0fdf4" stroke="#86efac"/>
+        <text x="85" y="35" text-anchor="middle" font-size="7" font-weight="bold" fill="#166534">1. CLUSTERS</text>
+        <polyline points="20,55 35,50 50,48 65,52 80,80 95,85 110,82 125,78 140,75 150,76" stroke="#16a34a" stroke-width="1.5" fill="none"/>
+        <rect x="75" y="62" width="80" height="15" fill="#dc2626" opacity="0.1" rx="2"/>
+        <text x="115" y="72" font-size="5" fill="#dc2626">High vol stays high</text>
+        <rect x="15" y="42" width="55" height="15" fill="#16a34a" opacity="0.1" rx="2"/>
+        <text x="42" y="52" font-size="5" fill="#16a34a">Low stays low</text>
+        <text x="85" y="105" text-anchor="middle" font-size="5" fill="#6b7280">β × σ²ₜ₋₁</text>
+        <!-- Mean-Reversion -->
+        <rect x="175" y="20" width="150" height="95" rx="4" fill="#fef3c7" stroke="#fcd34d"/>
+        <text x="250" y="35" text-anchor="middle" font-size="7" font-weight="bold" fill="#92400e">2. MEAN-REVERTS</text>
+        <line x1="185" y1="65" x2="315" y2="65" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3"/>
+        <text x="318" y="63" font-size="5" fill="#f59e0b">μ</text>
+        <polyline points="185,65 200,50 215,58 230,75 245,68 260,55 275,62 290,78 305,65" stroke="#92400e" stroke-width="1.5" fill="none"/>
+        <text x="250" y="95" text-anchor="middle" font-size="5" fill="#92400e">Tends to return toward average</text>
+        <text x="250" y="105" text-anchor="middle" font-size="5" fill="#6b7280">γ × V (long-term var)</text>
+        <!-- Return-Dependent -->
+        <rect x="340" y="20" width="150" height="95" rx="4" fill="#fef2f2" stroke="#fca5a5"/>
+        <text x="415" y="35" text-anchor="middle" font-size="7" font-weight="bold" fill="#991b1b">3. RETURN-DRIVEN</text>
+        <polyline points="350,65 365,60 380,62 395,35 410,80 425,75 440,45 455,70 470,68 480,66" stroke="#dc2626" stroke-width="1.5" fill="none"/>
+        <circle cx="395" cy="35" r="3" fill="#dc2626"/>
+        <text x="395" y="30" text-anchor="middle" font-size="4" fill="#dc2626">Crash!</text>
+        <circle cx="440" cy="45" r="3" fill="#dc2626"/>
+        <text x="440" y="40" text-anchor="middle" font-size="4" fill="#dc2626">Spike!</text>
+        <text x="415" y="105" text-anchor="middle" font-size="5" fill="#6b7280">α × r²ₜ₋₁</text>
+      </svg>
+    </div>
+    <div class="bg-green-100 p-2 rounded text-xs">
+      <p class="font-semibold">GARCH(1,1) Equation</p>
+      <p class="font-mono text-center mt-2 text-sm">σ²ₜ = γV + α·r²ₜ₋₁ + β·σ²ₜ₋₁</p>
+      <p class="mt-1"><strong>Constraint:</strong> α + β + γ = 1</p>
+      <p><strong>Trader assumptions:</strong> α ∈ [0.01, 0.1], β ∈ [0.9, 1.0], then γ = 1 − α − β.</p>
+      <p><strong>Parameters:</strong> properly found via Maximum Likelihood Estimation (MLE), but traders assume practical ranges — forecasts still work.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2 text-xs">
+    <div class="bg-green-100 p-1 rounded">
+      <strong>WORKED EXAMPLE — Netflix</strong><br />
+      30-day rolling vol: price jumps 15% → vol doubles (0.3→0.6), sustains 30 days, crashes day 31 when spike leaves window. EWMA (λ=0.94): same spike but smooth decay over 30 days. GARCH: captures both the spike AND the mean-reversion back to long-run vol.
+    </div>
+    <div class="bg-green-100 p-1 rounded">
+      <strong>TERMINOLOGY</strong><br />
+      <strong>EWMA</strong>: σ²ₜ = λσ²ₜ₋₁ + (1−λ)r²ₜ₋₁, λ∈[0.9, 0.99].<br />
+      <strong>GARCH</strong> = Generalized Autoregressive Conditional Heteroskedasticity.<br />
+      <strong>MLE</strong> = Maximum Likelihood Estimation (find α,β,γ that maximize likelihood function).
+    </div>
+    <div class="bg-green-100 p-1 rounded">
+      <strong>GOTCHA</strong><br />
+      GARCH forecasts must be contextualized! A vol of 0.9 means nothing alone. Compare to percentiles across 20/40/60/80/100-day windows. If forecast is at 25th percentile → low vol phase. If near 100th percentile → extreme vol. Same number, different context = different trade.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PAGE BREAK 1                                                   -->
+<!-- ============================================================ -->
+<div class="page-break"></div>
+
+<!-- ============================================================ -->
+<!-- 4  THREE VOLATILITIES & VARIANCE PREMIUM  (orange)             -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-orange-500 bg-orange-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-orange-800 mb-1">④ Historical, Implied &amp; Realized Volatility — The Variance Premium</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p><strong>Historical</strong> = past volatility (backward). <strong>Implied</strong> = future expected vol derived from options premiums via Black-Scholes (forward). <strong>Realized</strong> = actual vol within a specific contract period (NOT = historical — tied to contract timeframe). Key equation: <strong>P&amp;L = Vega × (IV − RV)</strong>, works on average.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>IV &gt; RV most of the time across many asset classes and volatility regimes discussed in the lecture. People pay an "insurance" premium for uncertainty. This gap is the variance premium. But it only works on average — individual trades can lose even when the broader theory is sound.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2 mb-2 text-xs">
+    <div class="bg-orange-100 p-2 rounded">
+      <p class="font-semibold">Historical Volatility</p>
+      <p>What happened in the past. Known, definite. Uses price history.</p>
+      <p>Example: Apple's 30-day historical vol = 25 %.</p>
+    </div>
+    <div class="bg-orange-100 p-2 rounded">
+      <p class="font-semibold">Implied Volatility (IV)</p>
+      <p>What the MARKET expects in future. Derived from options bid/ask. If someone bids high → they expect high vol. Input premium into BSM, solve for σ → that's IV.</p>
+    </div>
+    <div class="bg-orange-100 p-2 rounded">
+      <p class="font-semibold">Realized Volatility (RV)</p>
+      <p>Actual vol within a CONTRACT's lifetime. NOT = historical. After contract expires, calculate what actually happened. If IV was 30 % but RV was 22 % → 8 % variance premium captured.</p>
+    </div>
+  </div>
+
+  <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# --- The fundamental P&amp;L equation for volatility trading ---
+# P&amp;L ≈ Vega × (IV − RV)        # works ON AVERAGE across many trades
+#
+# Example: Vega = $500, IV = 30%, RV = 22%
+# Expected P&amp;L = 500 × (0.30 − 0.22) = 500 × 0.08 = $40 per unit
+#
+# Monte Carlo simulation: even when IV = RV = 30%,
+#   individual trades show non-zero P&amp;L (both profits and losses)
+#   but AVERAGE across many trades → $0 (as equation predicts)
+
+# --- Variance premium across asset classes ---
+# Equities:   IV &gt; RV most times. INDEX options &gt; single stock (more hedging demand)
+# Commodities: exists but VARIES by commodity (crude ≠ sugar ≠ copper)
+# Bonds:      exists, less volatile than equities
+# VIX:        even VIX futures have variance premium!
+  </pre>
+
+  <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
+    <div class="bg-orange-100 p-1 rounded">
+      <strong>WORKED EXAMPLE</strong><br />
+      S&amp;P 500: IV consistently above RV across low, medium, and high vol phases. Even at VIX=15 (low), IV premium exists. Small-cap stocks show ~2× the variance premium of large-caps (more uncertainty).
+    </div>
+    <div class="bg-orange-100 p-1 rounded">
+      <strong>TERMINOLOGY</strong><br />
+      <strong>Variance premium</strong> = IV − RV (the "insurance" gap).<br />
+      <strong>Vega</strong> = ∂Premium/∂Vol (dollars per 1% vol change).<br />
+      <strong>Black swan</strong> = rare, extreme event that can wipe out a year of premium income.
+    </div>
+    <div class="bg-orange-100 p-1 rounded">
+      <strong>GOTCHA</strong><br />
+      P&amp;L = Vega×(IV−RV) is an AVERAGE — don't expect it every trade. Monte Carlo shows wide distribution of outcomes. Short vol = consistent small gains + rare catastrophic losses. One black swan can erase months of premium collection. Always size positions accordingly.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 5  COVERED CALL & ASSET CLASS NUANCES  (purple)                -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-purple-500 bg-purple-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-purple-800 mb-1">⑤ Covered Call Strategy &amp; Asset-Class Volatility Nuances</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p><strong>Covered call</strong>: long underlying + sell OTM (Out of The Money) call at resistance. Collect premium as passive income. Widely used by retail traders. BXM ETF tracks this on S&amp;P 500: 7.1 % annual return (vs 9.4 % SPX), lower volatility, better Sharpe, better max drawdown.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>Simplest form of volatility trading — delta partially hedged by stock ownership. Premium decays in your favor if stock stays flat or rises slightly. Caps upside at strike price but provides income buffer. Not a pure vol trade but an entry point for retail traders.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2 text-xs">
+    <div class="bg-purple-100 p-2 rounded">
+      <p class="font-semibold">Covered Call Mechanics</p>
+      <p>1. Own 100 shares of stock (long position).<br />
+      2. Sell 1 call at resistance level.<br />
+      3. Collect premium → income.<br />
+      4. If stock stays below strike → keep premium + stock.<br />
+      5. If stock rises above strike → profit capped, shares called away.</p>
+    </div>
+    <div class="bg-purple-100 p-2 rounded">
+      <p class="font-semibold">Asset-Class Vol Trading</p>
+      <p><strong>Equities:</strong> Index &gt; single stock premium. Small-cap &gt; large-cap.<br />
+      <strong>Commodities:</strong> Can't generalize — crude ≠ sugar ≠ copper. Need domain knowledge (inventory reports, weather, currency).<br />
+      <strong>Bonds:</strong> Premium exists, less volatile.<br />
+      <strong>VIX:</strong> VIX futures also have variance premium!</p>
+    </div>
+    <div class="bg-purple-100 p-2 rounded">
+      <p class="font-semibold">Commodity Trading Insight</p>
+      <p>"You can trade equity with statistics, but you can't trade commodities with statistics."</p>
+      <p>Crude: DXY + inventory reports. Sugar: weather + crop reports. Copper: DXY + LME inventory. Each commodity has unique volatility drivers — statistical methods alone won't work.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 6  EARNINGS VOLATILITY TRADING  (teal)                         -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-teal-500 bg-teal-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-teal-800 mb-1">⑥ Earnings Volatility Trading — The Implied Jump</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p>Common pattern: IV often <em>gradually increases</em> before earnings and then <em>drops sharply</em> right after release. Two strategies: (A) Buy straddle 10 days before, close day before release (ride the IV ramp). (B) Capture the implied jump using two contracts at different expiries. The lecture says similar logic can apply to FOMC, inventory reports, and employment data.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>Before earnings: uncertainty → split opinions → IV rises. After earnings: information released → uncertainty resolved → IV crashes. This IV pattern is one of the most reliable in options markets. Also: Post-Earnings Announcement Drift (PEAD) — positive earnings → momentum continues 1–2 months.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-2 mb-2 text-xs">
+    <div class="bg-teal-100 p-2 rounded">
+      <p class="font-semibold">Strategy A: Ride the IV Ramp</p>
+      <p>Buy ATM straddle 10 days before earnings. Close 1 day before release.</p>
+      <p>Capture the gradual IV increase without the binary earnings risk.</p>
+      <p class="font-semibold mt-1">Results: 43 % win rate, 1.7× win/loss ratio (wins are bigger than losses).</p>
+    </div>
+    <div class="bg-teal-100 p-2 rounded">
+      <p class="font-semibold">Strategy B: Capture the Implied Jump</p>
+      <p>Use two contracts: T₁ (front week, expires during/before earnings) and T₂ (back week, expires after).</p>
+      <p>Implied jump = (2/π) × σ_E. Compare to historical max jump. If forecast ≈ max → sell front-end straddle.</p>
+      <p class="font-semibold mt-1">Results: 66 % win rate when jump ≈ historical max.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2 text-xs">
+    <div class="bg-teal-100 p-1 rounded">
+      <strong>WORKED EXAMPLE — Implied Jump</strong><br />
+      σ₁ (1-day contract) = 50 %, σ₂ (1-week contract) = 20 %.<br />
+      T₁ = 1 day, T₂ = 7 days.<br />
+      Implied jump = 2.6 %. Historical max = 3 %.<br />
+      2.6 % ≈ max → high conviction → sell front-end straddle.
+    </div>
+    <div class="bg-teal-100 p-1 rounded">
+      <strong>TERMINOLOGY</strong><br />
+      <strong>PEAD</strong> = Post-Earnings Announcement Drift (momentum after good earnings).<br />
+      <strong>Front week</strong> = contract expiring during earnings.<br />
+      <strong>Back week</strong> = contract expiring after earnings.<br />
+      <strong>Earnings reversal</strong> = stock falls after positive earnings (already priced in).
+    </div>
+    <div class="bg-teal-100 p-1 rounded">
+      <strong>GOTCHA</strong><br />
+      Earnings reversal is common — stock rises BEFORE earnings (anticipation), then sells off on "buy the rumor, sell the news." Don't confuse positive earnings with positive price action. The vol CRASH after earnings is the reliable pattern, not the price direction.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PAGE BREAK 2                                                   -->
+<!-- ============================================================ -->
+<div class="page-break"></div>
+
+<!-- ============================================================ -->
+<!-- 7  STRIKE PRICE SELECTION  (cyan)                              -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-cyan-500 bg-cyan-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-cyan-800 mb-1">⑦ Scientific Strike Price Selection</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p>Don't buy cheapest or sell most expensive options. Instead: for each strike, calculate premium at IV (current market price) AND premium at RV (using BSM with realized vol). Select the strike where the <strong>gap (IV premium − RV premium) is LARGEST</strong> — that's where variance premium is greatest.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>The most common retail mistake is buying cheap OTM options or selling the most expensive ones. But the optimal strike is where IV − RV gap in premium terms is maximum. This mathematical approach removes guessing and aligns your trade with the variance premium thesis.</p>
+    </div>
+  </div>
+
+  <div class="bg-cyan-100 p-2 rounded text-xs mb-2">
+    <p class="font-semibold">WORKED EXAMPLE — Four Strikes Compared</p>
+    <table class="w-full mt-1">
+      <tr class="border-b font-semibold"><td>Strike</td><td>IV Premium (Market)</td><td>RV Premium (at 30 %)</td><td>Gap</td><td>Pick?</td></tr>
+      <tr class="border-b"><td>$95</td><td>$8.50</td><td>$8.31</td><td>$0.19</td><td>No</td></tr>
+      <tr class="border-b"><td>$100</td><td>$5.80</td><td>$2.56</td><td><strong>$3.24</strong></td><td><strong>✓ Best</strong></td></tr>
+      <tr class="border-b"><td>$105</td><td>$3.40</td><td>$0.99</td><td>$2.41</td><td>No</td></tr>
+      <tr><td>$110</td><td>$1.50</td><td>$1.22</td><td>$0.28</td><td>No</td></tr>
+    </table>
+    <p class="mt-1">$100 strike has the highest gap ($3.24) between premium at IV and at RV → sell this strike to capture maximum variance premium.</p>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2 text-xs">
+    <div class="bg-cyan-100 p-1 rounded">
+      <strong>HOW — Step by Step</strong><br />
+      1. Get current market premiums for each strike (this is at IV).<br />
+      2. Calculate current realized vol (Parkinson or GARCH).<br />
+      3. Use BSM: input RV as volatility → get "fair" premium per strike.<br />
+      4. Gap = Market premium − BSM premium at RV.<br />
+      5. Sell the strike with the largest gap.
+    </div>
+    <div class="bg-cyan-100 p-1 rounded">
+      <strong>TERMINOLOGY</strong><br />
+      <strong>Fair price</strong> = BSM premium at realized vol (not market price).<br />
+      <strong>Variance premium gap</strong> = IV premium − RV premium.<br />
+      <strong>Strike selection</strong> = finding optimal strike for max edge.<br />
+      <strong>Resistance-based</strong> = alternative approach using chart resistance for covered calls.
+    </div>
+    <div class="bg-cyan-100 p-1 rounded">
+      <strong>GOTCHA</strong><br />
+      This method assumes RV stays stable — if RV spikes after you sell, the gap narrows or reverses. Best combined with GARCH forecast: if you forecast LOW future vol, the gap widens further. Settlement mechanism can change your P&amp;L — close positions before expiry unless deep in the money.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 8  VEGA VS GAMMA & DELTA HEDGING  (red)                        -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-red-500 bg-red-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-red-800 mb-1">⑧ "Vega Wounds, Gamma Kills" — Hedging &amp; Risk</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p><strong>"Vega wounds, Gamma kills"</strong> — the lecture's intuition is that volatility is more likely to mean-revert than price, so a wrong vol bet may recover over time, whereas a wrong directional bet can keep trending against you. Delta hedging isolates vol exposure: sell Δ shares to neutralize price sensitivity. But continuous hedging is expensive and impractical.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>If you short vol and it spikes, the lecture argues that vol often mean-reverts, so the loss can be more temporary than a pure directional loss. If you short a stock and it trends up for a long time, your loss can keep compounding. This is why vol trading is framed as more forgiving than directional trading, but you still need position sizing and filters to survive the wound period.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-2 mb-2 text-xs">
+    <div class="bg-red-100 p-2 rounded">
+      <p class="font-semibold">Delta Hedging Example</p>
+      <p>1-year $100 call, stock at $100, vol 30 %, premium $11.92, Δ = 0.56.</p>
+      <p>Hedge: sell 0.56 shares → price-neutral.</p>
+      <p>Stock → $110: call → $18.14, Δ → 0.68. Already hedged 0.56 → rehedge +0.12 shares.</p>
+      <p>Repeat at every price change → pure vol exposure. But costly &amp; impractical for retail.</p>
+    </div>
+    <div class="bg-red-100 p-2 rounded">
+      <p class="font-semibold">Short Vol Risk Profile</p>
+      <p>Long options: limited loss (premium paid), unlimited profit.</p>
+      <p>Short options: limited profit (premium received), <strong>unlimited loss</strong>.</p>
+      <p>Short vol = consistent small gains + rare catastrophic losses.</p>
+      <p>→ In the lecture's examples, position sizing and a VIX-style filter matter a lot.</p>
+      <p>OTS-05 covers: optimal hedge frequency, at what price to hedge, when to stop.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2 text-xs">
+    <div class="bg-red-100 p-1 rounded">
+      <strong>WORKED EXAMPLE</strong><br />
+      Short AAPL straddle at $241. Stock drops to $226 → profit. Then spikes to $260, $280 (gamma exposure) → the directional loss can keep growing. But short vol: vol spikes from 20→35, you lose, and if vol later mean-reverts to 22 the loss can recover. Time can heal some vol shocks more easily than pure directional moves.
+    </div>
+    <div class="bg-red-100 p-1 rounded">
+      <strong>TERMINOLOGY</strong><br />
+      <strong>Delta hedging</strong> = selling Δ shares to neutralize price risk.<br />
+      <strong>Gamma</strong> = rate of delta change (2nd derivative).<br />
+      <strong>Implied skewness</strong> = put premiums &gt; call premiums (crash protection costs more).<br />
+      <strong>Slippage</strong> = execution cost of hedging trades.
+    </div>
+    <div class="bg-red-100 p-1 rounded">
+      <strong>GOTCHA</strong><br />
+      "Vega wounds" ≠ "Vega is safe." COVID March 2020: VIX hit 82 — short vol positions needed months to recover. If you're leveraged or undersized, the wound can still be fatal before vol reverts. The lecture's practical safeguards are: (1) a VIX filter, (2) position sizing for worst-case scenarios, (3) avoiding continuous hedging before studying better methods.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- QUICK REFERENCE  (gray)                                        -->
+<!-- ============================================================ -->
+<section class="bg-gray-100 p-3 rounded mb-3">
+  <h2 class="font-bold text-gray-700 mb-2">Quick Reference</h2>
+  <div class="grid grid-cols-3 gap-3 text-xs">
+    <div>
+      <p class="font-semibold mb-1">Volatility Estimators</p>
+      <table class="w-full">
+        <tr class="border-b font-semibold"><td>Method</td><td>Inputs</td><td>Bias</td></tr>
+        <tr class="border-b"><td>Std Dev</td><td>Close only</td><td>Highest error</td></tr>
+        <tr class="border-b"><td>Parkinson</td><td>High, Low</td><td>Biased low: formula sees intraday range only, not overnight gaps</td></tr>
+        <tr class="border-b"><td>Garman-Klass</td><td>OHLC</td><td>Better accuracy</td></tr>
+        <tr class="border-b"><td>Rogers-Satchell</td><td>OHLC + drift</td><td>Handles drift</td></tr>
+        <tr><td>Yang-Zhang</td><td>OHLC + jumps</td><td>Handles jumps</td></tr>
+      </table>
+    </div>
+    <div>
+      <p class="font-semibold mb-1">Key Equations</p>
+      <table class="w-full">
+        <tr class="border-b"><td>P&amp;L</td><td class="font-mono">Vega × (IV − RV)</td></tr>
+        <tr class="border-b"><td>GARCH</td><td class="font-mono">σ²ₜ = γV + αr²ₜ₋₁ + βσ²ₜ₋₁</td></tr>
+        <tr class="border-b"><td>EWMA</td><td class="font-mono">σ²ₜ = λσ²ₜ₋₁ + (1−λ)r²ₜ₋₁</td></tr>
+        <tr class="border-b"><td>Constraint</td><td class="font-mono">α + β + γ = 1</td></tr>
+        <tr><td>Jump</td><td class="font-mono">(2/π) × σ_E</td></tr>
+      </table>
+      <p class="font-semibold mt-2 mb-1">Trader Parameter Ranges</p>
+      <p>α: 0.01–0.1 | β: 0.9–1.0 | λ: 0.9–0.99</p>
+    </div>
+    <div>
+      <p class="font-semibold mb-1">Strategy Summary</p>
+      <table class="w-full">
+        <tr class="border-b font-semibold"><td>Strategy</td><td>Win %</td><td>Key Filter</td></tr>
+        <tr class="border-b"><td>Covered Call (BXM)</td><td>—</td><td>7.1%/yr, low vol</td></tr>
+        <tr class="border-b"><td>Weekend Premium</td><td>71 %</td><td>VIX &lt; 98th pctl</td></tr>
+        <tr class="border-b"><td>Earnings IV Ramp</td><td>43 %</td><td>1.7× win/loss</td></tr>
+        <tr><td>Earnings Jump</td><td>66 %</td><td>Jump ≈ hist max</td></tr>
+      </table>
+      <p class="font-semibold mt-2 mb-1">Volatility Types</p>
+      <p><strong>Historical</strong> = past | <strong>Implied</strong> = future (from options) | <strong>Realized</strong> = actual within contract period</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- KEY TAKEAWAYS  (yellow)                                        -->
+<!-- ============================================================ -->
+<section class="bg-yellow-50 border border-yellow-300 p-3 rounded mb-3">
+  <h2 class="font-bold text-yellow-800 mb-2">KEY TAKEAWAYS</h2>
+  <div class="grid grid-cols-4 gap-2 text-xs">
+    <div class="bg-yellow-100 p-2 rounded">
+      <strong>1. No True Vol Measurement</strong><br />
+      All methods are estimators. Parkinson uses H&amp;L and is biased low because its formula only measures intraday range, not overnight gaps. GARCH captures clustering, mean-reversion, return-dependence. Pick ONE method, stick to it, contextualize with historical percentiles. The number alone is meaningless.
+    </div>
+    <div class="bg-yellow-100 p-2 rounded">
+      <strong>2. IV &gt; RV = Your Edge</strong><br />
+      Variance premium appears across the asset classes and volatility regimes discussed in the lecture. P&amp;L ≈ Vega × (IV − RV) on average. But individual trades vary widely, so one trade can still be painful. Short vol often looks like many small wins with occasional severe losses.
+    </div>
+    <div class="bg-yellow-100 p-2 rounded">
+      <strong>3. Filter, Don't Trade Blindly</strong><br />
+      Selling straddles every day struggled during crisis periods in the lecture's tests. The weekend-premium example improved once a VIX &lt; 98th percentile filter was added. The earnings example was framed as attractive when implied jump looked large relative to history. The strategy-iteration process (idea → backtest → diagnose → filter → re-test) is the real method.
+    </div>
+    <div class="bg-yellow-100 p-2 rounded">
+      <strong>4. Vega Wounds, Gamma Kills</strong><br />
+      Vol tends to mean-revert more than price, so wrong vol bets can recover more often than wrong directional bets. But "wounds" can still be fatal if overleveraged. The lecture's safeguards were a volatility filter, proper position size, and disciplined strike selection using the IV−RV gap.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- FOOTER                                                         -->
+<!-- ============================================================ -->
+<footer class="text-center text-gray-400 text-xs mt-4 pt-2 border-t">
+  EPAT · OTS-04 Volatility Measurement, Forecasting &amp; Structuring Trades · Instructor: Varun Kumar · Week 19-2 · Cheat Sheet v1.0
+</footer>
+
+</body>
+</html>

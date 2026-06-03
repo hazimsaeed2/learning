@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[WEEK 16-1] — Backtest &amp; Live Trade Algo Strategies II (TBP-05) — Cheat Sheet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+           font-size: 11px; line-height: 1.5; }
+    @media print { body { font-size: 9px; } .page-break { page-break-before: always; } }
+    h1 { font-size: 18px; }
+    h2 { font-size: 13px; }
+    h3 { font-size: 11px; }
+    table { font-size: 10px; }
+    pre  { font-size: 9px; line-height: 1.45; }
+  </style>
+</head>
+<body class="bg-white p-4 max-w-6xl mx-auto">
+
+  <!-- ====================== PAGE 1 ====================== -->
+
+  <!-- HEADER -->
+  <header class="text-center border-b-4 border-blue-600 pb-3 mb-4">
+    <h1 class="font-extrabold text-blue-900">BACKTESTING &amp; LIVE TRADING WITH IBRIDGEPY — OVERFITTING, DEPLOYMENT &amp; OPTIONS — COMPLETE CHEAT SHEET</h1>
+    <p class="text-gray-600 mt-1">EPAT Week 16-1 — TBP-05: Backtest &amp; Live Trade Algo Strategies II | Dr. Hui Liu (San Jose, 10 yrs EPAT)</p>
+    <p class="text-gray-700 mt-2">
+      <strong>The Problem:</strong> Your backtest shows amazing returns, but you don't know if the model is overfitting, underfitting, or just right. Even a "right-fitting" model needs proper deployment — handling holidays, early closes, broker errors, and option chains.<br>
+      <strong>Your Goal:</strong> Determine overfitting/underfitting via degrees of freedom (DOF), implement four IBridgePy backtesting methods, build live trading robots that handle real-world exceptions, and use premium features (options, screeners, multi-account).
+    </p>
+  </header>
+
+  <!-- SECTION 1: CORE EXAMPLE -->
+  <section class="border-2 border-amber-500 rounded-lg p-3 mb-4 bg-amber-50">
+    <h2 class="font-bold text-amber-900 mb-3 bg-amber-200 rounded px-2 py-1">1️⃣ CORE EXAMPLE — Overfitting vs Underfitting: The Mathematical Way to Evaluate Your Model</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">DEGREE OF FREEDOM ANALYSIS</h3>
+        <p class="italic mb-2">"If you torture the data long enough, it will confess to anything."</p>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-2 py-1">Model</th><th class="border px-2 py-1">Parameters (DOF)</th><th class="border px-2 py-1">Data Points</th><th class="border px-2 py-1">Data/DOF</th><th class="border px-2 py-1">Verdict</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Buy-Low-Sell-High</td><td class="border px-2 py-1 font-mono">3</td><td class="border px-2 py-1 font-mono">~5000</td><td class="border px-2 py-1 font-mono font-bold">1,667</td><td class="border px-2 py-1 text-green-700">Slightly underfitting ✅</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">ChatGPT (GPT-3)</td><td class="border px-2 py-1 font-mono">175B</td><td class="border px-2 py-1 font-mono">~500B tokens</td><td class="border px-2 py-1 font-mono font-bold">~5</td><td class="border px-2 py-1">Memorizes ~20% of text</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-amber-800 mb-2">THE THREE DOF IN BUY-LOW-SELL-HIGH</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# The model's decision line:
+if x &lt; -0.011:     # x = close_today - close_yesterday (%)
+    go_long()       # DOF 1: close_today
+                    # DOF 2: close_yesterday (lag-1, independent)
+else:               # DOF 3: rate = 0.011 (tuned by sweeping
+    go_short()      #         -0.02 to +0.02 → parameter tuning
+                    #         = 1 extra DOF consumed)
+</pre>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 WHY RATE IS A DOF:</strong> Even though 0.011 is a fixed number in the final model, it was FOUND by sweeping multiple values and picking the best → used extra information → consumed 1 degree of freedom.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">RULE OF THUMB: Data Points per DOF</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-2 py-1">Use Case</th><th class="border px-2 py-1">Recommended Data/DOF</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Typical linear regression</td><td class="border px-2 py-1 font-mono">20–100</td></tr>
+            <tr><td class="border px-2 py-1 font-bold text-red-700">Stock price prediction</td><td class="border px-2 py-1 font-mono font-bold">≥ 1,000</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">ChatGPT (text generation)</td><td class="border px-2 py-1 font-mono">~5 (but different use case)</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Why 1,000 for stocks?</strong> Price is non-normal, highly fluctuating. 100 is too low — you need more data to overcome the noise.</p>
+
+        <div class="bg-amber-100 rounded p-2 mt-2 mb-2">
+          <p class="font-bold">DECISION FRAMEWORK:</p>
+          <p class="font-mono">Data/DOF &lt; 20      → OVERFITTING (memorized data)</p>
+          <p class="font-mono">Data/DOF = 20–100   → Depends on use case</p>
+          <p class="font-mono">Data/DOF = 100–1000 → Right-fitting (general)</p>
+          <p class="font-mono">Data/DOF &gt; 1000    → Right/underfitting for stocks</p>
+        </div>
+
+        <!-- VISUAL: Overfitting Spectrum -->
+        <svg viewBox="0 0 480 65" class="w-full mb-1">
+          <text x="240" y="10" text-anchor="middle" font-size="7" font-weight="bold" fill="#92400e">DATA / DOF RATIO SPECTRUM</text>
+          <!-- Gradient bar -->
+          <rect x="30" y="16" width="100" height="18" rx="3" fill="#fecaca" stroke="#fca5a5"/>
+          <text x="80" y="29" text-anchor="middle" font-size="6" font-weight="bold" fill="#991b1b">OVERFIT</text>
+          <rect x="130" y="16" width="100" height="18" rx="3" fill="#fef3c7" stroke="#fcd34d"/>
+          <text x="180" y="29" text-anchor="middle" font-size="6" font-weight="bold" fill="#92400e">RISKY</text>
+          <rect x="230" y="16" width="120" height="18" rx="3" fill="#dcfce7" stroke="#86efac"/>
+          <text x="290" y="29" text-anchor="middle" font-size="6" font-weight="bold" fill="#166534">RIGHT-FIT ✓</text>
+          <rect x="350" y="16" width="100" height="18" rx="3" fill="#d1fae5" stroke="#6ee7b7"/>
+          <text x="400" y="29" text-anchor="middle" font-size="6" font-weight="bold" fill="#065f46">GOOD FOR STOCKS</text>
+          <!-- Scale -->
+          <text x="30" y="46" font-size="6" fill="#6b7280">&lt;20</text>
+          <text x="130" y="46" font-size="6" fill="#6b7280">20</text>
+          <text x="230" y="46" font-size="6" fill="#6b7280">100</text>
+          <text x="350" y="46" font-size="6" fill="#6b7280">1000</text>
+          <!-- Example markers -->
+          <circle cx="420" cy="55" r="4" fill="#16a34a"/>
+          <text x="430" y="58" font-size="5" fill="#166534">Buy-Low-Sell-High: 5000/3 = 1667 ✓</text>
+          <circle cx="50" cy="55" r="4" fill="#dc2626"/>
+          <text x="60" y="58" font-size="5" fill="#991b1b">ChatGPT-style: ~5 (different task)</text>
+        </svg>
+
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500">
+          <p><strong>⚠️ OVERFITTING ≠ "bad backtest vs good live".</strong> That's a SYMPTOM, not a definition. The MATHEMATICAL definition: too many parameters relative to training data → model memorizes instead of learning patterns.</p>
+        </div>
+
+        <h3 class="font-bold text-amber-800 mt-2 mb-2">LIVE RESULTS (Buy-Low-Sell-High, Long-Only)</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Jan 2025 → today</td><td class="border px-2 py-1 font-mono">~17–18%</td><td class="border px-2 py-1">SPY buy-hold = 16%</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Jan 2020 → today (5yr)</td><td class="border px-2 py-1 font-mono">~200% (3×)</td><td class="border px-2 py-1">Including COVID crash</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Annualized Sharpe</td><td class="border px-2 py-1 font-mono">0.8 (daily)</td><td class="border px-2 py-1">vs SPY ~0.4</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: IBRIDGEPY BACKTESTING -->
+  <section class="border-2 border-blue-500 rounded-lg p-3 mb-4 bg-blue-50">
+    <h2 class="font-bold text-blue-900 mb-3 bg-blue-200 rounded px-2 py-1">2️⃣ FOUR IBRIDGEPY BACKTESTING METHODS — From Slow to Lightning Fast</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-blue-300 rounded p-3">
+        <h3 class="font-bold text-blue-800 mb-2">METHOD 1: Real-Time IB Requests (Slowest)</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# IBridgePy requests data from IB at EVERY step
+run_me(fileName,                      # trading robot file
+       data_provider_name='IB',       # Interactive Brokers
+       endTime=datetime.now(),        # end = today
+       startTime=endTime - 10*days)   # start = 10 days ago
+# PROBLEM: IB server unstable (midnight maintenance)
+# PROBLEM: SLOW - requests daily+minute bars each step
+</pre>
+        <p class="text-red-700 font-bold mt-1">Unstable at IB midnight ET. Yellow = server maintenance.</p>
+
+        <h3 class="font-bold text-blue-800 mt-3 mb-2">METHOD 2: Ingest Historical Data First</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# Download data ONCE at start, then simulate
+his_ingestion_plan = HistIngestionPlan()
+his_ingestion_plan.add(                # ingest plan entry
+    symbol('SPY'),                     # contract
+    BarSize='1 min',                   # minute bars
+    goBack='20 days')                  # how far back
+his_ingestion_plan.add(
+    symbol('SPY'),
+    BarSize='1 day',                   # daily bars (need +1 day)
+    goBack='21 days')                  # for yesterday's close
+run_me(fileName,
+       data_provider_name='IB',       # still uses IB for data
+       his_ingestion_plan=plan)       # but ingests ALL upfront
+# FASTER: no per-step IB requests after ingestion
+</pre>
+      </div>
+
+      <div class="bg-white border-2 border-blue-300 rounded p-3">
+        <h3 class="font-bold text-blue-800 mb-2">METHOD 3: Custom Spot Times (Fast)</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# Only simulate at SPECIFIC times you care about
+custom_spot_time_list = []             # list of exact datetimes
+for date in date_range(start, end):    # each trading day
+    dt = date.replace(hour=15, min=59) # only 15:59 ET
+    custom_spot_time_list.append(dt)   # add to list
+run_me(fileName,
+       custom_spot_time_list=spots,    # SKIP all other minutes
+       time_generator_type='custom')   # use custom times
+# MUCH FASTER: robot only runs at 15:59 each day
+# instead of every single minute for 50 days
+</pre>
+
+        <h3 class="font-bold text-blue-800 mt-3 mb-2">METHOD 4: Simulated by Daily Bars (Fastest)</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# No minute bars at all — simulate using daily close
+his_ingestion_plan.add(
+    symbol('SPY'),
+    BarSize='1 day',                   # ONLY daily bar needed
+    data_source_name=                  # magic parameter:
+        'simulatedByDailyBar')         # close price = proxy
+                                       # for any intraday price
+run_me(fileName,
+       data_provider_name='LOCAL_FILE')# use local CSV files
+# FASTEST: only needs daily bars (available everywhere)
+# Yahoo Finance gives daily bars free, no minute bars
+</pre>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 LOCAL CSV FORMAT:</strong> Columns: epoch_timestamp, open, high, low, close, volume. Place files in IBridgePy <code>input/</code> folder. Daily bars = small file. Minute bars = "crazy" amount of data for 50 days.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: LIVE IMPLEMENTATION -->
+  <section class="border-2 border-green-500 rounded-lg p-3 mb-4 bg-green-50">
+    <h2 class="font-bold text-green-900 mb-3 bg-green-200 rounded px-2 py-1">3️⃣ LIVE TRADING ROBOT — Implementation, Assumptions &amp; Error Handling</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-white border-2 border-green-300 rounded p-3">
+        <h3 class="font-bold text-green-800 mb-2">CORE ROBOT (2 Functions)</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+def initialize(context):
+  # Runs ONCE at startup
+  context.security = symbol('SPY')
+  # Run buy_low_sell_high every day
+  # at market_close - 1 minute (15:59 ET)
+  schedule_function(
+      buy_low_sell_high,
+      date_rule=date_rules.every_day(),
+      time_rule=time_rules.market_close(
+          minutes=1))
+
+def buy_low_sell_high(context, data):
+  print(get_datetime())  # confirm 15:59
+  # Get last 2 days of daily bars
+  hist = data.history(
+      context.security,
+      bar_count=2,
+      frequency='1d')
+  close_yesterday = hist['close'].iloc[0]
+  close_today = hist['close'].iloc[1]
+  if close_today &gt; close_yesterday:
+    # Sell all: target 0% of portfolio
+    order_target_percent(
+        context.security, 0.0)
+  else:
+    # Buy all: target 100% of portfolio
+    order_target_percent(
+        context.security, 1.0)
+</pre>
+      </div>
+
+      <div class="bg-white border-2 border-green-300 rounded p-3">
+        <h3 class="font-bold text-green-800 mb-2">CRITICAL ASSUMPTION: 3:59 PM ≈ Close</h3>
+        <p><strong>We assume:</strong> spot price at 15:59 ET is statistically equal to the true close price (16:00 ET).</p>
+        <p class="mt-1"><strong>How to validate:</strong> Compute historical difference between close price and 15:59 price → run a <strong>Student's t-test</strong> to check if the mean difference is statistically zero.</p>
+        <p class="mt-1"><strong>Why 15:59?</strong> We need yesterday's close to decide, but today's close isn't available until 16:00. We must act 1 minute before.</p>
+        <p class="mt-1"><strong>Order type:</strong> Market order at 15:59 to pursue immediate execution. It fits the model logic, but slippage remains part of the trade-off.</p>
+
+        <h3 class="font-bold text-green-800 mt-3 mb-2">FIVE BACKTEST PITFALLS</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-bold bg-green-50">1</td><td class="border px-1 py-1">Fractional shares (most brokers don't support)</td></tr>
+            <tr><td class="border px-1 py-1 font-bold bg-green-50">2</td><td class="border px-1 py-1">Slippage (not simulated)</td></tr>
+            <tr><td class="border px-1 py-1 font-bold bg-green-50">3</td><td class="border px-1 py-1">Transaction cost (~0.5% in China, lower in US)</td></tr>
+            <tr><td class="border px-1 py-1 font-bold bg-green-50">4</td><td class="border px-1 py-1">Overfitting/underfitting (DOF analysis)</td></tr>
+            <tr><td class="border px-1 py-1 font-bold bg-green-50">5</td><td class="border px-1 py-1">Forward-looking bias (NOT in this model)</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ IB DEFAULT COMMISSION:</strong> IBridgePy uses IB's real commission formula. Result: $1.42 for 285 shares at $350 = ~0.001%. Commission itself is tiny — slippage and adverse selection are the real costs.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-green-300 rounded p-3">
+        <h3 class="font-bold text-green-800 mb-2">LIVE TRADING ERRORS TO HANDLE</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-green-100">
+            <tr><th class="border px-1 py-1">Error</th><th class="border px-1 py-1">Solution</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-bold">No data permission</td><td class="border px-1 py-1">Purchase data package from IB</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">Market not open</td><td class="border px-1 py-1">Check timestamp freshness on real-time data</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">Too many data requests</td><td class="border px-1 py-1">Minimize requests, cache data locally</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">Not enough margin</td><td class="border px-1 py-1">try/except → log error, adjust position</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">Order not filled</td><td class="border px-1 py-1">Use order_status_monitor to follow up</td></tr>
+          </tbody>
+        </table>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# Error handling pattern for live trading
+try:
+    order_target_percent(
+        context.security, 1.0)
+    order_status_monitor(            # follow up
+        context.security, 'Filled')  # until filled
+except Exception as e:
+    send_email(
+        title='TRADING ERROR',
+        body=str(e))                 # email the error
+    # Robot keeps running (try/except)
+</pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 2 ====================== -->
+
+  <!-- SECTION 4: HANDLING REAL-WORLD SCENARIOS -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">4️⃣ HANDLING REAL-WORLD SCENARIOS — Holidays, Early Close, Email &amp; Minute Bars</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">HOLIDAYS &amp; EARLY CLOSE</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# Handle holidays: simply return if not trading day
+if not is_trading_day():
+    return
+
+# Handle early close (3-4 days/yr in US)
+# US market normally closes 4 PM ET
+# Early close days: close at 1 PM ET
+# → Your 15:59 logic MISSES the market entirely!
+
+def initialize(context):
+    context.is_early_close = False
+    context.checked_today = False
+    # Check at 10 AM (expensive function, run once)
+    schedule_function(check_early_close,
+        time_rule=time_rules.market_open(
+            hours=0, minutes=30))
+
+def check_early_close(context, data):
+    if not context.checked_today:
+        context.is_early_close = (
+            is_market_early_close())   # IB function
+        context.checked_today = True
+
+# Then in main logic:
+if context.is_early_close:
+    # Trade at 12:59 ET (1 min before 1 PM close)
+    handle_early_close(context, data)
+else:
+    # Trade at 15:59 ET (normal)
+    handle_regular_close(context, data)
+</pre>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">EMAIL NOTIFICATIONS</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# Send daily account summary at 16:30 ET
+# (NOT 16:00 — broker needs time to settle
+#  final close prices and positions)
+def send_daily_summary(context, data):
+    if not is_trading_day():
+        return
+    acct = show_account_info(
+        'NetLiquidation')             # total balance
+    send_email(
+        title='Daily Summary',
+        body=f'Net Liquidation: {acct}')
+</pre>
+
+        <h3 class="font-bold text-orange-800 mt-3 mb-2">MINUTE-BAR STRATEGY (Convert Daily → Intraday)</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# Change handle_data frequency to every minute
+def initialize(context):
+    context.run_mode = 'regular'      # ignore market hours
+    context.handle_data_frequency = 62 # every 62 seconds
+    # (default = 1 second)
+
+def handle_data(context, data):
+    now = get_datetime()
+    # Only trade during market hours
+    if now.hour &lt; 9 or now.hour &gt;= 16:
+        return                        # skip pre/post market
+    if now.hour == 9 and now.minute &lt; 30:
+        return                        # skip before 9:30
+    # Your trading logic here...
+    # Now runs every minute instead of daily
+</pre>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 NON-US TRADERS:</strong> Use <code>run_mode='regular'</code> + manual time handling (hour/minute checks) to define YOUR market hours. This is the flexible approach the lecture used when discussing how to adapt logic outside the US market schedule.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: PREMIUM FEATURES -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">5️⃣ PREMIUM FEATURES — Option Chains, Greeks, Stock Screener &amp; Multi-Account</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">OPTION CHAINS</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# Step 1: Get ALL options for a stock
+options = get_contract_details(
+    option_symbol('AAPL'))
+# Returns: DataFrame with 'security' column
+# containing ALL Apple option contracts
+
+# Step 2: Filter by nearest expiry
+filtered = filter_options_by_closest_expiry(
+    options, target_datetime=now())
+# Returns: only contracts expiring SOONEST
+
+# Step 3: Filter by nearest strike
+final = filter_options_by_closest_strike(
+    filtered,
+    target_strike=current_price)
+# Returns: ATM options (most active)
+</pre>
+        <p class="mt-1"><strong>Indian market example:</strong> Use <code>super_symbol()</code> to define Nifty 50 options with exchange='NSE', currency='INR', strike, expiry, and direction ('PUT'/'CALL').</p>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">OPTION GREEKS</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# Get Greeks for any option contract
+greeks = option_info(
+    contract,                         # option security
+    fields=['delta', 'gamma',         # 1st/2nd order
+            'vega', 'theta',          # vol/time decay
+            'impliedVolatility'])     # IV
+# Returns: dictionary
+# {'delta': 0.45, 'gamma': 0.02,
+#  'vega': 0.15, 'theta': -0.03,
+#  'impliedVolatility': 0.25}
+</pre>
+
+        <h3 class="font-bold text-purple-800 mt-3 mb-2">STOCK SCREENER</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# Find top 10 most active stocks &gt; $100
+results = market_scanner(
+    instrument='STK',                 # stocks
+    locationCode='STK.US.MAJOR',      # US market
+    scanCode='MOST_ACTIVE',           # most active
+    abovePrice=100,                   # filter pennies
+    numberOfRows=10)                  # top 10 only
+# Returns: DataFrame with 'rank' and 'security'
+# rank=0 is most active (often SPY)
+</pre>
+        <p class="mt-1"><strong>Where to find scan codes?</strong> IB documentation or their native stock screener — look for keywords like MOST_ACTIVE, HOT_BY_VOLUME, etc.</p>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">MULTI-ACCOUNT MANAGEMENT</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# Same signal → different accounts
+# Account 1: smaller position
+order(symbol('SPY'), 100,
+      accountCode='U12345')    # 100 shares
+
+# Account 2: larger position
+order(symbol('SPY'), 500,
+      accountCode='U67890')    # 500 shares
+
+# Exit positions per account
+order_target_percent(
+    symbol('SPY'), 0.0,
+    accountCode='U12345')      # clear acct 1
+</pre>
+        <p class="mt-1"><strong>Requirement:</strong> All accounts must be LINKED to your master portfolio account. Essential for fund managers managing multiple client accounts.</p>
+
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ HFT WARNING:</strong> Do NOT attempt high-frequency trading as a regular trader. Hurdles: direct exchange channel, C code (not Python), μs latency, tick-by-tick data, ultra-low costs. None of these are accessible to retail.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: DEPLOYMENT -->
+  <section class="border-2 border-teal-500 rounded-lg p-3 mb-4 bg-teal-50">
+    <h2 class="font-bold text-teal-900 mb-3 bg-teal-200 rounded px-2 py-1">6️⃣ DEPLOYMENT &amp; ALGO TRADING ROADMAP — Local vs Cloud &amp; Building Your Robot</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">LOCAL vs CLOUD DEPLOYMENT</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-teal-100">
+            <tr><th class="border px-2 py-1">Factor</th><th class="border px-2 py-1">Local Computer</th><th class="border px-2 py-1">Cloud (AWS/GCP/Azure)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Cost</td><td class="border px-2 py-1 text-green-700">Cheaper (long-term)</td><td class="border px-2 py-1 text-red-700">Pay per use (adds up)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Uptime</td><td class="border px-2 py-1">Self-managed power/internet</td><td class="border px-2 py-1 text-green-700">Providers often claim ~99.99% uptime</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Development</td><td class="border px-2 py-1 text-green-700">Easier (local files)</td><td class="border px-2 py-1">Push code to remote</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Storage</td><td class="border px-2 py-1 text-green-700">Big disk (one-time buy)</td><td class="border px-2 py-1">Pay per GB</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Resources</td><td class="border px-2 py-1 text-green-700">Full dedicated</td><td class="border px-2 py-1">Shared (pay for more)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Privacy</td><td class="border px-2 py-1 text-green-700">Full control</td><td class="border px-2 py-1 text-green-700">Full control</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">OS options</td><td class="border px-2 py-1 text-green-700">Any OS</td><td class="border px-2 py-1">Limited choices</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Security</td><td class="border px-2 py-1">Self-managed firewall</td><td class="border px-2 py-1">Provider tools (complex)</td></tr>
+          </tbody>
+        </table>
+        <p class="mt-2"><strong>Local backup plan:</strong> Battery backup + backup internet. If BOTH fail → can you phone-trade? Always have a manual fallback.</p>
+      </div>
+
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">ALGO TRADING ROADMAP (8 Steps)</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-teal-100">
+            <tr><th class="border px-1 py-1">#</th><th class="border px-1 py-1">Step</th><th class="border px-1 py-1">Decision</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-bold">1</td><td class="border px-1 py-1">What contracts?</td><td class="border px-1 py-1">SPY, stock screener, custom universe</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">2</td><td class="border px-1 py-1">What frequency?</td><td class="border px-1 py-1">Daily, minute, second, millisecond</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">3</td><td class="border px-1 py-1">What data?</td><td class="border px-1 py-1">Historical, sentiment, fundamental</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">4</td><td class="border px-1 py-1">Entry strategy?</td><td class="border px-1 py-1">All-in or scale-in</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">5</td><td class="border px-1 py-1">Stop loss/take profit?</td><td class="border px-1 py-1">Fixed %, trailing, volatility-based</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">6</td><td class="border px-1 py-1">Exit rules?</td><td class="border px-1 py-1">Signal-based, time-based, both</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">7</td><td class="border px-1 py-1">Continuous or as-needed?</td><td class="border px-1 py-1">Full auto vs manual touch</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">8</td><td class="border px-1 py-1">Deploy where?</td><td class="border px-1 py-1">Local vs cloud</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400">
+          <p><strong>💡 AI BOT vs HIRED CODER:</strong> If you're a professional programmer → use AI (review its mistakes). If NOT → don't spend too much time coding. Partner with a trusted coder. Focus your energy on algorithm research, not debugging Python.</p>
+        </div>
+        <div class="bg-teal-100 rounded p-2 mt-2">
+          <p class="font-bold">VALIDATION PIPELINE:</p>
+          <p class="font-mono">1. Fundamental/quant analysis</p>
+          <p class="font-mono">2. Collect data → prove hypothesis</p>
+          <p class="font-mono">3. Build trading robot</p>
+          <p class="font-mono">4. Backtest (DOF check!)</p>
+          <p class="font-mono">5. Forward test (out-of-sample)</p>
+          <p class="font-mono">6. Small real-money account</p>
+          <p class="font-mono">7. Scale up if profitable</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 3 ====================== -->
+
+  <!-- SECTION 7: QUICK REFERENCE -->
+  <section class="border-2 border-gray-600 rounded-lg p-3 bg-gray-100">
+    <h2 class="font-bold text-gray-900 mb-3 bg-gray-300 rounded px-2 py-1">📋 QUICK REFERENCE — All In One Place</h2>
+
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Col 1: IBridgePy Functions -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">KEY IBRIDGEPY FUNCTIONS</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">symbol('SPY')</td><td class="border px-1 py-1">Define a stock contract</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">schedule_function()</td><td class="border px-1 py-1">Run function at specific time</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">data.history()</td><td class="border px-1 py-1">Get historical OHLCV bars</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">order_target_percent()</td><td class="border px-1 py-1">Set position to % of portfolio</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">order_status_monitor()</td><td class="border px-1 py-1">Follow up on order fills</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">show_account_info()</td><td class="border px-1 py-1">Get account balance/info</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">send_email()</td><td class="border px-1 py-1">Email notification</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">is_trading_day()</td><td class="border px-1 py-1">Check if today is a trading day</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">market_scanner()</td><td class="border px-1 py-1">Stock screener</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">get_contract_details()</td><td class="border px-1 py-1">Get option chains</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">option_info()</td><td class="border px-1 py-1">Get Greeks (Δ,Γ,V,Θ,IV)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">super_symbol()</td><td class="border px-1 py-1">Complex contract definition</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 2: Backtesting Comparison -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">BACKTESTING METHODS COMPARED</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Method</th><th class="border px-1 py-1">Speed</th><th class="border px-1 py-1">Data Needed</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">Real-time IB</td><td class="border px-1 py-1 text-red-700">Slowest</td><td class="border px-1 py-1">IB connection</td></tr>
+            <tr><td class="border px-1 py-1">Ingest first</td><td class="border px-1 py-1 text-orange-600">Slow</td><td class="border px-1 py-1">IB → local cache</td></tr>
+            <tr><td class="border px-1 py-1">Custom spots</td><td class="border px-1 py-1 text-green-600">Fast</td><td class="border px-1 py-1">Local CSV + spots</td></tr>
+            <tr><td class="border px-1 py-1">Simulated daily</td><td class="border px-1 py-1 text-green-700 font-bold">Fastest</td><td class="border px-1 py-1">Daily bars only</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-gray-800 mb-2">OVERFITTING QUICK CHECK</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Data/DOF Ratio</th><th class="border px-1 py-1">Assessment</th></tr>
+          </thead>
+          <tbody>
+            <tr class="bg-red-50"><td class="border px-1 py-1 font-mono">&lt; 20</td><td class="border px-1 py-1 font-bold text-red-700">Overfitting (memorized)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">20–100</td><td class="border px-1 py-1">May be OK (depends on use)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">100–1000</td><td class="border px-1 py-1">Right-fitting (general tasks)</td></tr>
+            <tr class="bg-green-50"><td class="border px-1 py-1 font-mono">&gt; 1000</td><td class="border px-1 py-1 font-bold text-green-700">Good for stock prediction</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 3: Terminology + Numbers -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">TERMINOLOGY</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">DOF</td><td class="border px-1 py-1">Degree of Freedom (parameters)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">IBridgePy</td><td class="border px-1 py-1">Python framework for IB trading</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">IB Gateway</td><td class="border px-1 py-1">Interactive Brokers API connection</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Spot time</td><td class="border px-1 py-1">Exact datetime for robot decision</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Early close</td><td class="border px-1 py-1">US market closes 1 PM (3-4 days/yr)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Ingest</td><td class="border px-1 py-1">Pre-load historical data for backtest</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">CAGR</td><td class="border px-1 py-1">Compound Annual Growth Rate</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Net Liquidation</td><td class="border px-1 py-1">Total account value after all positions</td></tr>
+          </tbody>
+        </table>
+        <h3 class="font-bold text-gray-800 mb-2">KEY NUMBERS</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-1 py-1 bg-gray-50">Transaction cost (US)</td><td class="border px-1 py-1 font-mono">&lt; 0.5%</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Transaction cost (China)</td><td class="border px-1 py-1 font-mono">~0.5%</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Model DOF</td><td class="border px-1 py-1 font-mono">3</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">20yr trading days</td><td class="border px-1 py-1 font-mono">~5000</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Data per DOF</td><td class="border px-1 py-1 font-mono">~1667</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">SPY buy-hold Sharpe</td><td class="border px-1 py-1 font-mono">~0.4</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Model Sharpe</td><td class="border px-1 py-1 font-mono">0.8</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">GPT-3 params</td><td class="border px-1 py-1 font-mono">175B</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">IBridgePy premium</td><td class="border px-1 py-1 font-mono">$120 / 3 months</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="bg-yellow-100 rounded p-3 mt-3">
+      <p class="font-bold text-yellow-900 mb-2">🎯 KEY TAKEAWAYS</p>
+      <div class="grid grid-cols-4 gap-3">
+        <p>1. Overfitting/underfitting is determined by DATA PER DEGREE OF FREEDOM, not by backtest performance. Count your parameters (including any tuned via sweeping), divide total data points, and compare to the threshold: ≥1,000 for stock prices, 20-100 for general regression.</p>
+        <p>2. IBridgePy offers four backtesting methods of increasing speed: real-time IB requests (slowest/unstable), pre-ingested data, custom spot times, and simulated-by-daily-bars (fastest). Use daily bar simulation when minute data isn't available — Yahoo gives daily bars free.</p>
+        <p>3. Live trading demands handling scenarios backtests ignore: holidays, market early close (1 PM ET, 3-4 days/year), no-fill orders, margin errors, and IB server outages. Always use try/except + email notifications to keep the robot running without human intervention.</p>
+        <p>4. The buy-low-sell-high model uses only 3 DOF (~1667 data/DOF), runs unchanged for 8 years, and delivers Sharpe 0.8 vs SPY's 0.4. It's slightly underfitting — which is BETTER than overfitting. If you can't profit in your mathematical model, you won't profit in real markets.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="mt-3 text-center text-gray-600 border-t-2 border-gray-300 pt-2">
+    <p><strong>THE MASTER FORMULA:</strong> Algo Trading = Right-fitting Model (data/DOF ≥ 1000 for stocks) + Robust Backtest (simulated daily bars, no look-ahead) + Live Error Handling (holidays, early close, margin, try/except) + Proper Deployment (local or cloud with backup plan).</p>
+    <p class="mt-1"><strong>THE ONE THING TO NEVER FORGET:</strong> "If you torture the data long enough, it will confess to anything." Before trusting ANY backtest result, count your degrees of freedom, divide by your data points, and check if the ratio meets the 1,000 threshold for financial data. A great-looking backtest with DOF/data &lt; 20 is memorization, not prediction.</p>
+  </footer>
+
+</body>
+</html>

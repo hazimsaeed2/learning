@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MLT-03 Machine Learning-III — Clustering &amp; Deep Learning</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @media print{
+    body{font-size:9px !important}
+    .page-break{page-break-before:always}
+    .no-print{display:none}
+  }
+  body{font-family:system-ui,-apple-system,sans-serif;font-size:11px}
+  pre{white-space:pre-wrap;word-wrap:break-word}
+</style>
+</head>
+<body class="bg-gray-50 text-gray-900 leading-tight">
+<div class="max-w-6xl mx-auto p-2">
+
+<!-- ─────────── HEADER ─────────── -->
+<div class="bg-gradient-to-r from-indigo-700 to-purple-700 text-white p-3 rounded-lg mb-2">
+  <div class="flex justify-between items-start">
+    <div>
+      <h1 class="text-lg font-bold leading-tight">MLT-03 Machine Learning-III — Clustering &amp; Deep Learning</h1>
+      <p class="text-indigo-100 text-xs mt-0.5">Week 20-1 · Instructor: Jay · EPAT Lecture Series</p>
+    </div>
+    <div class="text-right text-xs text-indigo-200">
+      <div>K-Means · Neural Networks · Activation Functions</div>
+      <div>Forward / Backward Propagation · MLPClassifier</div>
+    </div>
+  </div>
+  <div class="mt-2 bg-indigo-900/40 rounded p-2 text-xs grid grid-cols-2 gap-2">
+    <div><span class="font-bold text-indigo-200">Problem:</span> How to discover hidden structure in unlabeled data AND build flexible non-linear classifiers that learn complex feature-target relationships?</div>
+    <div><span class="font-bold text-indigo-200">Goal:</span> Master K-Means clustering for stock grouping, understand neural network architecture from single neuron to deep networks, and backtest an Artificial Neural Network (ANN) trading strategy.</div>
+  </div>
+</div>
+
+<!-- ─────────── SECTION 1 — CORE EXAMPLE (AMBER) ─────────── -->
+<div class="border-l-4 border-amber-500 bg-amber-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-amber-800 text-sm mb-1">1 · Core Example — K-Means Clustering for Stock Portfolio Grouping</h2>
+  <div class="grid grid-cols-2 gap-2">
+    <div>
+      <p class="font-semibold text-amber-700 mb-0.5">WHAT</p>
+      <p>K-Means clustering groups 500 Nifty stocks into clusters using quantitative features (returns &amp; volatility) instead of traditional sector/industry labels. Each cluster reveals stocks with similar risk-return profiles, enabling differentiated strategy application or position sizing.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-amber-700 mb-0.5">WHY</p>
+      <p>Traditional grouping by sector or market cap is the common starting point. Quantitative clustering can uncover similarities that those labels miss. It enables: (a) different strategies per cluster, (b) adaptive position sizing, (c) statistical arbitrage pair discovery, (d) mean-variance portfolio construction.</p>
+    </div>
+  </div>
+  <div class="mt-1">
+    <p class="font-semibold text-amber-700 mb-0.5">HOW — Full Pipeline</p>
+    <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# Step 1: Download 1 year of data for 500 stocks
+import yfinance as yf                         # Yahoo Finance library
+tickers = [...]                                # 500 Nifty constituents
+data = yf.download(tickers, period="1y")["Adj Close"]  # adjusted close prices
+data = data.dropna(axis=1)                     # axis=1 → drop COLUMNS with ANY missing data (416 remain)
+
+# Step 2: Build features — annual returns &amp; annualized volatility
+returns = (data.pct_change() + 1).prod() - 1   # total net return over 1 year
+volatility = data.pct_change().std() * (252**0.5)  # daily std × √252 → annualized vol
+
+# Step 3: Scale features (MANDATORY for distance-based algorithms)
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+features_scaled = scaler.fit_transform(           # mean=0, std=1 for both features
+    pd.DataFrame({"returns": returns, "volatility": volatility})
+)
+
+# Step 4: Fit K-Means with 3 clusters
+from sklearn.cluster import KMeans
+model = KMeans(n_clusters=3, random_state=1)   # 3 clusters, reproducible
+model.fit(features_scaled)                     # train — no train/test split needed
+labels = model.labels_                         # array: [0, 1, 2, 0, 2, ...] per stock
+
+# Step 5: Assign clusters back to DataFrame &amp; visualize
+df["cluster"] = labels
+plt.scatter(df["volatility"], df["returns"], c=df["cluster"], cmap="viridis")
+# Output: 3 colored clusters — e.g., low-vol/positive-return vs high-vol/negative-return</pre>
+  </div>
+
+  <!-- VISUAL: K-Means Clustering Scatter -->
+  <div class="bg-white border-2 border-amber-300 rounded p-2 mb-1">
+    <svg viewBox="0 0 500 200" class="w-full">
+      <text x="250" y="14" text-anchor="middle" font-size="8" font-weight="bold" fill="#92400e">K-MEANS CLUSTERING — 3 Regime Groups</text>
+      <!-- Axes -->
+      <line x1="60" y1="175" x2="460" y2="175" stroke="#374151" stroke-width="1"/>
+      <line x1="60" y1="15" x2="60" y2="175" stroke="#374151" stroke-width="1"/>
+      <text x="260" y="195" text-anchor="middle" font-size="7" fill="#6b7280">Volatility →</text>
+      <text x="20" y="95" font-size="7" fill="#6b7280" transform="rotate(-90,20,95)">Returns →</text>
+      <!-- Cluster 0: Low vol, positive returns (green) -->
+      <circle cx="100" cy="55" r="5" fill="#16a34a" opacity="0.6"/><circle cx="115" cy="45" r="5" fill="#16a34a" opacity="0.6"/>
+      <circle cx="90" cy="65" r="5" fill="#16a34a" opacity="0.6"/><circle cx="130" cy="50" r="5" fill="#16a34a" opacity="0.6"/>
+      <circle cx="105" cy="40" r="5" fill="#16a34a" opacity="0.6"/><circle cx="120" cy="60" r="5" fill="#16a34a" opacity="0.6"/>
+      <circle cx="110" cy="52" r="8" fill="none" stroke="#16a34a" stroke-width="1" stroke-dasharray="3"/>
+      <text x="145" y="38" font-size="6" font-weight="bold" fill="#16a34a">Cluster 0</text>
+      <text x="145" y="47" font-size="5" fill="#16a34a">Low vol + High return</text>
+      <text x="145" y="55" font-size="5" fill="#16a34a">→ INCREASE size</text>
+      <!-- Cluster 1: Medium vol, flat returns (blue) -->
+      <circle cx="240" cy="100" r="5" fill="#3b82f6" opacity="0.6"/><circle cx="260" cy="95" r="5" fill="#3b82f6" opacity="0.6"/>
+      <circle cx="225" cy="105" r="5" fill="#3b82f6" opacity="0.6"/><circle cx="275" cy="110" r="5" fill="#3b82f6" opacity="0.6"/>
+      <circle cx="250" cy="92" r="5" fill="#3b82f6" opacity="0.6"/><circle cx="235" cy="112" r="5" fill="#3b82f6" opacity="0.6"/>
+      <circle cx="250" cy="102" r="8" fill="none" stroke="#3b82f6" stroke-width="1" stroke-dasharray="3"/>
+      <text x="285" y="98" font-size="6" font-weight="bold" fill="#3b82f6">Cluster 1</text>
+      <text x="285" y="107" font-size="5" fill="#3b82f6">Med vol + Flat return</text>
+      <text x="285" y="115" font-size="5" fill="#3b82f6">→ KEEP size</text>
+      <!-- Cluster 2: High vol, negative returns (red) -->
+      <circle cx="380" cy="145" r="5" fill="#dc2626" opacity="0.6"/><circle cx="400" cy="150" r="5" fill="#dc2626" opacity="0.6"/>
+      <circle cx="365" cy="155" r="5" fill="#dc2626" opacity="0.6"/><circle cx="420" cy="140" r="5" fill="#dc2626" opacity="0.6"/>
+      <circle cx="395" cy="160" r="5" fill="#dc2626" opacity="0.6"/><circle cx="410" cy="148" r="5" fill="#dc2626" opacity="0.6"/>
+      <circle cx="395" cy="150" r="8" fill="none" stroke="#dc2626" stroke-width="1" stroke-dasharray="3"/>
+      <text x="430" y="143" font-size="6" font-weight="bold" fill="#dc2626">Cluster 2</text>
+      <text x="430" y="152" font-size="5" fill="#dc2626">High vol + Neg return</text>
+      <text x="430" y="160" font-size="5" fill="#dc2626">→ DECREASE size</text>
+    </svg>
+  </div>
+
+  <div class="mt-1 grid grid-cols-3 gap-2 text-xs">
+    <div class="bg-amber-100 p-1 rounded"><span class="font-bold">Cluster 0:</span> Low vol + positive returns → could justify increasing position size</div>
+    <div class="bg-amber-100 p-1 rounded"><span class="font-bold">Cluster 1:</span> Medium vol + flat returns → could justify keeping position size similar</div>
+    <div class="bg-amber-100 p-1 rounded"><span class="font-bold">Cluster 2:</span> High vol + negative returns → could justify reducing position size</div>
+  </div>
+  <div class="mt-1 text-xs">
+    <span class="font-bold text-amber-700">GOTCHA:</span> Without scaling, debt-to-equity (mean=103) dominated clustering over beta (mean≈1) and created nearly horizontal clusters. In this distance-based setup, scaling is important before K-Means.
+  </div>
+</div>
+
+<!-- ─────────── SECTION 2 — K-MEANS ALGORITHM (BLUE) ─────────── -->
+<div class="border-l-4 border-blue-500 bg-blue-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-blue-800 text-sm mb-1">2 · K-Means Clustering Algorithm — How It Works</h2>
+  <div class="grid grid-cols-3 gap-2">
+    <div>
+      <p class="font-semibold text-blue-700 mb-0.5">WHAT</p>
+      <p>K-Means is an unsupervised algorithm that partitions N observations into K clusters by minimizing total squared distances between points and cluster centroids. It iterates: assign → recalculate centroid → reassign until centroids stabilize.</p>
+      <p class="mt-1 font-semibold text-blue-700 mb-0.5">STEP-BY-STEP</p>
+      <ol class="list-decimal ml-3 space-y-0.5">
+        <li>Choose K (number of clusters)</li>
+        <li>Initialize K random centroids</li>
+        <li>Calculate distance from each point to all K centroids</li>
+        <li>Assign each point to nearest centroid</li>
+        <li>Recalculate centroid = mean of assigned points</li>
+        <li>Repeat steps 3-5 until centroids don't move</li>
+      </ol>
+      <p class="mt-1 text-xs">In the lecture's examples, convergence was usually fast, often within a handful of iterations.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-blue-700 mb-0.5">WHY — Clustering Applications in Trading</p>
+      <ul class="list-disc ml-3 space-y-0.5">
+        <li><span class="font-bold">Strategy allocation:</span> apply different strategies to different clusters</li>
+        <li><span class="font-bold">Position sizing:</span> reduce size for high-vol clusters, increase for low-vol</li>
+        <li><span class="font-bold">Stat arb pairs:</span> create N/2 clusters → each cluster = 2 stocks → check cointegration &amp; z-score</li>
+        <li><span class="font-bold">Portfolio construction:</span> treat each cluster as a portfolio → run mean-variance optimization across clusters</li>
+      </ul>
+      <p class="mt-1"><span class="font-bold">Cluster bounds:</span> min = 1, max = N (number of observations). Useful range found via Elbow Method.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-blue-700 mb-0.5">WORKED EXAMPLE — Elbow Method</p>
+      <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# Test K=1 to K=20, record inertia
+inertia_list = []              # stores sum of squared distances
+for k in range(1, 21):        # 1 cluster to 20 clusters
+    km = KMeans(n_clusters=k, random_state=1)
+    km.fit(features_scaled)    # train model
+    inertia_list.append(km.inertia_)
+    # inertia_ = Σ(dist² from each point
+    #   to its assigned centroid)
+
+# Plot: x=K, y=inertia → look for "elbow"
+plt.plot(range(1,21), inertia_list, marker="o")
+plt.xlabel("Number of Clusters")
+plt.ylabel("Model Inertia")
+# Elbow at K=3 or K=4 → candidate range to inspect
+# Too few → limited insight
+# Too many → less meaningful groupings</pre>
+      <p class="mt-1 text-xs"><span class="font-bold">TERMINOLOGY:</span> <em>Model inertia</em> = sum of squared distances from each observation to its centroid. <em>Centroid</em> = mean position of cluster members.</p>
+    </div>
+  </div>
+  <div class="mt-1 text-xs">
+    <span class="font-bold text-blue-700">GOTCHA:</span> No automated "right K" — use Elbow Method + judgment. Adding 1 more cluster that contains only 1 data point is meaningless. Some practitioners now feed elbow charts to Large Language Models (LLMs) for K recommendation.
+  </div>
+</div>
+
+<!-- ─────────── SECTION 3 — NEURONS: BIOLOGICAL → ARTIFICIAL (GREEN) ─────────── -->
+<div class="border-l-4 border-green-500 bg-green-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-green-800 text-sm mb-1">3 · From Biological to Artificial Neurons — The Building Block</h2>
+  <div class="grid grid-cols-3 gap-2">
+    <div>
+      <p class="font-semibold text-green-700 mb-0.5">WHAT — Biological Neuron</p>
+      <p>Three parts: <span class="font-bold">Dendrite</span> (receives info from senses) → <span class="font-bold">Nucleus</span> (processes info, decides importance) → <span class="font-bold">Axon Terminal</span> (passes processed info to next neuron). Average adult brain: 86 billion neurons taking <em>collective</em> decisions — no single neuron decides alone.</p>
+      <p class="mt-1">Different sensory inputs (touch, sight, hearing, smell, taste) activate different neuron networks in different brain regions. Each neuron processes a <em>part</em> of the information.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-green-700 mb-0.5">HOW — Artificial Neuron Replication</p>
+      <p class="mb-1">Map biological → artificial:</p>
+      <table class="w-full text-xs border-collapse">
+        <tr class="bg-green-200"><th class="border p-0.5">Biological</th><th class="border p-0.5">Artificial</th><th class="border p-0.5">Function</th></tr>
+        <tr><td class="border p-0.5">Dendrite</td><td class="border p-0.5">Inputs x₁..xₙ</td><td class="border p-0.5">Receive features</td></tr>
+        <tr><td class="border p-0.5">Nucleus</td><td class="border p-0.5">Z = Σ(xᵢ × wᵢ)</td><td class="border p-0.5">Weighted sum</td></tr>
+        <tr><td class="border p-0.5">Axon</td><td class="border p-0.5">Y = f(Z)</td><td class="border p-0.5">Activation → output</td></tr>
+      </table>
+      <p class="mt-1"><span class="font-bold">Linear function:</span> Z = x₁w₁ + x₂w₂ + ... + xₙwₙ + bias</p>
+      <p>Weights (w) = importance of each feature. <span class="font-bold">We do NOT set weights</span> — the neural network learns them. If we knew the right weights, we wouldn't need ML.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-green-700 mb-0.5">WORKED EXAMPLE</p>
+      <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# Artificial neuron with 3 features
+# Features: x1=0.5, x2=-0.3, x3=0.8
+# Weights (learned): w1=0.7, w2=-0.4, w3=0.6
+# Bias: b = 0.1
+
+Z = (0.5*0.7) + (-0.3*-0.4) + (0.8*0.6) + 0.1
+# Z = 0.35 + 0.12 + 0.48 + 0.1 = 1.05
+
+# Apply sigmoid activation:
+import math
+Y = 1 / (1 + math.exp(-1.05))  # sigmoid(1.05)
+# Y = 0.741 → &gt;0.5 → predict class 1 (UP)
+
+# Apply tanh activation:
+Y_tanh = math.tanh(1.05)
+# Y_tanh = 0.783 → &gt;0 → predict +1 (LONG)
+
+# Apply ReLU activation:
+Y_relu = max(0, 1.05)
+# Y_relu = 1.05 → numerical prediction</pre>
+      <p class="mt-1 text-xs"><span class="font-bold">TERMINOLOGY:</span> <em>Weight</em> = importance assigned to a feature. <em>Bias</em> = intercept term (like regression error term). <em>Activation function</em> = non-linear transform of Z that determines if neuron "fires."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE BREAK 1 ═══════════ -->
+<div class="page-break"></div>
+
+<!-- ─────────── SECTION 4 — ACTIVATION FUNCTIONS (ORANGE) ─────────── -->
+<div class="border-l-4 border-orange-500 bg-orange-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-orange-800 text-sm mb-1">4 · The Four Activation Functions That Matter</h2>
+  <div class="grid grid-cols-4 gap-2">
+    <div>
+      <p class="font-semibold text-orange-700 mb-0.5">SIGMOID</p>
+      <p class="text-xs mb-1">Formula: f(z) = 1 / (1 + e⁻ᶻ)</p>
+      <p class="text-xs mb-0.5"><span class="font-bold">Output range:</span> [0, 1]</p>
+      <p class="text-xs mb-0.5"><span class="font-bold">Use:</span> Output layer for <span class="font-bold">buy/hold</span> classification (0 = hold, 1 = buy). Also called logistic function.</p>
+      <p class="text-xs"><span class="font-bold">Behavior:</span> z=5 → 0.993, z=0 → 0.5, z=−5 → 0.007. Squashes any input to 0-1 probability.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-orange-700 mb-0.5">TANH (Hyperbolic Tangent)</p>
+      <p class="text-xs mb-1">Formula: f(z) = (eᶻ − e⁻ᶻ) / (eᶻ + e⁻ᶻ)</p>
+      <p class="text-xs mb-0.5"><span class="font-bold">Output range:</span> [−1, +1]</p>
+      <p class="text-xs mb-0.5"><span class="font-bold">Use:</span> Output layer for <span class="font-bold">long/short</span> classification (+1 = long, −1 = short).</p>
+      <p class="text-xs"><span class="font-bold">Behavior:</span> z=5 → 1.0, z=0 → 0.0, z=−5 → −1.0. Centered at zero unlike sigmoid.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-orange-700 mb-0.5">ReLU (Rectified Linear Unit)</p>
+      <p class="text-xs mb-1">Formula: f(z) = max(0, z)</p>
+      <p class="text-xs mb-0.5"><span class="font-bold">Output range:</span> [0, ∞)</p>
+      <p class="text-xs mb-0.5"><span class="font-bold">Use:</span> A common choice for <span class="font-bold">hidden layers</span> in practice. Also usable in the output layer for <span class="font-bold">regression</span> tasks such as price or volatility prediction.</p>
+      <p class="text-xs"><span class="font-bold">Behavior:</span> z=5 → 5, z=0 → 0, z=−5 → 0. Passes positive values unchanged, zeros out negatives.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-orange-700 mb-0.5">LEAKY ReLU</p>
+      <p class="text-xs mb-1">Formula: f(z) = max(αz, z), α ≈ 0.01</p>
+      <p class="text-xs mb-0.5"><span class="font-bold">Output range:</span> (−∞, ∞)</p>
+      <p class="text-xs mb-0.5"><span class="font-bold">Use:</span> Hidden layers when ReLU causes "dead neurons" (all-zero outputs). Small α prevents mathematical issues with pure zeros.</p>
+      <p class="text-xs"><span class="font-bold">Behavior:</span> z=5 → 5, z=0 → 0, z=−5 → −0.05. Like ReLU but leaks a tiny value for negatives.</p>
+    </div>
+  </div>
+  <div class="mt-2 grid grid-cols-2 gap-2">
+    <div>
+      <p class="font-semibold text-orange-700 mb-0.5">DECISION RULE — Which Activation Where?</p>
+      <table class="w-full text-xs border-collapse">
+        <tr class="bg-orange-200"><th class="border p-0.5">Layer</th><th class="border p-0.5">Task</th><th class="border p-0.5">Activation</th><th class="border p-0.5">Reason</th></tr>
+        <tr><td class="border p-0.5">Hidden</td><td class="border p-0.5">Any</td><td class="border p-0.5 font-bold">ReLU / Leaky ReLU</td><td class="border p-0.5">Common empirical default in the lecture</td></tr>
+        <tr><td class="border p-0.5">Output</td><td class="border p-0.5">Buy/Hold (0,1)</td><td class="border p-0.5 font-bold">Sigmoid</td><td class="border p-0.5">Bounds to [0,1]</td></tr>
+        <tr><td class="border p-0.5">Output</td><td class="border p-0.5">Long/Short (+1,−1)</td><td class="border p-0.5 font-bold">Tanh</td><td class="border p-0.5">Bounds to [−1,+1]</td></tr>
+        <tr><td class="border p-0.5">Output</td><td class="border p-0.5">Regression (price)</td><td class="border p-0.5 font-bold">ReLU / Linear</td><td class="border p-0.5">No bounding needed</td></tr>
+      </table>
+    </div>
+    <div>
+      <p class="font-semibold text-orange-700 mb-0.5">KEY RULES</p>
+      <ul class="list-disc ml-3 space-y-0.5 text-xs">
+        <li>Activation is set at the <span class="font-bold">LAYER level</span> — all neurons in a layer share the same activation</li>
+        <li>CANNOT assign different activations to individual neurons within a layer</li>
+        <li>Different layers CAN have different activation functions</li>
+        <li>Hidden: ReLU. Output: depends on task. This covers 90%+ of use cases</li>
+        <li>No activation = linear function = input equals output (used for regression output)</li>
+      </ul>
+      <p class="mt-1 text-xs"><span class="font-bold text-orange-700">GOTCHA:</span> Exponential activation functions would "explode" the algorithm — weights can't converge. That's why ReLU (simple max) dominates hidden layers.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── SECTION 5 — NETWORK ARCHITECTURE (PURPLE) ─────────── -->
+<div class="border-l-4 border-purple-500 bg-purple-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-purple-800 text-sm mb-1">5 · Network Architectures — From Perceptron to Deep Networks</h2>
+  <div class="grid grid-cols-3 gap-2">
+    <div>
+      <p class="font-semibold text-purple-700 mb-0.5">WHAT — Three Architecture Levels</p>
+      <table class="w-full text-xs border-collapse">
+        <tr class="bg-purple-200"><th class="border p-0.5">Model</th><th class="border p-0.5">Structure</th><th class="border p-0.5">Capability</th></tr>
+        <tr><td class="border p-0.5 font-bold">Perceptron</td><td class="border p-0.5">Input → 1 neuron → Output</td><td class="border p-0.5">Too simple, learns nothing useful</td></tr>
+        <tr><td class="border p-0.5 font-bold">Feed Forward</td><td class="border p-0.5">Input → 1 hidden layer → Output</td><td class="border p-0.5">Basic pattern recognition</td></tr>
+        <tr><td class="border p-0.5 font-bold">Deep Neural Network</td><td class="border p-0.5">Input → N hidden layers → Output</td><td class="border p-0.5">Complex non-linear patterns</td></tr>
+      </table>
+      <p class="mt-1 text-xs">"Deep" = information passes through multiple layers before producing output. More layers = more abstract feature combinations learned.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-purple-700 mb-0.5">WHY — Multiple Neurons with Same Input?</p>
+      <p class="text-xs mb-1">All neurons in a layer receive the SAME features, but each neuron has DIFFERENT weights. So each neuron <em>perceives</em> the data differently.</p>
+      <p class="text-xs mb-1"><span class="font-bold">Same input + different weights = different Z → different activation → different output per neuron</span></p>
+      <p class="text-xs">This mimics biological brains: same sensory input goes to many neurons, each processes a different aspect. Collective decision is more powerful than any single neuron.</p>
+      <p class="mt-1 text-xs"><span class="font-bold">Layer sizing:</span> No formula for optimal neurons per layer or number of hidden layers. Determined by <span class="font-bold">trial and error</span>. Varies by problem, data size, and feature count.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-purple-700 mb-0.5">WORKED EXAMPLE — Layer Specification</p>
+
+      <!-- VISUAL: Neural Network Architecture -->
+      <div class="bg-white border-2 border-purple-300 rounded p-2 mb-2">
+        <svg viewBox="0 0 520 160" class="w-full">
+          <text x="260" y="12" text-anchor="middle" font-size="8" font-weight="bold" fill="#5b21b6">NEURAL NETWORK: Input(12) → Hidden(5,4,3) → Output(1)</text>
+          <!-- Input layer (12 neurons, show 4 + dots) -->
+          <text x="40" y="28" text-anchor="middle" font-size="6" font-weight="bold" fill="#374151">INPUT</text>
+          <text x="40" y="36" text-anchor="middle" font-size="5" fill="#6b7280">(12 features)</text>
+          <circle cx="40" cy="50" r="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+          <circle cx="40" cy="72" r="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+          <circle cx="40" cy="94" r="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+          <text x="40" y="112" text-anchor="middle" font-size="8" fill="#6b7280">⋮</text>
+          <circle cx="40" cy="128" r="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+          <!-- Hidden 1 (5 neurons) -->
+          <text x="160" y="28" text-anchor="middle" font-size="6" font-weight="bold" fill="#7c3aed">HIDDEN 1</text>
+          <text x="160" y="36" text-anchor="middle" font-size="5" fill="#6b7280">(5, ReLU)</text>
+          <circle cx="160" cy="50" r="6" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5"/>
+          <circle cx="160" cy="70" r="6" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5"/>
+          <circle cx="160" cy="90" r="6" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5"/>
+          <circle cx="160" cy="110" r="6" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5"/>
+          <circle cx="160" cy="130" r="6" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5"/>
+          <!-- Hidden 2 (4 neurons) -->
+          <text x="280" y="28" text-anchor="middle" font-size="6" font-weight="bold" fill="#7c3aed">HIDDEN 2</text>
+          <text x="280" y="36" text-anchor="middle" font-size="5" fill="#6b7280">(4, ReLU)</text>
+          <circle cx="280" cy="55" r="6" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5"/>
+          <circle cx="280" cy="78" r="6" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5"/>
+          <circle cx="280" cy="101" r="6" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5"/>
+          <circle cx="280" cy="124" r="6" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5"/>
+          <!-- Hidden 3 (3 neurons) -->
+          <text x="390" y="28" text-anchor="middle" font-size="6" font-weight="bold" fill="#7c3aed">HIDDEN 3</text>
+          <text x="390" y="36" text-anchor="middle" font-size="5" fill="#6b7280">(3, ReLU)</text>
+          <circle cx="390" cy="65" r="6" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5"/>
+          <circle cx="390" cy="90" r="6" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5"/>
+          <circle cx="390" cy="115" r="6" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5"/>
+          <!-- Output (1 neuron) -->
+          <text x="480" y="28" text-anchor="middle" font-size="6" font-weight="bold" fill="#16a34a">OUTPUT</text>
+          <text x="480" y="36" text-anchor="middle" font-size="5" fill="#6b7280">(1, Sigmoid)</text>
+          <circle cx="480" cy="90" r="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+          <text x="480" y="93" text-anchor="middle" font-size="6" font-weight="bold" fill="#16a34a">0/1</text>
+          <!-- Connections (representative lines) -->
+          <line x1="46" y1="50" x2="154" y2="50" stroke="#c4b5fd" stroke-width="0.5" opacity="0.4"/>
+          <line x1="46" y1="50" x2="154" y2="90" stroke="#c4b5fd" stroke-width="0.5" opacity="0.4"/>
+          <line x1="46" y1="72" x2="154" y2="70" stroke="#c4b5fd" stroke-width="0.5" opacity="0.4"/>
+          <line x1="46" y1="94" x2="154" y2="110" stroke="#c4b5fd" stroke-width="0.5" opacity="0.4"/>
+          <line x1="46" y1="128" x2="154" y2="130" stroke="#c4b5fd" stroke-width="0.5" opacity="0.4"/>
+          <line x1="166" y1="50" x2="274" y2="55" stroke="#c4b5fd" stroke-width="0.5" opacity="0.4"/>
+          <line x1="166" y1="90" x2="274" y2="78" stroke="#c4b5fd" stroke-width="0.5" opacity="0.4"/>
+          <line x1="166" y1="110" x2="274" y2="101" stroke="#c4b5fd" stroke-width="0.5" opacity="0.4"/>
+          <line x1="166" y1="130" x2="274" y2="124" stroke="#c4b5fd" stroke-width="0.5" opacity="0.4"/>
+          <line x1="286" y1="55" x2="384" y2="65" stroke="#c4b5fd" stroke-width="0.5" opacity="0.4"/>
+          <line x1="286" y1="78" x2="384" y2="90" stroke="#c4b5fd" stroke-width="0.5" opacity="0.4"/>
+          <line x1="286" y1="101" x2="384" y2="90" stroke="#c4b5fd" stroke-width="0.5" opacity="0.4"/>
+          <line x1="286" y1="124" x2="384" y2="115" stroke="#c4b5fd" stroke-width="0.5" opacity="0.4"/>
+          <line x1="396" y1="65" x2="472" y2="90" stroke="#86efac" stroke-width="0.5" opacity="0.6"/>
+          <line x1="396" y1="90" x2="472" y2="90" stroke="#86efac" stroke-width="0.5" opacity="0.6"/>
+          <line x1="396" y1="115" x2="472" y2="90" stroke="#86efac" stroke-width="0.5" opacity="0.6"/>
+          <!-- Formula -->
+          <text x="260" y="155" text-anchor="middle" font-size="6" fill="#374151">Each neuron: Z = Σ(wᵢ × xᵢ) + bias → Activation(Z) → Output to next layer</text>
+        </svg>
+      </div>
+
+      <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# Perceptron: 1 neuron (too simple)
+MLPClassifier(hidden_layer_sizes=(1,))
+
+# Feed Forward: 1 hidden layer, 5 neurons
+MLPClassifier(hidden_layer_sizes=(5,))
+# Architecture: Input(12) → Hidden(5,ReLU) → Output(1)
+
+# Deep Network: 3 hidden layers
+MLPClassifier(hidden_layer_sizes=(5,4,3))
+# Architecture:
+#   Input(12 features)
+#   → Hidden1(5 neurons, ReLU)
+#   → Hidden2(4 neurons, ReLU)
+#   → Hidden3(3 neurons, ReLU)
+#   → Output(1 neuron, tanh)
+
+# Weights per connection:
+# Input→Hidden1: 12×5 = 60 weights
+# Hidden1→Hidden2: 5×4 = 20 weights
+# Hidden2→Hidden3: 4×3 = 12 weights
+# Hidden3→Output: 3×1 = 3 weights
+# Total: 95 weights + biases to learn</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── SECTION 6 — TRAINING PROCESS (TEAL) ─────────── -->
+<div class="border-l-4 border-teal-500 bg-teal-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-teal-800 text-sm mb-1">6 · Training Process — Forward &amp; Backward Propagation</h2>
+  <div class="grid grid-cols-3 gap-2">
+    <div>
+      <p class="font-semibold text-teal-700 mb-0.5">WHAT — The Training Loop</p>
+      <ol class="list-decimal ml-3 space-y-0.5 text-xs">
+        <li><span class="font-bold">Initialize</span> all weights randomly</li>
+        <li><span class="font-bold">Forward Propagation:</span> data flows Input → Hidden → Output → predictions made</li>
+        <li><span class="font-bold">Loss Function:</span> compare predictions vs actual target values. Higher loss = bigger error</li>
+        <li><span class="font-bold">Backward Propagation:</span> loss feeds back to optimizer</li>
+        <li><span class="font-bold">Optimizer</span> (e.g., Adam / Gradient Descent) produces NEW weights for ALL neurons</li>
+        <li>Repeat steps 2-5 with updated weights</li>
+        <li><span class="font-bold">Stop</span> when: (a) loss can't improve for N iterations, or (b) max iterations reached</li>
+      </ol>
+      <p class="mt-1 text-xs">Each complete pass = 1 iteration/epoch. The optimizer is the "core" of neural networks — it's what makes learning possible.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-teal-700 mb-0.5">WHY — How the Optimizer Learns</p>
+      <p class="text-xs mb-1">The optimizer (Gradient Descent / Adam) uses the loss score as feedback:</p>
+      <ul class="list-disc ml-3 space-y-0.5 text-xs">
+        <li>If loss <span class="font-bold">increased</span> after weight update → do the OPPOSITE direction</li>
+        <li>If loss <span class="font-bold">decreased</span> → continue in that direction &amp; calibrate further</li>
+        <li>Process converges when no weight adjustment can reduce loss further</li>
+      </ul>
+      <p class="mt-1 text-xs"><span class="font-bold">Key insight:</span> The network never finds weights in one pass. It iteratively refines through hundreds of forward-backward cycles. Example: started at 82% loss → decreased to 69% by iteration 20 → converged at iteration 121 (stopped because last 10 iterations showed no improvement).</p>
+      <p class="mt-1 text-xs"><span class="font-bold">TERMINOLOGY:</span> <em>Gradient Descent</em> = mathematical method to find minimum of loss function by following the slope. <em>Adam</em> = Adaptive Moment Estimation, an enhanced version of gradient descent. <em>Epoch</em> = one complete pass through all training data.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-teal-700 mb-0.5">WORKED EXAMPLE — Training Output</p>
+      <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# Define &amp; train a neural network
+from sklearn.neural_network import MLPClassifier
+model = MLPClassifier(
+    hidden_layer_sizes=(5,),  # 1 layer, 5 neurons
+    max_iter=300,             # max 300 weight updates
+    activation='relu',        # hidden layer activation
+    solver='adam',            # optimizer algorithm
+    shuffle=False,            # don't shuffle rows
+    verbose=True              # print training progress
+)
+model.fit(X_train_scaled, y_train)
+# Iteration 1, loss = 0.8237     ← high loss (random weights)
+# Iteration 20, loss = 0.6913    ← improving
+# Iteration 121, loss = 0.6801   ← converged
+# Training loss did not improve for 10 iterations
+# → model.score(X_train, y_train) = 0.57  (57%)
+# → model.score(X_test, y_test)  = 0.53  (53%)</pre>
+      <p class="mt-1 text-xs"><span class="font-bold text-teal-700">GOTCHA:</span> We set max_iter=300 but model stopped at 121 — it auto-stops when loss plateaus for 10 consecutive iterations. This prevents wasted computation.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE BREAK 2 ═══════════ -->
+<div class="page-break"></div>
+
+<!-- ─────────── SECTION 7 — PYTHON IMPLEMENTATION (CYAN) ─────────── -->
+<div class="border-l-4 border-cyan-500 bg-cyan-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-cyan-800 text-sm mb-1">7 · Full ANN Trading Strategy — Build, Train, Backtest</h2>
+  <div class="grid grid-cols-2 gap-2">
+    <div>
+      <p class="font-semibold text-cyan-700 mb-0.5">HOW — Complete Pipeline (JPY/INR Long-Short)</p>
+      <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# Step 1: Download &amp; prepare data
+import yfinance as yf
+df = yf.download("JPYINR=X", start="2011-01-01", end="2018-12-31")
+
+# Step 2: Build features (vol, trend, momentum, intraday)
+import talib                                  # technical indicators library
+df["bb_upper"], df["bb_mid"], df["bb_lower"] = talib.BBANDS(df["Close"])  # Bollinger Bands
+df["macd"], df["signal"], df["hist"] = talib.MACD(df["Close"])           # MACD (Moving Average Convergence Divergence)
+df["sar"] = talib.SAR(df["High"], df["Low"])   # Parabolic Stop And Reverse
+# + standard features: volatility, price ratio, momentum, intraday range
+df.dropna(inplace=True)                        # drop rows (NOT columns) with NaN
+
+# Step 3: Target vector — long/short (+1/−1)
+df["target"] = np.where(
+    df["Close"].shift(-1) &gt; df["Close"],       # if tomorrow's close &gt; today's close
+    1,                                          # +1 = stock goes UP → LONG
+    -1                                          # −1 = stock goes DOWN → SHORT
+)
+
+# Step 4: Train/test split + scaling
+X_train, X_test, y_train, y_test = train_test_split(
+    features, target, test_size=0.2, shuffle=False  # 80/20 split, chronological
+)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)      # fit + transform on TRAIN
+X_test_scaled = scaler.transform(X_test)             # transform ONLY on TEST (no fit!)</pre>
+    </div>
+    <div>
+      <p class="font-semibold text-cyan-700 mb-0.5">HOW — Backtesting on Out-of-Sample Data</p>
+      <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# Step 5: Backtest function (2019-2025)
+def backtest(df_oos, model, scaler):
+    # Recreate same features for out-of-sample data
+    features_oos = create_features(df_oos)     # same feature engineering
+    X_oos_scaled = scaler.transform(features_oos)  # ← SAME scaler object!
+    # CRITICAL: transform() only, NOT fit_transform()
+    # fit_transform() on OOS data = LOOK-AHEAD BIAS
+
+    # Predict signals
+    df_oos["signal"] = model.predict(X_oos_scaled)
+    # signal: +1 (long) or −1 (short)
+
+    # Calculate strategy returns
+    df_oos["returns"] = df_oos["Close"].pct_change()
+    df_oos["strategy"] = df_oos["returns"] * df_oos["signal"]
+    df_oos["cumulative"] = df_oos["strategy"].cumsum()
+    # Plot: strategy cumulative returns vs buy-and-hold
+
+# Step 6: Run backtest on fresh data
+df_oos = yf.download("JPYINR=X", start="2019-01-01", end="2025-12-31")
+backtest(df_oos, model, scaler)
+# Currency pair stays flat (buy-and-hold ≈ 0)
+# But ANN strategy shows positive cumulative returns</pre>
+    </div>
+  </div>
+  <div class="mt-1 grid grid-cols-3 gap-2 text-xs">
+    <div class="bg-cyan-100 p-1 rounded"><span class="font-bold">Inspect weights:</span> <code>model.coefs_[0]</code> = input→hidden weights, <code>model.coefs_[1]</code> = hidden→output weights</div>
+    <div class="bg-cyan-100 p-1 rounded"><span class="font-bold">Inspect biases:</span> <code>model.intercepts_[0]</code> = hidden biases, <code>model.intercepts_[1]</code> = output bias</div>
+    <div class="bg-cyan-100 p-1 rounded"><span class="font-bold">Layer count:</span> <code>model.n_layers_</code> → 3 (input + hidden + output). Weights can be negative (= inverse relationship).</div>
+  </div>
+  <div class="mt-1 text-xs">
+    <span class="font-bold text-cyan-700">GOTCHA:</span> Using <code>scaler.fit_transform()</code> on out-of-sample data introduces look-ahead bias — it learns future mean/std. Always use the SAME scaler fitted on training data and call only <code>.transform()</code> on new data.
+  </div>
+</div>
+
+<!-- ─────────── SECTION 8 — PRACTICAL INSIGHTS (RED) ─────────── -->
+<div class="border-l-4 border-red-500 bg-red-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-red-800 text-sm mb-1">8 · Portfolio-Level ML &amp; Practical Deployment Insights</h2>
+  <div class="grid grid-cols-3 gap-2">
+    <div>
+      <p class="font-semibold text-red-700 mb-0.5">WHAT — Why Portfolio &gt; Individual</p>
+      <ul class="list-disc ml-3 space-y-0.5 text-xs">
+        <li>The lecture suggests neural networks usually need <span class="font-bold">very large datasets</span>, often hundreds of thousands of rows</li>
+        <li>Single-instrument daily data, even across decades, is usually too small for this style of modeling</li>
+        <li>Combining intraday data across many instruments is one practical way to reach usable data volume</li>
+        <li>Portfolio-level prediction can benefit from diversification, which may help contain drawdowns</li>
+        <li>Single-instrument models tend to show larger drawdowns and less reliable signals in the lecturer's experience</li>
+      </ul>
+      <p class="mt-1 text-xs"><span class="font-bold">Data sources:</span> US daily data available from 1873. Decent quality from 1950s. But daily resolution is still insufficient for deep learning.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-red-700 mb-0.5">WHY — Industry Trend Shift</p>
+      <p class="text-xs mb-1">Machine Learning (ML) in trading is shifting from:</p>
+      <table class="w-full text-xs border-collapse">
+        <tr class="bg-red-200"><th class="border p-0.5">Old Focus</th><th class="border p-0.5">New Focus</th></tr>
+        <tr><td class="border p-0.5">Predict price direction</td><td class="border p-0.5">Predict volatility of volatility</td></tr>
+        <tr><td class="border p-0.5">Individual instrument</td><td class="border p-0.5">Portfolio-level signals</td></tr>
+        <tr><td class="border p-0.5">Generate buy/sell signals</td><td class="border p-0.5">Predict position SIZE</td></tr>
+        <tr><td class="border p-0.5">Binary directions</td><td class="border p-0.5">Distribution of order flow</td></tr>
+        <tr><td class="border p-0.5">Swap algorithms</td><td class="border p-0.5">Predict whether to trade at all</td></tr>
+      </table>
+      <p class="mt-1 text-xs">The lecturer's view is that practitioners are increasingly predicting <em>derivatives of derivatives</em> — signal distributions, bet sizes, and risk metrics — rather than just raw price direction.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-red-700 mb-0.5">WORKED EXAMPLE — Data Preparation Time</p>
+      <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# Portfolio-level ML workflow:
+# 1. Download data for 500 instruments
+# 2. Create features for EACH instrument
+# 3. Scale EACH instrument individually
+# 4. Combine all scaled data into one DataFrame
+# 5. Handle NaN via interpolation:
+df.interpolate(method='cubic')   # cubic interpolation
+df.interpolate(method='linear')  # linear interpolation
+# 6. Train model on combined portfolio data
+# 7. Apply model across all instruments
+
+# Time allocation in ML projects:
+# 60-70% → Data preparation &amp; feature engineering
+# 30-40% → Model building &amp; optimization
+
+# Minimum data for deep learning:
+# "A few hundred thousand rows" — Jay
+# Single stock daily: ~250 rows/year
+# 500 stocks × 5 years = 625,000 rows ✓</pre>
+      <p class="mt-1 text-xs"><span class="font-bold text-red-700">GOTCHA:</span> Stop losses go in a separate order book — NOT visible to High-Frequency Traders (HFTs) or big institutions. Different order books prevent stop hunting by large players.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── QUICK REFERENCE (GRAY) ─────────── -->
+<div class="bg-gray-100 border border-gray-300 p-2 rounded mb-2">
+  <h2 class="font-bold text-gray-700 text-sm mb-1">Quick Reference — Algorithms &amp; Key Formulas</h2>
+  <div class="grid grid-cols-3 gap-2 text-xs">
+    <div>
+      <p class="font-semibold mb-0.5">K-Means Clustering</p>
+      <table class="w-full border-collapse">
+        <tr><td class="border p-0.5 font-bold">Import</td><td class="border p-0.5"><code>from sklearn.cluster import KMeans</code></td></tr>
+        <tr><td class="border p-0.5 font-bold">Create</td><td class="border p-0.5"><code>KMeans(n_clusters=K, random_state=1)</code></td></tr>
+        <tr><td class="border p-0.5 font-bold">Train</td><td class="border p-0.5"><code>model.fit(X_scaled)</code></td></tr>
+        <tr><td class="border p-0.5 font-bold">Labels</td><td class="border p-0.5"><code>model.labels_</code> → [0,1,2,0,...]</td></tr>
+        <tr><td class="border p-0.5 font-bold">Inertia</td><td class="border p-0.5"><code>model.inertia_</code> → Σ(dist²)</td></tr>
+        <tr><td class="border p-0.5 font-bold">Scaling</td><td class="border p-0.5">MANDATORY (Euclidean distance)</td></tr>
+        <tr><td class="border p-0.5 font-bold">Split</td><td class="border p-0.5">NOT needed (no train/test)</td></tr>
+      </table>
+    </div>
+    <div>
+      <p class="font-semibold mb-0.5">Neural Network (MLPClassifier)</p>
+      <table class="w-full border-collapse">
+        <tr><td class="border p-0.5 font-bold">Import</td><td class="border p-0.5"><code>from sklearn.neural_network import MLPClassifier</code></td></tr>
+        <tr><td class="border p-0.5 font-bold">1 layer</td><td class="border p-0.5"><code>hidden_layer_sizes=(5,)</code></td></tr>
+        <tr><td class="border p-0.5 font-bold">3 layers</td><td class="border p-0.5"><code>hidden_layer_sizes=(5,4,3)</code></td></tr>
+        <tr><td class="border p-0.5 font-bold">Activation</td><td class="border p-0.5"><code>activation='relu'</code> (hidden only)</td></tr>
+        <tr><td class="border p-0.5 font-bold">Optimizer</td><td class="border p-0.5"><code>solver='adam'</code></td></tr>
+        <tr><td class="border p-0.5 font-bold">Weights</td><td class="border p-0.5"><code>model.coefs_</code></td></tr>
+        <tr><td class="border p-0.5 font-bold">Biases</td><td class="border p-0.5"><code>model.intercepts_</code></td></tr>
+      </table>
+    </div>
+    <div>
+      <p class="font-semibold mb-0.5">Key Formulas</p>
+      <table class="w-full border-collapse">
+        <tr><td class="border p-0.5 font-bold">Linear Z</td><td class="border p-0.5">Z = Σ(xᵢ × wᵢ) + bias</td></tr>
+        <tr><td class="border p-0.5 font-bold">Sigmoid</td><td class="border p-0.5">f(z) = 1 / (1 + e⁻ᶻ) → [0,1]</td></tr>
+        <tr><td class="border p-0.5 font-bold">Tanh</td><td class="border p-0.5">f(z) = tanh(z) → [−1,+1]</td></tr>
+        <tr><td class="border p-0.5 font-bold">ReLU</td><td class="border p-0.5">f(z) = max(0, z) → [0,∞)</td></tr>
+        <tr><td class="border p-0.5 font-bold">Leaky ReLU</td><td class="border p-0.5">f(z) = max(0.01z, z)</td></tr>
+        <tr><td class="border p-0.5 font-bold">Inertia</td><td class="border p-0.5">Σ‖xᵢ − μₖ‖² (k = cluster)</td></tr>
+        <tr><td class="border p-0.5 font-bold">Ann. Vol</td><td class="border p-0.5">σ_daily × √252</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── KEY TAKEAWAYS (YELLOW) ─────────── -->
+<div class="bg-yellow-50 border border-yellow-400 p-2 rounded mb-2">
+  <h2 class="font-bold text-yellow-800 text-sm mb-1">KEY TAKEAWAYS</h2>
+  <div class="grid grid-cols-4 gap-2 text-xs">
+    <div class="bg-yellow-100 p-1.5 rounded border border-yellow-300">
+      <p class="font-bold text-yellow-800 mb-0.5">Clustering Power</p>
+      <p>K-Means discovers hidden stock groups using quantitative features. Scale features first. Use the Elbow Method plus judgment when choosing K. Applications: strategy allocation, position sizing, stat arb pair discovery.</p>
+    </div>
+    <div class="bg-yellow-100 p-1.5 rounded border border-yellow-300">
+      <p class="font-bold text-yellow-800 mb-0.5">Neural Network Essence</p>
+      <p>Artificial neurons replicate biology: inputs × weights → linear function Z → activation function → output. Weights are LEARNED (not set by us). Same input + different weights = different perception per neuron.</p>
+    </div>
+    <div class="bg-yellow-100 p-1.5 rounded border border-yellow-300">
+      <p class="font-bold text-yellow-800 mb-0.5">Activation = Task Selector</p>
+      <p>Hidden layers in this lecture usually use ReLU or Leaky ReLU. Output layer: Sigmoid (buy/hold 0,1), Tanh (long/short −1,+1), ReLU or Linear (regression). Activation is set per layer, not per neuron. These were the four functions emphasized in practice.</p>
+    </div>
+    <div class="bg-yellow-100 p-1.5 rounded border border-yellow-300">
+      <p class="font-bold text-yellow-800 mb-0.5">Portfolio &gt; Individual</p>
+      <p>Deep learning typically benefits from very large datasets. Single-stock daily data is usually insufficient, so combining instruments at portfolio level is more practical. The lecturer also notes an industry shift from predicting direction toward predicting position size, risk, and signal distributions.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── FOOTER ─────────── -->
+<div class="text-center text-xs text-gray-400 mt-2">
+  MLT-03 Machine Learning-III — Clustering &amp; Deep Learning · Jay · EPAT Week 20-1 · Cheat Sheet
+</div>
+
+</div>
+</body>
+</html>

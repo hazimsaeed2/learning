@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[WEEK 14-2] — Quantitative Momentum Strategies II (EFS-04) — Cheat Sheet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+           font-size: 11px; line-height: 1.5; }
+    @media print { body { font-size: 9px; } .page-break { page-break-before: always; } }
+    h1 { font-size: 18px; }
+    h2 { font-size: 13px; }
+    h3 { font-size: 11px; }
+    table { font-size: 10px; }
+    pre  { font-size: 9px; line-height: 1.45; }
+  </style>
+</head>
+<body class="bg-white p-4 max-w-6xl mx-auto">
+
+  <!-- ====================== PAGE 1 ====================== -->
+
+  <!-- HEADER -->
+  <header class="text-center border-b-4 border-blue-600 pb-3 mb-4">
+    <h1 class="font-extrabold text-blue-900">MOMENTUM II — OIL ARBITRAGE, VIX FUTURES, AUTOCORRELATION SCANNING &amp; MOMENTUM CRASH — COMPLETE CHEAT SHEET</h1>
+    <p class="text-gray-600 mt-1">EPAT Week 14-2 — EFS-04: Quantitative Momentum Strategies II — Equity, FX &amp; Futures | Ernie Chan (QTS Capital)</p>
+    <p class="text-gray-700 mt-2">
+      <strong>The Problem:</strong> Gold arbitrage (short GC + long GLD) earns Sharpe ≈ 0 because it has zero risk — no risk, no return. We need strategies with controlled risk that actually generate excess return.<br>
+      <strong>Your Goal:</strong> Build 4 real momentum strategies (oil USO/XLE, VIX/ES, autocorrelation scan, momentum+mean-reversion combo) that each achieve Sharpe ≈ 1.0, understand momentum crash risk, and know when NOT to trade momentum.
+    </p>
+  </header>
+
+  <!-- SECTION 1: CORE EXAMPLE -->
+  <section class="border-2 border-amber-500 rounded-lg p-3 mb-4 bg-amber-50">
+    <h2 class="font-bold text-amber-900 mb-3 bg-amber-200 rounded px-2 py-1">1️⃣ CORE EXAMPLE — Gold (Sharpe=0) → Oil (Sharpe≈1) → VIX (Sharpe≈1): Why Risk = Return</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+      <!-- Col 1: Gold -->
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">STRATEGY 1: Gold (No Risk = No Return)</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold bg-amber-50">Position</td><td class="border px-2 py-1">Short GC (gold futures) + Long GLD (gold ETF)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-amber-50">GC state</td><td class="border px-2 py-1">Almost always contango (γ &lt; 0)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-amber-50">GLD hedge</td><td class="border px-2 py-1">Physical gold bars → perfect spot hedge</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-amber-50">Sharpe Ratio</td><td class="border px-2 py-1 font-mono font-bold text-red-700">≈ 0</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400">
+          <p><strong>💡 WHY SHARPE = 0:</strong> Roll return always negative (contango) + spot perfectly hedged = ZERO risk. In finance: zero risk → return = risk-free rate → excess return = 0 → Sharpe = 0. No free lunch.</p>
+        </div>
+      </div>
+
+      <!-- Col 2: Oil -->
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">STRATEGY 2: Oil (Imperfect Hedge = Real Return)</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold bg-amber-50">Position</td><td class="border px-2 py-1">Short USO + Long XLE (contango)<br>Long USO + Short XLE (backwardation)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-amber-50">Signal</td><td class="border px-2 py-1">Front &gt; Back → backwardation → long<br>Front &lt; Back → contango → short</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-amber-50">Sharpe Ratio</td><td class="border px-2 py-1 font-mono font-bold text-green-700">≈ 1.0</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-amber-50">2008 Crisis</td><td class="border px-2 py-1 font-mono font-bold">+120% (short USO, LONG XLE!)</td></tr>
+          </tbody>
+        </table>
+        <p><strong>WHY XLE, not GLD-style:</strong> XLE is an oil-sensitive energy-equity hedge, not a direct oil/spot hedge. That mismatch leaves real residual risk, and that is why Sharpe can be positive.</p>
+        <p class="mt-1"><strong>USO composition:</strong> Front + back month WTI (West Texas Intermediate) futures, weighted for constant ~1-month avg duration. Rolls daily.</p>
+      </div>
+
+      <!-- Col 3: VIX -->
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">STRATEGY 3: VIX (Theta = −50% Roll)</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold bg-amber-50">Position</td><td class="border px-2 py-1">Short VX + Short ES (both directions!)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-amber-50">Roll return</td><td class="border px-2 py-1 font-mono font-bold text-red-700">−50%/yr (massive contango)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-amber-50">VIX–ES corr.</td><td class="border px-2 py-1 font-mono">−75% (anti-correlated)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-amber-50">Sharpe Ratio</td><td class="border px-2 py-1 font-mono font-bold text-green-700">≈ 1.0</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-amber-50">Dollar scaling</td><td class="border px-2 py-1 font-mono">Convert to $ terms first: VX × 1000, ES × 50</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500">
+          <p><strong>⚠️ SHORT BOTH, NOT LONG/SHORT:</strong> VIX and ES are ANTI-correlated (−75%). To hedge, you must go same direction on both: short VX AND short ES (or long both). This is NOT a pair trade!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: VIX Deep Dive -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">2️⃣ VIX FUTURES — Why −50% Roll Return (Theta), Regime Shift &amp; Scatter Plot</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">WHAT: VIX Index vs VIX Futures vs VIX ETFs</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-purple-100">
+            <tr><th class="border px-2 py-1">Instrument</th><th class="border px-2 py-1">Holds</th><th class="border px-2 py-1">Tracks</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">VIX Index</td><td class="border px-2 py-1">Nothing (computed snapshot)</td><td class="border px-2 py-1">Weighted avg implied vol of ATM SPX options (~1-month expiry)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">VX Futures</td><td class="border px-2 py-1">Derivative contract on VIX</td><td class="border px-2 py-1">VIX index (with roll return)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">VXX/VIXY ETFs</td><td class="border px-2 py-1">VIX FUTURES (not index!)</td><td class="border px-2 py-1">VX futures return (bleeds θ)</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mb-2">
+          <p><strong>⚠️ WHY YOU CAN'T REPLICATE VIX:</strong> VIX = snapshot of ATM implied vols. But ATM strike shifts every second as SPX moves. A portfolio mimicking VIX would need to rebalance every minute → impossible. Even if you did, the P&amp;L of the dynamic portfolio ≠ VIX index return (snapshot vs holding). ALL VIX ETFs hold futures, never the index itself.</p>
+        </div>
+
+        <h3 class="font-bold text-purple-800 mt-2 mb-2">WHY −50% Roll Return (Theta Intuition)</h3>
+        <p>Imagine holding options with constant VIX, constant SPX → nothing changes. Do you still lose money? <strong>YES — theta decay.</strong> Options lose value every day from time decay. This theta = VIX's contango. Insurance costs money even when nothing happens.</p>
+        <p class="mt-1">VIX range: 10-15% normal, 20-30% heightened, 100%+ extreme crisis.</p>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">REGIME SHIFT: Pre- vs Post-GFC (Global Financial Crisis)</h3>
+        <p><strong>Scatter plot VX vs ES</strong> reveals TWO distinct clusters:</p>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-purple-100">
+            <tr><th class="border px-2 py-1">Property</th><th class="border px-2 py-1">Pre-GFC</th><th class="border px-2 py-1">Post-GFC</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Cluster position</td><td class="border px-2 py-1">Higher volatility at same equity level</td><td class="border px-2 py-1">Lower average VIX</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Vol range (VVIX)</td><td class="border px-2 py-1">Narrow range</td><td class="border px-2 py-1 font-bold text-red-700">Much wider range</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Favors</td><td class="border px-2 py-1 text-green-700">Mean reversion</td><td class="border px-2 py-1 text-green-700">Momentum</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mb-2">
+          <p><strong>💡 REGIME INSIGHT:</strong> Mean reversion wants HIGH volatility + LOW vol-of-vol (big sine wave, stable amplitude). Momentum wants HIGH vol-of-vol (expanding swings). Post-GFC has higher VVIX → momentum better.</p>
+        </div>
+        <p><strong>PRACTICAL:</strong> Use only post-GFC data to fit hedge ratio. Pre-GFC data creates bias. Fitting a straight line through BOTH clusters gives a slope that's "neither here nor there."</p>
+        <p class="mt-1"><strong>Hedge ratio:</strong> Regress VX on ES (in $ terms: VX×1000, ES×50). Was ~5.35 ES per VX. Now much lower (~0.5-1). Must use rolling/adaptive estimate live.</p>
+
+        <h3 class="font-bold text-purple-800 mt-2 mb-2">VIX Roll Return Signal</h3>
+        <div class="bg-purple-100 rounded p-2">
+          <p class="font-mono">γ_daily = (VIX_spot − VX_future) / T_expiry</p>
+          <p class="font-mono">Threshold H = 0.10 (= 10% per day)</p>
+          <p class="font-mono">If γ &lt; −H: short VX + short β×ES</p>
+          <p class="font-mono">If γ &gt; +H: long VX + long β×ES</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: MOMENTUM CRASH -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">3️⃣ MOMENTUM CRASH — Crisis Alpha, the Painful Drawdown &amp; Four Solutions</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">WHAT: The Momentum Return Profile</h3>
+        <p><strong>During crisis (2008):</strong> USO/XLE strategy = +120%. Short USO (oil crashed) + LONG XLE (yes, long stocks during a stock crash — and still made money because oil dropped MORE).</p>
+        <p class="mt-1"><strong>After crisis:</strong> Momentum Crash (named by Prof. Kent Daniel, Columbia Business School). Painful drawdown ~30% lasting ~2 years.</p>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2 mb-2">
+          <p><strong>⚠️ THE INVESTOR TIMING TRAP:</strong> Before crisis: $100M AUM → +120% = made $120M. After crisis: investors pile in, AUM → $1B. Then −30% crash on $1B = lost $300M. Net: made $120M, lost $300M. In the lecture example, the Toronto fund/company did not survive that profile.</p>
+        </div>
+        <p><strong>2020 COVID:</strong> Oil went NEGATIVE. Chan's point was that if the strategy worked in 2008, 2020 could have been an even bigger out-of-sample stress test; he even speculated it might have reached something like 300% if it held up.</p>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">FOUR SOLUTIONS to Momentum Crash</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-orange-100">
+            <tr><th class="border px-2 py-1">#</th><th class="border px-2 py-1">Method</th><th class="border px-2 py-1">Details</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">1</td><td class="border px-2 py-1">Stop when VIX normalizes</td><td class="border px-2 py-1">When volatility returns to pre-crisis levels, stop trading entirely</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">2</td><td class="border px-2 py-1">Drop the short side</td><td class="border px-2 py-1">Keep long position only after crisis ends. Don't short USO/VX after recovery begins</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">3</td><td class="border px-2 py-1">Stop-loss</td><td class="border px-2 py-1">"I don't think that will work, frankly" — Ernie</td></tr>
+            <tr><td class="border px-2 py-1 font-bold text-green-700">4 ✓</td><td class="border px-2 py-1 font-bold">Mean reversion combo</td><td class="border px-2 py-1">Trade both momentum AND mean reversion → opposite profiles cancel crash. See Section 5.</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Advanced option:</strong> Regime prediction model (ML/corrective AI). PredictNow.ai — Ernie's startup — detects regime per strategy daily. Uses classification trees, deep latent variable models beyond HMM (Hidden Markov Model).</p>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 CLIFF ASNESS (AQR, ~$300B AUM):</strong> PhD student of Eugene Fama (Nobel Laureate). Paper "Value and Momentum Everywhere." Momentum formation is slow → skip the most recent 1 month in a 12-month lookback. Use months 2–12, not 1–12.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 2 ====================== -->
+
+  <!-- SECTION 4: AUTOCORRELATION SCANNING -->
+  <section class="border-2 border-teal-500 rounded-lg p-3 mb-4 bg-teal-50">
+    <h2 class="font-bold text-teal-900 mb-3 bg-teal-200 rounded px-2 py-1">4️⃣ SERIAL AUTOCORRELATION — Scanning for Momentum Candidates &amp; the IID Trap</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">WHAT: Autocorrelation-Based Momentum Scan</h3>
+        <p>Instead of causal models (hypothesis first), scan futures for positive autocorrelation of returns. Like an astronomer scanning the sky for anomalies before theorizing.</p>
+        <div class="bg-teal-100 rounded p-2 mb-2">
+          <p class="font-bold">METHOD:</p>
+          <p class="font-mono">1. Pick look-back L (e.g., 250 days = 1 year)</p>
+          <p class="font-mono">2. Pick holding period H (e.g., 25 days = 1 month)</p>
+          <p class="font-mono">3. Compute return over L and return over H</p>
+          <p class="font-mono">4. Autocorrelation function → correlation + p-value</p>
+          <p class="font-mono">5. Filter: p-value &lt; 0.05, then pick highest correlation</p>
+        </div>
+
+        <h3 class="font-bold text-teal-800 mt-2 mb-2">WORKED EXAMPLE: TU (2-Year Treasury Note Futures)</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold bg-teal-50">Look-back L</td><td class="border px-2 py-1 font-mono">250 days (1 year)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-teal-50">Holding H</td><td class="border px-2 py-1 font-mono">25 days (1 month)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-teal-50">Correlation</td><td class="border px-2 py-1 font-mono">0.27–0.29 (strong for finance)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-teal-50">p-value</td><td class="border px-2 py-1 font-mono">0.016–0.02 (statistically significant)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-teal-50">Sharpe</td><td class="border px-2 py-1 font-mono font-bold text-green-700">≈ 1.0</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 SIMPLEST MOMENTUM STRATEGY EVER:</strong></p>
+          <p class="font-mono">If return_over_lookback &gt; 0 → BUY</p>
+          <p class="font-mono">If return_over_lookback &lt; 0 → SHORT</p>
+          <p class="font-mono">Hold for H days. Repeat.</p>
+          <p class="font-mono">Sharpe ≈ 1.0. Works on TU + at least 4 other futures.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">THE IID VIOLATION (Critical Statistical Trap)</h3>
+        <p><strong>IID</strong> = Independent and Identically Distributed — the assumption behind almost every statistical test.</p>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mb-2">
+          <p><strong>⚠️ PROBLEM:</strong> With L=250 lookback shifted by 1 day:</p>
+          <p class="font-mono">Sample 1: days [1-250] → return for [251-275]</p>
+          <p class="font-mono">Sample 2: days [2-251] → return for [252-276]</p>
+          <p class="font-mono">248 of 250 days OVERLAP → NOT independent!</p>
+          <p class="font-mono">p-value says 0.01 but reality is ~0.10</p>
+          <p class="font-mono">You think it's significant. It's NOT.</p>
+        </div>
+
+        <h3 class="font-bold text-teal-800 mb-2">FIX: Non-Overlapping Samples</h3>
+        <div class="bg-teal-100 rounded p-2 mb-2">
+          <p class="font-bold">SOLUTION:</p>
+          <p class="font-mono">Shift by min(L, H) days, not by 1 day.</p>
+          <p class="font-mono">For L=250, H=25: shift by 25 days.</p>
+          <p class="font-mono">At least the holding period is non-overlapping.</p>
+          <p class="font-mono">Fewer samples, but honest p-values.</p>
+        </div>
+
+        <h3 class="font-bold text-teal-800 mb-2">WHAT: p-value, Precisely</h3>
+        <p>p-value = probability that the observed correlation is actually zero (a statistical fluke from too few data points). The <strong>null hypothesis</strong> is that there is no correlation.</p>
+        <p class="mt-1"><strong>Threshold:</strong> p &lt; 0.05 → reject null hypothesis → correlation is "statistically significant."</p>
+        <p class="mt-1"><strong>Example:</strong> correlation = 0.75 from 3 data points → p = 0.50. Useless. Same correlation from 1000 non-overlapping samples → p = 0.001. Meaningful.</p>
+
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 NOT NORMAL, NOT STATIONARY:</strong> Many statistical tests do not need normality or stationarity here, but they do rely on IID-style independence assumptions. IID ≠ normality. IID ≠ stationarity. The independence part is what matters most in this lecture's warning.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: MOMENTUM + MEAN REVERSION COMBO -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">5️⃣ MOMENTUM + MEAN REVERSION — The Best-of-Both-Worlds Combo (Sharpe 1.1)</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">THREE EQUITY CURVES</h3>
+
+        <!-- VISUAL: Three Equity Curves -->
+        <svg viewBox="0 0 260 130" class="w-full mb-2">
+          <rect x="25" y="5" width="225" height="100" rx="4" fill="#f8fafc" stroke="#e2e8f0"/>
+          <!-- Crisis shading -->
+          <rect x="80" y="5" width="60" height="100" fill="#fef2f2" opacity="0.5"/>
+          <text x="110" y="14" text-anchor="middle" font-size="6" fill="#dc2626" font-weight="bold">CRISIS</text>
+          <!-- Grid -->
+          <line x1="25" y1="55" x2="250" y2="55" stroke="#e2e8f0"/>
+          <text x="22" y="22" text-anchor="end" font-size="5" fill="#94a3b8">+100%</text>
+          <text x="22" y="58" text-anchor="end" font-size="5" fill="#94a3b8">0%</text>
+          <text x="22" y="95" text-anchor="end" font-size="5" fill="#94a3b8">-60%</text>
+          <!-- Momentum (green — spikes in crisis, crashes after) -->
+          <polyline points="30,55 60,52 80,48 100,20 120,18 140,35 160,52 180,60 200,58 230,50 245,45"
+            fill="none" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <!-- Mean Reversion (blue — crashes in crisis, recovers) -->
+          <polyline points="30,55 60,53 80,52 100,85 120,90 140,75 160,60 180,50 200,42 230,35 245,30"
+            fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="6,3"/>
+          <!-- Combined (thick orange — flat during crisis, then up) -->
+          <polyline points="30,55 60,53 80,52 100,53 120,54 140,50 160,46 180,40 200,35 230,28 245,22"
+            fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+          <!-- Legend -->
+          <line x1="30" y1="115" x2="48" y2="115" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="52" y="118" font-size="6" fill="#1e293b">Momentum</text>
+          <line x1="100" y1="115" x2="118" y2="115" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="6,3"/>
+          <text x="122" y="118" font-size="6" fill="#1e293b">Mean Rev</text>
+          <line x1="170" y1="115" x2="188" y2="115" stroke="#f59e0b" stroke-width="2.5"/>
+          <text x="192" y="118" font-size="6" fill="#1e293b" font-weight="bold">Combined ✓</text>
+        </svg>
+
+        <table class="w-full border border-gray-300">
+          <thead class="bg-purple-100">
+            <tr><th class="border px-2 py-1">Strategy</th><th class="border px-2 py-1">Crisis</th><th class="border px-2 py-1">Recovery</th><th class="border px-2 py-1">Sharpe</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold text-green-700">Pure Momentum</td><td class="border px-2 py-1 font-mono">+huge</td><td class="border px-2 py-1 font-mono text-red-700">−crash</td><td class="border px-2 py-1 font-mono">~1.0</td></tr>
+            <tr><td class="border px-2 py-1 font-bold text-blue-700">Pure Mean Rev.</td><td class="border px-2 py-1 font-mono text-red-700">−60% DD</td><td class="border px-2 py-1 font-mono text-green-700">+great</td><td class="border px-2 py-1 font-mono">~1.0</td></tr>
+            <tr class="bg-green-50"><td class="border px-2 py-1 font-bold text-green-800">Combined ✓</td><td class="border px-2 py-1 font-mono">FLAT (0%)</td><td class="border px-2 py-1 font-mono text-green-700">+great</td><td class="border px-2 py-1 font-mono font-bold">1.1</td></tr>
+          </tbody>
+        </table>
+        <p class="mt-2"><strong>"You avoided all the pain, you're the hero."</strong> If you don't lose money during the crisis, you're already the best financial advisor.</p>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">HOW: Signal Alignment</h3>
+        <div class="bg-purple-100 rounded p-2 mb-2">
+          <p class="font-bold">TRADING RULES (CL futures example):</p>
+          <p class="font-mono">Momentum: price &gt; price_40_days_ago → BUY</p>
+          <p class="font-mono">Mean rev: price &lt; price_30_days_ago → BUY</p>
+          <p class="font-mono">Enter ONLY if BOTH signals agree.</p>
+          <p class="font-mono">(Use longer period for momentum, shorter for MR)</p>
+        </div>
+        <p><strong>WHY signals align removes crash:</strong> During crisis, momentum says BUY (prices above 40-day), mean-reversion says SELL (prices above 30-day). They disagree → no position → FLAT during crisis.</p>
+        <p class="mt-1"><strong>During recovery:</strong> Both agree → enter position → capture upside.</p>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">ALTERNATIVE: Weighted Portfolio</h3>
+        <p>Instead of signal alignment, trade both strategies independently:</p>
+        <p class="font-mono mt-1">Portfolio = 1 unit momentum + 2 units MR</p>
+        <p class="mt-1">This gives SOME crisis return (not zero) but also SOME drawdown during recovery. Adjust ratio to taste.</p>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 MIRROR IMAGE:</strong> Momentum and mean reversion have EXACTLY opposite return profiles. Momentum = crisis alpha + crash. Mean reversion = crisis drawdown + recovery alpha. Combined = steady returns without extremes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: CALENDAR SPREAD -->
+  <section class="border-2 border-cyan-500 rounded-lg p-3 mb-4 bg-cyan-50">
+    <h2 class="font-bold text-cyan-900 mb-3 bg-cyan-200 rounded px-2 py-1">6️⃣ CALENDAR SPREAD — Why Linear Term Structure = Zero &amp; The Curvature Requirement</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-cyan-300 rounded p-3">
+        <h3 class="font-bold text-cyan-800 mb-2">WHAT: Calendar Spread Properties</h3>
+        <p>Calendar spread = long one contract + short another contract (same underlying, different expiry). <strong>Spot return is perfectly hedged.</strong></p>
+
+        <table class="w-full border border-gray-300 mt-2 mb-2">
+          <thead class="bg-cyan-100">
+            <tr><th class="border px-2 py-1">Term Structure</th><th class="border px-2 py-1">Spread Return</th><th class="border px-2 py-1">Why</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Linear (straight line)</td><td class="border px-2 py-1 font-mono font-bold text-red-700">ZERO</td><td class="border px-2 py-1">Same γ for all contracts → no differential to capture</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Curved (non-linear)</td><td class="border px-2 py-1 font-mono font-bold text-green-700">Can be &gt; 0</td><td class="border px-2 py-1">Different γ per contract creates something to harvest, but only if you take the correct front/back direction</td></tr>
+          </tbody>
+        </table>
+
+        <p class="font-bold text-cyan-800">RISK: Curvature can switch just like slope can switch (contango ↔ backwardation). If curvature flips, your spread loses money.</p>
+        <p class="mt-1"><strong>Gold may be a good candidate</strong> — curvature tends to be stable. Test it!</p>
+      </div>
+
+      <div class="bg-white border-2 border-cyan-300 rounded p-3">
+        <h3 class="font-bold text-cyan-800 mb-2">THE SIGN TRAP (Again!)</h3>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mb-2">
+          <p><strong>⚠️ EVERYONE GETS THIS WRONG:</strong></p>
+          <p class="font-mono">Forward curve: steep negative slope at front,</p>
+          <p class="font-mono">                less steep at back.</p>
+          <p class="font-mono">γ = −slope → front γ is MORE positive</p>
+          <p class="font-mono">              → back γ is LESS positive</p>
+          <p class="font-mono">Front has higher γ → you want to SHORT front?</p>
+          <p class="font-mono">NO! Slope is positive but steep at front:</p>
+          <p class="font-mono">γ = −(positive slope) = MORE NEGATIVE at front</p>
+          <p class="font-mono">→ SHORT FRONT + LONG BACK</p>
+          <p class="font-mono font-bold">The negative sign ALWAYS matters!</p>
+        </div>
+        <p>When Ernie asked the class, EVERY student said "buy front." All wrong. The negative sign of the forward-curve-to-roll-return mapping is the most common mistake in futures momentum.</p>
+
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 RULE:</strong> The front contract has the STEEPEST part of the forward curve. Steep positive slope = most negative γ = worst to hold long. Short the front, long the back.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 3 ====================== -->
+
+  <!-- SECTION 7: LEVERAGED ETF MOMENTUM -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">7️⃣ LEVERAGED ETF MOMENTUM — Volatility Drag, Institutional Flows &amp; Close-of-Day Signal</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">WHAT: Volatility Drag (Why 3× ≠ 3× Long-Term)</h3>
+        <div class="bg-orange-100 rounded p-2 mb-2">
+          <p class="font-bold">LONG-TERM GROWTH RATE:</p>
+          <p class="font-mono text-lg">g = μ − σ²/2</p>
+          <p class="font-mono">μ = arithmetic mean return</p>
+          <p class="font-mono">σ² = variance of returns</p>
+        </div>
+        <p><strong>For 3× leveraged ETF (UPRO):</strong></p>
+        <p class="font-mono">μ_UPRO = 3 × μ_SPY (by design, daily)</p>
+        <p class="font-mono">σ_UPRO = 3 × σ_SPY → σ²_UPRO = 9 × σ²_SPY</p>
+        <p class="font-mono">g_UPRO = 3μ − 9σ²/2</p>
+        <p class="font-mono">g_SPY  = μ − σ²/2</p>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ IF σ² IS LARGE ENOUGH:</strong> g_UPRO &lt; g_SPY. The 3× ETF UNDERPERFORMS the 1× version long-term! Leverage amplifies variance 9× but return only 3×. The drag eats profits.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">HOW: Institutional Rebalancing Creates Momentum</h3>
+        <p><strong>WHY 3× ETFs create momentum near market close:</strong></p>
+        <p class="mt-1">To maintain 3× daily leverage, UPRO must rebalance near close:</p>
+        <table class="w-full border border-gray-300 mt-2 mb-2">
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold bg-orange-50">Market up 2%</td><td class="border px-2 py-1">Must BUY ~$32M of stock near close (on $270M portfolio)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-orange-50">Market down 2%</td><td class="border px-2 py-1">Must SELL ~$32M of stock near close</td></tr>
+          </tbody>
+        </table>
+        <p>Total levered assets tied to SPX = BILLIONS across all leveraged ETFs. All rebalance in the same direction in the last 15-30 minutes → massive end-of-day momentum flow.</p>
+
+        <div class="bg-orange-100 rounded p-2 mt-2">
+          <p class="font-bold">STRATEGY (Pauline Shum, ~2010-2011):</p>
+          <p class="font-mono">If SPX moves &gt; 2% in either direction by 3:45 PM:</p>
+          <p class="font-mono">→ Trade in the SAME direction near close</p>
+          <p class="font-mono">Sharpe ≈ 2.0 (1-year backtest)</p>
+          <p class="font-mono">Needs bells &amp; whistles for live trading</p>
+        </div>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 EVERY STRATEGY NEEDS IMPROVEMENT:</strong> "I'm not giving you a turnkey strategy. Otherwise I don't have to teach — I just put it in the book and you go away. You're supposed to improve it." — Ernie Chan</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: QUICK REFERENCE -->
+  <section class="border-2 border-gray-600 rounded-lg p-3 bg-gray-100">
+    <h2 class="font-bold text-gray-900 mb-3 bg-gray-300 rounded px-2 py-1">📋 QUICK REFERENCE — All Strategies &amp; Key Numbers</h2>
+
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Col 1: All Strategies -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">ALL STRATEGIES COMPARED</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Strategy</th><th class="border px-1 py-1">Sharpe</th><th class="border px-1 py-1">Key</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">GC/GLD (gold)</td><td class="border px-1 py-1 font-mono">≈ 0</td><td class="border px-1 py-1">No risk = no return</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">USO/XLE (oil)</td><td class="border px-1 py-1 font-mono">≈ 1.0</td><td class="border px-1 py-1">Crisis alpha +120%</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">VX/ES (VIX)</td><td class="border px-1 py-1 font-mono">≈ 1.0</td><td class="border px-1 py-1">θ = −50%/yr roll</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">TU autocorr.</td><td class="border px-1 py-1 font-mono">≈ 1.0</td><td class="border px-1 py-1">Simplest rule ever</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Mom+MR combo</td><td class="border px-1 py-1 font-mono">1.1</td><td class="border px-1 py-1">No crash, recovers</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Lev. ETF (UPRO)</td><td class="border px-1 py-1 font-mono">≈ 2.0</td><td class="border px-1 py-1">15-min window at close</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 2: Common Mistakes -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">COMMON MISTAKES</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Mistake</th><th class="border px-1 py-1">Fix</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">VX &amp; ES: long/short pair</td><td class="border px-1 py-1">Anti-corr → short BOTH</td></tr>
+            <tr><td class="border px-1 py-1">VIX ETF = VIX index</td><td class="border px-1 py-1">VIX ETFs hold futures only</td></tr>
+            <tr><td class="border px-1 py-1">UPRO return = 3× SPY</td><td class="border px-1 py-1">Only daily. Long-term: vol drag</td></tr>
+            <tr><td class="border px-1 py-1">Calendar spread always works</td><td class="border px-1 py-1">Needs curvature, which can flip</td></tr>
+            <tr><td class="border px-1 py-1">Linear → buy front</td><td class="border px-1 py-1">γ = −slope → SHORT front</td></tr>
+            <tr><td class="border px-1 py-1">p-value with overlapping data</td><td class="border px-1 py-1">Shift by min(L,H), not 1</td></tr>
+            <tr><td class="border px-1 py-1">Invest in momentum post-crisis</td><td class="border px-1 py-1">Crash follows crisis → invest before</td></tr>
+            <tr><td class="border px-1 py-1">Zero risk = high Sharpe</td><td class="border px-1 py-1">Zero risk = zero Sharpe!</td></tr>
+            <tr><td class="border px-1 py-1">Stat test needs normality</td><td class="border px-1 py-1">Needs IID, not normality</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 3: Numbers + Terms -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">NUMBERS &amp; TERMINOLOGY</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <tbody>
+            <tr><td class="border px-1 py-1 bg-gray-50">VIX roll return</td><td class="border px-1 py-1 font-mono">−50%/yr</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">VIX–ES correlation</td><td class="border px-1 py-1 font-mono">−75%</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">USO/XLE 2008 return</td><td class="border px-1 py-1 font-mono">+120%</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">TU correlation</td><td class="border px-1 py-1 font-mono">0.27–0.29</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">VIX normal range</td><td class="border px-1 py-1 font-mono">10-15%</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">p-value threshold</td><td class="border px-1 py-1 font-mono">&lt; 0.05</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">UPRO vol drag</td><td class="border px-1 py-1 font-mono">g = μ − σ²/2</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">CL settlement time</td><td class="border px-1 py-1 font-mono">2:30 PM ET (VWAP 2:28-2:30)</td></tr>
+          </tbody>
+        </table>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">VIX</td><td class="border px-1 py-1">Volatility Index (CBOE)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">VVIX</td><td class="border px-1 py-1">Vol of VIX (vol-of-vol)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">ATM</td><td class="border px-1 py-1">At-The-Money (options)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">IID</td><td class="border px-1 py-1">Indep. &amp; Identically Distributed</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">GFC</td><td class="border px-1 py-1">Global Financial Crisis (2008)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">AQR</td><td class="border px-1 py-1">Cliff Asness fund (~$300B)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">HMM</td><td class="border px-1 py-1">Hidden Markov Model</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">UPRO</td><td class="border px-1 py-1">3× Leveraged SPY ETF</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">WTI</td><td class="border px-1 py-1">West Texas Intermediate (oil)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="bg-yellow-100 rounded p-3 mt-3">
+      <p class="font-bold text-yellow-900 mb-2">🎯 KEY TAKEAWAYS</p>
+      <div class="grid grid-cols-4 gap-3">
+        <p>1. Zero risk = zero Sharpe (gold arb proves it). Imperfect hedges (USO/XLE, VX/ES) can generate Sharpe ≈ 1.0 because the hedge is intentionally imperfect: XLE is only an oil-sensitive equity proxy, not a direct oil hedge, and VIX's −50%/yr roll comes from theta decay of the underlying options complex.</p>
+        <p>2. Momentum crash is inevitable after crisis alpha. The Toronto hedge fund story: +$120M profit, then −$300M on inflated AUM; the firm did not survive that post-crisis profile. Four fixes: (1) stop at normal VIX, (2) drop short side, (3) stop-loss (doesn't work), (4) combine with mean reversion (Sharpe 1.1, avoids crash entirely).</p>
+        <p>3. Autocorrelation scanning finds momentum candidates (like TU) with the simplest possible rule: if lookback return &gt; 0, buy; else short. But watch for IID violations — overlapping samples make p-values lie. Shift by min(L,H) days for honest statistics.</p>
+        <p>4. Calendar spreads need CURVATURE (not just slope) to profit — linear term structure = zero return. Leveraged ETFs create end-of-day momentum from billions in institutional rebalancing. Vol drag (g = μ − σ²/2) means 3× can underperform 1× long-term.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="mt-3 text-center text-gray-600 border-t-2 border-gray-300 pt-2">
+    <p><strong>THE MASTER FORMULA:</strong> Risk = Return. Perfect hedge = zero Sharpe. Imperfect hedge = positive Sharpe. To profit from momentum, accept controlled risk (spot mismatch, curvature flip, regime shift) and hedge what you can.</p>
+    <p class="mt-1"><strong>THE ONE THING TO NEVER FORGET:</strong> "I'm not giving you a turnkey strategy." Every strategy needs bells &amp; whistles — stop-loss, adaptive hedge ratios, regime detection, momentum+MR combo. The core idea is simple; the execution is where you earn your return. Back-test forward 14 years — "if it works and you don't trade it, it's your loss."</p>
+  </footer>
+
+</body>
+</html>

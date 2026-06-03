@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[WEEK 13-1] — Trading ETFs (EFS-05) — Cheat Sheet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+           font-size: 11px; line-height: 1.5; }
+    @media print { body { font-size: 9px; } .page-break { page-break-before: always; } }
+    h1 { font-size: 18px; }
+    h2 { font-size: 13px; }
+    h3 { font-size: 11px; }
+    table { font-size: 10px; }
+    pre  { font-size: 9px; line-height: 1.45; }
+  </style>
+</head>
+<body class="bg-white p-4 max-w-6xl mx-auto">
+
+  <!-- ====================== PAGE 1 ====================== -->
+
+  <!-- HEADER -->
+  <header class="text-center border-b-4 border-blue-600 pb-3 mb-4">
+    <h1 class="font-extrabold text-blue-900">EXCHANGE TRADED FUNDS (ETFs) — STRUCTURE, ARBITRAGE &amp; TRADING — COMPLETE CHEAT SHEET</h1>
+    <p class="text-gray-600 mt-1">EPAT Week 13-1 — EFS-05: Trading ETFs — Equity, FX &amp; Futures Strategies | Instructor: Goldman Sachs Portfolio Mgr (25yr)</p>
+    <p class="text-gray-700 mt-2">
+      <strong>The Problem:</strong> Mutual funds have a "free liquidity" problem (in/out traders cost long-term investors via transaction charges) and tax inefficiency (fund manager's sells trigger capital gains for all investors).<br>
+      <strong>Your Goal:</strong> Understand how ETF (Exchange Traded Fund) structure solves these problems via in-kind baskets, and how authorized participants arbitrage between primary and secondary markets to keep prices aligned.
+    </p>
+  </header>
+
+  <!-- SECTION 1: CORE EXAMPLE -->
+  <section class="border-2 border-amber-500 rounded-lg p-3 mb-4 bg-amber-50">
+    <h2 class="font-bold text-amber-900 mb-3 bg-amber-200 rounded px-2 py-1">1️⃣ CORE EXAMPLE — Index Construction &amp; ETF Creation Basket (These Numbers Drive All Calculations Below)</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <!-- Left: 2-Stock Index -->
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">CAP-WEIGHTED INDEX — 2 STOCKS</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-2 py-1">Stock</th><th class="border px-2 py-1">Price</th><th class="border px-2 py-1">Shares</th><th class="border px-2 py-1">Market Value</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">X1</td><td class="border px-2 py-1 font-mono">$100</td><td class="border px-2 py-1 font-mono">50,000</td><td class="border px-2 py-1 font-mono font-bold">$5,000,000</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">X2</td><td class="border px-2 py-1 font-mono">$25</td><td class="border px-2 py-1 font-mono">100,000</td><td class="border px-2 py-1 font-mono font-bold">$2,500,000</td></tr>
+            <tr><td class="border px-2 py-1 font-bold" colspan="3">Total Market Value</td><td class="border px-2 py-1 font-mono font-bold">$7,500,000</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-amber-100 rounded p-2 mb-2">
+          <p class="font-bold">INDEX &amp; DIVISOR ARITHMETIC:</p>
+          <p class="font-mono">Market Value = Price × Shares = 100 × 50,000 = <strong>$5,000,000</strong></p>
+          <p class="font-mono">Total MV = $5,000,000 + $2,500,000 = <strong>$7,500,000</strong></p>
+          <p class="font-mono">Start index at 1000 → Divisor = $7,500,000 / 1000 = <strong>7,500</strong></p>
+          <p class="font-mono">Index = Total MV / Divisor = $7,500,000 / 7,500 = <strong>1000</strong></p>
+        </div>
+        <p class="font-bold">CORPORATE ACTION — 2:1 Stock Split on X1:</p>
+        <p class="font-mono">New price = $100/2 = $50, New shares = 50,000 × 2 = 100,000</p>
+        <p class="font-mono">New MV = $50 × 100,000 = <strong>$5,000,000</strong> (unchanged!)</p>
+        <p class="font-mono">Index = unchanged, Divisor = unchanged ✓</p>
+        <p class="font-bold mt-2">CORPORATE ACTION — $2 Dividend on X1:</p>
+        <p class="font-mono">New price ≈ $98, New MV = $98 × 50,000 = <strong>$4,900,000</strong></p>
+        <p class="font-mono">Total MV = $4,900,000 + $2,500,000 = $7,400,000</p>
+        <p class="font-mono">Index stays 1000 → New Divisor = $7,400,000 / 1000 = <strong>7,400</strong></p>
+      </div>
+
+      <!-- Right: ETF Creation Basket -->
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">ETF CREATION BASKET — 10 STOCKS (INR)</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-2 py-1">Stock</th><th class="border px-2 py-1">Basket Qty</th><th class="border px-2 py-1">Price (₹)</th><th class="border px-2 py-1">Value (₹)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1">BAIL</td><td class="border px-2 py-1 font-mono">33</td><td class="border px-2 py-1 font-mono">355</td><td class="border px-2 py-1 font-mono">11,715</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1">Coal India</td><td class="border px-2 py-1 font-mono">1,686</td><td class="border px-2 py-1 font-mono">—</td><td class="border px-2 py-1 font-mono">—</td></tr>
+            <tr><td class="border px-2 py-1">Concord</td><td class="border px-2 py-1 font-mono">123</td><td class="border px-2 py-1 font-mono">—</td><td class="border px-2 py-1 font-mono">—</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1" colspan="2">+ 7 more stocks…</td><td class="border px-2 py-1" colspan="2">(all in Excel)</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-amber-100 rounded p-2 mb-2">
+          <p class="font-bold">CREATION BASKET COST (Lecture Worksheet Example):</p>
+          <p class="font-mono">Using the worksheet prices and basket quantities from class:</p>
+          <p class="font-mono">Basket cost + worksheet 20 bps trading-cost assumption + cash component</p>
+          <p class="font-mono">= <strong>about ₹2,484,527 for the full creation unit</strong></p>
+          <p class="font-mono">ETF shares received in this example = <strong>100,000</strong></p>
+          <p class="font-mono">Cost of 1 ETF in this example = ₹2,484,527 / 100,000 = <strong>about ₹24.85</strong></p>
+        </div>
+        <h3 class="font-bold text-amber-800 mb-2">TERMINOLOGY / DECODING THE SHORTHAND</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold font-mono">ETF</td><td class="border px-2 py-1">Exchange Traded Fund — fund that trades like a stock on secondary market</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold font-mono">NAV</td><td class="border px-2 py-1">Net Asset Value = Total portfolio value / Number of units issued</td></tr>
+            <tr><td class="border px-2 py-1 font-bold font-mono">iNAV</td><td class="border px-2 py-1">Indicative NAV — real-time estimate computed from basket × market prices</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold font-mono">AP</td><td class="border px-2 py-1">Authorized Participant — special entity allowed to transact in primary market</td></tr>
+            <tr><td class="border px-2 py-1 font-bold font-mono">bps/bips</td><td class="border px-2 py-1">Basis Points — 1 bp = 0.01%. So 20 bps = 0.20%. On ₹10,000 = ₹20</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold font-mono">SPY/SPDR</td><td class="border px-2 py-1">First ETF launched 1993 — S&amp;P Depositary Receipts ("Spiders")</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: INDEX CONSTRUCTION -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">2️⃣ INDEX CONSTRUCTION — Cap-Weighted Indices &amp; Corporate Actions</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">WHAT: How Indices Work</h3>
+        <p><strong>WHY:</strong> Every ETF represents an index. Understanding index construction = understanding what your ETF actually holds.</p>
+        <p class="mt-2"><strong>Index providers:</strong> MSCI, FTSE Russell, S&amp;P, NSE (ISL subsidiary in India). They create indices, set rules, and charge subscription fees. They are extremely powerful — removing a country from MSCI Emerging Markets Index forces all asset managers to pull money.</p>
+        <div class="bg-orange-100 rounded p-2 mt-2">
+          <p class="font-bold">DIVISOR RULES (from Core Example):</p>
+          <table class="w-full border border-gray-300 mt-1">
+            <thead class="bg-orange-200">
+              <tr><th class="border px-2 py-1">Event</th><th class="border px-2 py-1">Index Changes?</th><th class="border px-2 py-1">Divisor Changes?</th><th class="border px-2 py-1">Why</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="border px-2 py-1">Stock Split</td><td class="border px-2 py-1 text-green-700 font-bold">No</td><td class="border px-2 py-1 text-green-700 font-bold">No</td><td class="border px-2 py-1">Total MV unchanged</td></tr>
+              <tr><td class="border px-2 py-1">Dividend</td><td class="border px-2 py-1 text-green-700 font-bold">No</td><td class="border px-2 py-1 text-red-700 font-bold">Yes ↓</td><td class="border px-2 py-1">MV drops by div amt</td></tr>
+              <tr><td class="border px-2 py-1">Reconstitution</td><td class="border px-2 py-1 text-green-700 font-bold">No</td><td class="border px-2 py-1 text-red-700 font-bold">Yes</td><td class="border px-2 py-1">New stock ≠ old stock MV</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">WORKED EXAMPLE: Reconstitution (Stock Swap)</h3>
+        <p class="font-mono">T-1: X1=$100×50K=$5M, X2=$25×100K=$2.5M → Total=$7.5M</p>
+        <p class="font-mono">T: X2 goes OUT, X3 comes IN (price=$50, shares=200K)</p>
+        <p class="font-mono">New MV: X1=$5M + X3=$50×200K=$10M → Total=<strong>$15M</strong></p>
+        <p class="font-mono">Keep index at 1000 → New Divisor = $15M / 1000 = <strong>15,000</strong></p>
+        <p class="mt-2"><strong>GOTCHA:</strong> Reconstitutions are known 14–25 days in advance. Index providers announce early so APs can prepare. Nobody wakes up surprised.</p>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 DAILY CALCULATION:</strong> Index weights and divisor are recalculated once per day (beginning of day). Not real-time. Corporate actions are scheduled events with known dates.</p>
+        </div>
+        <div class="bg-orange-100 rounded p-2 mt-2">
+          <p class="font-bold">NIFTY 50 REBALANCE FREQUENCY:</p>
+          <p>~4 index changes per year. Nifty Next 50: ~8/year. Not frequent, but each requires the ETF manager to adjust baskets — usually done at end of trading day to minimize tracking error.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: MUTUAL FUND PROBLEMS & ETF SOLUTION -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">3️⃣ MUTUAL FUND PROBLEMS &amp; THE ETF SOLUTION — Why ETFs Were Invented</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">Problem 1: Free Liquidity</h3>
+        <p><strong>WHAT:</strong> When someone redeems from a mutual fund, the fund manager must sell securities → transaction costs → ALL remaining investors pay.</p>
+        <p class="mt-1"><strong>WORKED EXAMPLE:</strong></p>
+        <p class="font-mono">3 investors × ₹1M = ₹3M total</p>
+        <p class="font-mono">1 investor redeems → FM sells → cost ₹2,000</p>
+        <p class="font-mono">₹2,000 spread across ALL investors' NAV</p>
+        <p class="font-mono">Over years: 1.5–2% CAGR drag!</p>
+        <p class="mt-1"><strong>WHO benefits:</strong> Day traders (in-and-out). <strong>WHO loses:</strong> Long-term investors (subsidize the trades).</p>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">Problem 2: Tax Inefficiency</h3>
+        <p><strong>WHAT:</strong> When an active fund manager sells winning stocks, capital gains taxes are triggered for ALL investors — even if they didn't sell anything.</p>
+        <p class="mt-1">This creates a constant tension: the FM wants to realize gains, but investors don't want tax events. The FM's decision affects every investor's tax bill.</p>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ SCANDALS:</strong> Late trading (buying after market close at stale NAV), market timing. Regulators now audit extensively, but structure isn't watertight.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">ETF SOLUTION: In-Kind = No Cash</h3>
+        <p><strong>WHAT:</strong> ETF transactions are in-kind: you give baskets → get units, or give units → get baskets. No dollars change hands with the fund.</p>
+        <p class="mt-1"><strong>WORKED EXAMPLE:</strong></p>
+        <p class="font-mono">Day 1: 3 APs bring baskets (₹2.5M each)</p>
+        <p class="font-mono">FM gives 100K ETF shares each → 300K total</p>
+        <p class="font-mono">NAV = ₹7.5M / 300K = <strong>₹25</strong></p>
+        <p class="font-mono">Day 2: 1 AP redeems 100K shares → gets basket</p>
+        <p class="font-mono">Remaining: ₹5M / 200K = <strong>₹25</strong> (unchanged!)</p>
+        <p class="mt-1 font-bold text-green-700">✓ Free liquidity: SOLVED (AP bears transaction costs)</p>
+        <p class="font-bold text-green-700">✓ Tax: SOLVED (in-kind = no taxable event)</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 2 ====================== -->
+
+  <!-- SECTION 4: PRIMARY MARKET -->
+  <section class="border-2 border-teal-500 rounded-lg p-3 mb-4 bg-teal-50">
+    <h2 class="font-bold text-teal-900 mb-3 bg-teal-200 rounded px-2 py-1">4️⃣ ETF PRIMARY MARKET — The Warehouse of Stocks</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">WHAT: The Warehouse Analogy</h3>
+        <p><strong>WHY this image matters:</strong> The ETF fund manager is a WAREHOUSE MANAGER, not an active trader. He takes in baskets, gives out receipts (ETF shares), and vice versa. Like commodity warehouses where traders deposited commodities and traded receipts.</p>
+
+        <!-- VISUAL: ETF Creation/Redemption Flow -->
+        <svg viewBox="0 0 560 220" class="w-full my-2">
+          <text x="280" y="14" text-anchor="middle" font-size="10" font-weight="bold" fill="#0f766e">ETF CREATION &amp; REDEMPTION — In-Kind Flow (No Cash Touches Fund)</text>
+
+          <!-- CREATION FLOW (top) -->
+          <rect x="5" y="22" width="550" height="85" rx="6" fill="#f0fdf4" stroke="#86efac"/>
+          <text x="280" y="36" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">▶ CREATION (AP brings stocks → gets ETF shares)</text>
+
+          <!-- AP box -->
+          <rect x="15" y="45" width="80" height="50" rx="5" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+          <text x="55" y="63" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e40af">Authorized</text>
+          <text x="55" y="73" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e40af">Participant</text>
+          <text x="55" y="85" text-anchor="middle" font-size="7" fill="#3b82f6">(Goldman, etc.)</text>
+
+          <!-- Arrow: Basket of stocks -->
+          <line x1="95" y1="60" x2="235" y2="60" stroke="#16a34a" stroke-width="2" marker-end="url(#etfA1)"/>
+          <text x="165" y="55" text-anchor="middle" font-size="7" fill="#16a34a" font-weight="bold">📦 Basket of Stocks + Cash →</text>
+
+          <!-- Fund Manager box -->
+          <rect x="235" y="45" width="90" height="50" rx="5" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="280" y="63" text-anchor="middle" font-size="8" font-weight="bold" fill="#92400e">ETF Fund</text>
+          <text x="280" y="73" text-anchor="middle" font-size="8" font-weight="bold" fill="#92400e">Manager</text>
+          <text x="280" y="85" text-anchor="middle" font-size="7" fill="#b45309">(Warehouse)</text>
+
+          <!-- Arrow: ETF shares -->
+          <line x1="325" y1="70" x2="435" y2="70" stroke="#7c3aed" stroke-width="2" marker-end="url(#etfA2)"/>
+          <text x="380" y="65" text-anchor="middle" font-size="7" fill="#7c3aed" font-weight="bold">100,000 ETF Shares →</text>
+
+          <!-- Secondary market box -->
+          <rect x="435" y="45" width="110" height="50" rx="5" fill="#ede9fe" stroke="#a78bfa" stroke-width="1.5"/>
+          <text x="490" y="63" text-anchor="middle" font-size="8" font-weight="bold" fill="#5b21b6">Secondary</text>
+          <text x="490" y="73" text-anchor="middle" font-size="8" font-weight="bold" fill="#5b21b6">Market (NSE)</text>
+          <text x="490" y="85" text-anchor="middle" font-size="7" fill="#7c3aed">You buy here!</text>
+
+          <!-- REDEMPTION FLOW (bottom) -->
+          <rect x="5" y="115" width="550" height="85" rx="6" fill="#fef2f2" stroke="#fca5a5"/>
+          <text x="280" y="129" text-anchor="middle" font-size="9" font-weight="bold" fill="#991b1b">◀ REDEMPTION (AP brings ETF shares → gets stocks back)</text>
+
+          <rect x="435" y="138" width="110" height="50" rx="5" fill="#ede9fe" stroke="#a78bfa" stroke-width="1.5"/>
+          <text x="490" y="156" text-anchor="middle" font-size="8" font-weight="bold" fill="#5b21b6">AP buys</text>
+          <text x="490" y="166" text-anchor="middle" font-size="8" font-weight="bold" fill="#5b21b6">100K ETF shares</text>
+          <text x="490" y="178" text-anchor="middle" font-size="7" fill="#7c3aed">off market</text>
+
+          <line x1="435" y1="158" x2="325" y2="158" stroke="#dc2626" stroke-width="2" marker-end="url(#etfA3)"/>
+          <text x="380" y="152" text-anchor="middle" font-size="7" fill="#dc2626" font-weight="bold">← 100K ETF Shares</text>
+
+          <rect x="235" y="138" width="90" height="50" rx="5" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="280" y="156" text-anchor="middle" font-size="8" font-weight="bold" fill="#92400e">Fund</text>
+          <text x="280" y="166" text-anchor="middle" font-size="8" font-weight="bold" fill="#92400e">Extinguishes</text>
+          <text x="280" y="178" text-anchor="middle" font-size="7" fill="#b45309">Shares destroyed</text>
+
+          <line x1="235" y1="163" x2="95" y2="163" stroke="#f59e0b" stroke-width="2" marker-end="url(#etfA3)"/>
+          <text x="165" y="157" text-anchor="middle" font-size="7" fill="#b45309" font-weight="bold">← 📦 Returns Stocks + Cash</text>
+
+          <rect x="15" y="138" width="80" height="50" rx="5" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+          <text x="55" y="156" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e40af">AP sells</text>
+          <text x="55" y="166" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e40af">stocks in</text>
+          <text x="55" y="178" text-anchor="middle" font-size="7" fill="#3b82f6">open market</text>
+
+          <!-- Key insight -->
+          <text x="280" y="212" text-anchor="middle" font-size="9" font-weight="bold" fill="#0f766e">🔑 KEY: No cash touches the fund = No tax events = No liquidity cost to other holders</text>
+
+          <defs>
+            <marker id="etfA1" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M 0 0 L 7 3.5 L 0 7" fill="#16a34a"/></marker>
+            <marker id="etfA2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M 0 0 L 7 3.5 L 0 7" fill="#7c3aed"/></marker>
+            <marker id="etfA3" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M 0 0 L 7 3.5 L 0 7" fill="#dc2626"/></marker>
+          </defs>
+        </svg>
+
+        <div class="bg-teal-100 rounded p-2 mt-2 mb-2">
+          <p class="font-bold">CREATION (AP → Fund):</p>
+          <p class="font-mono">1. AP assembles basket (buys all stocks in secondary market)</p>
+          <p class="font-mono">2. AP adds cash component (for rebalancing needs)</p>
+          <p class="font-mono">3. AP brings basket to fund house</p>
+          <p class="font-mono">4. Fund gives AP 100,000 ETF shares (creation unit)</p>
+          <p class="font-mono">5. AP can now sell ETF shares in secondary market</p>
+        </div>
+        <div class="bg-teal-100 rounded p-2 mb-2">
+          <p class="font-bold">REDEMPTION (Fund → AP):</p>
+          <p class="font-mono">1. AP brings 100,000 ETF shares to fund</p>
+          <p class="font-mono">2. Fund extinguishes the shares</p>
+          <p class="font-mono">3. Fund gives AP the basket (stocks + cash)</p>
+          <p class="font-mono">4. AP sells the basket stocks in secondary market</p>
+        </div>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500">
+          <p><strong>⚠️ KEY RULE:</strong> You CANNOT buy 1 ETF in primary market. You must transact in fund-defined lots. In this lecture's worked example the creation unit is 100,000 shares, but actual lot size varies by fund. Only Authorized Participants (large brokers, HFT firms, market makers) have access.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">HOW: Creation Basket Math (from Core Example)</h3>
+        <p><strong>WORKED EXAMPLE — Buying 1 Creation Unit:</strong></p>
+        <p class="font-mono">Step 1: Assemble the fund's published basket from the lecture worksheet</p>
+        <p class="font-mono">Step 2: Add the worksheet's trading-cost assumption = <strong>20 bps</strong></p>
+        <p class="font-mono">Step 3: Add cash component = <strong>₹45,325</strong></p>
+        <p class="font-mono">Step 4: Total creation cost in the lecture example</p>
+        <p class="font-mono">= <strong>about ₹2,484,527 for one creation unit</strong></p>
+        <p class="font-mono mt-1">Step 5: Cost per ETF share in this example</p>
+        <p class="font-mono">= ₹2,484,527 / 100,000 = <strong>about ₹24.85</strong></p>
+
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 WHY CASH COMPONENT?</strong> Fund manager needs cash for: rebalancing when index constituents change, dividend adjustments, and corporate action costs. The FM doesn't generate cash from trading — in-kind means no dollar flow.</p>
+        </div>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 BASKET DATA:</strong> Fund manager publishes the basket composition DAILY. It's in the FM's interest — APs need it to transact. Available on fund websites and market data terminals.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: SECONDARY MARKET & ARBITRAGE -->
+  <section class="border-2 border-teal-500 rounded-lg p-3 mb-4 bg-teal-50">
+    <h2 class="font-bold text-teal-900 mb-3 bg-teal-200 rounded px-2 py-1">5️⃣ SECONDARY MARKET &amp; ARBITRAGE — Where HFTs Make Money</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">WHAT: Premium, Discount &amp; iNAV</h3>
+        <p><strong>WHY:</strong> APs have access to BOTH markets. They compute iNAV (indicative NAV) from basket × current prices, compare it to the secondary market bid/ask, and arbitrage any gap.</p>
+        <div class="bg-teal-100 rounded p-2 mt-2 mb-2">
+          <p class="font-bold">iNAV CALCULATION:</p>
+          <p class="font-mono">In the later arbitrage worksheet example, the updated basket prices imply</p>
+          <p class="font-mono">iNAV = <strong>about ₹24.79</strong></p>
+          <p class="font-mono">APs then compare that live estimate with the secondary-market bid/ask.</p>
+        </div>
+        <table class="w-full border border-gray-300 mt-2">
+          <thead class="bg-teal-200">
+            <tr><th class="border px-2 py-1">Condition</th><th class="border px-2 py-1">Meaning</th><th class="border px-2 py-1">iNAV vs Market</th><th class="border px-2 py-1">AP Action</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Premium</td><td class="border px-2 py-1">Market &gt; iNAV</td><td class="border px-2 py-1 font-mono">24.79 vs 24.86/24.91</td><td class="border px-2 py-1">Create basket → sell ETF on market</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Discount</td><td class="border px-2 py-1">Market &lt; iNAV</td><td class="border px-2 py-1 font-mono">24.79 vs 24.74/24.76</td><td class="border px-2 py-1">Buy ETF on market → redeem basket</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">At Par</td><td class="border px-2 py-1">Market ≈ iNAV</td><td class="border px-2 py-1 font-mono">24.79 vs 24.78/24.80</td><td class="border px-2 py-1">No arbitrage (90% of time for liquid ETFs)</td></tr>
+          </tbody>
+        </table>
+
+        <!-- VISUAL: iNAV Arbitrage Decision -->
+        <svg viewBox="0 0 540 140" class="w-full mt-2">
+          <text x="270" y="12" text-anchor="middle" font-size="9" font-weight="bold" fill="#0f766e">iNAV ARBITRAGE — When &amp; What the AP Does</text>
+          <!-- iNAV center -->
+          <rect x="210" y="22" width="120" height="30" rx="15" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+          <text x="270" y="42" text-anchor="middle" font-size="9" font-weight="bold" fill="#92400e">iNAV = ₹24.79</text>
+          <!-- Premium (left) -->
+          <line x1="210" y1="37" x2="100" y2="65" stroke="#16a34a" stroke-width="1.5"/>
+          <rect x="10" y="55" width="180" height="75" rx="6" fill="#f0fdf4" stroke="#86efac"/>
+          <text x="100" y="70" text-anchor="middle" font-size="8" font-weight="bold" fill="#16a34a">PREMIUM: Market ₹24.86</text>
+          <text x="100" y="82" text-anchor="middle" font-size="7" fill="#166534">Market &gt; iNAV → ETF overpriced</text>
+          <text x="100" y="96" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">AP Action: CREATE &amp; SELL</text>
+          <text x="100" y="108" text-anchor="middle" font-size="7" fill="#166534">Buy stocks → Get ETF shares → Sell at ₹24.86</text>
+          <text x="100" y="120" text-anchor="middle" font-size="8" font-weight="bold" fill="#16a34a">Profit: ₹0.07/unit</text>
+          <!-- Discount (right) -->
+          <line x1="330" y1="37" x2="440" y2="65" stroke="#dc2626" stroke-width="1.5"/>
+          <rect x="350" y="55" width="180" height="75" rx="6" fill="#fef2f2" stroke="#fca5a5"/>
+          <text x="440" y="70" text-anchor="middle" font-size="8" font-weight="bold" fill="#dc2626">DISCOUNT: Market ₹24.74</text>
+          <text x="440" y="82" text-anchor="middle" font-size="7" fill="#991b1b">Market &lt; iNAV → ETF underpriced</text>
+          <text x="440" y="96" text-anchor="middle" font-size="8" font-weight="bold" fill="#991b1b">AP Action: BUY &amp; REDEEM</text>
+          <text x="440" y="108" text-anchor="middle" font-size="7" fill="#991b1b">Buy ETF at ₹24.74 → Redeem → Sell stocks</text>
+          <text x="440" y="120" text-anchor="middle" font-size="8" font-weight="bold" fill="#dc2626">Profit: ₹0.05/unit</text>
+        </svg>
+      </div>
+
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">HOW: Arbitrage Worked Example</h3>
+        <p><strong>CASE: Market at Premium (best bid = ₹24.86)</strong></p>
+        <p class="font-mono">1. Compute iNAV = ₹24.79 (from basket)</p>
+        <p class="font-mono">2. Best bid in secondary market = ₹24.86</p>
+        <p class="font-mono">3. Gap = ₹24.86 − ₹24.79 = <strong>₹0.07 per share</strong></p>
+        <p class="font-mono">4. AP creates basket in primary → gets 100K ETF shares</p>
+        <p class="font-mono">5. AP sells 100K shares at ₹24.86 on secondary</p>
+        <p class="font-mono">6. Profit = 100,000 × ₹0.07 = <strong>₹7,000</strong></p>
+        <p class="font-mono">   (minus transaction costs of ~20 bps)</p>
+
+        <div class="bg-teal-100 rounded p-2 mt-2 mb-2">
+          <p class="font-bold">MARKUP REQUIREMENT (Case 2: 35 bps):</p>
+          <p class="font-mono">35 bps markup on ₹24.79 = 0.0035 × 24.79 = ₹0.087</p>
+          <p class="font-mono">Minimum sell price = ₹24.79 + ₹0.087 = ₹24.877</p>
+          <p class="font-mono">Best bid = ₹24.86 &lt; ₹24.877 → <strong>NO TRADE</strong></p>
+          <p class="font-mono">35 bps markup covers funding costs of the AP's capital</p>
+        </div>
+
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 WHO COMPUTES iNAV?</strong> HFTs and systematic traders compute iNAV themselves from basket data + live market prices. They do NOT wait for third-party feeds. Speed determines who captures the arbitrage.</p>
+        </div>
+        <p class="mt-2"><strong>Markup ranges:</strong> Liquid counters: ~35 bps. Illiquid counters: 100–200 bps.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: REPLICATION & ETF SELECTION -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">6️⃣ REPLICATION STRATEGIES &amp; ETF SELECTION — Full vs. Optimized</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">WHAT: How ETFs Track Their Index</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <thead class="bg-purple-100">
+            <tr><th class="border px-2 py-1">Strategy</th><th class="border px-2 py-1">What It Does</th><th class="border px-2 py-1">When Used</th><th class="border px-2 py-1">% of Market</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Full Replication</td><td class="border px-2 py-1">Hold EVERY stock at EXACT index weight</td><td class="border px-2 py-1">Small indices (Nifty 50)</td><td class="border px-2 py-1 font-mono">~50%</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Optimized</td><td class="border px-2 py-1">Hold SUBSET of stocks, minimize tracking error using quant models</td><td class="border px-2 py-1">Large indices (5000+ stocks)</td><td class="border px-2 py-1 font-mono">~50%</td></tr>
+          </tbody>
+        </table>
+        <p><strong>WHY optimized?</strong> If index has 5,000 stocks, buying all 5,000 in exact proportions is impractical (illiquid small-caps, high transaction costs). Quants select a subset that minimizes tracking error — this is where quant jobs exist in ETF shops.</p>
+        <p class="mt-2"><strong>Tracking Error</strong> = deviation of ETF returns from index returns. Lower = better. THE key metric for selecting between ETFs tracking the same index.</p>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">HOW: Selecting an ETF (When Multiple Track Same Index)</h3>
+        <div class="bg-purple-100 rounded p-2 mb-3">
+          <p class="font-bold">ETF SELECTION CRITERIA (ranked):</p>
+          <p>1. <strong>Tracking Error</strong> — lower = better alignment with index</p>
+          <p>2. <strong>Expense Ratio</strong> — lower = cheaper. ETFs charge rock-bottom fees (single-digit bps for large funds)</p>
+          <p>3. <strong>AUM</strong> — larger = more liquid, tighter bid-ask spread</p>
+          <p>4. <strong>Bid-Ask Spread</strong> — tighter = less implicit cost per trade</p>
+        </div>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mb-2">
+          <p><strong>⚠️ THIS IS NOT MUTUAL FUND SELECTION:</strong> For mutual funds, you look at alpha, Sharpe, drawdown, fund manager track record. For ETFs, you DON'T want alpha — you want INDEX returns. So you look at tracking error and expense ratio instead.</p>
+        </div>
+        <p><strong>GOTCHA — Replication must be disclosed:</strong> Fund must specify "full replication" or "optimized" in its prospectus. You can't say full replication and secretly optimize. Regulators enforce this.</p>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 ETF FM trades are RARE:</strong> Unlike active FMs who trade all day, ETF FMs trade mainly at end-of-day when basket composition changes (rebalances, corporate actions). During the day, usually zero trades.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 3 ====================== -->
+
+  <!-- SECTION 7: TRADING MODELS -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">7️⃣ TRADING MODELS — Low, Mid &amp; High Frequency ETF Strategies</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">LOW FREQ: Factor Models</h3>
+        <p><strong>WHAT:</strong> Most stock returns are explained by a few factors (market, size, value, momentum). Why pick stocks when you can invest in factors via ETFs?</p>
+        <p class="mt-1"><strong>The math (CAPM/Fama-French):</strong></p>
+        <p class="font-mono">R_stock = α + β₁·R_market + β₂·R_size + β₃·R_value + β₄·R_mom + ε</p>
+        <p class="mt-1"><strong>WORKED EXAMPLE (Indian IT sector):</strong></p>
+        <p class="font-mono">130 CNX200 stocks regressed on 4 factors</p>
+        <p class="font-mono">IT sector: R² ≈ 70–75%</p>
+        <p class="font-mono">→ 4 factors explain 75% of variance</p>
+        <p class="font-mono">→ Idiosyncratic stock risk is 25%</p>
+        <p class="mt-1"><strong>Conclusion:</strong> Just buy factor ETFs instead of picking individual stocks. Dimensional Fund ($256B AUM) does exactly this.</p>
+        <p class="mt-1"><strong>Factor data (free):</strong> Prof. Jayant Varma (IIM Ahmedabad) website</p>
+        <p class="mt-1"><strong>Book:</strong> "The Incredible Shrinking Alpha" — why active managers can't beat benchmarks</p>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">MID FREQ: Robo Advisors</h3>
+        <p><strong>WHAT:</strong> Fintechs that take your risk/return preferences and allocate across ETFs algorithmically, rebalancing periodically.</p>
+        <p class="mt-1"><strong>The process:</strong></p>
+        <p>1. Investor specifies risk tolerance &amp; return goal</p>
+        <p>2. Algorithm selects mix of ETFs (equity, bond, commodity)</p>
+        <p>3. Portfolio is rebalanced (monthly/quarterly)</p>
+        <p class="mt-2"><strong>The math:</strong> Efficient Frontier (textbook version fails in practice). Better: simulate frontier SURFACE, not a single line.</p>
+        <p class="mt-1"><strong>Book:</strong> "Efficient Asset Management" — statistically robust portfolio allocation using ETFs</p>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 INDUSTRY TREND:</strong> Most robo advisors got acquired by banks. Fintechs raised money but couldn't compete with bank distribution. The tech now sits inside bank infrastructure.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">HIGH FREQ: Market Making</h3>
+        <p><strong>WHAT:</strong> Model order arrival in the limit order book as a stochastic process (Poisson), estimate parameters, provide liquidity and capture bid-ask spread.</p>
+        <p class="mt-1"><strong>The approach:</strong></p>
+        <p>1. Model order arrival/cancellation as Poisson process</p>
+        <p>2. Estimate λ (arrival rate) from real-time data</p>
+        <p>3. Set bid/ask quotes to capture spread while managing inventory risk</p>
+        <p>4. Continuously update as order flow changes</p>
+        <p class="mt-2"><strong>WHO does this:</strong> Top HFT firms acting as APs. They dominate the ETF primary-secondary arbitrage space. Speed is the differentiator.</p>
+        <p class="mt-1"><strong>Pre-requisites:</strong> Queuing theory, stochastic processes, C++, low-latency infrastructure</p>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ NOT LIGHT READING:</strong> The reference paper (in appendix) requires significant math background. This is institutional-grade, not retail.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: INDUSTRY METRICS -->
+  <section class="border-2 border-cyan-500 rounded-lg p-3 mb-4 bg-cyan-50">
+    <h2 class="font-bold text-cyan-900 mb-3 bg-cyan-200 rounded px-2 py-1">8️⃣ INDUSTRY METRICS — The $20 Trillion ETF Market (as of Dec 2025)</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-cyan-300 rounded p-3">
+        <h3 class="font-bold text-cyan-800 mb-2">Global Numbers at a Glance</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <thead class="bg-cyan-200">
+            <tr><th class="border px-2 py-1">Metric</th><th class="border px-2 py-1">Value</th><th class="border px-2 py-1">Visual Cue</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Total Funds</td><td class="border px-2 py-1 font-mono font-bold">~16,000</td><td class="border px-2 py-1">—</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Total AUM</td><td class="border px-2 py-1 font-mono font-bold">~$20 trillion</td><td class="border px-2 py-1">5× India GDP ($4T) or 5× Apple mkt cap</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">2025 Growth</td><td class="border px-2 py-1 font-mono text-green-700 font-bold">+$5 trillion</td><td class="border px-2 py-1">Largest 1-year jump ever</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Active ETFs</td><td class="border px-2 py-1 font-mono">$1.4 trillion</td><td class="border px-2 py-1">Doubled in 2025 (from $0.8T)</td></tr>
+          </tbody>
+        </table>
+
+        <p class="font-bold">BY ASSET CLASS:</p>
+        <table class="w-full border border-gray-300 mt-1 mb-3">
+          <tr><td class="border px-2 py-1 font-bold">Equity</td><td class="border px-2 py-1 font-mono font-bold">76%</td><td class="border px-2 py-1">~$15.2T</td></tr>
+          <tr><td class="border px-2 py-1 font-bold">Bond/Fixed Income</td><td class="border px-2 py-1 font-mono">16%</td><td class="border px-2 py-1">~$3.2T (surged in 2025)</td></tr>
+          <tr><td class="border px-2 py-1 font-bold">Commodity</td><td class="border px-2 py-1 font-mono">2%</td><td class="border px-2 py-1">~$0.4T (smaller than expected)</td></tr>
+        </table>
+
+        <p class="font-bold">BY REGION:</p>
+        <table class="w-full border border-gray-300 mt-1">
+          <tr><td class="border px-2 py-1 font-bold">Americas (US)</td><td class="border px-2 py-1 font-mono font-bold">72%</td><td class="border px-2 py-1">~$14.4T</td></tr>
+          <tr><td class="border px-2 py-1 font-bold">Europe</td><td class="border px-2 py-1 font-mono">15%</td><td class="border px-2 py-1">~$3T</td></tr>
+          <tr><td class="border px-2 py-1 font-bold">Asia</td><td class="border px-2 py-1 font-mono">10%</td><td class="border px-2 py-1">~$2T</td></tr>
+        </table>
+      </div>
+
+      <div class="bg-white border-2 border-cyan-300 rounded p-3">
+        <h3 class="font-bold text-cyan-800 mb-2">Asia &amp; India Specifics</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <thead class="bg-cyan-100">
+            <tr><th class="border px-2 py-1">Country</th><th class="border px-2 py-1"># Funds</th><th class="border px-2 py-1">Notable</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">China</td><td class="border px-2 py-1 font-mono">872</td><td class="border px-2 py-1">#1 in Asia</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Korea</td><td class="border px-2 py-1 font-mono">715</td><td class="border px-2 py-1">#2 — leveraged ETFs pioneer</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Japan</td><td class="border px-2 py-1 font-mono">277</td><td class="border px-2 py-1">#3</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">India</td><td class="border px-2 py-1 font-mono">187</td><td class="border px-2 py-1">Fastest growing; SBI ETF = $24B (largest)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-cyan-800 mb-2">WHY $5T Growth in 2025?</h3>
+        <div class="bg-cyan-100 rounded p-2">
+          <p>1. <strong>Markets went up</strong> → $1.5–2T from equity appreciation alone</p>
+          <p>2. <strong>Fixed income ETFs exploded</strong> → massive inflows into bond ETFs</p>
+          <p>3. <strong>Vanguard patent expired</strong> → mutual funds can now offer ETF share classes</p>
+          <p>4. <strong>Global adoption</strong> → Europe + Asia catching up to US</p>
+        </div>
+
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 ACTIVE ETFs — NEW WAVE:</strong> One division creates the index, another division manages the ETF. Chinese wall between them. $1.4T and growing fast. The Vanguard patent expiry is a watershed — expect massive flows from traditional mutual funds into ETF structures.</p>
+        </div>
+
+        <p class="mt-2"><strong>Key Players:</strong> BlackRock (iShares), Vanguard, JP Morgan (from $100B in 2022 → $320B now), Dimensional Fund Advisors ($256B)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 9: QUICK REFERENCE -->
+  <section class="border-2 border-gray-600 rounded-lg p-3 bg-gray-100">
+    <h2 class="font-bold text-gray-900 mb-3 bg-gray-300 rounded px-2 py-1">📋 QUICK REFERENCE — All In One Place</h2>
+
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Col 1: Key Formulas -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">KEY FORMULAS</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Formula</th><th class="border px-1 py-1">Computation</th><th class="border px-1 py-1">When Used</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">Market Value</td><td class="border px-1 py-1">Price × Shares</td><td class="border px-1 py-1">Index MV</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Index</td><td class="border px-1 py-1">Total MV / Divisor</td><td class="border px-1 py-1">Index level</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Divisor</td><td class="border px-1 py-1">Total MV / Index</td><td class="border px-1 py-1">After corp action</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">NAV</td><td class="border px-1 py-1">Portfolio $ / Units</td><td class="border px-1 py-1">End of day</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">iNAV</td><td class="border px-1 py-1">(Σ qty×price + cash) / units</td><td class="border px-1 py-1">Real-time</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Basket Cost</td><td class="border px-1 py-1">Σ(qty×price) + charges + cash</td><td class="border px-1 py-1">Creation</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Cost/ETF</td><td class="border px-1 py-1">Basket Cost / 100,000</td><td class="border px-1 py-1">Per-share cost</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Bps charge</td><td class="border px-1 py-1">bps/10000 × value</td><td class="border px-1 py-1">Transaction cost</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 2: Common Mistakes -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">COMMON MISTAKES</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Mistake</th><th class="border px-1 py-1">What Happens</th><th class="border px-1 py-1">Fix</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">Selecting ETF by "alpha"</td><td class="border px-1 py-1">Wrong framework</td><td class="border px-1 py-1">Use tracking error + expense ratio</td></tr>
+            <tr><td class="border px-1 py-1">Thinking ETFs are mutual funds</td><td class="border px-1 py-1">Miss in-kind structure</td><td class="border px-1 py-1">ETF = basket ↔ units, no cash</td></tr>
+            <tr><td class="border px-1 py-1">Forgetting cash component</td><td class="border px-1 py-1">Basket cost is wrong</td><td class="border px-1 py-1">Always include cash in iNAV</td></tr>
+            <tr><td class="border px-1 py-1">Ignoring transaction costs and markup</td><td class="border px-1 py-1">Overstated profit</td><td class="border px-1 py-1">Use the lecture's 20 bps cost assumption, then add markup/funding threshold separately</td></tr>
+            <tr><td class="border px-1 py-1">Waiting for third-party iNAV</td><td class="border px-1 py-1">Too slow for arb</td><td class="border px-1 py-1">Compute iNAV yourself (HFT)</td></tr>
+            <tr><td class="border px-1 py-1">Confusing closed-end fund with ETF</td><td class="border px-1 py-1">No arb mechanism</td><td class="border px-1 py-1">Closed = no primary mkt access</td></tr>
+            <tr><td class="border px-1 py-1">Thinking index = real-time</td><td class="border px-1 py-1">Wrong timing</td><td class="border px-1 py-1">Divisor/weights updated once/day</td></tr>
+            <tr><td class="border px-1 py-1">Ignoring funding cost (markup)</td><td class="border px-1 py-1">Arb seems free</td><td class="border px-1 py-1">35 bps liquid, 100-200 bps illiquid</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 3: Numbers + Checklist -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">NUMBERS AT A GLANCE</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <tbody>
+            <tr><td class="border px-1 py-1 bg-gray-50">Global ETF AUM</td><td class="border px-1 py-1 font-mono font-bold">$20 trillion</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Number of funds</td><td class="border px-1 py-1 font-mono">~16,000</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Equity share</td><td class="border px-1 py-1 font-mono">76%</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">US share</td><td class="border px-1 py-1 font-mono">72%</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Creation unit</td><td class="border px-1 py-1 font-mono">Fund-defined lot size (100,000 in this example)</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Worksheet txn-cost assumption</td><td class="border px-1 py-1 font-mono">20 bps</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">First ETF</td><td class="border px-1 py-1 font-mono">SPY/SPDR (1993)</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Largest India ETF</td><td class="border px-1 py-1 font-mono">SBI ETF ($24B)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-gray-800 mb-2">SHORTHAND DECODER</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">ETF</td><td class="border px-1 py-1">Exchange Traded Fund</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">NAV</td><td class="border px-1 py-1">Net Asset Value</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">iNAV</td><td class="border px-1 py-1">Indicative NAV</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">AP</td><td class="border px-1 py-1">Authorized Participant</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">AUM</td><td class="border px-1 py-1">Assets Under Mgmt</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">bps</td><td class="border px-1 py-1">Basis Points (0.01%)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">SPDR/SPY</td><td class="border px-1 py-1">First ETF (S&amp;P 500)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">CAPM</td><td class="border px-1 py-1">Capital Asset Pricing Model</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="bg-yellow-100 rounded p-3 mt-3">
+      <p class="font-bold text-yellow-900 mb-2">🎯 KEY TAKEAWAYS</p>
+      <div class="grid grid-cols-4 gap-3">
+        <p>1. ETFs solve mutual funds' two biggest problems: free liquidity (in-kind transactions push costs onto APs, not long-term investors) and tax inefficiency (no cash = no taxable events inside the fund).</p>
+        <p>2. Primary market = warehouse. AP assembles basket of stocks + cash → gives to fund → receives creation units. The lecture example uses 100K ETF shares, but actual creation-unit size varies by fund. Redemption is the reverse. No dollars are exchanged with the fund — all in-kind.</p>
+        <p>3. HFTs/APs compute iNAV themselves from basket × live prices, compare to secondary market bid/ask, and arbitrage any premium/discount. This keeps ETF prices aligned with NAV. Speed wins.</p>
+        <p>4. $20T market, 76% equity, 72% US. ~50% use optimized (not full) replication. Active ETFs exploding ($1.4T). When selecting ETFs: track tracking error and expense ratio, NOT alpha.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="mt-3 text-center text-gray-600 border-t-2 border-gray-300 pt-2">
+    <p><strong>THE MASTER FORMULA:</strong> iNAV = (Σ basket_qty × current_price + cash_component) / creation_unit_size — Compare iNAV to secondary market bid/ask — if premium: create &amp; sell; if discount: buy &amp; redeem</p>
+    <p class="mt-1"><strong>THE ONE THING TO NEVER FORGET:</strong> ETF primary market transactions are <em>in-kind</em> — baskets in, units out (or reverse). No cash changes hands with the fund. This is what makes ETFs tax-efficient and protects long-term investors from free-rider costs.</p>
+  </footer>
+
+</body>
+</html>

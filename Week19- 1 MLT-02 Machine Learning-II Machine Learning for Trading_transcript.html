@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MLT-02 Machine Learning-II — EPAT Cheat Sheet</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @media print {
+    body { font-size: 9px !important; }
+    .page-break { page-break-before: always; }
+    @page { margin: 0.3in; }
+  }
+  body { font-family: system-ui, -apple-system, sans-serif; font-size: 11px; }
+  pre { font-size: 10px; }
+  @media print { pre { font-size: 8px; } }
+</style>
+</head>
+<body class="bg-white text-gray-900 max-w-6xl mx-auto p-4">
+
+<!-- ============================================================ -->
+<!-- HEADER                                                        -->
+<!-- ============================================================ -->
+<header class="bg-indigo-700 text-white p-4 rounded-lg mb-4">
+  <div class="flex justify-between items-start">
+    <div>
+      <h1 class="text-lg font-bold tracking-tight">MLT-02 · Machine Learning-II</h1>
+      <p class="text-indigo-200 text-xs mt-1">Machine Learning for Trading · Instructor: Jay · EPAT Week 19-1</p>
+    </div>
+    <span class="bg-indigo-900 text-xs px-2 py-1 rounded">Classification · Evaluation · Trees · SVM</span>
+  </div>
+  <div class="mt-3 bg-indigo-800 rounded p-2 text-xs">
+    <strong>Problem / Goal:</strong> You built a logistic regression model in MLT-01 with 53 % test accuracy, which raised the evaluation question carried into this lecture. How do you <em>evaluate</em> whether a model is truly learning, diagnose bias vs. variance, choose between decision trees / random forests / Support Vector Machines (SVMs), and design target variables that give the model more predictive information?
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- 1  CORE EXAMPLE  (amber)                                       -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-amber-500 bg-amber-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-amber-800 mb-1">① Core Example — SVM Predicts Next-Day Open Direction (87 % / 80 %)</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p>Build three classifiers on Tesla daily data (≈1 500 rows). Logistic Regression &amp; Decision Tree give ≈53 % / 50 %. Then the lecture changes two things at once: target from <em>close-to-close</em> to <em>open-to-open</em> and algorithm to SVM, yielding training 87 % and testing 80 %. The class discussion leans toward target/feature alignment as the main driver of the improvement.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>Features are built mainly from <em>close</em> prices. At market close you have the full day's information (close, high, low, volume). The lecture's explanation is that predicting next day's <em>open</em> gives the model an extra same-day information window from open to close; open prices are still random, but are framed as less random than close prices in this discussion.</p>
+    </div>
+  </div>
+
+  <p class="font-semibold text-xs mb-1">HOW — Full SVM Workflow</p>
+  <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# --- 1. Import libraries ---
+import numpy as np, pandas as pd                               # numerical + dataframes
+from sklearn.svm import SVC                                     # Support Vector Classifier
+from sklearn.preprocessing import StandardScaler                # feature scaling (required for SVM)
+from sklearn.model_selection import train_test_split            # split data
+from sklearn.metrics import confusion_matrix, classification_report  # evaluation
+
+# --- 2. Read data ---
+data = pd.read_csv('TSLA.csv', index_col='Date', parse_dates=True)  # Tesla OHLCV, 2014+
+
+# --- 3. Create NEW target: next day open &gt; today open ---
+data['returns'] = np.log(data['Close']).diff()                  # log returns for features
+data['target']  = np.where(data['Open'].shift(-1) &gt; data['Open'], 1, 0)
+#   shift(-1) = next row's open; &gt; today open → 1, else 0
+
+# --- 4. Feature extraction (same as MLT-01) ---
+for p in [5,10,15,20]:                                          # volatility: rolling std
+    data[f'std_{p}'] = data['Close'].rolling(p).std()
+for p in [10,15,20,25,30]:                                     # trend: rolling mean
+    data[f'ma_{p}']  = data['Close'].rolling(p).mean()
+for p in [3,6,9]:                                               # momentum: cumulative pct returns
+    data[f'mom_{p}'] = data['Close'].pct_change(p)
+data['vol_ma4']      = data['Volume'].rolling(4).mean()         # volume trend
+data['close_to_open'] = abs(data['Close'] - data['Open'])       # intraday movement
+
+data.dropna(inplace=True)                                       # remove NaN from rolling
+
+# --- 5. Split (shuffle=False for time series!) ---
+features = [c for c in data.columns if c not in ['target','returns','Open','High','Low','Close','Volume']]
+X = data[features];  y = data['target']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, shuffle=False)
+
+# --- 6. Scale features (fit on TRAIN only!) ---
+scaler = StandardScaler()
+X_train_s = scaler.fit_transform(X_train)                      # learn mean/std from train
+X_test_s  = scaler.transform(X_test)                            # apply train's mean/std to test
+
+# --- 7. Train SVM ---
+model = SVC(kernel='rbf', random_state=42)                      # RBF = Radial Basis Function kernel
+model.fit(X_train_s, y_train)
+
+# --- 8. Evaluate ---
+print("Train:", model.score(X_train_s, y_train))                # 0.87 (87%)
+print("Test :", model.score(X_test_s,  y_test))                 # 0.80 (80%)
+print(confusion_matrix(y_test, model.predict(X_test_s)))        # high diagonal numbers ✓
+print(classification_report(y_test, model.predict(X_test_s)))   # precision ~80-83%
+  </pre>
+
+  <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
+    <div class="bg-amber-100 p-1 rounded">
+      <strong>WORKED EXAMPLE</strong><br />
+      Train acc 87 % → bias? No (87 &gt; 50).<br />
+      Test acc 80 % → variance? 87−80 = 7 % gap, which sits inside Jay's usual 8-10 % thumb rule, so he treats the model as not materially overfitted here.<br />
+      Precision class-1 ≈ 83 % → when model says "up," stock goes up 83 % of the time.
+    </div>
+    <div class="bg-amber-100 p-1 rounded">
+      <strong>TERMINOLOGY</strong><br />
+      <strong>BTST</strong> = Buy Today Sell Tomorrow: buy at close, sell at next open.<br />
+      <strong>EMH</strong> = Efficient Market Hypothesis: prices reflect all info.<br />
+      <strong>RBF</strong> = Radial Basis Function kernel (SVM default).
+    </div>
+    <div class="bg-amber-100 p-1 rounded">
+      <strong>GOTCHA</strong><br />
+      SVM requires scaling — skip it and features with larger values dominate the hyperplane. The lecture argues that the open-to-open setup improves because close-based features add extra same-day information at the market close. If features were based only on open prices, that advantage could shrink sharply.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 2  MODEL FITTING: BIAS & VARIANCE  (blue)                     -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-blue-500 bg-blue-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-blue-800 mb-1">② Model Fitting — Bias &amp; Variance</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p>Why <code>.fit()</code> not <code>.train()</code>? Because the model tries to <em>fit</em> the shape of the data. Three states: <strong>underfitted</strong> (too simple, doesn't learn), <strong>well-fitted</strong> (replicates true data shape), <strong>overfitted</strong> (memorizes training data, wiggles beyond it). Two error sources explain these: <strong>bias</strong> and <strong>variance</strong>.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>Underfitting and overfitting are both bad. Only well-fitted models generalize to unseen data. If you can't diagnose which error is present, you can't fix your model — you'll waste time changing the wrong thing (algorithm vs. features vs. data size).</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div class="bg-blue-100 p-2 rounded">
+      <p class="font-semibold text-xs">BIAS (→ Underfitting)</p>
+      <p><strong>Definition:</strong> Model's inability to learn the association between features and target, even after training multiple times.</p>
+      <p><strong>Kid analogy:</strong> No matter how many times you show a kid apples, the kid keeps saying "orange."</p>
+      <p><strong>Quantification:</strong> Training accuracy &lt; 50 % → biased (worse than random chance for binary classification).</p>
+      <p><strong>Causes:</strong> Algorithm too simple, insufficient data, non-predictive features.</p>
+    </div>
+    <div class="bg-blue-100 p-2 rounded">
+      <p class="font-semibold text-xs">VARIANCE (→ Overfitting)</p>
+      <p><strong>Definition:</strong> Over-reliance on training data. Model memorizes training data instead of learning patterns.</p>
+      <p><strong>Kid analogy:</strong> Kid memorizes one set of apples; replace with a different variety → can't recognize them.</p>
+      <p><strong>Quantification:</strong> Training − Testing accuracy &gt; 8–10 % → high variance (Jay's rule of thumb).</p>
+      <p><strong>Causes:</strong> Model too complex (e.g., deep tree), too few training samples relative to features.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2 text-xs">
+    <div class="bg-blue-100 p-1 rounded">
+      <strong>WORKED EXAMPLE — Bullseye Diagram</strong><br />
+      Low bias + Low variance → darts cluster on bullseye (well-fitted).<br />
+      High bias + Low variance → darts cluster but OFF bullseye (consistently wrong).<br />
+      Low bias + High variance → darts scattered AROUND bullseye.<br />
+      High bias + High variance → darts scattered AND off-target.
+    </div>
+    <div class="bg-blue-100 p-1 rounded">
+      <strong>TERMINOLOGY</strong><br />
+      <strong>Bias</strong> = systematic error; model predicts elsewhere.<br />
+      <strong>Variance</strong> = sensitivity to training data changes.<br />
+      <strong>Generalization</strong> = performs well on unseen data.
+    </div>
+    <div class="bg-blue-100 p-1 rounded">
+      <strong>GOTCHA</strong><br />
+      Bias is checked on TRAINING accuracy only (not test). A model with training 70 % and test 49 % is NOT biased (70 &gt; 50) — it has HIGH VARIANCE. Don't confuse low test accuracy with bias.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 3  CONFUSION MATRIX  (green)                                   -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-green-500 bg-green-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-green-800 mb-1">③ Confusion Matrix — The Foundation of Model Evaluation</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p>A 2×2 matrix showing how predictions map to actual classes. Named from the <em>prediction</em> side: "False Positive" = falsely predicted as positive. Class 1 = positive class (action / long position), Class 0 = negative class (no position). Want HIGH numbers on the diagonal (correct predictions).</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>Accuracy alone can't tell you WHERE the model fails. The confusion matrix reveals whether the model is predicting the <em>actionable</em> class (class 1) correctly — which is what traders care about. It drives precision and recall calculations.</p>
+    </div>
+  </div>
+
+  <p class="font-semibold text-xs mb-1">HOW — Constructing the Matrix</p>
+
+  <!-- VISUAL: Confusion Matrix -->
+  <div class="bg-white border-2 border-indigo-300 rounded p-2 mb-2">
+    <svg viewBox="0 0 500 200" class="w-full">
+      <text x="250" y="15" text-anchor="middle" font-size="9" font-weight="bold" fill="#312e81">CONFUSION MATRIX — 2×2 Grid</text>
+      <!-- Column headers -->
+      <text x="280" y="35" text-anchor="middle" font-size="7" font-weight="bold" fill="#6b7280">Predicted 0</text>
+      <text x="400" y="35" text-anchor="middle" font-size="7" font-weight="bold" fill="#6b7280">Predicted 1</text>
+      <!-- Row headers -->
+      <text x="160" y="80" text-anchor="middle" font-size="7" font-weight="bold" fill="#6b7280">Actual 0</text>
+      <text x="160" y="140" text-anchor="middle" font-size="7" font-weight="bold" fill="#6b7280">Actual 1</text>
+      <!-- TN cell -->
+      <rect x="210" y="45" width="120" height="50" rx="4" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+      <text x="270" y="68" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">TN = 350</text>
+      <text x="270" y="82" text-anchor="middle" font-size="6" fill="#166534">True Negative ✓</text>
+      <!-- FP cell -->
+      <rect x="340" y="45" width="120" height="50" rx="4" fill="#fecaca" stroke="#dc2626" stroke-width="2"/>
+      <text x="400" y="68" text-anchor="middle" font-size="10" font-weight="bold" fill="#991b1b">FP = 50</text>
+      <text x="400" y="82" text-anchor="middle" font-size="6" fill="#991b1b">False Positive ✗</text>
+      <!-- FN cell -->
+      <rect x="210" y="105" width="120" height="50" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+      <text x="270" y="128" text-anchor="middle" font-size="10" font-weight="bold" fill="#92400e">FN = 100</text>
+      <text x="270" y="142" text-anchor="middle" font-size="6" fill="#92400e">False Negative ✗</text>
+      <!-- TP cell -->
+      <rect x="340" y="105" width="120" height="50" rx="4" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+      <text x="400" y="128" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">TP = 500</text>
+      <text x="400" y="142" text-anchor="middle" font-size="6" fill="#166534">True Positive ✓</text>
+      <!-- Diagonal highlight -->
+      <line x1="210" y1="45" x2="330" y2="95" stroke="#16a34a" stroke-width="1" stroke-dasharray="3" opacity="0.4"/>
+      <line x1="340" y1="105" x2="460" y2="155" stroke="#16a34a" stroke-width="1" stroke-dasharray="3" opacity="0.4"/>
+      <!-- Formulas -->
+      <text x="60" y="175" font-size="6" fill="#374151">Precision = TP/(TP+FP) = 500/550 = 91%</text>
+      <text x="300" y="175" font-size="6" fill="#374151">Recall = TP/(TP+FN) = 500/600 = 83%</text>
+      <text x="60" y="190" font-size="6" fill="#374151">Accuracy = (TN+TP)/Total = 850/1000 = 85%</text>
+      <text x="300" y="190" font-size="6" fill="#374151">F1 = 2×(P×R)/(P+R) = 2×(0.91×0.83)/(0.91+0.83) = 87%</text>
+    </svg>
+  </div>
+
+  <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# 1000 records: 400 actual class-0, 600 actual class-1
+# Model predicts:
+#   Of 400 class-0: 350 predicted 0 (correct), 50 predicted 1 (wrong)
+#   Of 600 class-1: 100 predicted 0 (wrong), 500 predicted 1 (correct)
+
+#                    Predicted 0      Predicted 1
+#  Actual 0    ┌──────────────────┬──────────────────┐
+#              │  TN = 350        │  FP = 50         │   ← True Neg / False Pos
+#  Actual 1    ├──────────────────┼──────────────────┤
+#              │  FN = 100        │  TP = 500        │   ← False Neg / True Pos
+#              └──────────────────┴──────────────────┘
+
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_test, y_pred)   # rows = actual, cols = predicted
+# cm = [[TN, FP],
+#        [FN, TP]]
+  </pre>
+
+  <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
+    <div class="bg-green-100 p-1 rounded">
+      <strong>WORKED EXAMPLE</strong><br />
+      TN=350, FP=50, FN=100, TP=500.<br />
+      Accuracy = (350+500)/1000 = 85 %.<br />
+      Diagonal sum = 850 correct out of 1000.<br />
+      Off-diagonal = 150 errors.
+    </div>
+    <div class="bg-green-100 p-1 rounded">
+      <strong>TERMINOLOGY</strong><br />
+      <strong>TP</strong> = True Positive (correctly predicted positive).<br />
+      <strong>FP</strong> = False Positive (falsely predicted as positive; Type I error).<br />
+      <strong>FN</strong> = False Negative (falsely predicted as negative; Type II error).<br />
+      <strong>TN</strong> = True Negative (correctly predicted negative).
+    </div>
+    <div class="bg-green-100 p-1 rounded">
+      <strong>GOTCHA</strong><br />
+      In trading, FP = model says "go long" but stock goes down (lose money). FN = model says "no trade" but stock goes up (miss opportunity). Which is worse depends on your strategy. sklearn's <code>confusion_matrix()</code> puts TN top-left, TP bottom-right.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PAGE BREAK 1                                                   -->
+<!-- ============================================================ -->
+<div class="page-break"></div>
+
+<!-- ============================================================ -->
+<!-- 4  EVALUATION METRICS  (orange)                                -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-orange-500 bg-orange-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-orange-800 mb-1">④ Evaluation Metrics — Accuracy, Precision, Recall</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p>Three metrics to evaluate classifiers. <strong>Accuracy</strong> = overall correctness but misleading with imbalanced data. <strong>Precision</strong> = "when model says up, how often is it right?" <strong>Recall</strong> = "of all actual up days, how many did model catch?"</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>With imbalanced data (e.g., predict 5 %+ moves: 46 positive vs 1 454 negative), a model predicting ALL zeros gets 93 % accuracy while being useless. Precision and recall focus on the <em>positive class</em> — the actionable class in trading.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2 mb-2">
+    <div class="bg-orange-100 p-2 rounded">
+      <p class="font-semibold text-xs">Accuracy</p>
+      <p class="text-center font-mono">(TP + TN) / (TP + FP + TN + FN)</p>
+      <p>= correct predictions / total. First check, but can be misleading. E.g., 930/70 split → 93 % by predicting all 0s.</p>
+    </div>
+    <div class="bg-orange-100 p-2 rounded">
+      <p class="font-semibold text-xs">Precision</p>
+      <p class="text-center font-mono">TP / (TP + FP)</p>
+      <p>"When model says stock goes up, 90 % of the time it does." High precision = high confidence in signals. 500/(500+50)=90.9 %.</p>
+    </div>
+    <div class="bg-orange-100 p-2 rounded">
+      <p class="font-semibold text-xs">Recall (Sensitivity)</p>
+      <p class="text-center font-mono">TP / (TP + FN)</p>
+      <p>"Of all actual up days, model catches 83 %." High recall = few missed opportunities. 500/(500+100)=83.3 %.</p>
+    </div>
+  </div>
+
+  <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+from sklearn.metrics import classification_report, accuracy_score
+
+print(accuracy_score(y_test, y_pred))                 # single number: 0.85
+print(classification_report(y_test, y_pred))          # precision, recall per class
+#               precision    recall  f1-score   support
+#            0       0.78      0.88      0.83       160
+#            1       0.83      0.80      0.82       210
+#     accuracy                           0.80       370
+  </pre>
+
+  <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
+    <div class="bg-orange-100 p-1 rounded">
+      <strong>WORKED EXAMPLE — Imbalanced Trap</strong><br />
+      Target: stock rises &gt;5 %. Data: 1 454 zeros, 46 ones.<br />
+      Lazy model predicts 0 always → accuracy 96.8 %!<br />
+      Precision = 0/0 = undefined. Recall = 0/46 = 0 %.<br />
+      Precision &amp; recall expose the fraud.
+    </div>
+    <div class="bg-orange-100 p-1 rounded">
+      <strong>TERMINOLOGY</strong><br />
+      <strong>Imbalanced data</strong> = class distribution heavily skewed.<br />
+      <strong>F1-score</strong> = harmonic mean of precision &amp; recall.<br />
+      <strong>Support</strong> = number of actual instances per class in test set.
+    </div>
+    <div class="bg-orange-100 p-1 rounded">
+      <strong>GOTCHA</strong><br />
+      Also check test-set balance after splitting! Original data balanced doesn't guarantee test set is. If test set is imbalanced → accuracy is misleading even if training set was fine. Jay prefers precision/recall over resampling techniques (SMOTE etc.).
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 5  DECISION TREE  (purple)                                     -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-purple-500 bg-purple-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-purple-800 mb-1">⑤ Decision Tree — Splitting Data by Conditions</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p>Algorithm that breaks the dataset into subsets where each subset ideally has records of a single class. Builds an inverted tree: root node → branches (conditions) → decision nodes → leaves (predictions). Conditions are found using <strong>Gini index</strong> (default) or <strong>Entropy</strong>.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>Key advantage: <strong>NO FEATURE SCALING NEEDED</strong> — works on raw data. Super fast to train and predict (critical for production with millions of rows). Interpretable — you can visualize the tree and see exact rules. Gini is go-to for financial data; entropy also works.</p>
+    </div>
+  </div>
+
+  <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+import matplotlib.pyplot as plt
+
+# --- Define and train ---
+dt = DecisionTreeClassifier(criterion='gini',       # 'gini' or 'entropy'
+                            max_depth=3,             # restrict tree height to 3 levels
+                            random_state=42)
+dt.fit(X_train, y_train)                             # NO scaling needed!
+
+# --- Evaluate ---
+print("Train:", dt.score(X_train, y_train))          # 57%
+print("Test :", dt.score(X_test,  y_test))           # 50%  (7% diff — borderline variance)
+
+# --- Visualize the tree ---
+plt.figure(figsize=(20,8))
+plot_tree(dt, feature_names=features, filled=True, rounded=True)
+plt.show()
+
+# --- Feature importance ---
+importance = pd.Series(dt.feature_importances_, index=features)
+importance[importance &gt; 0].sort_values().plot.barh() # only 5 of 15+ features used!
+  </pre>
+
+  <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
+    <div class="bg-purple-100 p-1 rounded">
+      <strong>WORKED EXAMPLE</strong><br />
+      depth=3: uses only 5 features (ma_15, ma_25, std_5, vol_ma4, close_to_open). Misses momentum, other MAs.<br />
+      depth=6: uses all features BUT train 70 % / test 49 % → HIGH VARIANCE.<br />
+      Increasing depth = more features but more overfitting.
+    </div>
+    <div class="bg-purple-100 p-1 rounded">
+      <strong>TERMINOLOGY</strong><br />
+      <strong>Root node</strong> = first split (entire dataset).<br />
+      <strong>Decision node</strong> = intermediate condition.<br />
+      <strong>Leaf</strong> = terminal node with class prediction.<br />
+      <strong>Impure</strong> = mixed classes; <strong>Pure</strong> = single class.<br />
+      <strong>Gini index</strong> = measure of impurity (0 = pure).
+    </div>
+    <div class="bg-purple-100 p-1 rounded">
+      <strong>GOTCHA</strong><br />
+      Decision trees are PRONE TO OVERFITTING. Deeper tree = memorization. Always restrict <code>max_depth</code>. With depth=3, few features used; with depth=6, all features but 70 %/49 % → overfitted. This is the fundamental dilemma that leads to Random Forest.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 6  RANDOM FOREST  (teal)                                       -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-teal-500 bg-teal-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-teal-800 mb-1">⑥ Random Forest — Many Trees, Majority Vote</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p>Instead of one deep tree, train <strong>100+ shallow trees</strong>. Each tree splits data differently, using different features. For prediction, all trees vote — majority class wins. This solves decision tree's dilemma: all features get utilized without increasing individual tree depth.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>Single decision tree: restrict depth → few features; increase depth → overfitting. Random Forest: keep depth restricted per tree, but train many trees → all features utilized across the forest. Also: no scaling needed, works well with LARGE datasets (millions/billions of rows).</p>
+    </div>
+  </div>
+
+  <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+from sklearn.ensemble import RandomForestClassifier
+
+# --- Define: 100 trees, each max depth 3 ---
+rf = RandomForestClassifier(n_estimators=100,        # number of trees
+                            max_depth=3,             # each tree limited to 3 levels
+                            criterion='gini',        # splitting criterion
+                            random_state=42)
+rf.fit(X_train, y_train)                             # NO scaling needed!
+
+print("Train:", rf.score(X_train, y_train))          # ~64-70%
+print("Test :", rf.score(X_test,  y_test))           # ~50%  (still overfitted on THIS data)
+
+# Result: even 100 trees couldn't fix the close-to-close target setup here
+# → Lecture takeaway: the issue appears more related to data/target design than to algorithm choice alone
+  </pre>
+
+  <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
+    <div class="bg-teal-100 p-1 rounded">
+      <strong>WORKED EXAMPLE</strong><br />
+      100 trees, depth 3, Gini: train 70 % / test 50 %.<br />
+      Switch to entropy: train 64 % / test 47 % (worse!).<br />
+      Reduce to 50 trees: no improvement.<br />
+      Three algorithms (LR, DT, RF) all ≈50 % test → in this example, the bottleneck appears to be the data/target setup more than the algorithm swap alone.
+    </div>
+    <div class="bg-teal-100 p-1 rounded">
+      <strong>TERMINOLOGY</strong><br />
+      <strong>n_estimators</strong> = number of trees in the forest.<br />
+      <strong>Ensemble</strong> = combining multiple models.<br />
+      <strong>Majority voting</strong> = 51 of 100 trees say "up" → predict up.<br />
+      <strong>Bagging</strong> = each tree trained on random subset of data.
+    </div>
+    <div class="bg-teal-100 p-1 rounded">
+      <strong>GOTCHA</strong><br />
+      Random forests are STILL prone to overfitting — just less so than a single deep tree. Can't inspect which features overlap between trees (package limitation). Tree-based algorithms (DT &amp; RF) are naturally more overfit-prone than regression-based models.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PAGE BREAK 2                                                   -->
+<!-- ============================================================ -->
+<div class="page-break"></div>
+
+<!-- ============================================================ -->
+<!-- 7  SUPPORT VECTOR MACHINE  (cyan)                              -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-cyan-500 bg-cyan-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-cyan-800 mb-1">⑦ Support Vector Machine (SVM) — Hyperplanes &amp; Kernel Tricks</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p>Finds a <strong>hyperplane</strong> (decision boundary) that maximizes the <strong>margin</strong> between classes. The nearest data points to the boundary are called <strong>support vectors</strong>. For non-linearly separable data, applies <strong>kernel tricks</strong> — transforms data into higher dimensions where it becomes linearly separable (e.g., 2D circles → 3D separable planes).</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>Shines with <strong>medium/small datasets</strong> (thousands of rows) and <strong>high-dimensional data</strong> (many features, few observations). Unlike tree-based models which need large data, SVM excels where you have limited data but rich features — common in quant trading. Requires scaling but handles complex non-linear boundaries via kernels.</p>
+    </div>
+  </div>
+
+  <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+from sklearn.svm import SVC                          # SVC = classification
+# from sklearn.svm import SVR                        # SVR = regression variant
+
+# --- Available kernels ---
+# 'rbf'     = Radial Basis Function (default, most popular)
+# 'linear'  = always linear boundary (no kernel trick)
+# 'poly'    = polynomial boundary
+# 'sigmoid' = sigmoid-shaped boundary
+
+model = SVC(kernel='rbf', random_state=42)
+model.fit(X_train_scaled, y_train)                   # MUST scale features first!
+
+# --- Kernel trick intuition ---
+# Problem: 2D data in concentric circles (inner=class A, outer=class B)
+#   → No straight line can separate them
+# Solution: SVM projects data into 3D → now a flat plane separates them
+# The math (kernel function) does this WITHOUT actually computing 3D coords
+  </pre>
+
+  <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
+    <div class="bg-cyan-100 p-1 rounded">
+      <strong>WORKED EXAMPLE</strong><br />
+      Same Tesla data, same features, new target (open-to-open):<br />
+      SVM + RBF kernel → train 87 %, test 80 %.<br />
+      Confusion matrix: high diagonal (correct predictions).<br />
+      Precision class-1 ≈ 83 %. Recall class-1 ≈ 80 %.
+    </div>
+    <div class="bg-cyan-100 p-1 rounded">
+      <strong>TERMINOLOGY</strong><br />
+      <strong>Hyperplane</strong> = decision boundary (line in 2D, plane in 3D, hyperplane in nD).<br />
+      <strong>Margin</strong> = distance from boundary to nearest points.<br />
+      <strong>Support vectors</strong> = nearest data points defining margin.<br />
+      <strong>Kernel</strong> = function that transforms data for separation.
+    </div>
+    <div class="bg-cyan-100 p-1 rounded">
+      <strong>GOTCHA</strong><br />
+      SVM REQUIRES feature scaling (unlike trees). Without scaling, features with larger numerical ranges dominate. Not scalable to massive datasets (millions of rows) — use Random Forest instead. SVM model is a "black box" — harder to interpret than decision trees.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 8  TARGET & FEATURE DESIGN INSIGHT  (rose/red)                 -->
+<!-- ============================================================ -->
+<section class="border-l-4 border-red-500 bg-red-50 p-3 rounded mb-3">
+  <h2 class="font-bold text-red-800 mb-1">⑧ The Critical Insight — Target &amp; Feature Design Often Matter More Than Algorithm Swaps</h2>
+
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <div>
+      <p class="font-semibold text-xs mb-1">WHAT</p>
+      <p>Three different algorithms (Logistic Regression, Decision Tree, Random Forest) with close-to-close target all gave ≈50–53 % test accuracy. Later, the lecture changes both the target variable and the algorithm, and the SVM example reaches 80 % test accuracy. The takeaway is that target and feature design can matter at least as much as, and often more than, just swapping algorithms.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-xs mb-1">WHY</p>
+      <p>The lecture treats close-to-close prediction as much noisier because both features and target are tied closely to close prices. With an open-to-open target plus close-based features, the model now sees an extra intra-day information block before prediction time. Your "natural intelligence" in designing targets and features is presented as a major differentiator.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2 mb-2">
+    <div class="bg-red-100 p-2 rounded text-xs">
+      <p class="font-semibold">Algorithm Comparison (same features, close-to-close target)</p>
+      <table class="w-full mt-1">
+        <tr class="border-b"><th class="text-left">Algorithm</th><th>Train</th><th>Test</th><th>Verdict</th></tr>
+        <tr><td>Logistic Regression</td><td>56 %</td><td>53 %</td><td>Coin toss</td></tr>
+        <tr><td>Decision Tree (d=3)</td><td>57 %</td><td>50 %</td><td>Random</td></tr>
+        <tr><td>Random Forest (100)</td><td>70 %</td><td>50 %</td><td>Overfitted</td></tr>
+      </table>
+    </div>
+    <div class="bg-red-100 p-2 rounded text-xs">
+      <p class="font-semibold">After changing target (open-to-open)</p>
+      <table class="w-full mt-1">
+        <tr class="border-b"><th class="text-left">Algorithm</th><th>Train</th><th>Test</th><th>Verdict</th></tr>
+        <tr><td>SVM (RBF kernel)</td><td>87 %</td><td>80 %</td><td>Accepted in class as not materially overfitted</td></tr>
+      </table>
+      <p class="mt-1">Two changes happened together: algorithm + target. The class discussion leans toward target/feature alignment as the bigger reason for the improvement, but this exact demo does not isolate the two effects experimentally.</p>
+    </div>
+    <div class="bg-red-100 p-2 rounded text-xs">
+      <p class="font-semibold">What To Try When Models Fail</p>
+      <ol class="list-decimal ml-3 mt-1">
+        <li>Increase dataset size (more history)</li>
+        <li>Add more predictive features (ratio-based, e.g., price/MA)</li>
+        <li>Design more logical target variable</li>
+        <li>Change algorithm (least likely to help alone)</li>
+      </ol>
+      <p class="mt-1">Combination of 1–3 gives highest chance of improvement.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2 text-xs">
+    <div class="bg-red-100 p-1 rounded">
+      <strong>WORKED EXAMPLE</strong><br />
+      Carlos's insight: "price / MA ratio" is more predictive than raw MA level. Raw MA_15 = 175 is meaningless across stocks. But price/MA_15 = 1.05 means "5 % above 15-day MA" — universally meaningful and captures overbought/oversold. Design features with financial logic, not just rolling statistics.
+    </div>
+    <div class="bg-red-100 p-1 rounded">
+      <strong>TERMINOLOGY</strong><br />
+      <strong>Predictive power</strong> = features' ability to predict target.<br />
+      <strong>Feature engineering</strong> = creating informative features from raw data.<br />
+      <strong>Information leakage</strong> = using future data in features (NOT the case with shift(-1) target creation — just labeling, not training).
+    </div>
+    <div class="bg-red-100 p-1 rounded">
+      <strong>GOTCHA</strong><br />
+      Don't keep changing algorithms hoping for better results — if 3 algorithms give similarly weak results, the lecture says to inspect data, features, and target design first. In this example, the open-to-open setup benefits from extra same-day information in close-based features; if features were open-only, that advantage could narrow.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- QUICK REFERENCE  (gray)                                        -->
+<!-- ============================================================ -->
+<section class="bg-gray-100 p-3 rounded mb-3">
+  <h2 class="font-bold text-gray-700 mb-2">Quick Reference</h2>
+  <div class="grid grid-cols-3 gap-3 text-xs">
+    <div>
+      <p class="font-semibold mb-1">Algorithm Comparison</p>
+      <table class="w-full">
+        <tr class="border-b font-semibold"><td>Property</td><td>LR</td><td>DT/RF</td><td>SVM</td></tr>
+        <tr class="border-b"><td>Scaling needed?</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+        <tr class="border-b"><td>Best data size</td><td>Any</td><td>Large</td><td>Small-Med</td></tr>
+        <tr class="border-b"><td>Interpretable?</td><td>Med</td><td>High</td><td>Low</td></tr>
+        <tr class="border-b"><td>Overfit risk</td><td>Low</td><td>High</td><td>Medium</td></tr>
+        <tr><td>Regression variant?</td><td>No*</td><td>Yes</td><td>Yes (SVR)</td></tr>
+      </table>
+      <p class="text-gray-500 mt-1">*LR is classification despite its name.</p>
+    </div>
+    <div>
+      <p class="font-semibold mb-1">Bias-Variance Cheat Table</p>
+      <table class="w-full">
+        <tr class="border-b font-semibold"><td>Check</td><td>Rule</td><td>Diagnosis</td></tr>
+        <tr class="border-b"><td>Train acc &lt; 50 %</td><td>Yes</td><td>HIGH BIAS</td></tr>
+        <tr class="border-b"><td>Train − Test &gt; 8–10 %</td><td>Yes</td><td>HIGH VARIANCE</td></tr>
+        <tr class="border-b"><td>Train ≥ 50 %, diff &lt; 8 %</td><td>Yes</td><td>WELL-FITTED</td></tr>
+        <tr><td>Test &lt; Train always?</td><td>Usually</td><td>Normal</td></tr>
+      </table>
+      <p class="font-semibold mt-2 mb-1">Key sklearn Imports</p>
+      <p class="font-mono text-gray-600">
+        sklearn.linear_model.LogisticRegression<br />
+        sklearn.tree.DecisionTreeClassifier<br />
+        sklearn.ensemble.RandomForestClassifier<br />
+        sklearn.svm.SVC / SVR
+      </p>
+    </div>
+    <div>
+      <p class="font-semibold mb-1">Metric Formulas</p>
+      <table class="w-full">
+        <tr class="border-b"><td>Accuracy</td><td class="font-mono">(TP+TN) / Total</td></tr>
+        <tr class="border-b"><td>Precision</td><td class="font-mono">TP / (TP+FP)</td></tr>
+        <tr class="border-b"><td>Recall</td><td class="font-mono">TP / (TP+FN)</td></tr>
+        <tr><td>F1</td><td class="font-mono">2×P×R / (P+R)</td></tr>
+      </table>
+      <p class="font-semibold mt-2 mb-1">Decision Tree Parameters</p>
+      <table class="w-full">
+        <tr class="border-b"><td>criterion</td><td>'gini' (default) or 'entropy'</td></tr>
+        <tr class="border-b"><td>max_depth</td><td>Restrict tree height (e.g., 3)</td></tr>
+        <tr class="border-b"><td>n_estimators</td><td>RF: number of trees (e.g., 100)</td></tr>
+        <tr><td>random_state</td><td>Reproducibility (any int)</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- KEY TAKEAWAYS  (yellow)                                        -->
+<!-- ============================================================ -->
+<section class="bg-yellow-50 border border-yellow-300 p-3 rounded mb-3">
+  <h2 class="font-bold text-yellow-800 mb-2">KEY TAKEAWAYS</h2>
+  <div class="grid grid-cols-4 gap-2 text-xs">
+    <div class="bg-yellow-100 p-2 rounded">
+      <strong>1. Evaluate Beyond Accuracy</strong><br />
+      Accuracy is misleading with imbalanced data. Use confusion matrix, precision (confidence in positive predictions), and recall (coverage of actual positives). In trading, we care most about precision — when model says "go long," is it right?
+    </div>
+    <div class="bg-yellow-100 p-2 rounded">
+      <strong>2. Diagnose Bias vs. Variance</strong><br />
+      Training acc &lt; 50 % → bias (model too simple or bad features). Train − Test gap &gt; 8–10 % → variance (overfitting). Decision trees overfit easily — restrict depth or use Random Forest. But even RF can overfit if data/target is poor.
+    </div>
+    <div class="bg-yellow-100 p-2 rounded">
+      <strong>3. Target &amp; Features &gt; Algorithm</strong><br />
+      Three algorithms with the earlier setup stay near 50 %. When the lecture changes both target and algorithm, the result jumps to 80 %. The main lesson is to design targets and features so the model has genuine predictive information, instead of relying on algorithm swaps alone.
+    </div>
+    <div class="bg-yellow-100 p-2 rounded">
+      <strong>4. Know Each Algorithm's Sweet Spot</strong><br />
+      Decision Trees: no scaling, interpretable, but overfit-prone. Random Forest: many trees, all features, large data. SVM: kernel tricks, medium data, needs scaling. Choose based on data size, feature count, and production constraints.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- FOOTER                                                         -->
+<!-- ============================================================ -->
+<footer class="text-center text-gray-400 text-xs mt-4 pt-2 border-t">
+  EPAT · MLT-02 Machine Learning-II · Instructor: Jay · Week 19-1 · Cheat Sheet v1.0
+</footer>
+
+</body>
+</html>

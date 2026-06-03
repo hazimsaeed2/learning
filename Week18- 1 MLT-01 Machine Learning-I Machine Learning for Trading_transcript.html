@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[WEEK 18-1] — Machine Learning-I (MLT-01) — Cheat Sheet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+           font-size: 11px; line-height: 1.5; }
+    @media print { body { font-size: 9px; } .page-break { page-break-before: always; } }
+    h1 { font-size: 18px; }
+    h2 { font-size: 13px; }
+    h3 { font-size: 11px; }
+    table { font-size: 10px; }
+    pre  { font-size: 9px; line-height: 1.45; }
+  </style>
+</head>
+<body class="bg-white p-4 max-w-6xl mx-auto">
+
+  <!-- ====================== PAGE 1 ====================== -->
+
+  <!-- HEADER -->
+  <header class="text-center border-b-4 border-blue-600 pb-3 mb-4">
+    <h1 class="font-extrabold text-blue-900">MACHINE LEARNING FOR TRADING — CLASSIFICATION, LOGISTIC REGRESSION &amp; FIRST MODEL BUILD — COMPLETE CHEAT SHEET</h1>
+    <p class="text-gray-600 mt-1">EPAT Week 18-1 — MLT-01: Machine Learning-I | Instructor: Jay (ML for Trading Module, Sessions 1-3)</p>
+    <p class="text-gray-700 mt-2">
+      <strong>The Problem:</strong> You have years of OHLCV data and want to predict whether a stock goes up or down tomorrow. Manual analysis can't scale to thousands of features across thousands of instruments, and you need a systematic, repeatable framework.<br>
+      <strong>Your Goal:</strong> Understand the three ML task types (regression, classification, clustering), build a logistic regression classifier from scratch in Python, learn proper train/test splitting, feature scaling, and avoid look-ahead bias.
+    </p>
+  </header>
+
+  <!-- SECTION 1: CORE EXAMPLE -->
+  <section class="border-2 border-amber-500 rounded-lg p-3 mb-4 bg-amber-50">
+    <h2 class="font-bold text-amber-900 mb-3 bg-amber-200 rounded px-2 py-1">1️⃣ CORE EXAMPLE — Predicting Tesla's Next-Day Direction (Up or Not)</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">THE COMPLETE WORKFLOW</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-2 py-1">Step</th><th class="border px-2 py-1">What</th><th class="border px-2 py-1">Output</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">1. Data</td><td class="border px-2 py-1">Tesla OHLCV (2014-2024)</td><td class="border px-2 py-1">~1,500 rows</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">2. Target</td><td class="border px-2 py-1">next_day_return &gt; 0 → 1, else 0</td><td class="border px-2 py-1">761 up days, rest down</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">3. Features</td><td class="border px-2 py-1">Volatility, trend, momentum, volume, intraday</td><td class="border px-2 py-1">~15 columns</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">4. Drop NaN</td><td class="border px-2 py-1">Rolling features create nulls</td><td class="border px-2 py-1">~1,486 clean rows</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">5. Split</td><td class="border px-2 py-1">75% train / 25% test, shuffle=False</td><td class="border px-2 py-1">~1,100 train + ~370 test</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">6. Scale</td><td class="border px-2 py-1">StandardScaler: fit on train, transform both</td><td class="border px-2 py-1">Mean=0, Std=1 for all features</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">7. Train</td><td class="border px-2 py-1">LogisticRegression.fit(X_train, y_train)</td><td class="border px-2 py-1">Trained model</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">8. Predict</td><td class="border px-2 py-1">model.predict(X_test)</td><td class="border px-2 py-1">Array of 0s and 1s</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">9. Evaluate</td><td class="border px-2 py-1">Compare y_pred vs y_test</td><td class="border px-2 py-1 font-bold text-green-700">Train: 56% | Test: 53%</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400">
+          <p><strong>💡 53% needs context.</strong> Accuracy alone is not sufficient, and the lecturer explicitly defers the "is 53% good or bad?" discussion to the next class on model evaluation. The workflow itself is the key lesson here.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">SAMPLE DATA SET STRUCTURE</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-1 py-1">Date</th><th class="border px-1 py-1">vol_5</th><th class="border px-1 py-1">trend_10</th><th class="border px-1 py-1">mom_3</th><th class="border px-1 py-1">vol_MA</th><th class="border px-1 py-1">intraday</th><th class="border px-1 py-1 bg-blue-100">Target</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">2014-01-02</td><td class="border px-1 py-1">2.31</td><td class="border px-1 py-1">152.4</td><td class="border px-1 py-1">0.05</td><td class="border px-1 py-1">4.2M</td><td class="border px-1 py-1">1.83</td><td class="border px-1 py-1 font-bold text-green-700 bg-blue-50">1 (up)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">2014-01-03</td><td class="border px-1 py-1">2.18</td><td class="border px-1 py-1">151.7</td><td class="border px-1 py-1">-0.02</td><td class="border px-1 py-1">3.9M</td><td class="border px-1 py-1">0.95</td><td class="border px-1 py-1 font-bold text-red-700 bg-blue-50">0 (not up)</td></tr>
+          </tbody>
+        </table>
+        <p class="mb-2">Red columns = <strong>features</strong> (what we feed to the model). Blue column = <strong>target</strong> (what we want to predict). The model learns the association between features and target.</p>
+
+        <h3 class="font-bold text-amber-800 mb-2">TRAINING vs TESTING — The Kid Analogy</h3>
+        <p class="font-mono bg-amber-100 p-2 rounded">TRAINING = showing kid fruits + labels<br>
+  → Kid explores features (weight, color, taste)<br>
+  → We label: "this is apple", "this is orange"<br>
+  → Kid forms ASSOCIATION: features → labels<br><br>
+TESTING = showing kid NEW fruit, no labels<br>
+  → Kid uses learned association to PREDICT<br>
+  → We check: was the kid right?<br><br>
+CRITICAL: Test data must be data the model<br>
+has NEVER seen before. Otherwise you're just<br>
+measuring memorization, not learning.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: ML TASK TAXONOMY -->
+  <section class="border-2 border-blue-500 rounded-lg p-3 mb-4 bg-blue-50">
+    <h2 class="font-bold text-blue-900 mb-3 bg-blue-200 rounded px-2 py-1">2️⃣ AI, ML &amp; DL — Task Taxonomy: Regression, Classification &amp; Clustering</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-white border-2 border-blue-300 rounded p-3">
+        <h3 class="font-bold text-blue-800 mb-2">AI → ML → DL Hierarchy</h3>
+        <p><strong>AI (Artificial Intelligence):</strong> System that makes decisions using collected natural intelligence from humans. The lecture frames it as a tool to help humans make better decisions rather than something to use blindly.</p>
+        <p class="mt-1"><strong>ML (Machine Learning):</strong> Set of algorithms that take data and help machines learn patterns. Subset of AI.</p>
+        <p class="mt-1"><strong>DL (Deep Learning):</strong> Subset of ML inspired by how human brains work (neurons). Covered in MLT-03.</p>
+
+        <h3 class="font-bold text-blue-800 mt-3 mb-2">TWO USES IN QUANT TRADING</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-blue-100">
+            <tr><th class="border px-2 py-1">Purpose</th><th class="border px-2 py-1">Tasks Used</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Forecasting / Prediction</td><td class="border px-2 py-1">Regression + Classification</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Data Analysis</td><td class="border px-2 py-1">Clustering + Dimensionality Reduction</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bg-white border-2 border-blue-300 rounded p-3">
+        <h3 class="font-bold text-blue-800 mb-2">THE THREE ML TASKS</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-blue-100">
+            <tr><th class="border px-1 py-1">Task</th><th class="border px-1 py-1">What It Does</th><th class="border px-1 py-1">Target Type</th><th class="border px-1 py-1">Learning</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-bold text-green-700">Regression</td><td class="border px-1 py-1">Predict numerical value</td><td class="border px-1 py-1">Continuous (-2.41%, 0.88%)</td><td class="border px-1 py-1">Supervised</td></tr>
+            <tr><td class="border px-1 py-1 font-bold text-purple-700">Classification</td><td class="border px-1 py-1">Predict class / category</td><td class="border px-1 py-1">Discrete (0 or 1, buy/sell)</td><td class="border px-1 py-1">Supervised</td></tr>
+            <tr><td class="border px-1 py-1 font-bold text-orange-700">Clustering</td><td class="border px-1 py-1">Group similar instances</td><td class="border px-1 py-1">No target (unsupervised)</td><td class="border px-1 py-1">Unsupervised</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Dimensionality Reduction:</strong> Reduce 10,000 columns → 6 columns without losing much information. Reduces computational cost drastically. Also unsupervised.</p>
+      </div>
+
+      <div class="bg-white border-2 border-blue-300 rounded p-3">
+        <h3 class="font-bold text-blue-800 mb-2">SUPERVISED vs UNSUPERVISED</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-blue-100">
+            <tr><th class="border px-2 py-1">Supervised</th><th class="border px-2 py-1">Unsupervised</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1">Features + Labels provided</td><td class="border px-2 py-1">Features ONLY (no labels)</td></tr>
+            <tr><td class="border px-2 py-1">WE define the target</td><td class="border px-2 py-1">Algorithm finds structure</td></tr>
+            <tr><td class="border px-2 py-1">Regression, Classification</td><td class="border px-2 py-1">Clustering, Dim. Reduction</td></tr>
+            <tr><td class="border px-2 py-1">Predict direction, returns</td><td class="border px-2 py-1">Group companies, reduce data</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Key difference from clustering:</strong> In classification, we KNOW the classes (apple/orange). In clustering, we DON'T know — the algorithm discovers groups, then WE provide context.</p>
+        <p class="mt-1"><strong>Reinforcement Learning:</strong> Can work with or without labels. Dedicated class later in the module.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: CLASSIFICATION IN TRADING -->
+  <section class="border-2 border-green-500 rounded-lg p-3 mb-4 bg-green-50">
+    <h2 class="font-bold text-green-900 mb-3 bg-green-200 rounded px-2 py-1">3️⃣ CLASSIFICATION IN TRADING — Features, Labels &amp; Applications</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-green-300 rounded p-3">
+        <h3 class="font-bold text-green-800 mb-2">ML TERMINOLOGY FOR TRADING</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-green-100">
+            <tr><th class="border px-2 py-1">ML Term</th><th class="border px-2 py-1">Trading Term</th><th class="border px-2 py-1">Notation</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Observations</td><td class="border px-2 py-1">Rows of historical data (each trading day)</td><td class="border px-2 py-1">rows</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Features</td><td class="border px-2 py-1">Technical indicators, statistical properties</td><td class="border px-2 py-1"><strong>X</strong> (capital = matrix)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Target / Label</td><td class="border px-2 py-1">Up(1) or Down(0), or Buy/Sell/Hold</td><td class="border px-2 py-1"><strong>y</strong> (lowercase = vector)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Training data</td><td class="border px-2 py-1">Historical data to learn from</td><td class="border px-2 py-1">X_train, y_train</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Test data</td><td class="border px-2 py-1">Unseen data to evaluate on</td><td class="border px-2 py-1">X_test, y_test</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Predictions</td><td class="border px-2 py-1">Model's predicted labels</td><td class="border px-2 py-1">y_pred</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-green-800 mb-2">TARGET VARIABLE DESIGN (Your Choice!)</h3>
+        <p class="font-mono bg-green-100 p-2 rounded">Way 1: next_return &gt; 0 → 1 (up), else 0<br>
+Way 2: next_return &gt; 5% → 1 (big up), else 0<br>
+Way 3: return &gt; 0 → 1 (buy), &lt; 0 → -1 (sell)<br>
+Way 4: return_5d &gt; 0 → 1 (up in 5 days)<br><br>
+HOW you design the target = HOW you<br>
+supervise the algorithm's learning.<br>
+Different targets → different models!</p>
+      </div>
+
+      <div class="bg-white border-2 border-green-300 rounded p-3">
+        <h3 class="font-bold text-green-800 mb-2">CLASSIFICATION APPLICATIONS IN TRADING</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-green-100">
+            <tr><th class="border px-2 py-1">Application</th><th class="border px-2 py-1">Classes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Predict next-day direction</td><td class="border px-2 py-1">Up (1) / Down (0)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Signal validation layer</td><td class="border px-2 py-1">Trade (1) / Skip (0)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Current candle prediction</td><td class="border px-2 py-1">Green (1) / Red (0) → optimize entry price</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Earnings beat prediction</td><td class="border px-2 py-1">Beat (1) / Miss (0)</td></tr>
+          </tbody>
+        </table>
+        <p class="mb-2"><strong>Signal validation example:</strong> Your trading system generates a buy signal. Instead of blindly executing, add an ML layer: feed current features → model predicts "trade" or "skip" → only execute if ML agrees.</p>
+
+        <h3 class="font-bold text-green-800 mb-2">CLUSTERING APPLICATIONS</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-green-100">
+            <tr><th class="border px-2 py-1">Application</th><th class="border px-2 py-1">How</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Portfolio optimization</td><td class="border px-2 py-1">Hierarchical clustering for portfolio construction</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Risk management</td><td class="border px-2 py-1">Cluster open positions by risk exposure in real-time</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Stock grouping</td><td class="border px-2 py-1">Group 4,000 stocks by returns &amp; volatility features (not just sector)</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 CLUSTERING vs CLASSIFICATION:</strong> They sound similar but are fundamentally different. Classification = YOU know the classes, YOU label them. Clustering = algorithm discovers groups, YOU provide context after.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 2 ====================== -->
+
+  <!-- SECTION 4: LOGISTIC REGRESSION -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">4️⃣ LOGISTIC REGRESSION — From Linear to Sigmoid: The First Classification Algorithm</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">THE PROBLEM WITH LINEAR REGRESSION ON BINARY DATA</h3>
+        <p class="font-mono bg-purple-100 p-2 rounded mb-2">Linear Regression: Y = α × RSI + β<br><br>
+Works great when Y is numerical:<br>
+  X = RSI (numerical) → Y = Asset Value (numerical)<br>
+  Line of best fit represents data well ✅<br><br>
+FAILS when Y is binary (0 or 1):<br>
+  X = RSI (numerical) → Y = Direction (0 or 1)<br>
+  No straight line can fit binary scatter plot ❌<br>
+  Sum of squared errors always very high<br>
+  No matter what line you draw → poor fit</p>
+
+        <h3 class="font-bold text-purple-800 mb-2">THE SOLUTION: SIGMOID / LOGIT FUNCTION</h3>
+        <p class="font-mono bg-purple-100 p-3 rounded mb-2 text-center font-bold">Step 1: Z = α × feature + β  (linear function)<br>
+Step 2: σ(Z) = 1 / (1 + e<sup>−Z</sup>)  (sigmoid)</p>
+
+        <!-- VISUAL: Linear vs Sigmoid -->
+        <div class="bg-white border-2 border-purple-300 rounded p-2 mb-2">
+          <svg viewBox="0 0 620 180" class="w-full">
+            <text x="155" y="14" text-anchor="middle" font-size="8" font-weight="bold" fill="#dc2626">❌ LINEAR REGRESSION (Fails on Binary)</text>
+            <text x="465" y="14" text-anchor="middle" font-size="8" font-weight="bold" fill="#16a34a">✅ SIGMOID / LOGISTIC (Perfect Fit)</text>
+            <!-- LEFT: Linear fails -->
+            <line x1="30" y1="160" x2="280" y2="160" stroke="#374151" stroke-width="1"/>
+            <line x1="30" y1="25" x2="30" y2="160" stroke="#374151" stroke-width="1"/>
+            <text x="155" y="175" text-anchor="middle" font-size="6" fill="#6b7280">Feature (e.g., RSI)</text>
+            <!-- Scatter: class 0 (bottom) and class 1 (top) -->
+            <circle cx="50" cy="150" r="4" fill="#dc2626" opacity="0.7"/><circle cx="70" cy="148" r="4" fill="#dc2626" opacity="0.7"/>
+            <circle cx="90" cy="152" r="4" fill="#dc2626" opacity="0.7"/><circle cx="110" cy="146" r="4" fill="#dc2626" opacity="0.7"/>
+            <circle cx="130" cy="150" r="4" fill="#dc2626" opacity="0.7"/>
+            <circle cx="170" cy="38" r="4" fill="#16a34a" opacity="0.7"/><circle cx="190" cy="42" r="4" fill="#16a34a" opacity="0.7"/>
+            <circle cx="210" cy="35" r="4" fill="#16a34a" opacity="0.7"/><circle cx="230" cy="40" r="4" fill="#16a34a" opacity="0.7"/>
+            <circle cx="260" cy="36" r="4" fill="#16a34a" opacity="0.7"/>
+            <!-- Failed straight line -->
+            <line x1="35" y1="140" x2="275" y2="45" stroke="#dc2626" stroke-width="2" stroke-dasharray="4"/>
+            <text x="180" y="105" font-size="7" fill="#dc2626" font-weight="bold">Poor fit! Goes &lt;0 and &gt;1</text>
+            <!-- Labels -->
+            <text x="22" y="152" font-size="6" fill="#6b7280">0</text><text x="22" y="42" font-size="6" fill="#6b7280">1</text>
+            <!-- Separator -->
+            <line x1="310" y1="20" x2="310" y2="170" stroke="#d1d5db" stroke-width="1" stroke-dasharray="3"/>
+            <!-- RIGHT: Sigmoid works -->
+            <line x1="340" y1="160" x2="590" y2="160" stroke="#374151" stroke-width="1"/>
+            <line x1="340" y1="25" x2="340" y2="160" stroke="#374151" stroke-width="1"/>
+            <text x="465" y="175" text-anchor="middle" font-size="6" fill="#6b7280">Feature (e.g., RSI)</text>
+            <!-- Same scatter -->
+            <circle cx="360" cy="150" r="4" fill="#dc2626" opacity="0.7"/><circle cx="380" cy="148" r="4" fill="#dc2626" opacity="0.7"/>
+            <circle cx="400" cy="152" r="4" fill="#dc2626" opacity="0.7"/><circle cx="420" cy="146" r="4" fill="#dc2626" opacity="0.7"/>
+            <circle cx="440" cy="150" r="4" fill="#dc2626" opacity="0.7"/>
+            <circle cx="480" cy="38" r="4" fill="#16a34a" opacity="0.7"/><circle cx="500" cy="42" r="4" fill="#16a34a" opacity="0.7"/>
+            <circle cx="520" cy="35" r="4" fill="#16a34a" opacity="0.7"/><circle cx="540" cy="40" r="4" fill="#16a34a" opacity="0.7"/>
+            <circle cx="570" cy="36" r="4" fill="#16a34a" opacity="0.7"/>
+            <!-- S-curve sigmoid -->
+            <path d="M 345,152 C 380,152 420,148 445,130 Q 460,100 465,95 Q 475,65 490,48 C 510,38 550,35 585,34" stroke="#16a34a" stroke-width="2.5" fill="none"/>
+            <text x="490" y="108" font-size="7" fill="#16a34a" font-weight="bold">S-curve fits perfectly!</text>
+            <!-- 50% threshold -->
+            <line x1="340" y1="95" x2="590" y2="95" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3"/>
+            <text x="592" y="98" font-size="5" fill="#f59e0b">P=50%</text>
+            <!-- Labels -->
+            <text x="332" y="152" font-size="6" fill="#6b7280">0%</text><text x="332" y="42" font-size="6" fill="#6b7280">100%</text>
+          </svg>
+        </div>
+
+        <p class="font-mono bg-purple-100 p-2 rounded mb-2">When you pass the linear function through<br>
+the sigmoid, the straight line transforms<br>
+into an S-shaped curve that fits binary data!<br><br>
+Output: probabilities between 0% and 100%<br><br>
+If σ(Z) &gt; 50% → predict class 1 (up)<br>
+If σ(Z) ≤ 50% → predict class 0 (not up)<br><br>
+The 50% threshold is default but ADJUSTABLE<br>
+(50% seldom works in practice → try 60%, 70%)</p>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">WORKED EXAMPLE — Probability → Prediction</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-purple-100">
+            <tr><th class="border px-1 py-1">Obs</th><th class="border px-1 py-1">P(class=0)</th><th class="border px-1 py-1">P(class=1)</th><th class="border px-1 py-1">Prediction</th><th class="border px-1 py-1">Why</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">#1</td><td class="border px-1 py-1">37%</td><td class="border px-1 py-1 font-bold text-green-700">62%</td><td class="border px-1 py-1 font-bold">1 (up)</td><td class="border px-1 py-1">62% &gt; 50%</td></tr>
+            <tr><td class="border px-1 py-1">#2</td><td class="border px-1 py-1">46%</td><td class="border px-1 py-1 font-bold text-green-700">53%</td><td class="border px-1 py-1 font-bold">1 (up)</td><td class="border px-1 py-1">53% &gt; 50%</td></tr>
+            <tr><td class="border px-1 py-1">#3</td><td class="border px-1 py-1 font-bold text-red-700">56%</td><td class="border px-1 py-1">43%</td><td class="border px-1 py-1 font-bold">0 (not up)</td><td class="border px-1 py-1">43% &lt; 50%</td></tr>
+          </tbody>
+        </table>
+        <p class="mb-2"><strong>model.predict_proba()</strong> returns probabilities for each class. <strong>model.predict()</strong> returns the final 0/1 based on threshold.</p>
+
+        <h3 class="font-bold text-purple-800 mb-2">KEY FACTS</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Despite the name</td><td class="border px-2 py-1">Logistic Regression is a CLASSIFICATION algorithm (not regression!)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Binary classification</td><td class="border px-2 py-1">Primary use: two classes (0/1, up/down)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Multi-class extension</td><td class="border px-2 py-1">Multinomial / Softmax logistic regression</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Multiple features</td><td class="border px-2 py-1">Z = α₁×f₁ + α₂×f₂ + ... + αₙ×fₙ + β</td></tr>
+          </tbody>
+        </table>
+
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500">
+          <p><strong>⚠️ GOTCHA:</strong> Regression IS a machine learning algorithm (one and the same — you already learned it in statistics classes). That's why the ML lectures focus on classification and clustering, not regression. If you've done linear regression, you've already done supervised ML.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: PYTHON MODEL BUILDING -->
+  <section class="border-2 border-teal-500 rounded-lg p-3 mb-4 bg-teal-50">
+    <h2 class="font-bold text-teal-900 mb-3 bg-teal-200 rounded px-2 py-1">5️⃣ PYTHON MODEL BUILDING — Complete Code: Target, Features, Split, Scale, Train, Predict</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">STEP 1-3: TARGET &amp; FEATURES</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+import pandas as pd               # Data analysis
+import numpy as np                 # Vectorization
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+
+# ── Read data ──────────────────────────────
+data = pd.read_csv('tesla.csv')   # OHLCV data
+df = data.copy()                   # Preserve original
+
+# ── Create target variable ─────────────────
+df['returns'] = np.log(            # Log returns
+    df['Close']).diff()
+df['target'] = np.where(           # Label: up or not
+    df['returns'].shift(-1) &gt; 0,   # shift(-1) = NEXT day
+    1,                              # 1 = stock went up
+    0)                              # 0 = stock did NOT go up
+# shift(-1) is NOT look-ahead bias here
+# We're PREPARING data, not training yet
+
+# ── Feature extraction ─────────────────────
+# Volatility: rolling std of close price
+for period in range(5, 21, 5):     # 5, 10, 15, 20
+    df[f'vol_{period}'] = (
+        df['Close'].rolling(period).std())
+
+# Trend: rolling mean of close price
+for period in range(10, 31, 5):    # 10, 15, 20, 25, 30
+    df[f'trend_{period}'] = (
+        df['Close'].rolling(period).mean())
+
+# Momentum: cumulative pct returns
+for period in [3, 6, 9]:
+    df[f'mom_{period}'] = (
+        df['Close'].pct_change()
+        .rolling(period).sum())
+
+# Volume: rolling mean
+df['vol_MA'] = df['Volume'].rolling(10).mean()
+
+# Intraday movement
+df['intraday'] = abs(df['Close'] - df['Open'])
+</pre>
+      </div>
+
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">STEP 4-9: SPLIT, SCALE, TRAIN, PREDICT</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# ── Drop NaN (from rolling features) ──────
+df.dropna(inplace=True)            # ~1,486 rows remain
+
+# ── Define X and y ─────────────────────────
+features = ['vol_5', 'vol_10',     # All feature columns
+    'vol_15', 'vol_20',            # ... list all features
+    'trend_10', 'mom_3',
+    'vol_MA', 'intraday']          # etc.
+X = df[features]                   # Feature MATRIX (capital X)
+y = df['target']                   # Target VECTOR (lowercase y)
+
+# ── Split: train/test ─────────────────────
+X_train, X_test, y_train, y_test = (
+    train_test_split(
+        X, y,
+        test_size=0.25,            # 25% test, 75% train
+        shuffle=False))            # ⚠️ CRITICAL for time series!
+
+# ── Scale: StandardScaler ─────────────────
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(  # fit + transform
+    X_train)                        # on TRAINING data only!
+X_test_scaled = scaler.transform(   # transform ONLY
+    X_test)                         # using TRAIN mean/std!
+
+# ── Train model ───────────────────────────
+model = LogisticRegression(
+    random_state=100)               # Seed for reproducibility
+model.fit(X_train_scaled, y_train)  # Learn associations
+
+# ── Predict &amp; evaluate ─────────────────────
+y_pred_train = model.predict(X_train_scaled)
+y_pred_test = model.predict(X_test_scaled)
+probs = model.predict_proba(X_test_scaled)
+
+train_acc = (y_pred_train == y_train).mean()
+test_acc = (y_pred_test == y_test).mean()
+# train_acc ≈ 0.56 (56%)
+# test_acc  ≈ 0.53 (53%)
+</pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 3 ====================== -->
+
+  <!-- SECTION 6: FEATURE ENGINEERING & DATA PITFALLS -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">6️⃣ FEATURE ENGINEERING &amp; DATA PITFALLS — Scaling, Splitting &amp; Look-Ahead Bias</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">FEATURE ENGINEERING — Where YOUR Edge Lives</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-orange-100">
+            <tr><th class="border px-2 py-1">Feature Type</th><th class="border px-2 py-1">What It Captures</th><th class="border px-2 py-1">Example</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Volatility</td><td class="border px-2 py-1">Price stability / uncertainty</td><td class="border px-2 py-1">rolling(5).std() on close</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Trend</td><td class="border px-2 py-1">Directional movement</td><td class="border px-2 py-1">rolling(10).mean() on close</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Momentum</td><td class="border px-2 py-1">Speed of price change</td><td class="border px-2 py-1">pct_change().rolling(3).sum()</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Volume</td><td class="border px-2 py-1">Trading activity / interest</td><td class="border px-2 py-1">rolling(10).mean() on volume</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Intraday</td><td class="border px-2 py-1">Daily range / volatility</td><td class="border px-2 py-1">abs(close - open)</td></tr>
+          </tbody>
+        </table>
+        <p class="mb-2"><strong>Feature Selection</strong> = choosing from existing data. <strong>Feature Extraction</strong> = creating NEW features from existing data. Both are critical.</p>
+
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mb-2">
+          <p><strong>💡 THE DIFFERENTIATOR:</strong> The lecture emphasizes that feature design is where your natural intelligence enters the process. Create a hypothesis first, then build features to test it, rather than throwing every possible feature into the model.</p>
+        </div>
+
+        <h3 class="font-bold text-orange-800 mb-2">DATE/TIME AS FEATURES?</h3>
+        <p>Usually ignored, but some practitioners add minute, hour, day-of-week as columns to capture anomalies (e.g., mutual funds roll over positions in last week of expiry → predictable buying patterns).</p>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">STANDARD SCALING — Why &amp; How</h3>
+        <p class="font-mono bg-orange-100 p-2 rounded mb-2">PROBLEM: volume_MA ≈ 4,000,000<br>
+         momentum_3 ≈ 0.05<br>
+→ Algorithm thinks volume is "more important"<br>
+  because bigger numbers → biased learning!<br><br>
+SOLUTION: Z-score scaling<br>
+  Z = (value − mean) / std_dev<br>
+  After: ALL features have mean=0, std=1<br><br>
+PRESERVES: distribution shape, frequencies<br>
+CHANGES: only the scale (range of values)</p>
+
+        <h3 class="font-bold text-orange-800 mt-2 mb-2">THREE CRITICAL RULES TO AVOID LOOK-AHEAD BIAS</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-red-100">
+            <tr><th class="border px-1 py-1">#</th><th class="border px-1 py-1">Rule</th><th class="border px-1 py-1">If You Break It</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-bold">1</td><td class="border px-1 py-1"><strong>shuffle=False</strong> in train_test_split</td><td class="border px-1 py-1">You train on 2024, test on 2014 → cheating</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">2</td><td class="border px-1 py-1"><strong>fit_transform</strong> on train, <strong>transform only</strong> on test</td><td class="border px-1 py-1">Using future mean/std to scale past data</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">3</td><td class="border px-1 py-1">Never use test data info during training</td><td class="border px-1 py-1">Inflated accuracy that won't hold in live trading</td></tr>
+          </tbody>
+        </table>
+
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500">
+          <p><strong>⚠️ MOST COMMON MISTAKE:</strong> Using <code class="bg-gray-800 text-green-400 px-1 rounded">scaler.fit_transform(X_test)</code> on test data. This computes mean/std FROM the test data, leaking future information. Always use <code class="bg-gray-800 text-green-400 px-1 rounded">scaler.transform(X_test)</code> (no fit!) so test data is scaled using TRAINING mean/std only.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 7: CLUSTERING QUICK REFERENCE -->
+  <section class="border-2 border-cyan-500 rounded-lg p-3 mb-4 bg-cyan-50">
+    <h2 class="font-bold text-cyan-900 mb-3 bg-cyan-200 rounded px-2 py-1">7️⃣ CLUSTERING — Unsupervised Learning: Group Similar Things Without Labels</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-cyan-300 rounded p-3">
+        <h3 class="font-bold text-cyan-800 mb-2">HOW IT WORKS</h3>
+        <p class="font-mono bg-cyan-100 p-2 rounded mb-2">1. Collect features only (NO labels/targets)<br>
+   Example: 50 companies → returns &amp; volatility<br><br>
+2. Tell algorithm: "make 3 clusters"<br>
+   (YOU specify the number of clusters)<br><br>
+3. Algorithm groups similar observations<br>
+   Output: company → cluster_1, cluster_2, etc.<br><br>
+4. YOU provide context to each cluster<br>
+   Dig deeper: WHY are these companies similar?<br>
+   Algorithm might cluster by gender, sector,<br>
+   or some hidden pattern not in the features!</p>
+      </div>
+
+      <div class="bg-white border-2 border-cyan-300 rounded p-3">
+        <h3 class="font-bold text-cyan-800 mb-2">SAMPLE CLUSTERING DATA SET</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-cyan-100">
+            <tr><th class="border px-2 py-1">Company</th><th class="border px-2 py-1">Returns</th><th class="border px-2 py-1">Volatility</th><th class="border px-2 py-1 bg-blue-100">Cluster (output)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1">Apple</td><td class="border px-2 py-1">0.12</td><td class="border px-2 py-1">0.18</td><td class="border px-2 py-1 font-bold text-blue-700">1</td></tr>
+            <tr><td class="border px-2 py-1">Tesla</td><td class="border px-2 py-1">0.25</td><td class="border px-2 py-1">0.45</td><td class="border px-2 py-1 font-bold text-green-700">2</td></tr>
+            <tr><td class="border px-2 py-1">Chevron</td><td class="border px-2 py-1">0.08</td><td class="border px-2 py-1">0.22</td><td class="border px-2 py-1 font-bold text-orange-700">3</td></tr>
+          </tbody>
+        </table>
+        <p>No target column in the input! The cluster assignments come from the algorithm. Misclassifications are possible and expected. Model building covered in MLT-02.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK REFERENCE -->
+  <section class="border-2 border-gray-600 rounded-lg p-3 bg-gray-100">
+    <h2 class="font-bold text-gray-900 mb-3 bg-gray-300 rounded px-2 py-1">📋 QUICK REFERENCE — All In One Place</h2>
+
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Col 1: Workflow -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">MODEL BUILDING CHECKLIST</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <tbody>
+            <tr><td class="border px-1 py-1 bg-gray-50">☐ Define goal (what to predict?)</td></tr>
+            <tr><td class="border px-1 py-1">☐ Load &amp; copy data</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">☐ Create target variable (labels)</td></tr>
+            <tr><td class="border px-1 py-1">☐ Engineer features (hypothesis-driven)</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">☐ Drop NaN values</td></tr>
+            <tr><td class="border px-1 py-1">☐ Split: train/test (shuffle=False!)</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">☐ Scale: fit on train, transform both</td></tr>
+            <tr><td class="border px-1 py-1">☐ Train model (model.fit)</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">☐ Predict (model.predict)</td></tr>
+            <tr><td class="border px-1 py-1">☐ Evaluate (accuracy + more metrics)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 2: Algorithms -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">ALGORITHMS COVERED</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Algorithm</th><th class="border px-1 py-1">Task</th><th class="border px-1 py-1">Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-bold">Linear Regression</td><td class="border px-1 py-1">Regression</td><td class="border px-1 py-1 text-green-700">Already known</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">Logistic Regression</td><td class="border px-1 py-1">Classification</td><td class="border px-1 py-1 text-green-700">This class ✅</td></tr>
+            <tr><td class="border px-1 py-1">Decision Tree</td><td class="border px-1 py-1">Both</td><td class="border px-1 py-1">MLT-02</td></tr>
+            <tr><td class="border px-1 py-1">Random Forest</td><td class="border px-1 py-1">Both</td><td class="border px-1 py-1">MLT-02</td></tr>
+            <tr><td class="border px-1 py-1">K-Means</td><td class="border px-1 py-1">Clustering</td><td class="border px-1 py-1">MLT-02</td></tr>
+            <tr><td class="border px-1 py-1">Deep Learning</td><td class="border px-1 py-1">Both</td><td class="border px-1 py-1">MLT-03</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-gray-800 mb-2">KEY LIBRARIES</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">sklearn</td><td class="border px-1 py-1">scikit-learn: ML models, splitting, scaling</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">pandas</td><td class="border px-1 py-1">Data analysis &amp; manipulation</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">numpy</td><td class="border px-1 py-1">Vectorized operations, np.where, np.log</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">matplotlib</td><td class="border px-1 py-1">Visualization &amp; plotting</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 3: Terminology -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">TERMINOLOGY</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">Features</td><td class="border px-1 py-1">Input properties (X matrix, columns)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Target</td><td class="border px-1 py-1">Label to predict (y vector)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Observations</td><td class="border px-1 py-1">Data rows (each trading day)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">fit()</td><td class="border px-1 py-1">Learn parameters from data</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">transform()</td><td class="border px-1 py-1">Apply learned parameters to data</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">predict()</td><td class="border px-1 py-1">Output predictions (0/1)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">predict_proba()</td><td class="border px-1 py-1">Output class probabilities</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">random_state</td><td class="border px-1 py-1">Seed for reproducibility</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Sigmoid</td><td class="border px-1 py-1">1/(1+e<sup>−Z</sup>) — logit function</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Alpha decay</td><td class="border px-1 py-1">Strategy stops working over time</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="bg-yellow-100 rounded p-3 mt-3">
+      <p class="font-bold text-yellow-900 mb-2">🎯 KEY TAKEAWAYS</p>
+      <div class="grid grid-cols-4 gap-3">
+        <p>1. <strong>ML has three tasks:</strong> Regression (predict numbers), Classification (predict classes), Clustering (group similar things). Regression and classification are supervised (need labels). Clustering is unsupervised (features only, no labels).</p>
+        <p>2. <strong>Logistic Regression = classification, not regression.</strong> It passes a linear function through a sigmoid to output probabilities (0-100%). Default threshold is 50% but should be tuned. Despite its name, it classifies binary outcomes like up/down.</p>
+        <p>3. <strong>Features make or break your model.</strong> Don't kitchen-sink. Build a hypothesis first, then create features to test it. This is where YOUR natural intelligence differentiates you from every other analyst using the same data and algorithms.</p>
+        <p>4. <strong>Three rules to avoid look-ahead bias:</strong> (1) shuffle=False for time series, (2) fit_transform on TRAIN data only, transform-only on TEST, (3) never use test data statistics during training. Break any rule → inflated accuracy that fails in live trading.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="mt-3 text-center text-gray-600 border-t-2 border-gray-300 pt-2">
+    <p><strong>THE MASTER WORKFLOW:</strong> Data → Target → Features → Drop NaN → Split (shuffle=False) → Scale (fit on train only) → Train → Predict → Evaluate. This is the core supervised-learning workflow demonstrated in the lecture.</p>
+    <p class="mt-1"><strong>THE ONE THING TO NEVER FORGET:</strong> The first 53% result is not enough to judge the model by itself. The lecturer explicitly deferred that discussion to the next class, where evaluation metrics and better model-comparison tools are introduced.</p>
+  </footer>
+
+</body>
+</html>

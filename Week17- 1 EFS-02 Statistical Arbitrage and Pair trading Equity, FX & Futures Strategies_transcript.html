@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[WEEK 17-1] — Statistical Arbitrage &amp; Pair Trading (EFS-02) — Cheat Sheet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+           font-size: 11px; line-height: 1.5; }
+    @media print { body { font-size: 9px; } .page-break { page-break-before: always; } }
+    h1 { font-size: 18px; }
+    h2 { font-size: 13px; }
+    h3 { font-size: 11px; }
+    table { font-size: 10px; }
+    pre  { font-size: 9px; line-height: 1.45; }
+  </style>
+</head>
+<body class="bg-white p-4 max-w-6xl mx-auto">
+
+  <!-- ====================== PAGE 1 ====================== -->
+
+  <!-- HEADER -->
+  <header class="text-center border-b-4 border-blue-600 pb-3 mb-4">
+    <h1 class="font-extrabold text-blue-900">STATISTICAL ARBITRAGE &amp; PAIR TRADING — STATIONARITY, ADF TEST, COINTEGRATION &amp; MEAN REVERSION — COMPLETE CHEAT SHEET</h1>
+    <p class="text-gray-600 mt-1">EPAT Week 17-1 — EFS-02: Statistical Arbitrage and Pair Trading | Instructor: Ishan (Contra Research, ex-Barclays Risk, ex-Merrill Lynch OTC Trading)</p>
+    <p class="text-gray-700 mt-2">
+      <strong>The Problem:</strong> Most price series trend up or down — you can't just "buy low, sell high" because there's no guarantee the price will revert. Visual inspection is subjective and error-prone.<br>
+      <strong>Your Goal:</strong> Mathematically prove a price series (or a spread of two assets) is stationary using the ADF (Augmented Dickey-Fuller) test, then deploy a Bollinger Band mean reversion strategy on it — first on a single asset, then on a cointegrated pair.
+    </p>
+  </header>
+
+  <!-- SECTION 1: CORE EXAMPLE -->
+  <section class="border-2 border-amber-500 rounded-lg p-3 mb-4 bg-amber-50">
+    <h2 class="font-bold text-amber-900 mb-3 bg-amber-200 rounded px-2 py-1">1️⃣ CORE EXAMPLE — Two Complete Strategies With Concrete Numbers</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">STRATEGY 1: Single Asset — AUD/CAD Mean Reversion</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-2 py-1">Parameter</th><th class="border px-2 py-1">Value</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Asset</td><td class="border px-2 py-1">AUD/CAD (Australian Dollar / Canadian Dollar)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Data points</td><td class="border px-2 py-1 font-mono">3,404 records</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">ADF t-statistic</td><td class="border px-2 py-1 font-mono font-bold">−2.697</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">90% critical value</td><td class="border px-2 py-1 font-mono">−2.57</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Verdict</td><td class="border px-2 py-1 text-green-700 font-bold">−2.697 &lt; −2.57 → Stationary at 90% ✅</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">MA (Moving Average) window</td><td class="border px-2 py-1 font-mono">5 days</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Bollinger bandwidth</td><td class="border px-2 py-1 font-mono">0.5 × σ (standard deviation)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Result (Jan 2012 → ~2020)</td><td class="border px-2 py-1 font-mono font-bold">$1 → $1.80 (80% return)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Max drawdown</td><td class="border px-2 py-1 font-mono">11.3% (early years), avg 6–8%</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Why AUD/CAD?</strong> Both Australia and Canada are energy-driven economies → their currencies tend to move together → mean-reverting behavior.</p>
+
+        <h3 class="font-bold text-amber-800 mt-3 mb-2">WORKED EXAMPLE — ADF Decision</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-1 py-1">Quiz</th><th class="border px-1 py-1">t-stat</th><th class="border px-1 py-1">Critical (95%)</th><th class="border px-1 py-1">t-stat &lt; critical?</th><th class="border px-1 py-1">Stationary?</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">Q1</td><td class="border px-1 py-1 font-mono">−3.05</td><td class="border px-1 py-1 font-mono">−2.87</td><td class="border px-1 py-1">−3.05 &lt; −2.87 ✅</td><td class="border px-1 py-1 text-green-700 font-bold">YES</td></tr>
+            <tr><td class="border px-1 py-1">Q2</td><td class="border px-1 py-1 font-mono">−2.40</td><td class="border px-1 py-1 font-mono">−2.87</td><td class="border px-1 py-1">−2.40 &gt; −2.87 ❌</td><td class="border px-1 py-1 text-red-700 font-bold">NO</td></tr>
+          </tbody>
+        </table>
+        <p class="mt-1"><strong>Rule:</strong> "More negative" = closer to −∞. −3.05 is more negative than −2.87, so it passes. −2.40 is LESS negative (closer to 0), so it fails.</p>
+      </div>
+
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">STRATEGY 2: Pairs Trading — EWA + EWC</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-2 py-1">Parameter</th><th class="border px-2 py-1">Value</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Asset Y</td><td class="border px-2 py-1">EWC = iShares Canada ETF (Exchange-Traded Fund)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Asset X</td><td class="border px-2 py-1">EWA = iShares Australia ETF</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Hedge ratio (OLS slope)</td><td class="border px-2 py-1 font-mono font-bold">1.5</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Spread formula</td><td class="border px-2 py-1 font-mono">EWC − 1.5 × EWA</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Spread ADF t-stat</td><td class="border px-2 py-1 font-mono font-bold">−3.09</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Critical value</td><td class="border px-2 py-1 font-mono">−2.67</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Cointegrated?</td><td class="border px-2 py-1 text-green-700 font-bold">−3.09 &lt; −2.67 → YES ✅</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">MA window (strategy)</td><td class="border px-2 py-1 font-mono">30 days</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Bollinger bandwidth</td><td class="border px-2 py-1 font-mono">2 × σ</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Cumulative return</td><td class="border px-2 py-1 font-mono font-bold">~50%</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Sharpe ratio</td><td class="border px-2 py-1 font-mono font-bold">1.01</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Max drawdown</td><td class="border px-2 py-1 font-mono">~5% (2016)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-amber-800 mt-2 mb-2">WORKED EXAMPLE — Spread Return Calculation</h3>
+        <table class="w-full border border-gray-300 mb-1">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-1 py-1">Day</th><th class="border px-1 py-1">EWA</th><th class="border px-1 py-1">EWC</th><th class="border px-1 py-1">Spread (EWC−EWA)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">1</td><td class="border px-1 py-1 font-mono">$10</td><td class="border px-1 py-1 font-mono">$15</td><td class="border px-1 py-1 font-mono">15 − 10 = $5</td></tr>
+            <tr><td class="border px-1 py-1">2</td><td class="border px-1 py-1 font-mono">$12</td><td class="border px-1 py-1 font-mono">$15</td><td class="border px-1 py-1 font-mono">15 − 12 = $3</td></tr>
+          </tbody>
+        </table>
+        <p class="font-mono bg-amber-100 p-1 rounded">PnL = $3 − $5 = −$2<br>
+Capital required = EWA + EWC = $10 + $15 = $25<br>
+Return = −$2 / $25 = <strong>−8.0%</strong><br>
+<span class="text-red-700">❌ WRONG: −$2 / $3 = −66% (dividing by spread is incorrect!)</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: STATIONARITY & ADF TEST -->
+  <section class="border-2 border-teal-500 rounded-lg p-3 mb-4 bg-teal-50">
+    <h2 class="font-bold text-teal-900 mb-3 bg-teal-200 rounded px-2 py-1">2️⃣ STATIONARITY &amp; THE ADF TEST — The Mathematical Foundation</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">WHAT IS STATIONARITY?</h3>
+        <p><strong>WHAT:</strong> A price series is stationary if it keeps reverting back to its mean over time — like a sine wave oscillating around a center line.</p>
+        <p><strong>WHY:</strong> If a price always returns to the mean, you can profit by buying below the mean and selling above it. This is the foundation of ALL mean-reversion strategies.</p>
+        <p><strong>KEY RULES:</strong></p>
+        <ul class="list-disc ml-4">
+          <li>Random walk is <strong>NOT</strong> stationary (mathematically proven)</li>
+          <li>Only applies to <strong>long-term</strong> properties (need ≥120–200 days of data)</li>
+          <li>Stock <strong>returns</strong> are naturally stationary; stock <strong>prices</strong> are usually not</li>
+          <li>Visual inspection is <strong>subjective</strong> and error-prone — use ADF test instead</li>
+          <li>Most price series are NOT stationary for long periods → that's why pairs trading exists</li>
+        </ul>
+        <p class="mt-2"><strong>Analogy (Daniel Kahneman):</strong> Sports Illustrated Jinx — athletes on the cover perform great, then revert to average performance. That's mean reversion in action.</p>
+
+        <!-- VISUAL: Stationary vs Non-Stationary -->
+        <div class="bg-white border-2 border-teal-300 rounded p-3 mt-3">
+          <svg viewBox="0 0 620 180" class="w-full">
+            <text x="155" y="15" text-anchor="middle" font-size="9" font-weight="bold" fill="#0f766e">STATIONARY (Mean-Reverting) ✅</text>
+            <text x="465" y="15" text-anchor="middle" font-size="9" font-weight="bold" fill="#dc2626">NON-STATIONARY (Trending) ❌</text>
+            <!-- Left: Stationary oscillation around mean -->
+            <line x1="10" y1="90" x2="300" y2="90" stroke="#14b8a6" stroke-width="1" stroke-dasharray="4" opacity="0.5"/>
+            <text x="5" y="85" font-size="6" fill="#0f766e">μ</text>
+            <polyline points="15,90 35,65 55,80 75,110 95,95 115,60 135,75 155,105 175,85 195,55 215,70 235,110 255,90 275,65 295,80" stroke="#0f766e" stroke-width="2" fill="none"/>
+            <!-- Buy/sell annotations -->
+            <circle cx="75" cy="110" r="4" fill="#16a34a"/><text x="68" y="125" font-size="5" fill="#16a34a">BUY</text>
+            <circle cx="115" cy="60" r="4" fill="#dc2626"/><text x="108" y="53" font-size="5" fill="#dc2626">SELL</text>
+            <circle cx="155" cy="105" r="4" fill="#16a34a"/><text x="148" y="120" font-size="5" fill="#16a34a">BUY</text>
+            <circle cx="195" cy="55" r="4" fill="#dc2626"/><text x="188" y="48" font-size="5" fill="#dc2626">SELL</text>
+            <!-- Separator -->
+            <line x1="310" y1="20" x2="310" y2="160" stroke="#d1d5db" stroke-width="1" stroke-dasharray="3"/>
+            <!-- Right: Non-stationary trending up -->
+            <polyline points="325,145 345,140 365,130 385,125 405,115 425,110 445,95 465,85 485,70 505,60 525,45 545,35 565,25 585,20 605,15" stroke="#dc2626" stroke-width="2" fill="none"/>
+            <text x="550" y="55" font-size="6" fill="#dc2626">No mean to revert to!</text>
+            <!-- ADF test boxes -->
+            <rect x="40" y="140" width="170" height="25" rx="3" fill="#d1fae5" stroke="#16a34a"/>
+            <text x="125" y="156" text-anchor="middle" font-size="7" fill="#166534">ADF t-stat &lt; critical → PASS ✓</text>
+            <rect x="380" y="140" width="170" height="25" rx="3" fill="#fecaca" stroke="#dc2626"/>
+            <text x="465" y="156" text-anchor="middle" font-size="7" fill="#991b1b">ADF t-stat &gt; critical → FAIL ✗</text>
+          </svg>
+        </div>
+
+        <h3 class="font-bold text-teal-800 mt-3 mb-2">WHY ADF TEST &gt; BACKTESTING ALONE</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-teal-100">
+            <tr><th class="border px-1 py-1">ADF Test</th><th class="border px-1 py-1">Backtesting</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">Checks <strong>EVERY</strong> data point</td><td class="border px-1 py-1">Only checks points where trades trigger (e.g., 7 out of 100)</td></tr>
+            <tr><td class="border px-1 py-1">Fast: yes/no in &lt;1 second</td><td class="border px-1 py-1">Slow: evaluate Sharpe, returns, drawdown</td></tr>
+            <tr><td class="border px-1 py-1">Objective (mathematical)</td><td class="border px-1 py-1">Sensitive to parameters</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ DANGER:</strong> If you skip ADF and only backtest, you might conclude "stationary" based on 7 data points out of 100. That's like hiring someone after reading 7% of their resume.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">ADF TEST — THE MATH (Dickey-Fuller Equation)</h3>
+        <p class="font-mono bg-teal-100 p-2 rounded mb-2">ΔP(t) = λ × P(t−1) + ε(t)</p>
+        <p><strong>ΔP(t)</strong> = change in price at time t = P(t) − P(t−1)<br>
+        <strong>λ (lambda)</strong> = regression coefficient (slope) between ΔP(t) and P(t−1)<br>
+        <strong>ε(t)</strong> = random noise (epsilon)</p>
+
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-teal-100">
+            <tr><th class="border px-2 py-1">Scenario</th><th class="border px-2 py-1">Meaning</th><th class="border px-2 py-1">Result</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold text-red-700">λ = 0 (Null H₀)</td><td class="border px-2 py-1">ΔP(t) = noise only (random walk)</td><td class="border px-2 py-1 text-red-700 font-bold">NOT stationary ❌</td></tr>
+            <tr><td class="border px-2 py-1 font-bold text-green-700">λ &lt; 0 (Alt H₁)</td><td class="border px-2 py-1">Inverse relationship: price up → next move down</td><td class="border px-2 py-1 text-green-700 font-bold">STATIONARY ✅</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-teal-800 mb-2">WORKED EXAMPLE — Finding λ by Hand</h3>
+        <p>Sample prices: 6, 4, 8, ...</p>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-teal-100">
+            <tr><th class="border px-1 py-1">P(t)</th><th class="border px-1 py-1">P(t−1)</th><th class="border px-1 py-1">ΔP = P(t)−P(t−1)</th><th class="border px-1 py-1">Point (x,y)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">4</td><td class="border px-1 py-1 font-mono">6</td><td class="border px-1 py-1 font-mono">4−6 = −2</td><td class="border px-1 py-1 font-mono">(6, −2)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">8</td><td class="border px-1 py-1 font-mono">4</td><td class="border px-1 py-1 font-mono">8−4 = +4</td><td class="border px-1 py-1 font-mono">(4, +4)</td></tr>
+          </tbody>
+        </table>
+        <p class="font-mono bg-teal-100 p-1 rounded">Plot (P(t−1), ΔP(t)) → draw best-fit line<br>
+Slope of line from (6,−2) to (4,+4) = (4−(−2))/(4−6) = 6/(−2) = <strong>−3</strong><br>
+λ = −3 → negative → <strong>stationary</strong> ✅<br>
+<br>
+Then: t-statistic = λ / standard_error<br>
+Standard error = std_dev / √n<br>
+Compare t-stat with critical value table.</p>
+
+        <h3 class="font-bold text-teal-800 mt-2 mb-2">CRITICAL VALUE TABLE</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-teal-100">
+            <tr><th class="border px-2 py-1">Confidence</th><th class="border px-2 py-1">Critical Value</th><th class="border px-2 py-1">Rule</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1">90%</td><td class="border px-2 py-1 font-mono">−2.57</td><td class="border px-2 py-1" rowspan="3">If t-stat &lt; critical → stationary<br>If t-stat &gt; critical → NOT stationary</td></tr>
+            <tr><td class="border px-2 py-1">95%</td><td class="border px-2 py-1 font-mono">−2.87</td></tr>
+            <tr><td class="border px-2 py-1">99%</td><td class="border px-2 py-1 font-mono">−3.43 (approx)</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 SELECTING CONFIDENCE LEVEL:</strong> 99% → very few assets qualify (like only hiring IIT+MIT+15yr experience). 90% → more assets qualify. In practice, <strong>90% is good enough</strong> for selecting stationary assets. Don't go below 90%.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: MEAN REVERSION STRATEGY -->
+  <section class="border-2 border-green-500 rounded-lg p-3 mb-4 bg-green-50">
+    <h2 class="font-bold text-green-900 mb-3 bg-green-200 rounded px-2 py-1">3️⃣ MEAN REVERSION STRATEGY — Bollinger Band on a Single Stationary Asset</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-green-300 rounded p-3">
+        <h3 class="font-bold text-green-800 mb-2">ADF TEST IN PYTHON</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+import pandas as pd                    # Data manipulation
+from statsmodels.tsa.stattools import adfuller  # ADF test
+
+data = pd.read_csv(                    # Read price data
+    'AUD_CAD.csv',                     # AUD/CAD currency pair
+    index_col=0,                       # First column = index
+    parse_dates=True)                  # Convert to datetime
+# data has 3404 rows, columns: Open, High, Low, Close
+
+adf_results = adfuller(                # Run ADF test
+    data['Close'],                     # Pass 1D price series
+    maxlag=1)                          # Only 1 lag term
+                                       # (more lags → overfitting)
+
+t_stat = adf_results[0]               # First element = t-stat
+# t_stat = -2.697
+
+# Compare with 90% critical value = -2.57
+# -2.697 &lt; -2.57 → STATIONARY at 90% confidence ✅
+</pre>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 maxlag=1:</strong> We only use 1 lag term (P(t−1)) to prevent overfitting. More lags = more parameters = higher chance of overfitting. Default regression type is 'c' (constant only).</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-green-300 rounded p-3">
+        <h3 class="font-bold text-green-800 mb-2">BOLLINGER BAND MEAN REVERSION CODE</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# Step 1: Moving Average &amp; Std Dev (5-day window)
+df['MA'] = df['Close'].rolling(5).mean()   # 5-day MA
+df['Std'] = df['Close'].rolling(5).std()   # 5-day std dev
+
+# Step 2: Upper &amp; Lower Bands (0.5σ width)
+df['Upper'] = df['MA'] + 0.5 * df['Std']  # Upper band
+df['Lower'] = df['MA'] - 0.5 * df['Std']  # Lower band
+
+# Step 3: Entry/Exit Signals
+df['Long_Entry'] = df['Close'] &lt;= df['Lower']   # Buy signal
+df['Long_Exit']  = df['Close'] &gt;= df['MA']      # Sell signal
+df['Short_Entry'] = df['Close'] &gt;= df['Upper']  # Short signal
+df['Short_Exit']  = df['Close'] &lt;= df['MA']     # Cover signal
+
+# Step 4: Position Tracking (1=long, 0=flat, -1=short)
+df['Pos_Long'] = float('nan')                   # Initialize
+df.loc[df['Long_Entry'], 'Pos_Long'] = 1        # Mark entries
+df.loc[df['Long_Exit'], 'Pos_Long'] = 0         # Mark exits
+df['Pos_Long'] = df['Pos_Long'].ffill()          # Forward fill
+
+df['Pos_Short'] = float('nan')
+df.loc[df['Short_Entry'], 'Pos_Short'] = -1
+df.loc[df['Short_Exit'], 'Pos_Short'] = 0
+df['Pos_Short'] = df['Pos_Short'].ffill()
+
+df['Position'] = df['Pos_Long'].fillna(0) \
+               + df['Pos_Short'].fillna(0)       # Combine
+
+# Step 5: PnL
+df['Pct'] = df['Close'].pct_change()             # Daily return
+df['Strat_Ret'] = df['Position'] * df['Pct']     # Strategy ret
+df['Cum_Ret'] = (1 + df['Strat_Ret']).cumprod()  # Cumulative
+# Result: $1 → $1.80 over ~8 years
+</pre>
+      </div>
+    </div>
+
+    <!-- Worked example row -->
+    <div class="bg-white border-2 border-green-300 rounded p-3 mt-3">
+      <h3 class="font-bold text-green-800 mb-2">WORKED EXAMPLE — Bollinger Band Signals (5-day MA, 0.5σ)</h3>
+      <table class="w-full border border-gray-300">
+        <thead class="bg-green-100">
+          <tr><th class="border px-1 py-1">Day</th><th class="border px-1 py-1">Close</th><th class="border px-1 py-1">MA(5)</th><th class="border px-1 py-1">Std(5)</th><th class="border px-1 py-1">Upper (MA+0.5σ)</th><th class="border px-1 py-1">Lower (MA−0.5σ)</th><th class="border px-1 py-1">Signal</th><th class="border px-1 py-1">Position</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="border px-1 py-1">1</td><td class="border px-1 py-1 font-mono">0.970</td><td class="border px-1 py-1 font-mono">—</td><td class="border px-1 py-1 font-mono">—</td><td class="border px-1 py-1">—</td><td class="border px-1 py-1">—</td><td class="border px-1 py-1">—</td><td class="border px-1 py-1">0</td></tr>
+          <tr><td class="border px-1 py-1">2</td><td class="border px-1 py-1 font-mono">0.965</td><td class="border px-1 py-1 font-mono">—</td><td class="border px-1 py-1 font-mono">—</td><td class="border px-1 py-1">—</td><td class="border px-1 py-1">—</td><td class="border px-1 py-1">—</td><td class="border px-1 py-1">0</td></tr>
+          <tr><td class="border px-1 py-1">3</td><td class="border px-1 py-1 font-mono">0.960</td><td class="border px-1 py-1 font-mono">—</td><td class="border px-1 py-1 font-mono">—</td><td class="border px-1 py-1">—</td><td class="border px-1 py-1">—</td><td class="border px-1 py-1">—</td><td class="border px-1 py-1">0</td></tr>
+          <tr><td class="border px-1 py-1">4</td><td class="border px-1 py-1 font-mono">0.955</td><td class="border px-1 py-1 font-mono">—</td><td class="border px-1 py-1 font-mono">—</td><td class="border px-1 py-1">—</td><td class="border px-1 py-1">—</td><td class="border px-1 py-1">—</td><td class="border px-1 py-1">0</td></tr>
+          <tr class="bg-green-50"><td class="border px-1 py-1 font-bold">5</td><td class="border px-1 py-1 font-mono">0.950</td><td class="border px-1 py-1 font-mono">0.960</td><td class="border px-1 py-1 font-mono">0.0079</td><td class="border px-1 py-1 font-mono">0.964</td><td class="border px-1 py-1 font-mono">0.956</td><td class="border px-1 py-1 text-green-700 font-bold">0.950 ≤ 0.956 → LONG ENTRY</td><td class="border px-1 py-1 font-bold">1</td></tr>
+          <tr><td class="border px-1 py-1">6</td><td class="border px-1 py-1 font-mono">0.958</td><td class="border px-1 py-1 font-mono">0.958</td><td class="border px-1 py-1 font-mono">0.0040</td><td class="border px-1 py-1 font-mono">0.960</td><td class="border px-1 py-1 font-mono">0.956</td><td class="border px-1 py-1">0.958 ≥ 0.958 → LONG EXIT</td><td class="border px-1 py-1 font-bold">0</td></tr>
+        </tbody>
+      </table>
+      <p class="mt-1 font-mono">MA(5) on Day 5 = (0.970+0.965+0.960+0.955+0.950)/5 = 4.800/5 = 0.960 | Profit on trade: (0.958−0.950)/0.950 = +0.84%</p>
+
+      <!-- VISUAL: Bollinger Band Mean Reversion -->
+      <svg viewBox="0 0 620 200" class="w-full mt-2">
+        <text x="310" y="14" text-anchor="middle" font-size="9" font-weight="bold" fill="#166534">BOLLINGER BAND MEAN REVERSION — AUD/CAD (0.5σ Width)</text>
+        <!-- Axes -->
+        <line x1="40" y1="170" x2="600" y2="170" stroke="#6b7280" stroke-width="1"/>
+        <text x="310" y="190" text-anchor="middle" font-size="7" fill="#6b7280">Time (days)</text>
+        <text x="15" y="95" font-size="7" fill="#6b7280" transform="rotate(-90,15,95)">Price</text>
+        <!-- Moving Average (center line) -->
+        <polyline points="60,90 100,88 140,85 180,87 220,90 260,88 300,85 340,87 380,90 420,88 460,85 500,87 540,90 580,88" stroke="#3b82f6" stroke-width="2" fill="none"/>
+        <text x="585" y="85" font-size="6" fill="#3b82f6">MA</text>
+        <!-- Upper Band -->
+        <polyline points="60,70 100,68 140,65 180,67 220,70 260,68 300,65 340,67 380,70 420,68 460,65 500,67 540,70 580,68" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3" fill="none"/>
+        <text x="585" y="65" font-size="5" fill="#f59e0b">+0.5σ</text>
+        <!-- Lower Band -->
+        <polyline points="60,110 100,108 140,105 180,107 220,110 260,108 300,105 340,107 380,110 420,108 460,105 500,107 540,110 580,108" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3" fill="none"/>
+        <text x="585" y="112" font-size="5" fill="#f59e0b">−0.5σ</text>
+        <!-- Price oscillating and touching bands -->
+        <polyline points="60,92 100,95 140,112 180,100 220,78 260,68 300,82 340,115 380,105 420,72 460,65 500,80 540,108 580,92" stroke="#1e293b" stroke-width="1.5" fill="none"/>
+        <!-- Buy signals (touch lower band) -->
+        <circle cx="140" cy="112" r="5" fill="#16a34a" opacity="0.8"/>
+        <text x="125" y="130" font-size="6" font-weight="bold" fill="#16a34a">BUY ↑</text>
+        <circle cx="340" cy="115" r="5" fill="#16a34a" opacity="0.8"/>
+        <text x="325" y="133" font-size="6" font-weight="bold" fill="#16a34a">BUY ↑</text>
+        <circle cx="540" cy="108" r="5" fill="#16a34a" opacity="0.8"/>
+        <text x="525" y="126" font-size="6" font-weight="bold" fill="#16a34a">BUY ↑</text>
+        <!-- Exit signals (return to MA) -->
+        <circle cx="220" cy="78" r="5" fill="#dc2626" opacity="0.8"/>
+        <text x="205" y="72" font-size="6" font-weight="bold" fill="#dc2626">EXIT ↓</text>
+        <circle cx="380" cy="105" r="5" fill="#7c3aed" opacity="0.8"/>
+        <text x="365" y="100" font-size="6" font-weight="bold" fill="#7c3aed">EXIT</text>
+        <!-- Profit zone shading -->
+        <rect x="140" y="78" width="80" height="34" fill="#16a34a" opacity="0.08" rx="2"/>
+        <text x="180" y="160" text-anchor="middle" font-size="6" fill="#16a34a">+0.84% profit</text>
+        <!-- Legend -->
+        <rect x="60" y="145" width="8" height="8" fill="#3b82f6"/><text x="72" y="153" font-size="6">MA (5-day)</text>
+        <rect x="140" y="145" width="8" height="8" fill="#f59e0b"/><text x="152" y="153" font-size="6">Bands (±0.5σ)</text>
+        <circle cx="230" cy="149" r="4" fill="#16a34a"/><text x="238" y="153" font-size="6">Buy (price ≤ lower)</text>
+        <circle cx="350" cy="149" r="4" fill="#dc2626"/><text x="358" y="153" font-size="6">Exit (price ≥ MA)</text>
+      </svg>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 2 ====================== -->
+
+  <!-- SECTION 4: PAIRS TRADING & COINTEGRATION -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">4️⃣ PAIRS TRADING &amp; COINTEGRATION — Fabricating a Stationary Spread From Two Trending Assets</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">THE CORE IDEA</h3>
+        <p><strong>WHAT:</strong> EWA and EWC are individually trending (not stationary). But the SPREAD (EWC − 1.5×EWA) IS stationary → mean-reversion strategy works on the spread.</p>
+        <p><strong>WHY:</strong> Australia and Canada are both energy-driven economies. Their ETFs can diverge temporarily, and the lecture treats the spread between them as something that often oscillates enough to test for mean reversion.</p>
+
+        <h3 class="font-bold text-purple-800 mt-3 mb-2">HEDGE RATIO — Why 1.5?</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+import statsmodels.api as sm             # Statistical models
+
+      # CRITICAL: Use an initial training window
+      # (here: first 90 days) to prevent LOOK-AHEAD BIAS
+x_train = ewa_prices[:90]               # First 90 days of EWA
+y_train = ewc_prices[:90]               # First 90 days of EWC
+
+# OLS (Ordinary Least Squares) regression
+# NOTE: NO constant added → line passes through origin
+model = sm.OLS(y_train, x_train).fit()  # y = mx (no c)
+hedge_ratio = model.params[0]           # Slope = 1.5
+# hedge_ratio = 1.5
+
+# Create spread for ALL data
+spread = ewc_prices - hedge_ratio * ewa_prices
+# spread = EWC - 1.5 × EWA
+</pre>
+
+        <h3 class="font-bold text-purple-800 mt-2 mb-2">WHY CONSTANT = 0 (No Intercept)?</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-purple-100">
+            <tr><th class="border px-1 py-1">Reason</th><th class="border px-1 py-1">Explanation</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-bold">Logical</td><td class="border px-1 py-1">If gold miners (GDX) go to $0, gold itself (GLD) should also be $0. Two similar assets → both zero at zero.</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">Mathematical</td><td class="border px-1 py-1">Estimating 1 parameter (slope only) instead of 2 (slope + intercept) → less overfitting, more generalizable</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">WHY ONLY 90 DAYS? → LOOK-AHEAD BIAS</h3>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mb-2">
+          <p><strong>⚠️ LOOK-AHEAD BIAS:</strong> Using ALL data to compute hedge ratio, then backtesting on the SAME data = knowing tomorrow's budget result and trading today. The hedge ratio "knows" the future. Use only the FIRST 90 days (training data), then test on the remaining data.</p>
+        </div>
+        <p><strong>How to pick 90?</strong> Not magical. Could be 100 or 120. Rule: not too short (unstable regression) and not too long (misses current relationship — like judging a friendship by what happened 10 years ago).</p>
+
+        <h3 class="font-bold text-purple-800 mt-3 mb-2">COINTEGRATION TEST (Engle-Granger Two-Step Method)</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# Step 1: Calculate hedge ratio (already done above)
+# hedge_ratio = 1.5
+
+# Step 2: Create spread and run ADF test
+spread = ewc_prices - hedge_ratio * ewa_prices
+
+adf_result = adfuller(spread, maxlag=1)
+t_stat = adf_result[0]    # = -3.09
+
+# Critical value at ~90% = -2.67
+# -3.09 &lt; -2.67 → spread IS stationary
+# → EWA and EWC are COINTEGRATED ✅
+# → Deploy mean reversion on the spread!
+</pre>
+
+        <h3 class="font-bold text-purple-800 mt-3 mb-2">TRADING THE SPREAD — Position Sizing</h3>
+        <p class="font-mono bg-purple-100 p-2 rounded mb-2">Spread = Y − HR × X<br>
+Long spread  → Buy 1 share Y, Sell HR shares X<br>
+Short spread → Sell 1 share Y, Buy HR shares X</p>
+
+        <h3 class="font-bold text-purple-800 mb-2">QUIZ — Spread = GLD − 3×GDX + 0.5×USO, SHORT it:</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-purple-100">
+            <tr><th class="border px-1 py-1">Asset</th><th class="border px-1 py-1">Sign</th><th class="border px-1 py-1">Direction (short spread)</th><th class="border px-1 py-1">Qty</th><th class="border px-1 py-1">×2 (no fractions)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-bold">GLD</td><td class="border px-1 py-1">+1</td><td class="border px-1 py-1 text-red-700">SHORT</td><td class="border px-1 py-1 font-mono">1</td><td class="border px-1 py-1 font-mono">2</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">GDX</td><td class="border px-1 py-1">−3</td><td class="border px-1 py-1 text-green-700">LONG</td><td class="border px-1 py-1 font-mono">3</td><td class="border px-1 py-1 font-mono">6</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">USO</td><td class="border px-1 py-1">+0.5</td><td class="border px-1 py-1 text-red-700">SHORT</td><td class="border px-1 py-1 font-mono">0.5</td><td class="border px-1 py-1 font-mono">1</td></tr>
+          </tbody>
+        </table>
+        <p class="mt-1"><strong>GLD</strong> = SPDR Gold Shares ETF. <strong>GDX</strong> = VanEck Gold Miners ETF. <strong>USO</strong> = United States Oil Fund. Multiply all by 2 to eliminate fractions.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: COINTEGRATION vs CORRELATION -->
+  <section class="border-2 border-cyan-500 rounded-lg p-3 mb-4 bg-cyan-50">
+    <h2 class="font-bold text-cyan-900 mb-3 bg-cyan-200 rounded px-2 py-1">5️⃣ COINTEGRATION vs CORRELATION — They Are NOT the Same</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-white border-2 border-cyan-300 rounded p-3">
+        <h3 class="font-bold text-cyan-800 mb-2">DEFINITIONS</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-cyan-100">
+            <tr><th class="border px-2 py-1">Term</th><th class="border px-2 py-1">Meaning</th><th class="border px-2 py-1">Time Frame</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Cointegration</td><td class="border px-2 py-1">SPREAD between two assets is stationary</td><td class="border px-2 py-1">Long-term only</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Correlation</td><td class="border px-2 py-1">Two assets move in same/opposite direction</td><td class="border px-2 py-1">Short or long</td></tr>
+          </tbody>
+        </table>
+
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-3">
+          <p><strong>⚠️ INSTRUCTOR'S MISTAKE:</strong> "In my early career, I used only correlation for pair selection. That was a big mistake — correlation does NOT guarantee a mean-reverting spread, and I lost money." Use cointegration (ADF on spread) as the PRIMARY filter. Correlation can be added as a secondary filter.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-cyan-300 rounded p-3">
+        <h3 class="font-bold text-cyan-800 mb-2">EXAMPLE 1: Correlated but NOT Cointegrated</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-cyan-100">
+            <tr><th class="border px-1 py-1">Day</th><th class="border px-1 py-1">Stock A</th><th class="border px-1 py-1">Stock B</th><th class="border px-1 py-1">Spread</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">1</td><td class="border px-1 py-1 font-mono">100</td><td class="border px-1 py-1 font-mono">60</td><td class="border px-1 py-1 font-mono">40</td></tr>
+            <tr><td class="border px-1 py-1">2</td><td class="border px-1 py-1 font-mono">110</td><td class="border px-1 py-1 font-mono">60</td><td class="border px-1 py-1 font-mono">50</td></tr>
+            <tr><td class="border px-1 py-1">3</td><td class="border px-1 py-1 font-mono">130</td><td class="border px-1 py-1 font-mono">70</td><td class="border px-1 py-1 font-mono">60</td></tr>
+            <tr><td class="border px-1 py-1">4</td><td class="border px-1 py-1 font-mono">160</td><td class="border px-1 py-1 font-mono">60</td><td class="border px-1 py-1 font-mono">100</td></tr>
+          </tbody>
+        </table>
+        <p>Both trend UP → <strong>correlated</strong>. But the spread (40→50→60→100) is <strong>trending, not stationary</strong> → NOT cointegrated. Mean reversion strategy would LOSE money.</p>
+      </div>
+
+      <div class="bg-white border-2 border-cyan-300 rounded p-3">
+        <h3 class="font-bold text-cyan-800 mb-2">EXAMPLE 2: Cointegrated but NOT Correlated</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-cyan-100">
+            <tr><th class="border px-1 py-1">Day</th><th class="border px-1 py-1">Stock A</th><th class="border px-1 py-1">Stock B</th><th class="border px-1 py-1">Spread</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">1</td><td class="border px-1 py-1 font-mono">100</td><td class="border px-1 py-1 font-mono">50</td><td class="border px-1 py-1 font-mono">+10</td></tr>
+            <tr><td class="border px-1 py-1">2</td><td class="border px-1 py-1 font-mono">110</td><td class="border px-1 py-1 font-mono">50</td><td class="border px-1 py-1 font-mono">0</td></tr>
+            <tr><td class="border px-1 py-1">3</td><td class="border px-1 py-1 font-mono">90</td><td class="border px-1 py-1 font-mono">50</td><td class="border px-1 py-1 font-mono">−10</td></tr>
+            <tr><td class="border px-1 py-1">4</td><td class="border px-1 py-1 font-mono">100</td><td class="border px-1 py-1 font-mono">50</td><td class="border px-1 py-1 font-mono">0</td></tr>
+          </tbody>
+        </table>
+        <p>A oscillates, B is flat → <strong>no correlation</strong>. But spread (+10→0→−10→0) is <strong>mean-reverting</strong> → cointegrated. That creates the kind of setup where a mean-reversion strategy may have an edge.</p>
+      </div>
+    </div>
+
+    <div class="bg-white border-2 border-cyan-300 rounded p-3 mt-3">
+      <h3 class="font-bold text-cyan-800 mb-2">PAIR SELECTION — Where to Find Good Pairs</h3>
+      <div class="grid grid-cols-3 gap-3">
+        <div>
+          <p class="font-bold text-green-700">✅ BEST CANDIDATES</p>
+          <ul class="list-disc ml-4">
+            <li><strong>ETFs:</strong> EWA/EWC, GLD/GDX</li>
+            <li><strong>Currencies:</strong> AUD/CAD, EUR/CHF</li>
+            <li><strong>Same-sector stocks:</strong> Coca-Cola/Pepsi, American Airlines/Delta, BofA/JPM, HDFC/Kotak (India)</li>
+          </ul>
+          <p class="mt-1"><strong>Why?</strong> Similar businesses exposed to similar economic factors give you a better chance of a spread that behaves in a mean-reverting way.</p>
+        </div>
+        <div>
+          <p class="font-bold text-red-700">❌ POOR CANDIDATES</p>
+          <ul class="list-disc ml-4">
+            <li><strong>Commodities:</strong> Each has its own dynamics, hard to find pairs</li>
+            <li><strong>USD/INR:</strong> RBI intervention distorts, INR depreciates 5–7%/yr systematically</li>
+            <li><strong>Large cap vs small cap:</strong> Vastly different volatility → spread dominated by one side</li>
+          </ul>
+        </div>
+        <div>
+          <p class="font-bold">KEY INSIGHT</p>
+          <p>Stocks offer <strong>many choices</strong> but lose cointegration easily → use a <strong>portfolio</strong> of multiple pairs. ETFs and currencies are more stable but have <strong>fewer choices</strong>.</p>
+          <p class="mt-1"><strong>Advanced:</strong> Index arbitrage — Bank Nifty vs its top 5–6 components (HDFC, Kotak, SBI, Axis). Trade deviations between index and its constituents.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: RISK MANAGEMENT & LTCM -->
+  <section class="border-2 border-red-500 rounded-lg p-3 mb-4 bg-red-50">
+    <h2 class="font-bold text-red-900 mb-3 bg-red-200 rounded px-2 py-1">6️⃣ RISK MANAGEMENT &amp; LTCM CASE STUDY — Why Brilliant Strategies Still Fail</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-red-300 rounded p-3">
+        <h3 class="font-bold text-red-800 mb-2">LTCM — Long-Term Capital Management</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-red-100">
+            <tr><th class="border px-2 py-1">Detail</th><th class="border px-2 py-1">Value</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Founded</td><td class="border px-2 py-1">1994 by John Meriwether (Salomon Brothers)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Key people</td><td class="border px-2 py-1">Myron Scholes &amp; Robert Merton (Nobel Prize winners, Black-Scholes model)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Strategy</td><td class="border px-2 py-1">Convergence trading on bond pairs (same as today's lecture!)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold text-green-700">Year 1</td><td class="border px-2 py-1 font-mono text-green-700">+21% (after fees)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold text-green-700">Year 2</td><td class="border px-2 py-1 font-mono text-green-700">+43%</td></tr>
+            <tr><td class="border px-2 py-1 font-bold text-green-700">Year 3</td><td class="border px-2 py-1 font-mono text-green-700">+41%</td></tr>
+            <tr><td class="border px-2 py-1 font-bold text-red-700">Year 4 (1998)</td><td class="border px-2 py-1 font-mono text-red-700 font-bold">−$4.6 BILLION in &lt;4 months</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Cause of failure</td><td class="border px-2 py-1">Over-leverage + Asian financial crisis + Russian financial crisis</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500">
+          <p><strong>⚠️ THE LESSON:</strong> The strategy was fine. The risk management was not. They did not keep enough capital buffers. If they had survived those 4 months with more reserves for margin calls, the lecturer argues they might have gone on to become an even more formidable fund. <strong>Always keep capital buffers.</strong></p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-red-300 rounded p-3">
+        <h3 class="font-bold text-red-800 mb-2">STOP LOSS APPROACHES</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-red-100">
+            <tr><th class="border px-2 py-1">Type</th><th class="border px-2 py-1">Method</th><th class="border px-2 py-1">Example</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Fixed</td><td class="border px-2 py-1">Dollar amount</td><td class="border px-2 py-1">$10 loss → exit</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Percentage</td><td class="border px-2 py-1">% of capital</td><td class="border px-2 py-1">5% loss → exit</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Std deviation</td><td class="border px-2 py-1">Entry at 2σ, stop at 2.5σ</td><td class="border px-2 py-1">Spread exceeds 2.5 std devs</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">ATR multiple</td><td class="border px-2 py-1">Average True Range</td><td class="border px-2 py-1">Stop at 2× ATR (Average True Range)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-red-800 mt-2 mb-2">PRACTICAL STOP LOSS (Instructor's Method)</h3>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400">
+          <p><strong>💡 THREE-PHASE CHECK:</strong></p>
+          <p class="font-mono">1. BACKTEST → record max spread deviation (e.g., 3σ)</p>
+          <p class="font-mono">2. PAPER TRADE → confirm max levels hold</p>
+          <p class="font-mono">3. LIVE TRADE → if spread EXCEEDS levels never</p>
+          <p class="font-mono">   seen in backtest + paper trading → STOP TRADING</p>
+          <p class="font-mono">   → Remove pair from universe → Send to research</p>
+        </div>
+
+        <h3 class="font-bold text-red-800 mt-3 mb-2">THREE LAYERS OF DIVERSIFICATION</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold bg-red-50">1. Pair level</td><td class="border px-2 py-1">Strict stop loss / take profit per pair</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-red-50">2. Portfolio level</td><td class="border px-2 py-1">Multiple pairs → one pair's loss offset by others</td></tr>
+            <tr><td class="border px-2 py-1 font-bold bg-red-50">3. Strategy level</td><td class="border px-2 py-1">Mix mean reversion + momentum + buy-and-hold</td></tr>
+          </tbody>
+        </table>
+
+        <p class="mt-2"><strong>Why spreads diverge:</strong> Extreme events (FDA alerts, earnings surprises, budget announcements). Example: Nestle India +45% profit growth → stock surges. If paired with ITC (cigarette tax fears), spread blows up.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 3 ====================== -->
+
+  <!-- SECTION 7: STRATEGY CLASSIFICATION -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">7️⃣ STATISTICAL ARBITRAGE FAMILY — Directional → Pairs → Triplets → N Assets</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">STRATEGY CLASSIFICATION</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-orange-100">
+            <tr><th class="border px-2 py-1">Type</th><th class="border px-2 py-1"># Assets</th><th class="border px-2 py-1">Example</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Directional</td><td class="border px-2 py-1 font-mono">1</td><td class="border px-2 py-1">AUD/CAD mean reversion alone</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Pairs trading</td><td class="border px-2 py-1 font-mono">2</td><td class="border px-2 py-1">EWA + EWC (long/short simultaneously)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Triplet trading</td><td class="border px-2 py-1 font-mono">3</td><td class="border px-2 py-1">GLD + GDX + USO</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Cointegrated N</td><td class="border px-2 py-1 font-mono">N</td><td class="border px-2 py-1">Bank Nifty vs its top 5–6 components</td></tr>
+          </tbody>
+        </table>
+        <p><strong>History:</strong> Pairs trading was first developed in the mid-1980s by Nunzio Tartaglia's quant group at Morgan Stanley. David Shaw (founder of DE Shaw hedge fund) was part of that group before starting his own firm in the late 1980s.</p>
+
+        <h3 class="font-bold text-orange-800 mt-3 mb-2">HALF-LIFE — How to Choose Look-Back Period</h3>
+        <p><strong>WHAT:</strong> Half-life = time for the spread to complete HALF of one mean-reversion cycle (from peak deviation back to mean).</p>
+        <p><strong>HOW TO USE:</strong> Set the Bollinger Band look-back window to a multiple of the half-life (e.g., 1×, 2×, 3× half-life).</p>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto mt-2">
+import numpy as np                     # Numerical computing
+
+# Half-life calculation from spread
+spread_lag = spread.shift(1)           # Spread at t-1
+delta_spread = spread - spread_lag     # Change in spread
+# Regress delta_spread on spread_lag
+# slope = coefficient from regression
+# half_life = -log(2) / slope
+half_life = -np.log(2) / slope         # In days
+# Use half_life to set look-back period
+# e.g., look_back = int(half_life) or 2 * int(half_life)
+</pre>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">COMPLETE WORKFLOW — From Idea to Live Trading</h3>
+        <table class="w-full border border-gray-300 mb-2">
+          <thead class="bg-orange-100">
+            <tr><th class="border px-1 py-1">#</th><th class="border px-1 py-1">Step</th><th class="border px-1 py-1">Tool / Method</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-bold">1</td><td class="border px-1 py-1">Select candidate pairs</td><td class="border px-1 py-1">Same sector, same economy, similar market cap</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">2</td><td class="border px-1 py-1">Calculate hedge ratio</td><td class="border px-1 py-1">OLS regression on first 90 days, no constant</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">3</td><td class="border px-1 py-1">Create spread</td><td class="border px-1 py-1">Y − hedge_ratio × X</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">4</td><td class="border px-1 py-1">ADF test on spread</td><td class="border px-1 py-1">adfuller(spread, maxlag=1)</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">5</td><td class="border px-1 py-1">If stationary → backtest</td><td class="border px-1 py-1">Bollinger Band mean reversion</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">6</td><td class="border px-1 py-1">Evaluate performance</td><td class="border px-1 py-1">Sharpe, drawdown, pyfolio</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">7</td><td class="border px-1 py-1">Paper trade</td><td class="border px-1 py-1">Verify levels hold in real-time</td></tr>
+            <tr><td class="border px-1 py-1 font-bold">8</td><td class="border px-1 py-1">Live trade + risk mgmt</td><td class="border px-1 py-1">Stop loss if spread exceeds historical max</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-orange-800 mt-2 mb-2">PAIRS TRADING RETURN FORMULA</h3>
+        <pre class="bg-gray-900 text-green-400 p-2 rounded overflow-x-auto">
+# CORRECT return calculation for pairs:
+# Numerator = change in spread
+# Denominator = TOTAL CAPITAL required
+
+capital = hedge_ratio * ewa_price + 1 * ewc_price
+# Example: 1.5 × $10 + 1 × $15 = $30
+
+pct_change = spread.diff() / capital   # Correct %
+# NOT: spread.pct_change() ← WRONG (divides by spread)
+
+cum_return = (1 + pct_change).cumprod()
+# Result: ~50% cumulative return, Sharpe = 1.01
+</pre>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 BANDWIDTH CHOICE:</strong> For currencies (low volatility): use 0.5σ → more trade signals. For stocks/ETFs: use 2σ → fewer but higher-conviction signals. It's a parameter, not a statistical rule.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK REFERENCE -->
+  <section class="border-2 border-gray-600 rounded-lg p-3 bg-gray-100">
+    <h2 class="font-bold text-gray-900 mb-3 bg-gray-300 rounded px-2 py-1">📋 QUICK REFERENCE — All In One Place</h2>
+
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Col 1: Key Functions -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">KEY PYTHON FUNCTIONS</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">adfuller(x, maxlag=1)</td><td class="border px-1 py-1">ADF stationarity test → returns [t_stat, p_value, ...]</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">sm.OLS(y, x).fit()</td><td class="border px-1 py-1">OLS regression → .params[0] = slope = hedge ratio</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">.rolling(n).mean()</td><td class="border px-1 py-1">n-day moving average</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">.rolling(n).std()</td><td class="border px-1 py-1">n-day rolling standard deviation</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">.pct_change()</td><td class="border px-1 py-1">Daily percentage change</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">.ffill()</td><td class="border px-1 py-1">Forward fill NaN values (carry position forward)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">.cumprod()</td><td class="border px-1 py-1">Cumulative product (for cumulative returns)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono bg-gray-50">.cumsum()</td><td class="border px-1 py-1">Cumulative sum (for dollar PnL)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 2: Common Mistakes -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">COMMON MISTAKES</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Mistake</th><th class="border px-1 py-1">Fix</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">Using correlation instead of cointegration</td><td class="border px-1 py-1">Always run ADF on the spread</td></tr>
+            <tr><td class="border px-1 py-1">Full data for hedge ratio → look-ahead bias</td><td class="border px-1 py-1">Use an initial training window (for example, the first 90 days) for OLS</td></tr>
+            <tr><td class="border px-1 py-1">Including constant in OLS regression</td><td class="border px-1 py-1">Set constant=0 (default in sm.OLS)</td></tr>
+            <tr><td class="border px-1 py-1">Dividing PnL by spread (wrong denominator)</td><td class="border px-1 py-1">Divide by total capital (HR×X + Y)</td></tr>
+            <tr><td class="border px-1 py-1">ADF on 5 days of data</td><td class="border px-1 py-1">Need ≥120–200 days minimum</td></tr>
+            <tr><td class="border px-1 py-1">No stop loss → LTCM blowup</td><td class="border px-1 py-1">Stop if spread exceeds historical max</td></tr>
+            <tr><td class="border px-1 py-1">Equal weight on different-volatility assets</td><td class="border px-1 py-1">Use hedge ratio for vol-adjusted weights</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 3: Terminology & Key Numbers -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">TERMINOLOGY</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">ADF</td><td class="border px-1 py-1">Augmented Dickey-Fuller (stationarity test)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">OLS</td><td class="border px-1 py-1">Ordinary Least Squares (regression method)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">EWA</td><td class="border px-1 py-1">iShares MSCI Australia ETF</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">EWC</td><td class="border px-1 py-1">iShares MSCI Canada ETF</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">GLD</td><td class="border px-1 py-1">SPDR Gold Shares ETF</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">GDX</td><td class="border px-1 py-1">VanEck Gold Miners ETF</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">USO</td><td class="border px-1 py-1">United States Oil Fund ETF</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">ATR</td><td class="border px-1 py-1">Average True Range (volatility measure)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">Hurst exp.</td><td class="border px-1 py-1">Hurst Exponent (&gt;0.5 = trending)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">LTCM</td><td class="border px-1 py-1">Long-Term Capital Management (hedge fund)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-gray-800 mb-2">KEY NUMBERS</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-1 py-1 bg-gray-50">AUD/CAD t-stat</td><td class="border px-1 py-1 font-mono">−2.697</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">90% critical value</td><td class="border px-1 py-1 font-mono">−2.57</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">95% critical value</td><td class="border px-1 py-1 font-mono">−2.87</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">EWA/EWC hedge ratio</td><td class="border px-1 py-1 font-mono">1.5</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Spread t-stat</td><td class="border px-1 py-1 font-mono">−3.09</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Pairs Sharpe ratio</td><td class="border px-1 py-1 font-mono">1.01</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Pairs max drawdown</td><td class="border px-1 py-1 font-mono">~5%</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">LTCM loss (1998)</td><td class="border px-1 py-1 font-mono">$4.6B in &lt;4 months</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="bg-yellow-100 rounded p-3 mt-3">
+      <p class="font-bold text-yellow-900 mb-2">🎯 KEY TAKEAWAYS</p>
+      <div class="grid grid-cols-4 gap-3">
+        <p>1. <strong>ADF before backtest:</strong> Always run the ADF test BEFORE backtesting. It checks every data point for stationarity, while a backtest only evaluates the few points where trades trigger (e.g., 7 out of 100). A profitable backtest on a non-stationary series is a trap.</p>
+        <p>2. <strong>Cointegration ≠ Correlation:</strong> Two assets can be correlated (both going up) but NOT cointegrated (spread is trending). Always check cointegration (ADF on the spread), never rely on correlation alone — the instructor lost money learning this the hard way.</p>
+        <p>3. <strong>Look-ahead bias kills pairs strategies:</strong> Use an initial training window such as the first 90 days to compute the hedge ratio. Using ALL data for the hedge ratio and then backtesting on the same data is like trading tomorrow's news today — it creates unrealistically flattering results that disappear in live trading.</p>
+        <p>4. <strong>LTCM proves risk management &gt; strategy:</strong> Nobel Prize winners with a brilliant convergence strategy lost $4.6B in 4 months because of over-leverage and insufficient capital buffers. The strategy worked; the risk management failed. Keep reserves so the worst months do not force you out of the market.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="mt-3 text-center text-gray-600 border-t-2 border-gray-300 pt-2">
+    <p><strong>THE MASTER FORMULA:</strong> Stationary Series = ADF t-stat &lt; Critical Value → Deploy Mean Reversion (buy below lower band, sell above mean) | Pairs: Spread = Y − hedge_ratio × X → ADF on spread → trade the spread, not individual assets.</p>
+    <p class="mt-1"><strong>THE ONE THING TO NEVER FORGET:</strong> Statistical arbitrage is NOT risk-free arbitrage. The word "statistical" means you're betting on PROBABILITY, not certainty. Spreads can diverge indefinitely during extreme events. Keep capital buffers, use stop losses, and diversify across multiple pairs — because even Nobel Prize winners go bankrupt without risk management.</p>
+  </footer>
+
+</body>
+</html>

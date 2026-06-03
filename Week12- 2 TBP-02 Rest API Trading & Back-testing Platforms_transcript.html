@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[WEEK 12-2] — REST API Trading &amp; Back-testing Platforms (TBP-02) — Cheat Sheet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+           font-size: 11px; line-height: 1.5; }
+    @media print { body { font-size: 9px; } .page-break { page-break-before: always; } }
+    h1 { font-size: 18px; }
+    h2 { font-size: 13px; }
+    h3 { font-size: 11px; }
+    table { font-size: 10px; }
+    pre  { font-size: 9px; line-height: 1.45; }
+  </style>
+</head>
+<body class="bg-white p-4 max-w-6xl mx-auto">
+
+  <!-- ====================== PAGE 1 ====================== -->
+
+  <!-- HEADER -->
+  <header class="text-center border-b-4 border-blue-600 pb-3 mb-4">
+    <h1 class="font-extrabold text-blue-900">REST API FOR ALGORITHMIC TRADING &amp; WEB SOCKETS — COMPLETE CHEAT SHEET</h1>
+    <p class="text-gray-600 mt-1">EPAT Week 12-2 — TBP-02: REST API Trading &amp; Back-testing Platforms | Instructor: QuantInsti Faculty</p>
+    <p class="text-gray-700 mt-2">
+      <strong>The Problem:</strong> You need to automate trading operations — placing orders, fetching positions, streaming live prices — across multiple brokers programmatically, without clicking through web portals.<br>
+      <strong>Your Goal:</strong> Master REST API (Representational State Transfer Application Programming Interface) architecture and Web Sockets to build a modular, broker-agnostic trading platform in Python.
+    </p>
+  </header>
+
+  <!-- SECTION 1: CORE EXAMPLE -->
+  <section class="border-2 border-amber-500 rounded-lg p-3 mb-4 bg-amber-50">
+    <h2 class="font-bold text-amber-900 mb-3 bg-amber-200 rounded px-2 py-1">1️⃣ CORE EXAMPLE — Anatomy of a REST API Request (These 5 Components Are Used Everywhere Below)</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <!-- Left: The 5 Components -->
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">THE 5 COMPONENTS OF EVERY REST API REQUEST</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-2 py-1">#</th><th class="border px-2 py-1">Component</th><th class="border px-2 py-1">Example Value</th><th class="border px-2 py-1">What It Is</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">1</td><td class="border px-2 py-1 font-bold font-mono">Base URL</td><td class="border px-2 py-1 font-mono">https://localhost:5000/v1/api</td><td class="border px-2 py-1">Broker's server address</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">2</td><td class="border px-2 py-1 font-bold font-mono">Endpoint</td><td class="border px-2 py-1 font-mono">/iserver/auth/status</td><td class="border px-2 py-1">Specific operation path</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">3</td><td class="border px-2 py-1 font-bold font-mono">HTTP Method</td><td class="border px-2 py-1 font-mono">POST</td><td class="border px-2 py-1">Client's intention (GET/POST)</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">4</td><td class="border px-2 py-1 font-bold font-mono">Headers</td><td class="border px-2 py-1 font-mono">{"Content-Type": "application/json"}</td><td class="border px-2 py-1">Info about the client</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">5</td><td class="border px-2 py-1 font-bold font-mono">Payload/Body</td><td class="border px-2 py-1 font-mono">{"conid": 265598, "qty": 30}</td><td class="border px-2 py-1">Info about the request itself</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-amber-100 rounded p-2 mt-2">
+          <p class="font-bold">FULL URL ARITHMETIC:</p>
+          <p class="font-mono">Full URL = Base URL + Endpoint</p>
+          <p class="font-mono">= "https://localhost:5000/v1/api" + "/iserver/auth/status"</p>
+          <p class="font-mono">= <strong>"https://localhost:5000/v1/api/iserver/auth/status"</strong></p>
+        </div>
+        <div class="bg-amber-100 rounded p-2 mt-2">
+          <p class="font-bold">RESPONSE HAS 2 PARTS:</p>
+          <table class="w-full border border-gray-300 mt-1">
+            <tr><td class="border px-2 py-1 font-bold">Status Code</td><td class="border px-2 py-1 font-mono">200</td><td class="border px-2 py-1">How did the server perceive our request?</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Content</td><td class="border px-2 py-1 font-mono">{"authenticated": true, "connected": true}</td><td class="border px-2 py-1">The actual data returned</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right: Terminology + Status Codes -->
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">TERMINOLOGY / DECODING THE SHORTHAND</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold font-mono">REST</td><td class="border px-2 py-1">Representational State Transfer — a design philosophy for APIs over HTTP</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold font-mono">API</td><td class="border px-2 py-1">Application Programming Interface — a bridge between two software applications</td></tr>
+            <tr><td class="border px-2 py-1 font-bold font-mono">HTTP</td><td class="border px-2 py-1">HyperText Transfer Protocol — the protocol used for web communication</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold font-mono">JSON</td><td class="border px-2 py-1">JavaScript Object Notation — universal data format understood by all languages</td></tr>
+            <tr><td class="border px-2 py-1 font-bold font-mono">WSS</td><td class="border px-2 py-1">Web Socket Secure — protocol for streaming live data (bidirectional)</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold font-mono">SSL</td><td class="border px-2 py-1">Secure Sockets Layer — encryption protocol for secure connections</td></tr>
+            <tr><td class="border px-2 py-1 font-bold font-mono">LFT/MFT/HFT</td><td class="border px-2 py-1">Low/Medium/High Frequency Trading — REST API suits LFT &amp; MFT only</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold font-mono">IB/IBKR</td><td class="border px-2 py-1">Interactive Brokers — used for demos; TWS API (custom) vs Web API (REST)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-amber-800 mb-2">HTTP STATUS CODE CHEAT TABLE</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-2 py-1">Starts With</th><th class="border px-2 py-1">Meaning</th><th class="border px-2 py-1">Example</th><th class="border px-2 py-1">Who's at Fault?</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold text-green-700 font-mono">2xx</td><td class="border px-2 py-1 text-green-700 font-bold">SUCCESS ✓</td><td class="border px-2 py-1 font-mono">200 OK</td><td class="border px-2 py-1">Nobody — all good</td></tr>
+            <tr><td class="border px-2 py-1 font-bold text-red-700 font-mono">4xx</td><td class="border px-2 py-1 text-red-700 font-bold">CLIENT ERROR ✗</td><td class="border px-2 py-1 font-mono">400, 404</td><td class="border px-2 py-1">YOU — wrong URL/data</td></tr>
+            <tr><td class="border px-2 py-1 font-bold text-purple-700 font-mono">5xx</td><td class="border px-2 py-1 text-purple-700 font-bold">SERVER ERROR ✗</td><td class="border px-2 py-1 font-mono">500, 503</td><td class="border px-2 py-1">BROKER — server issue</td></tr>
+          </tbody>
+        </table>
+        <p class="mt-2"><strong>WORKED EXAMPLE:</strong> You send a request with wrong account ID → broker returns <span class="font-mono text-red-700 font-bold">400</span>. You print <span class="font-mono">json.loads(response.text)</span> → it says "account ID not found" → fix the account ID → re-send → get <span class="font-mono text-green-700 font-bold">200</span>.</p>
+      </div>
+    </div>
+
+    <!-- VISUAL: REST API Request/Response Lifecycle -->
+    <div class="bg-white border-2 border-amber-300 rounded p-3 mt-3">
+      <h3 class="font-bold text-amber-800 mb-2">📡 VISUAL: How a REST API Request Works (Round-Trip)</h3>
+      <svg viewBox="0 0 620 180" class="w-full">
+        <!-- Your Python Code box -->
+        <rect x="10" y="30" width="140" height="80" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+        <text x="80" y="52" text-anchor="middle" font-size="10" font-weight="bold" fill="#1e40af">YOUR PYTHON CODE</text>
+        <text x="80" y="68" text-anchor="middle" font-size="8" fill="#3b82f6" font-family="monospace">requests.post(</text>
+        <text x="80" y="78" text-anchor="middle" font-size="8" fill="#3b82f6" font-family="monospace">  url, headers,</text>
+        <text x="80" y="88" text-anchor="middle" font-size="8" fill="#3b82f6" font-family="monospace">  json=payload)</text>
+        <text x="80" y="22" text-anchor="middle" font-size="9" fill="#1e40af" font-weight="bold">CLIENT</text>
+
+        <!-- Arrow: Request -->
+        <line x1="150" y1="55" x2="320" y2="55" stroke="#16a34a" stroke-width="2.5" marker-end="url(#reqArrow)"/>
+        <rect x="175" y="35" width="110" height="32" rx="4" fill="#f0fdf4" stroke="#86efac"/>
+        <text x="230" y="48" text-anchor="middle" font-size="7" fill="#166534" font-weight="bold">HTTP REQUEST →</text>
+        <text x="230" y="58" text-anchor="middle" font-size="6" fill="#166534">Method + URL + Headers + Body</text>
+
+        <!-- Broker Server box -->
+        <rect x="320" y="20" width="160" height="100" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+        <text x="400" y="42" text-anchor="middle" font-size="10" font-weight="bold" fill="#92400e">BROKER SERVER</text>
+        <text x="400" y="58" text-anchor="middle" font-size="8" fill="#b45309">(IB, Alpaca, etc.)</text>
+        <text x="400" y="75" text-anchor="middle" font-size="7" fill="#92400e">1. Authenticate token</text>
+        <text x="400" y="86" text-anchor="middle" font-size="7" fill="#92400e">2. Process request</text>
+        <text x="400" y="97" text-anchor="middle" font-size="7" fill="#92400e">3. Build response</text>
+        <text x="400" y="12" text-anchor="middle" font-size="9" fill="#92400e" font-weight="bold">SERVER</text>
+
+        <!-- Internet cloud -->
+        <text x="510" y="65" font-size="20" fill="#94a3b8">☁️</text>
+        <text x="530" y="80" font-size="7" fill="#94a3b8">Internet</text>
+
+        <!-- Arrow: Response -->
+        <line x1="320" y1="95" x2="150" y2="95" stroke="#dc2626" stroke-width="2.5" marker-end="url(#resArrow)"/>
+        <rect x="175" y="82" width="110" height="32" rx="4" fill="#fef2f2" stroke="#fca5a5"/>
+        <text x="230" y="95" text-anchor="middle" font-size="7" fill="#991b1b" font-weight="bold">← HTTP RESPONSE</text>
+        <text x="230" y="105" text-anchor="middle" font-size="6" fill="#991b1b">Status Code + JSON Body</text>
+
+        <!-- Status code outcomes -->
+        <rect x="10" y="125" width="85" height="35" rx="4" fill="#f0fdf4" stroke="#86efac"/>
+        <text x="52" y="140" text-anchor="middle" font-size="9" font-weight="bold" fill="#16a34a">200 OK ✓</text>
+        <text x="52" y="152" text-anchor="middle" font-size="7" fill="#166534">Parse JSON data</text>
+
+        <rect x="105" y="125" width="85" height="35" rx="4" fill="#fef2f2" stroke="#fca5a5"/>
+        <text x="147" y="140" text-anchor="middle" font-size="9" font-weight="bold" fill="#dc2626">400 Bad ✗</text>
+        <text x="147" y="152" text-anchor="middle" font-size="7" fill="#991b1b">Fix your request</text>
+
+        <rect x="200" y="125" width="85" height="35" rx="4" fill="#fef2f2" stroke="#fca5a5"/>
+        <text x="242" y="140" text-anchor="middle" font-size="9" font-weight="bold" fill="#dc2626">500 Server ✗</text>
+        <text x="242" y="152" text-anchor="middle" font-size="7" fill="#991b1b">Broker's problem</text>
+
+        <!-- Synchronous label -->
+        <rect x="350" y="130" width="220" height="30" rx="4" fill="#ede9fe" stroke="#a78bfa"/>
+        <text x="460" y="142" text-anchor="middle" font-size="8" fill="#5b21b6" font-weight="bold">⏱ SYNCHRONOUS: Your code WAITS for response</text>
+        <text x="460" y="153" text-anchor="middle" font-size="7" fill="#7c3aed">Nothing else runs until broker replies</text>
+
+        <defs>
+          <marker id="reqArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M 0 0 L 8 4 L 0 8" fill="#16a34a"/>
+          </marker>
+          <marker id="resArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M 0 0 L 8 4 L 0 8" fill="#dc2626"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECTION 2: LIBRARIES & SETUP -->
+  <section class="border-2 border-blue-500 rounded-lg p-3 mb-4 bg-blue-50">
+    <h2 class="font-bold text-blue-900 mb-3 bg-blue-200 rounded px-2 py-1">2️⃣ LIBRARIES &amp; SETUP — What You Need Installed</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-blue-300 rounded p-3">
+        <h3 class="font-bold text-blue-800 mb-2">WHAT: Required Libraries</h3>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+import requests              # Make HTTP requests (GET/POST)
+import json                  # Convert Python dict ↔ JSON
+from pprint import pprint    # Pretty-print large responses
+import warnings              # Suppress noisy warnings
+import pandas as pd          # Handle data as DataFrames
+import time                  # Introduce delays (heartbeats)
+import websocket             # Stream live data (web sockets)
+import threading             # Run web socket on separate thread
+import ssl                   # Handle SSL certificates
+</pre>
+        <p class="mt-2"><strong>WHY each library:</strong></p>
+        <p>• <span class="font-mono font-bold">requests</span> — THE library for REST API. One function per HTTP method: <span class="font-mono">requests.get()</span>, <span class="font-mono">requests.post()</span></p>
+        <p>• <span class="font-mono font-bold">json</span> — Converts between Python dicts and JSON (the universal data format)</p>
+        <p>• <span class="font-mono font-bold">websocket</span> — For streaming live prices, order updates, PnL updates</p>
+        <p>• <span class="font-mono font-bold">threading</span> — Runs the web socket listener in background while main strategy runs</p>
+      </div>
+
+      <div class="bg-white border-2 border-blue-300 rounded p-3">
+        <h3 class="font-bold text-blue-800 mb-2">HOW: IB Gateway Setup (Interactive Brokers)</h3>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# Step 1: Download Client Portal Gateway from IB
+# Step 2: Open command prompt, navigate to folder
+cd Downloads/clientportal           # Navigate to folder
+
+# Step 3: Run the gateway (Windows)
+bin\run.bat root\conf.yaml          # Start gateway on Windows
+
+# Step 3 (Mac/Linux alternative):
+# bin/run.sh root/conf.yaml        # Start gateway on Mac
+
+# Step 4: Open browser, go to the URL it provides
+# https://localhost:5000            # Login page appears
+# Enter IB credentials → "Client login succeeds"
+
+# Step 5: Now Python can connect to localhost:5000
+</pre>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ WARNING — IB disconnects if idle:</strong> If you don't send requests every ~55 seconds, IB disconnects you. Solution: run a "continuous tickle" heartbeat in a background thread that calls the <span class="font-mono">/tickle</span> endpoint periodically.</p>
+        </div>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 TIP — verify=False for IB only:</strong> IB's gateway runs on localhost without SSL certificates. Use <span class="font-mono">verify=False</span> for IB. Other brokers host on real servers with SSL — use <span class="font-mono">verify=True</span> (default).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: REST API ARCHITECTURE -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">3️⃣ REST API ARCHITECTURE — Base URL, Endpoints &amp; HTTP Methods</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">WHAT: The Client-Server Architecture</h3>
+        <p><strong>WHY REST API?</strong> It's the de facto standard. Almost every broker post-COVID supports it: IB, Zerodha, Alpaca, crypto exchanges, forex brokers. Learn one technology → work with any broker.</p>
+        <div class="bg-orange-100 rounded p-2 mt-2 mb-2">
+          <p class="font-bold">THE "OFFICE DEPARTMENTS" ANALOGY:</p>
+          <p>• <strong>Base URL</strong> = the building address (broker's server)</p>
+          <p>• <strong>Endpoints</strong> = departments inside the building (positions dept, orders dept, PnL dept)</p>
+          <p>• To perform an operation, you go to the RIGHT department (endpoint)</p>
+          <p>• Wrong department → request rejected (404 error)</p>
+        </div>
+
+        <p class="font-bold mt-2">Base URLs by Broker:</p>
+        <table class="w-full border border-gray-300 mt-1">
+          <thead class="bg-orange-100">
+            <tr><th class="border px-2 py-1">Broker</th><th class="border px-2 py-1">Base URL</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Interactive Brokers</td><td class="border px-2 py-1 font-mono">https://localhost:5000/v1/api</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Zerodha (India)</td><td class="border px-2 py-1 font-mono">https://api.kite.trade</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Alpaca (US/Crypto)</td><td class="border px-2 py-1 font-mono">https://paper-api.alpaca.markets</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">HOW: Endpoints &amp; HTTP Methods</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <thead class="bg-orange-100">
+            <tr><th class="border px-2 py-1">Operation</th><th class="border px-2 py-1">Endpoint</th><th class="border px-2 py-1">Method</th><th class="border px-2 py-1">Intention</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1">Auth Status</td><td class="border px-2 py-1 font-mono">/iserver/auth/status</td><td class="border px-2 py-1 font-mono font-bold">POST</td><td class="border px-2 py-1">Send auth check</td></tr>
+            <tr class="bg-orange-50"><td class="border px-2 py-1">Place Order</td><td class="border px-2 py-1 font-mono">/iserver/account/{id}/orders</td><td class="border px-2 py-1 font-mono font-bold">POST</td><td class="border px-2 py-1">Post new order</td></tr>
+            <tr><td class="border px-2 py-1">Fetch Positions</td><td class="border px-2 py-1 font-mono">/portfolio/positions</td><td class="border px-2 py-1 font-mono font-bold">GET</td><td class="border px-2 py-1">Get data from server</td></tr>
+            <tr class="bg-orange-50"><td class="border px-2 py-1">Historical Data</td><td class="border px-2 py-1 font-mono">/iserver/marketdata/history</td><td class="border px-2 py-1 font-mono font-bold">GET</td><td class="border px-2 py-1">Get data from server</td></tr>
+            <tr><td class="border px-2 py-1">Fetch PnL</td><td class="border px-2 py-1 font-mono">/portfolio/pnl</td><td class="border px-2 py-1 font-mono font-bold">GET</td><td class="border px-2 py-1">Get data from server</td></tr>
+            <tr class="bg-orange-50"><td class="border px-2 py-1">Re-authenticate</td><td class="border px-2 py-1 font-mono">/iserver/reauthenticate</td><td class="border px-2 py-1 font-mono font-bold">POST</td><td class="border px-2 py-1">Post re-auth request</td></tr>
+          </tbody>
+        </table>
+
+        <div class="bg-orange-100 rounded p-2">
+          <p class="font-bold">GET vs POST — THE SIMPLE RULE:</p>
+          <p>• <strong>GET</strong> = "Give me data" (fetch positions, prices, PnL)</p>
+          <p>• <strong>POST</strong> = "Here's new data" (place order, authenticate, modify alert)</p>
+          <p>• Don't memorize — the broker's documentation tells you which to use</p>
+        </div>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ WARNING — REST API is NOT for HFT:</strong> REST operates over the internet with latency in seconds. HFT needs sub-millisecond latency using FIX (Financial Information eXchange) protocol or FPGA (Field-Programmable Gate Array) hardware. REST is for LFT/MFT only.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 2 ====================== -->
+
+  <!-- SECTION 4: HEADERS, PAYLOAD, QUERY PARAMS -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">4️⃣ REQUEST DETAILS — Headers, Payload &amp; Query Parameters</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+      <!-- Headers -->
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">HEADERS = Client Info</h3>
+        <p><strong>WHAT:</strong> Metadata about your client — who you are, what format you accept, auth tokens.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# Example 1: Simple header
+headers = {
+    "Content-Type":       # What format we send
+        "application/json"  # JSON format
+}
+
+# Example 2: With auth token
+headers = {
+    "Authorization":      # Auth credentials
+        "Bearer abc123...",  # Token from broker
+    "Content-Type":       # Data format
+        "application/json",  # JSON
+    "x-device-type":      # Device info
+        "web"               # Web client
+}
+</pre>
+        <p class="mt-1"><strong>GOTCHA:</strong> Headers are Python dicts. Some endpoints need them, some don't — check documentation.</p>
+      </div>
+
+      <!-- Payload -->
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">PAYLOAD/BODY = Request Info</h3>
+        <p><strong>WHAT:</strong> The actual trading data — instrument, quantity, price, order type. Sent in the request body.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# Place order payload
+payload = {
+    "conid": 265598,       # Contract ID (AAPL)
+    "secType": "STK",      # Security type: stock
+    "orderType": "LMT",    # Limit order
+    "side": "SELL",        # Sell side
+    "price": 250.50,       # Limit price
+    "quantity": 30,        # 30 shares
+    "tif": "DAY"           # Time in force
+}
+# MUST convert to JSON before sending:
+data = json.dumps(payload) # Dict → JSON
+</pre>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-1">
+          <p><strong>⚠️ MUST json.dumps():</strong> Payload must be converted to JSON before sending. Server doesn't understand Python dicts!</p>
+        </div>
+      </div>
+
+      <!-- Query Parameters -->
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">QUERY PARAMS = URL Additions</h3>
+        <p><strong>WHAT:</strong> Key-value pairs appended to the URL after <span class="font-mono">?</span>. Alternative to payload for some endpoints.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# Fetch historical data — uses params
+query_params = {
+    "conid": 265598,       # Contract ID
+    "period": "1y",        # 1 year of data
+    "bar": "1d"            # Daily bars
+}
+
+response = requests.get(   # GET method
+    url,                    # Base URL + endpoint
+    headers={},             # Empty headers
+    data="",                # Empty payload
+    params=query_params,    # Appended to URL
+    verify=False            # IB only
+)
+# URL becomes: ...?conid=265598&amp;period=1y&amp;bar=1d
+</pre>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-1">
+          <p><strong>💡 Payload vs Query Params:</strong> Payload is hidden in request body. Query params are visible in the URL to network devices. Same purpose, different visibility.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: JSON -->
+  <section class="border-2 border-teal-500 rounded-lg p-3 mb-4 bg-teal-50">
+    <h2 class="font-bold text-teal-900 mb-3 bg-teal-200 rounded px-2 py-1">5️⃣ JSON — The Universal Data Format (Python Dict ↔ JSON Conversion)</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">WHAT &amp; WHY: The Language Barrier Problem</h3>
+        <p><strong>WHY we need JSON:</strong> Your Python code sends a dict <span class="font-mono">{"qty": 30}</span>. The server might be coded in C++, Java, or Go — they don't understand Python dicts. JSON is the common format ALL languages understand.</p>
+        <div class="bg-teal-100 rounded p-2 mt-2 mb-2">
+          <p class="font-bold">THE TRANSLATION FLOW:</p>
+          <p class="font-mono">CLIENT (Python):</p>
+          <p class="font-mono">  Python dict → json.dumps() → JSON string → SEND TO SERVER</p>
+          <p class="font-mono mt-1">SERVER (any language):</p>
+          <p class="font-mono">  Processes request → Creates JSON response → SEND TO CLIENT</p>
+          <p class="font-mono mt-1">CLIENT (Python):</p>
+          <p class="font-mono">  Receive JSON string → json.loads() → Python dict → USE IT</p>
+        </div>
+        <p><strong>WORKED EXAMPLE:</strong></p>
+        <p class="font-mono">Python dict: {"price": 250.50, "qty": 30}</p>
+        <p class="font-mono">→ json.dumps() → '{"price": 250.5, "qty": 30}'  # STRING</p>
+        <p class="font-mono">→ send to server → server processes → sends back:</p>
+        <p class="font-mono">→ '{"orderId": "ABC123", "status": "filled"}'  # STRING</p>
+        <p class="font-mono">→ json.loads() → {"orderId": "ABC123", "status": "filled"}  # DICT</p>
+      </div>
+
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">HOW: The Two Essential JSON Methods</h3>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+import json                          # Built-in library
+
+# ═══ SENDING: Python dict → JSON string ═══
+payload = {"conid": 265598,          # Python dict
+           "qty": 30,                # Native Python
+           "side": "BUY"}            # Not sendable yet
+
+json_string = json.dumps(payload)    # Convert to JSON
+print(type(json_string))             # &lt;class 'str'&gt;
+print(json_string)
+# Output: '{"conid": 265598, "qty": 30, "side": "BUY"}'
+
+# ═══ RECEIVING: JSON string → Python dict ═══
+response_text = '{"authenticated": true}'  # From server
+result = json.loads(response_text)         # Convert to dict
+print(type(result))                  # &lt;class 'dict'&gt;
+print(result["authenticated"])       # True (Python bool)
+
+# ═══ PRACTICAL USAGE ═══
+response = requests.post(url,        # Make request
+    headers=headers,                  # Client info
+    data=json.dumps(payload),         # dumps BEFORE sending
+    verify=False)                     # IB only
+
+status = response.status_code         # 200 = success
+content = json.loads(response.text)   # loads AFTER receiving
+pprint(content)                       # Pretty-print dict
+</pre>
+        <div class="bg-teal-100 rounded p-2 mt-2">
+          <p class="font-bold">🔑 MEMORY TRICK:</p>
+          <p>• <strong>dumps</strong> = "dump string" = dict → string (sending OUT)</p>
+          <p>• <strong>loads</strong> = "load string" = string → dict (loading IN)</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: MAKING REQUESTS -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">6️⃣ MAKING REQUESTS — Complete Python Implementation</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">HOW: Auth Status Request (No Payload)</h3>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+def fetch_auth_status():
+    base_url = (                       # Broker address
+        "https://localhost:5000/v1/api")
+    endpoint = (                       # Auth department
+        "/iserver/auth/status")
+    url = base_url + endpoint          # Full URL
+
+    headers = {}                       # No headers needed
+    payload = {}                       # No payload needed
+
+    response = requests.post(          # POST method (docs say)
+        url,                           # Where to send
+        headers=headers,               # Client info (empty)
+        data=json.dumps(payload),      # Request info (empty)
+        verify=False)                  # Skip SSL (IB only)
+
+    status_code = response.status_code # 200 = success
+    content = json.loads(              # Parse JSON response
+        response.text)                 # Raw text → dict
+
+    print(f"Status: {status_code}")    # Status: 200
+    pprint(content)                    # Pretty-print dict
+    # Output:
+    # {'authenticated': True,
+    #  'connected': True,
+    #  'competing': False}
+</pre>
+        <p class="mt-2"><strong>WORKED EXAMPLE — Reading the response:</strong></p>
+        <p class="font-mono">status_code = 200 → starts with 2 → <strong>SUCCESS ✓</strong></p>
+        <p class="font-mono">content["authenticated"] = True → we're logged in</p>
+        <p class="font-mono">content["connected"] = True → connection is active</p>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">HOW: Place Order Request (With Payload)</h3>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+def place_order(account_id):
+    base_url = (                       # Broker address
+        "https://localhost:5000/v1/api")
+    endpoint = (                       # Orders department
+        f"/iserver/account/"
+        f"{account_id}/orders")        # Account-specific
+    url = base_url + endpoint          # Full URL
+
+    headers = {                        # Client info
+        "Content-Type":                # Format we send
+            "application/json"}        # JSON format
+
+    payload = {                        # Order details
+        "conid": 265598,               # AAPL contract ID
+        "secType": "STK",              # Stock
+        "orderType": "LMT",           # Limit order
+        "side": "SELL",                # Sell side
+        "price": 250.50,               # Price per share
+        "quantity": 30,                # 30 shares
+        "tif": "DAY"}                  # Day order
+
+    response = requests.post(          # POST (new data)
+        url,                           # Full URL
+        headers=headers,               # Client info
+        data=json.dumps(payload),      # Order → JSON
+        verify=False)                  # IB only
+
+    status_code = response.status_code # Check result
+    if status_code == 200:             # Success?
+        pprint(json.loads(             # Print order conf
+            response.text))
+    else:                              # Error?
+        print(f"Error {status_code}")  # Print error code
+        pprint(json.loads(             # Print error detail
+            response.text))            # Debug from here
+</pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 3 ====================== -->
+
+  <!-- SECTION 7: WEB SOCKETS -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">7️⃣ WEB SOCKETS — Streaming Live Data (Prices, Orders, PnL)</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">WHAT &amp; WHY: Synchronous vs Asynchronous</h3>
+        <p><strong>Synchronous (REST API):</strong> Client sends request → waits → gets response → sends next. Like calling a bank — ask one question, wait for answer, ask next.</p>
+        <p class="mt-2"><strong>Asynchronous (Web Sockets):</strong> Client subscribes once → broker pushes data whenever it changes. Like WhatsApp — messages arrive anytime without you asking.</p>
+        <div class="bg-purple-100 rounded p-2 mt-2 mb-2">
+          <p class="font-bold">WHEN TO USE EACH:</p>
+          <table class="w-full border border-gray-300 mt-1">
+            <tr><td class="border px-2 py-1 font-bold">REST API</td><td class="border px-2 py-1">Place/modify/cancel orders, fetch positions, auth, historical data</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Web Sockets</td><td class="border px-2 py-1">Live prices, order status updates, real-time PnL, market data streaming</td></tr>
+          </tbody>
+          </table>
+        </div>
+        <p class="mt-2"><strong>WORKED EXAMPLE — Why async matters:</strong></p>
+        <p>You have 100 limit orders open. Synchronous: poll status of each order every second = 100 requests/second → broker bans you. Asynchronous: subscribe to order updates once → broker pushes updates only when something changes → efficient.</p>
+
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 KEY INSIGHT:</strong> Your broker's mobile app does the same thing — when you login, it subscribes to live PnL via web sockets under the hood. When you build your own platform, YOU must subscribe explicitly.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">HOW: Web Socket Implementation (Alpaca BTC Example)</h3>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+import websocket                     # Web socket library
+import json                          # JSON conversion
+import ssl                           # SSL certificates
+
+def on_open(ws):                     # Called when connected
+    print("Connection opened")       # Log connection
+    auth = {                         # Auth credentials
+        "action": "auth",            # Auth action
+        "key": "YOUR_API_KEY",       # Alpaca API key
+        "secret": "YOUR_SECRET"}     # Alpaca secret
+    ws.send(json.dumps(auth))        # Send as JSON
+
+def on_message(ws, message):         # Called on each msg
+    data = json.loads(message)       # JSON → Python dict
+    if data[0]["T"] == "success":    # Auth successful?
+        sub = {                      # Subscribe request
+            "action": "subscribe",   # Subscribe action
+            "quotes": ["BTC/USD"]}   # Bitcoin quotes
+        ws.send(json.dumps(sub))     # Send subscription
+    else:                            # Price data arrived
+        pprint(data)                 # Print live quotes
+
+def on_error(ws, error):             # Called on error
+    print(f"Error: {error}")         # Log the error
+
+def on_close(ws, code, msg):         # Called on disconnect
+    print("Connection closed")       # Log disconnect
+
+# Create &amp; run the web socket
+wss_url = (                          # Alpaca WSS endpoint
+    "wss://stream.data.alpaca.markets"
+    "/v1beta3/crypto/us")            # Crypto stream URL
+ws = websocket.WebSocketApp(         # Create app
+    wss_url,                         # Stream URL
+    on_open=on_open,                 # Connect callback
+    on_message=on_message,           # Message callback
+    on_error=on_error,               # Error callback
+    on_close=on_close)               # Close callback
+ws.run_forever()                     # Listen forever
+# Runs infinite loop — use threading for background
+</pre>
+      </div>
+    </div>
+
+    <!-- VISUAL: REST vs Web Socket Architecture -->
+    <div class="bg-white border-2 border-purple-300 rounded p-3 mt-3">
+      <h3 class="font-bold text-purple-800 mb-2">📡 VISUAL: REST API (Synchronous) vs Web Socket (Asynchronous)</h3>
+      <svg viewBox="0 0 620 200" class="w-full">
+        <!-- LEFT: REST API (request/response) -->
+        <rect x="5" y="10" width="295" height="175" rx="6" fill="#fef2f2" stroke="#fca5a5"/>
+        <text x="152" y="8" text-anchor="middle" font-size="10" font-weight="bold" fill="#991b1b">REST API — Ask Each Time</text>
+        <rect x="15" y="25" width="55" height="30" rx="4" fill="#dbeafe" stroke="#3b82f6"/>
+        <text x="42" y="44" text-anchor="middle" font-size="8" fill="#1e40af" font-weight="bold">Client</text>
+        <rect x="220" y="25" width="55" height="30" rx="4" fill="#fef3c7" stroke="#f59e0b"/>
+        <text x="247" y="44" text-anchor="middle" font-size="8" fill="#92400e" font-weight="bold">Server</text>
+        <!-- Request 1 -->
+        <line x1="70" y1="35" x2="220" y2="35" stroke="#16a34a" stroke-width="1.5" marker-end="url(#ra1)"/>
+        <text x="145" y="32" text-anchor="middle" font-size="6" fill="#16a34a">GET /price</text>
+        <line x1="220" y1="42" x2="70" y2="42" stroke="#dc2626" stroke-width="1.5" marker-end="url(#ra2)"/>
+        <text x="145" y="50" text-anchor="middle" font-size="6" fill="#dc2626">200: {price: 50.25}</text>
+        <!-- Wait -->
+        <text x="42" y="68" text-anchor="middle" font-size="7" fill="#6b7280">⏱ wait...</text>
+        <!-- Request 2 -->
+        <line x1="70" y1="78" x2="220" y2="78" stroke="#16a34a" stroke-width="1.5" marker-end="url(#ra1)"/>
+        <text x="145" y="75" text-anchor="middle" font-size="6" fill="#16a34a">GET /price</text>
+        <line x1="220" y1="85" x2="70" y2="85" stroke="#dc2626" stroke-width="1.5" marker-end="url(#ra2)"/>
+        <text x="145" y="93" text-anchor="middle" font-size="6" fill="#dc2626">200: {price: 50.30}</text>
+        <!-- Wait -->
+        <text x="42" y="111" text-anchor="middle" font-size="7" fill="#6b7280">⏱ wait...</text>
+        <!-- Request 3 -->
+        <line x1="70" y1="121" x2="220" y2="121" stroke="#16a34a" stroke-width="1.5" marker-end="url(#ra1)"/>
+        <text x="145" y="118" text-anchor="middle" font-size="6" fill="#16a34a">GET /price</text>
+        <line x1="220" y1="128" x2="70" y2="128" stroke="#dc2626" stroke-width="1.5" marker-end="url(#ra2)"/>
+        <text x="145" y="136" text-anchor="middle" font-size="6" fill="#dc2626">200: {price: 50.28}</text>
+        <text x="152" y="160" text-anchor="middle" font-size="8" fill="#991b1b" font-weight="bold">Must ask EVERY time = slow + wasteful</text>
+        <text x="152" y="172" text-anchor="middle" font-size="7" fill="#991b1b">100 stocks × 1/sec = 100 requests/sec</text>
+
+        <!-- RIGHT: Web Socket (streaming) -->
+        <rect x="315" y="10" width="295" height="175" rx="6" fill="#f0fdf4" stroke="#86efac"/>
+        <text x="462" y="8" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">WEB SOCKET — Subscribe Once</text>
+        <rect x="325" y="25" width="55" height="30" rx="4" fill="#dbeafe" stroke="#3b82f6"/>
+        <text x="352" y="44" text-anchor="middle" font-size="8" fill="#1e40af" font-weight="bold">Client</text>
+        <rect x="530" y="25" width="55" height="30" rx="4" fill="#fef3c7" stroke="#f59e0b"/>
+        <text x="557" y="44" text-anchor="middle" font-size="8" fill="#92400e" font-weight="bold">Server</text>
+        <!-- Subscribe once -->
+        <line x1="380" y1="38" x2="530" y2="38" stroke="#16a34a" stroke-width="1.5" marker-end="url(#ra1)"/>
+        <text x="455" y="35" text-anchor="middle" font-size="6" fill="#16a34a">SUBSCRIBE: BTC/USD</text>
+        <!-- Server pushes continuously -->
+        <line x1="530" y1="65" x2="380" y2="65" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ra2)"/>
+        <text x="455" y="62" text-anchor="middle" font-size="6" fill="#7c3aed">PUSH: {price: 50.25, t: 10:00:01}</text>
+        <line x1="530" y1="85" x2="380" y2="85" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ra2)"/>
+        <text x="455" y="82" text-anchor="middle" font-size="6" fill="#7c3aed">PUSH: {price: 50.30, t: 10:00:02}</text>
+        <line x1="530" y1="105" x2="380" y2="105" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ra2)"/>
+        <text x="455" y="102" text-anchor="middle" font-size="6" fill="#7c3aed">PUSH: {price: 50.28, t: 10:00:03}</text>
+        <line x1="530" y1="125" x2="380" y2="125" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#ra2)"/>
+        <text x="455" y="122" text-anchor="middle" font-size="6" fill="#7c3aed">PUSH: {price: 50.35, t: 10:00:04}</text>
+        <text x="352" y="142" text-anchor="middle" font-size="7" fill="#166534">📡 Listening...</text>
+        <text x="462" y="160" text-anchor="middle" font-size="8" fill="#166534" font-weight="bold">Subscribe ONCE → data flows automatically</text>
+        <text x="462" y="172" text-anchor="middle" font-size="7" fill="#166534">Real-time updates without polling</text>
+
+        <defs>
+          <marker id="ra1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+            <path d="M 0 0 L 6 3 L 0 6" fill="#16a34a"/>
+          </marker>
+          <marker id="ra2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+            <path d="M 0 0 L 6 3 L 0 6" fill="#7c3aed"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECTION 8: COMPARISON -->
+
+  <section class="border-2 border-cyan-500 rounded-lg p-3 mb-4 bg-cyan-50">
+    <h2 class="font-bold text-cyan-900 mb-3 bg-cyan-200 rounded px-2 py-1">8️⃣ COMPARISON — REST API vs TWS API vs Web Sockets vs FIX</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-cyan-300 rounded p-3">
+        <h3 class="font-bold text-cyan-800 mb-2">Technology Comparison Table</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-cyan-200">
+            <tr><th class="border px-2 py-1">Feature</th><th class="border px-2 py-1">REST API</th><th class="border px-2 py-1">IB TWS API</th><th class="border px-2 py-1">Web Sockets</th><th class="border px-2 py-1">FIX Protocol</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Communication</td><td class="border px-2 py-1">Synchronous</td><td class="border px-2 py-1">Both</td><td class="border px-2 py-1">Asynchronous</td><td class="border px-2 py-1">Asynchronous</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Speed</td><td class="border px-2 py-1">Seconds</td><td class="border px-2 py-1">Seconds</td><td class="border px-2 py-1">Real-time</td><td class="border px-2 py-1">Microseconds</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Best For</td><td class="border px-2 py-1">LFT/MFT</td><td class="border px-2 py-1">LFT/MFT</td><td class="border px-2 py-1">Live data</td><td class="border px-2 py-1">HFT</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Broker Support</td><td class="border px-2 py-1 text-green-700 font-bold">Almost all</td><td class="border px-2 py-1">IB only</td><td class="border px-2 py-1">Most</td><td class="border px-2 py-1">Institutional</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Language</td><td class="border px-2 py-1">Any</td><td class="border px-2 py-1">Python</td><td class="border px-2 py-1">Any</td><td class="border px-2 py-1">C++</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Standard</td><td class="border px-2 py-1 text-green-700">De facto</td><td class="border px-2 py-1">Custom</td><td class="border px-2 py-1">Web std</td><td class="border px-2 py-1">Finance std</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bg-white border-2 border-cyan-300 rounded p-3">
+        <h3 class="font-bold text-cyan-800 mb-2">Modular Code Architecture (Best Practice)</h3>
+        <div class="bg-cyan-100 rounded p-2 mb-2">
+          <p class="font-bold">THE TWO-FILE PATTERN:</p>
+          <p>• <strong>base_functions.py</strong> — All broker-specific REST API code (functions for each endpoint)</p>
+          <p>• <strong>entry_point.py</strong> — Strategy/business logic that imports from base_functions</p>
+          <p>→ To switch brokers, rewrite ONLY base_functions.py. Strategy code stays the same.</p>
+        </div>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# entry_point.py — Strategy file
+from base_functions import (     # Import broker funcs
+    fetch_auth_status,           # Check connection
+    place_order,                 # Place trades
+    fetch_positions,             # Get positions
+    fetch_historical_data,       # Get OHLCV data
+    fetch_pnl)                   # Get profit/loss
+
+# Strategy parameters
+instrument = "AAPL"              # What to trade
+quantity = 30                    # How many shares
+
+# Strategy logic (broker-agnostic)
+status = fetch_auth_status()     # Am I connected?
+if status["authenticated"]:      # Yes → proceed
+    data = fetch_historical_data(# Get price data
+        instrument)
+    # ... your strategy logic here ...
+    place_order(account_id,      # Execute trade
+        instrument, quantity)
+</pre>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 PRO TIP — Multi-broker:</strong> Advanced students create multiple base files (base_ib.py, base_alpaca.py, base_zerodha.py) and switch via a config parameter. Same strategy, different brokers!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 9: QUICK REFERENCE -->
+  <section class="border-2 border-gray-600 rounded-lg p-3 bg-gray-100">
+    <h2 class="font-bold text-gray-900 mb-3 bg-gray-300 rounded px-2 py-1">📋 QUICK REFERENCE — All In One Place</h2>
+
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Col 1: Key Functions -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">KEY FUNCTIONS</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Function</th><th class="border px-1 py-1">What It Does</th><th class="border px-1 py-1">Gotcha</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">requests.get(url)</td><td class="border px-1 py-1">Fetch data from server</td><td class="border px-1 py-1">Use for reading</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">requests.post(url)</td><td class="border px-1 py-1">Send data to server</td><td class="border px-1 py-1">Use for writing</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">json.dumps(dict)</td><td class="border px-1 py-1">Python dict → JSON str</td><td class="border px-1 py-1">Before sending</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">json.loads(str)</td><td class="border px-1 py-1">JSON str → Python dict</td><td class="border px-1 py-1">After receiving</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">response.status_code</td><td class="border px-1 py-1">HTTP status (200, 400…)</td><td class="border px-1 py-1">Check FIRST</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">response.text</td><td class="border px-1 py-1">Raw response content</td><td class="border px-1 py-1">Is a string</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">pprint(dict)</td><td class="border px-1 py-1">Pretty-print dicts</td><td class="border px-1 py-1">Import from pprint</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">ws.send(json.dumps())</td><td class="border px-1 py-1">Send via web socket</td><td class="border px-1 py-1">Must be JSON</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">ws.run_forever()</td><td class="border px-1 py-1">Listen for stream data</td><td class="border px-1 py-1">Blocks thread</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 2: Common Mistakes -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">COMMON MISTAKES</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Mistake</th><th class="border px-1 py-1">What Happens</th><th class="border px-1 py-1">Fix</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">Sending Python dict as payload</td><td class="border px-1 py-1">Server can't parse</td><td class="border px-1 py-1">Use json.dumps()</td></tr>
+            <tr><td class="border px-1 py-1">Wrong HTTP method</td><td class="border px-1 py-1">4xx error</td><td class="border px-1 py-1">Check broker docs</td></tr>
+            <tr><td class="border px-1 py-1">Wrong endpoint URL</td><td class="border px-1 py-1">404 Not Found</td><td class="border px-1 py-1">Copy from docs exactly</td></tr>
+            <tr><td class="border px-1 py-1">Not checking status code</td><td class="border px-1 py-1">Silent failures</td><td class="border px-1 py-1">Always check first</td></tr>
+            <tr><td class="border px-1 py-1">IB idle too long</td><td class="border px-1 py-1">Disconnected</td><td class="border px-1 py-1">Run tickle heartbeat</td></tr>
+            <tr><td class="border px-1 py-1">Using REST for live data</td><td class="border px-1 py-1">Polling = spam</td><td class="border px-1 py-1">Use web sockets</td></tr>
+            <tr><td class="border px-1 py-1">Using REST for HFT</td><td class="border px-1 py-1">Too slow</td><td class="border px-1 py-1">Use FIX or FPGA</td></tr>
+            <tr><td class="border px-1 py-1">Hardcoding account IDs</td><td class="border px-1 py-1">Wrong account errors</td><td class="border px-1 py-1">Fetch from API first</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 3: Numbers + Checklist -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">REQUEST BUILDING CHECKLIST</h3>
+        <ol class="list-decimal list-inside space-y-1">
+          <li>Get <strong>Base URL</strong> from broker docs (first page)</li>
+          <li>Find <strong>Endpoint</strong> for your operation</li>
+          <li>Note <strong>HTTP Method</strong> (GET or POST)</li>
+          <li>Check required <strong>Headers</strong> (auth tokens, etc.)</li>
+          <li>Build <strong>Payload</strong> with required fields</li>
+          <li>Convert payload: <span class="font-mono">json.dumps()</span></li>
+          <li>Send request: <span class="font-mono">requests.get/post()</span></li>
+          <li>Check <span class="font-mono">response.status_code</span> (2xx?)</li>
+          <li>Parse response: <span class="font-mono">json.loads()</span></li>
+          <li>Use the data in your strategy</li>
+        </ol>
+
+        <h3 class="font-bold text-gray-800 mt-3 mb-2">SHORTHAND DECODER</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">REST</td><td class="border px-1 py-1">Representational State Transfer</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">API</td><td class="border px-1 py-1">Application Programming Interface</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">HTTP</td><td class="border px-1 py-1">HyperText Transfer Protocol</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">JSON</td><td class="border px-1 py-1">JavaScript Object Notation</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">WSS</td><td class="border px-1 py-1">Web Socket Secure</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">SSL</td><td class="border px-1 py-1">Secure Sockets Layer</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">FIX</td><td class="border px-1 py-1">Financial Information eXchange</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">FPGA</td><td class="border px-1 py-1">Field-Programmable Gate Array</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">TWS</td><td class="border px-1 py-1">Trader Workstation (IB desktop)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">LFT/MFT/HFT</td><td class="border px-1 py-1">Low/Mid/High Freq Trading</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="bg-yellow-100 rounded p-3 mt-3">
+      <p class="font-bold text-yellow-900 mb-2">🎯 KEY TAKEAWAYS</p>
+      <div class="grid grid-cols-4 gap-3">
+        <p>1. Every REST API request needs 5 things: Base URL + Endpoint + HTTP Method + Headers + Payload. Missing any one → request fails. Always check the broker's documentation first.</p>
+        <p>2. JSON is the universal translator: json.dumps() converts Python dicts to JSON before sending, json.loads() converts JSON back to Python dicts after receiving. Never send raw Python dicts.</p>
+        <p>3. Use REST API for trading operations (orders, positions, PnL) and Web Sockets for live streaming data (prices, order updates). REST = synchronous, Web Sockets = asynchronous.</p>
+        <p>4. Build modular code: broker-specific functions in one file, strategy logic in another. To switch brokers, rewrite only the broker file. REST API is the de facto standard — same pattern works everywhere.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="mt-3 text-center text-gray-600 border-t-2 border-gray-300 pt-2">
+    <p><strong>THE MASTER FORMULA:</strong> response = requests.post(base_url + endpoint, headers=headers, data=json.dumps(payload)) → check response.status_code → parse json.loads(response.text) → use the data</p>
+    <p class="mt-1"><strong>THE ONE THING TO NEVER FORGET:</strong> REST API uses <em>synchronous</em> communication (request → wait → response). For live data streaming, use <em>Web Sockets</em> (subscribe once → broker pushes updates). And ALWAYS json.dumps() before sending, json.loads() after receiving.</p>
+  </footer>
+
+</body>
+</html>

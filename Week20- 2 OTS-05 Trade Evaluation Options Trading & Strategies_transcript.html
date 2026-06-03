@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OTS-05 Trade Evaluation — Hedging &amp; Trade Recognition</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @media print{
+    body{font-size:9px !important}
+    .page-break{page-break-before:always}
+    .no-print{display:none}
+  }
+  body{font-family:system-ui,-apple-system,sans-serif;font-size:11px}
+  pre{white-space:pre-wrap;word-wrap:break-word}
+</style>
+</head>
+<body class="bg-gray-50 text-gray-900 leading-tight">
+<div class="max-w-6xl mx-auto p-2">
+
+<!-- ─────────── HEADER ─────────── -->
+<div class="bg-gradient-to-r from-indigo-700 to-purple-700 text-white p-3 rounded-lg mb-2">
+  <div class="flex justify-between items-start">
+    <div>
+      <h1 class="text-lg font-bold leading-tight">OTS-05 Trade Evaluation — Hedging &amp; Trade Recognition</h1>
+      <p class="text-indigo-100 text-xs mt-0.5">Week 20-2 · Instructor: Varun Kumar · EPAT Lecture Series</p>
+    </div>
+    <div class="text-right text-xs text-indigo-200">
+      <div>Delta Bands · Whalley-Wilmott · Hedging Volatility</div>
+      <div>Expiration Mechanics · Performance Metrics</div>
+    </div>
+  </div>
+  <div class="mt-2 bg-indigo-900/40 rounded p-2 text-xs grid grid-cols-2 gap-2">
+    <div><span class="font-bold text-indigo-200">Problem:</span> Continuous delta hedging can make transaction costs extremely high, but not hedging leaves underlying-price noise inside volatility P&amp;L. How should you balance hedge frequency, volatility inputs, and trade evaluation?</div>
+    <div><span class="font-bold text-indigo-200">Goal:</span> Master the Whalley-Wilmott delta band approximation, understand implied vs realized hedging trade-offs, navigate expiration mechanics, and build a complete volatility trade evaluation framework from pre-trade expectations to post-trade analysis.</div>
+  </div>
+</div>
+
+<!-- ─────────── SECTION 1 — CORE EXAMPLE (AMBER) ─────────── -->
+<div class="border-l-4 border-amber-500 bg-amber-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-amber-800 text-sm mb-1">1 · Core Example — SPY Strangle Case Study: Plan → Trade → Evaluate</h2>
+  <div class="grid grid-cols-3 gap-2">
+    <div>
+      <p class="font-semibold text-amber-700 mb-0.5">WHAT — The Complete Workflow</p>
+      <p class="text-xs mb-1">Sell SPY options to capture variance premium (Implied Volatility &gt; Realized Volatility). Every step from OTS-04 and OTS-05 combined into one trade: choose expiry → structure position → calculate delta bands → forecast P&amp;L → execute → post-trade analysis.</p>
+      <p class="font-semibold text-amber-700 mb-0.5">Setup (June 3, 2019)</p>
+      <ul class="list-disc ml-3 space-y-0.5 text-xs">
+        <li><span class="font-bold">Expiry:</span> 1-month (Jun 20). Short-dated = higher vol. All three expiries had similar ATM IV (18.8%) → pick shortest</li>
+        <li><span class="font-bold">Structure:</span> Short strangle — sell 262 put + sell 286 call (SPY at 275). Sold for $3.09 each</li>
+        <li><span class="font-bold">Risk cap:</span> Bought 100 × 232 puts at 2-delta to limit crash risk (half-million loss → capped)</li>
+        <li><span class="font-bold">Hedging vol:</span> Average of VIX (14.1%) + GARCH (13.7%) = <span class="font-bold">13.9%</span></li>
+        <li><span class="font-bold">Delta bands:</span> Whalley-Wilmott with κ=0.24, λ from broker costs</li>
+      </ul>
+    </div>
+    <div>
+      <p class="font-semibold text-amber-700 mb-0.5">HOW — Expected vs Actual P&amp;L</p>
+      <p class="text-xs mb-1"><span class="font-bold">P&amp;L = Vega × (IV − RV)</span> applied per position:</p>
+      <table class="w-full text-xs border-collapse mb-1">
+        <tr class="bg-amber-200"><th class="border p-0.5">Metric</th><th class="border p-0.5">Value</th></tr>
+        <tr><td class="border p-0.5">Put IV</td><td class="border p-0.5">Noted from contract</td></tr>
+        <tr><td class="border p-0.5">Call IV</td><td class="border p-0.5">Noted from contract</td></tr>
+        <tr><td class="border p-0.5">Forecasted RV</td><td class="border p-0.5">13.9%</td></tr>
+        <tr><td class="border p-0.5 font-bold">Expected P&amp;L</td><td class="border p-0.5 font-bold">$16,900 ± $8,200</td></tr>
+        <tr><td class="border p-0.5">P&amp;L Range (1σ)</td><td class="border p-0.5">$8,700 to $25,100</td></tr>
+        <tr><td class="border p-0.5 font-bold">Actual P&amp;L</td><td class="border p-0.5 font-bold text-green-700">$24,218</td></tr>
+      </table>
+      <p class="text-xs">Actual within range but near upper end. Why? Realized vol crashed to <span class="font-bold">10.6%</span> (vs forecast 13.9%) + SPY rallied 275→293.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-amber-700 mb-0.5">WORKED EXAMPLE — Post-Trade Analysis</p>
+
+      <!-- VISUAL: Expected vs Actual P&L -->
+      <div class="bg-white border-2 border-amber-300 rounded p-2 mb-1">
+        <svg viewBox="0 0 500 100" class="w-full">
+          <text x="250" y="12" text-anchor="middle" font-size="7" font-weight="bold" fill="#92400e">EXPECTED P&amp;L RANGE vs ACTUAL RESULT</text>
+          <!-- Range bar -->
+          <rect x="80" y="30" width="340" height="25" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+          <!-- Forecast marker -->
+          <line x1="200" y1="28" x2="200" y2="57" stroke="#3b82f6" stroke-width="2"/>
+          <text x="200" y="68" text-anchor="middle" font-size="6" font-weight="bold" fill="#3b82f6">Forecast: $16.9K</text>
+          <text x="200" y="76" text-anchor="middle" font-size="5" fill="#3b82f6">(RV=13.9%)</text>
+          <!-- Low end -->
+          <text x="80" y="68" text-anchor="middle" font-size="6" fill="#6b7280">$8.7K</text>
+          <!-- High end -->
+          <text x="420" y="68" text-anchor="middle" font-size="6" fill="#6b7280">$28.7K</text>
+          <!-- Drift-adjusted -->
+          <line x1="255" y1="28" x2="255" y2="57" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="3"/>
+          <text x="255" y="76" text-anchor="middle" font-size="5" fill="#7c3aed">Drift-adj: $20.1K</text>
+          <!-- Actual result marker -->
+          <circle cx="370" cy="42" r="7" fill="#16a34a" stroke="#fff" stroke-width="1.5"/>
+          <text x="370" y="45" text-anchor="middle" font-size="6" font-weight="bold" fill="#fff">✓</text>
+          <text x="370" y="85" text-anchor="middle" font-size="7" font-weight="bold" fill="#16a34a">ACTUAL: $24.2K</text>
+          <text x="370" y="93" text-anchor="middle" font-size="5" fill="#16a34a">(RV crashed to 10.6%)</text>
+        </svg>
+      </div>
+
+      <table class="w-full text-xs border-collapse mb-1">
+        <tr class="bg-amber-200"><th class="border p-0.5">Scenario</th><th class="border p-0.5">Expected P&amp;L</th></tr>
+        <tr><td class="border p-0.5">With forecast RV=13.9%</td><td class="border p-0.5">$16,900</td></tr>
+        <tr><td class="border p-0.5">Had known RV=10.6%</td><td class="border p-0.5">$28,700</td></tr>
+        <tr><td class="border p-0.5">With drift adjustment</td><td class="border p-0.5">$20,100 (closer!)</td></tr>
+        <tr><td class="border p-0.5 font-bold">Actual outcome</td><td class="border p-0.5 font-bold">$24,218</td></tr>
+      </table>
+      <p class="text-xs"><span class="font-bold">Lessons:</span> (1) Vol crashed harder than forecast → higher profit. (2) SPY rallied (drift) → had we biased lower, expectation would be closer. (3) Profit ≠ good analysis. Always ask: WHY did results deviate? What could improve the forecast?</p>
+      <p class="mt-1 text-xs"><span class="font-bold text-amber-700">GOTCHA:</span> Since it was profitable, it's tempting to celebrate. But the forecast was off — we got lucky that vol crashed further. If it had spiked instead, losses would exceed expectations similarly.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── SECTION 2 — DELTA HEDGING PROBLEM (BLUE) ─────────── -->
+<div class="border-l-4 border-blue-500 bg-blue-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-blue-800 text-sm mb-1">2 · The Delta Hedging Problem — Why, What Goes Wrong, and Approaches</h2>
+  <div class="grid grid-cols-3 gap-2">
+    <div>
+      <p class="font-semibold text-blue-700 mb-0.5">WHAT — Why Delta Hedge?</p>
+      <p class="text-xs mb-1">Premium has two major drivers: <span class="font-bold">volatility</span> + <span class="font-bold">underlying price</span>. To capture pure volatility alpha, you must mask the price impact.</p>
+      <p class="text-xs mb-1"><span class="font-bold">Opening:</span> premium = f(implied volatility). <span class="font-bold">Closing at expiry:</span> settlement = f(realized volatility). Your P&amp;L captures the difference between IV and RV.</p>
+      <p class="text-xs"><span class="font-bold">Basic hedge:</span> If you have a call with delta=0.56, sell 0.56 shares → positional delta=0. If stock moves, delta changes to 0.68 → sell 0.12 more shares. Repeat continuously.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-blue-700 mb-0.5">WHY — Continuous Hedging Fails</p>
+      <ul class="list-disc ml-3 space-y-0.5 text-xs">
+        <li><span class="font-bold">Transaction costs can explode:</span> every tick may require rehedging</li>
+        <li><span class="font-bold">Slippage:</span> can't always buy/sell at exact price assumed</li>
+        <li><span class="font-bold">P&amp;L contamination:</span> costs eat into volatility profits</li>
+        <li>Simulation result: on average some profit, but <span class="font-bold">median = −$27</span> (50% of trades lose money)</li>
+        <li><span class="font-bold">P&amp;L benchmark:</span> Vega×(IV−RV) is the average intuition, but real hedging costs and slippage matter</li>
+      </ul>
+      <p class="mt-1 text-xs"><span class="font-bold">Core tension:</span> You hedge to isolate volatility, but hedging itself is costly. The lecture's goal is a practical compromise rather than perfect continuous hedging.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-blue-700 mb-0.5">HOW — Three Hedging Approaches</p>
+      <table class="w-full text-xs border-collapse">
+        <tr class="bg-blue-200"><th class="border p-0.5">Approach</th><th class="border p-0.5">Method</th><th class="border p-0.5">Issue</th></tr>
+        <tr><td class="border p-0.5 font-bold">Time-based</td><td class="border p-0.5">Hedge once/week or every N days</td><td class="border p-0.5">Risk of imbalance between hedges</td></tr>
+        <tr><td class="border p-0.5 font-bold">Price-based</td><td class="border p-0.5">Hedge every N std devs of price</td><td class="border p-0.5">$10 move ≠ same for $1000 vs $1 stock</td></tr>
+        <tr><td class="border p-0.5 font-bold">Delta-based</td><td class="border p-0.5">Hedge when delta exits a band</td><td class="border p-0.5">Most fundamental — uses delta itself ✓</td></tr>
+      </table>
+      <p class="mt-1 text-xs"><span class="font-bold">Preferred route in the lecture:</span> Delta bands. Instead of targeting delta=0, define a <em>range</em> (e.g., 0.4 to 0.6). Then hedge when delta exits the band. This is presented as a cost-aware compromise.</p>
+      <p class="mt-1 text-xs"><span class="font-bold">TERMINOLOGY:</span> <em>Dynamic hedging</em> = continuously adjusting hedge. <em>Discontinuous hedging</em> = hedging at intervals or thresholds. <em>Pin risk</em> = uncertainty near strike at expiry.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── SECTION 3 — WHALLEY-WILMOTT (GREEN) ─────────── -->
+<div class="border-l-4 border-green-500 bg-green-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-green-800 text-sm mb-1">3 · Whalley-Wilmott Approximation — Calculating Delta Bands</h2>
+  <div class="grid grid-cols-3 gap-2">
+    <div>
+      <p class="font-semibold text-green-700 mb-0.5">WHAT — The Equation</p>
+      <p class="text-xs mb-1">A utility-based method that outputs TWO delta values (upper and lower band):</p>
+      <div class="bg-green-100 p-1 rounded text-xs font-mono mb-1">
+        Band = dV/dS ± √(3/2 × e<sup>−r(T−t)</sup> × λ × S × Γ² / κ)
+      </div>
+      <table class="w-full text-xs border-collapse">
+        <tr><td class="border p-0.5 font-bold">dV/dS</td><td class="border p-0.5">Position delta (the Greek)</td></tr>
+        <tr><td class="border p-0.5 font-bold">r</td><td class="border p-0.5">Interest rate (per annum)</td></tr>
+        <tr><td class="border p-0.5 font-bold">T−t</td><td class="border p-0.5">Days to expiry</td></tr>
+        <tr><td class="border p-0.5 font-bold">λ (lambda)</td><td class="border p-0.5">Proportional transaction cost</td></tr>
+        <tr><td class="border p-0.5 font-bold">S</td><td class="border p-0.5">Underlying price</td></tr>
+        <tr><td class="border p-0.5 font-bold">Γ (gamma)</td><td class="border p-0.5">Rate of delta change (squared!)</td></tr>
+        <tr><td class="border p-0.5 font-bold">κ (kappa)</td><td class="border p-0.5">Risk aversion metric (YOU)</td></tr>
+      </table>
+    </div>
+    <div>
+      <p class="font-semibold text-green-700 mb-0.5">WHY — Each Term Matters</p>
+
+      <!-- VISUAL: Whalley-Wilmott Delta Bands -->
+      <div class="bg-white border-2 border-green-300 rounded p-2 mb-2">
+        <svg viewBox="0 0 500 170" class="w-full">
+          <text x="250" y="14" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">WHALLEY-WILMOTT DELTA BANDS — Hedge Only When Delta Crosses Band</text>
+          <!-- Axes -->
+          <line x1="50" y1="145" x2="470" y2="145" stroke="#6b7280" stroke-width="1"/>
+          <text x="260" y="160" text-anchor="middle" font-size="6" fill="#6b7280">Time →</text>
+          <text x="15" y="85" font-size="6" fill="#6b7280" transform="rotate(-90,15,85)">Delta</text>
+          <!-- BSM Delta (center line) -->
+          <polyline points="60,80 100,75 140,70 180,65 220,68 260,72 300,65 340,60 380,55 420,50 460,48" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4" fill="none"/>
+          <text x="465" y="45" font-size="5" fill="#3b82f6">BSM Δ</text>
+          <!-- Upper band -->
+          <polyline points="60,60 100,55 140,50 180,45 220,48 260,52 300,45 340,40 380,35 420,30 460,28" stroke="#f59e0b" stroke-width="1" fill="none"/>
+          <text x="465" y="25" font-size="5" fill="#f59e0b">Upper</text>
+          <!-- Lower band -->
+          <polyline points="60,100 100,95 140,90 180,85 220,88 260,92 300,85 340,80 380,75 420,70 460,68" stroke="#f59e0b" stroke-width="1" fill="none"/>
+          <text x="465" y="72" font-size="5" fill="#f59e0b">Lower</text>
+          <!-- Band fill -->
+          <polygon points="60,60 100,55 140,50 180,45 220,48 260,52 300,45 340,40 380,35 420,30 460,28 460,68 420,70 380,75 340,80 300,85 260,92 220,88 180,85 140,90 100,95 60,100" fill="#fef3c7" opacity="0.3"/>
+          <!-- Actual portfolio delta -->
+          <polyline points="60,80 100,78 140,72 180,55 200,48 220,50 260,70 300,68 340,62 380,40 400,38 420,52 460,48" stroke="#1e293b" stroke-width="2" fill="none"/>
+          <!-- Rehedge points (where delta crosses band) -->
+          <circle cx="180" cy="55" r="5" fill="#dc2626" opacity="0.8"/>
+          <text x="170" y="42" font-size="5" font-weight="bold" fill="#dc2626">REHEDGE!</text>
+          <circle cx="380" cy="40" r="5" fill="#dc2626" opacity="0.8"/>
+          <text x="370" y="30" font-size="5" font-weight="bold" fill="#dc2626">REHEDGE!</text>
+          <!-- No-trade zone label -->
+          <text x="260" y="110" text-anchor="middle" font-size="6" fill="#92400e" font-weight="bold">NO-TRADE ZONE (save transaction costs)</text>
+          <!-- Legend -->
+          <rect x="60" y="125" width="8" height="5" fill="#1e293b"/><text x="72" y="130" font-size="5">Actual Δ</text>
+          <rect x="140" y="125" width="8" height="5" fill="#3b82f6"/><text x="152" y="130" font-size="5">BSM Δ (target)</text>
+          <rect x="240" y="125" width="8" height="5" fill="#fef3c7" stroke="#f59e0b"/><text x="252" y="130" font-size="5">W-W Band (tolerance)</text>
+          <circle cx="340" cy="128" r="3" fill="#dc2626"/><text x="348" y="130" font-size="5">Rehedge trigger</text>
+        </svg>
+      </div>
+
+      <ul class="list-disc ml-3 space-y-0.5 text-xs">
+        <li><span class="font-bold">Delta (dV/dS):</span> Center of the band — what you're hedging around</li>
+        <li><span class="font-bold">Time (T−t):</span> Band narrows as expiry approaches (theta decay → more sensitive)</li>
+        <li><span class="font-bold">Lambda (λ):</span> Higher transaction cost → wider bands needed (hedge less often to save costs)</li>
+        <li><span class="font-bold">Gamma (Γ²):</span> PRIMARY DRIVER. High gamma → delta changes fast → bands adjust. Gamma is squared because it's the most impactful variable</li>
+        <li><span class="font-bold">Kappa (κ):</span> YOUR personality. Risk-averse → low κ → narrow bands → hedge more → higher cost. Risk-tolerant → high κ → wider bands → hedge less → lower cost</li>
+      </ul>
+      <p class="mt-1 text-xs"><span class="font-bold">Narrow bands:</span> More hedging, higher cost, less risk exposure. <span class="font-bold">Wider bands:</span> Less hedging, lower cost, more risk tolerance.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-green-700 mb-0.5">WORKED EXAMPLE — Calibrating λ and κ</p>
+      <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# Lambda (proportional transaction cost):
+# Trading Apple at $130, cost = $1
+lambda_aapl = 1 / 130        # = 0.0077
+
+# Trading SPY index at $100, cost = $0.05
+lambda_spy = 0.05 / 100      # = 0.0005
+
+# Kappa (risk aversion — from YOUR experience):
+# "I'm comfortable not hedging if delta &lt; 0.3"
+# Substitute delta=0.3 + known values into
+# Whalley-Wilmott equation → solve for kappa
+# Example result: kappa = 0.24
+# This kappa is YOURS — reuse it as a starting point for similar contracts
+
+# Reading the bands:
+# If call delta = 0.4, bands = [0.35, 0.45]
+#   → position delta is 0.38
+#   → 0.38 is WITHIN [0.35, 0.45]
+#   → NO hedge needed (save costs!)
+# If delta moves to 0.48 (outside upper band)
+#   → HEDGE: bring delta back within bands
+#   → Don't need to bring to zero!</pre>
+      <p class="mt-1 text-xs"><span class="font-bold text-green-700">GOTCHA:</span> Without delta bands you aim for delta=0 every time, which makes hedging expensive. With delta bands, you accept a range and typically hedge when delta exits that band.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE BREAK 1 ═══════════ -->
+<div class="page-break"></div>
+
+<!-- ─────────── SECTION 4 — HEDGING VOLATILITY CHOICE (ORANGE) ─────────── -->
+<div class="border-l-4 border-orange-500 bg-orange-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-orange-800 text-sm mb-1">4 · Choosing Hedging Volatility — Implied vs Realized</h2>
+  <div class="grid grid-cols-3 gap-2">
+    <div>
+      <p class="font-semibold text-orange-700 mb-0.5">WHAT — The Two Options</p>
+      <p class="text-xs mb-1">When calculating delta, gamma, and bands for hedging — which volatility do you plug in?</p>
+      <table class="w-full text-xs border-collapse">
+        <tr class="bg-orange-200"><th class="border p-0.5">Input</th><th class="border p-0.5">Implied Vol</th><th class="border p-0.5">Realized Vol</th></tr>
+        <tr><td class="border p-0.5 font-bold">MTM Variance</td><td class="border p-0.5 text-green-700">LOW ✓</td><td class="border p-0.5 text-red-700">HIGH ✗</td></tr>
+        <tr><td class="border p-0.5 font-bold">Final P&amp;L Accuracy</td><td class="border p-0.5 text-red-700">UNCERTAIN ✗</td><td class="border p-0.5 text-green-700">ACCURATE ✓</td></tr>
+        <tr><td class="border p-0.5 font-bold">Daily Std Dev</td><td class="border p-0.5">$100</td><td class="border p-0.5">$231</td></tr>
+        <tr><td class="border p-0.5 font-bold">Final Std Dev</td><td class="border p-0.5">$4,460</td><td class="border p-0.5">Much less</td></tr>
+      </table>
+      <p class="mt-1 text-xs"><span class="font-bold">Can't know RV until expiry</span> → use forecast (GARCH or VIX) as proxy for realized vol.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-orange-700 mb-0.5">WHY — Monte Carlo Evidence</p>
+      <p class="text-xs mb-1"><span class="font-bold">Hedge at IV (40%):</span> Monte Carlo shows final P&amp;L ranging $2K–$18K across simulations. Wide scatter — you can't predict where it lands.</p>
+      <p class="text-xs mb-1"><span class="font-bold">Hedge at RV (30%):</span> Most simulations cluster around $8K. Narrow scatter — final P&amp;L is predictable.</p>
+      <p class="text-xs mb-1"><span class="font-bold">But daily view flips:</span> using IV, each day's P&amp;L is smooth. Using RV, daily P&amp;L is volatile (day 150 might show $8K profit or a loss).</p>
+      <p class="text-xs"><span class="font-bold">Decision framework:</span></p>
+      <ul class="list-disc ml-3 text-xs">
+        <li>Care about <em>daily MTM</em> (risk management, margin) → use <span class="font-bold">implied vol</span></li>
+        <li>Care about <em>final outcome</em> (profit target, edge validation) → use <span class="font-bold">realized/forecasted vol</span></li>
+      </ul>
+    </div>
+    <div>
+      <p class="font-semibold text-orange-700 mb-0.5">WORKED EXAMPLE — Greeks with Python</p>
+      <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# Calculate Greeks using a pricing library
+import mibian                    # options pricing library
+
+# Inputs: stock=100, strike=105, rate=5%,
+#   days_to_expiry=30, volatility=30%, type=call
+c = mibian.BS(
+    [100, 105, 5, 30],           # [S, K, r, DTE]
+    volatility=30                 # which vol to use?
+)
+# If hedging for daily accuracy → use IV (market)
+# If hedging for final P&amp;L → use forecast (GARCH)
+
+print(c.callDelta)               # delta value
+print(c.gamma)                   # gamma value
+print(c.callTheta)               # theta
+print(c.vega)                    # vega
+print(c.rho)                     # rho
+
+# KEY: delta &amp; gamma change with vol input!
+# IV=30% → delta=0.38
+# RV=25% → delta=0.35 (different bands!)
+# Stick to ONE methodology for entire trade</pre>
+      <p class="mt-1 text-xs"><span class="font-bold text-orange-700">GOTCHA:</span> Switching between IV and RV mid-trade invalidates your analysis. Pick one approach at entry and stick with it until exit.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── SECTION 5 — HEDGING FREQUENCY & DRIFT (PURPLE) ─────────── -->
+<div class="border-l-4 border-purple-500 bg-purple-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-purple-800 text-sm mb-1">5 · Hedging Frequency &amp; Drift Adjustment</h2>
+  <div class="grid grid-cols-3 gap-2">
+    <div>
+      <p class="font-semibold text-purple-700 mb-0.5">WHAT — How Many Times to Hedge?</p>
+      <p class="text-xs mb-1"><span class="font-bold">Dispersion ∝ 1/√(number of hedges)</span></p>
+      <p class="text-xs mb-1">More hedges → more accurate P&amp;L prediction (dispersion between theoretical and actual P&amp;L decreases). But costs increase linearly.</p>
+      <p class="text-xs mb-1"><span class="font-bold">Elbow curve:</span> Plot dispersion vs number of hedges. 0→50 hedges: sharp accuracy gain. 50→100: diminishing returns. Find the "elbow" — that's your cap.</p>
+      <p class="text-xs">Same concept as K-Means inertia elbow — utility drops after optimal point. Additional hedges cost more than the accuracy they buy.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-purple-700 mb-0.5">WHAT — Drift / Trend Adjustment</p>
+      <p class="text-xs mb-1">Black-Scholes (BSM) assumes no drift — only considers current price, not trend direction. This creates a flaw when markets trend strongly.</p>
+      <table class="w-full text-xs border-collapse mb-1">
+        <tr class="bg-purple-200"><th class="border p-0.5">Position</th><th class="border p-0.5">Market</th><th class="border p-0.5">Vol Bias</th></tr>
+        <tr><td class="border p-0.5">Short gamma</td><td class="border p-0.5">Trending up ↑</td><td class="border p-0.5 font-bold">LOW</td></tr>
+        <tr><td class="border p-0.5">Short gamma</td><td class="border p-0.5">Trending down ↓</td><td class="border p-0.5 font-bold">HIGH</td></tr>
+        <tr><td class="border p-0.5">Long gamma</td><td class="border p-0.5">Trending up ↑</td><td class="border p-0.5 font-bold">HIGH</td></tr>
+        <tr><td class="border p-0.5">Long gamma</td><td class="border p-0.5">Trending down ↓</td><td class="border p-0.5 font-bold">LOW</td></tr>
+      </table>
+      <p class="text-xs"><span class="font-bold">Practical meaning:</span> If shorting vol in a bull market, don't sell at current price — wait for higher entry. Bias your volatility input LOWER to account for the upward drift BSM ignores.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-purple-700 mb-0.5">WORKED EXAMPLE — Drift in SPY Case</p>
+      <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# SPY case study — drift impact:
+# Model said: short at premium = $282.92
+# Market was trending UP strongly
+
+# Without drift consideration:
+# → Shorted at $282.92 (current price)
+# → Expected P&amp;L = $16,900
+
+# With drift consideration:
+# → Waited for higher entry (limit order ~$300)
+# → Or biased vol input LOWER
+# → Expected P&amp;L = $20,100 (closer to actual)
+
+# Actual: SPY rallied 275 → 293
+# If we had waited, entry would be better
+
+# Path dependency:
+# Options P&amp;L depends on the PATH price takes
+# Same start+end but different path = different P&amp;L
+# A single backtest = single path (unreliable)
+# Use Monte Carlo: simulate MANY paths
+# → Average across paths for robust expectation</pre>
+      <p class="mt-1 text-xs"><span class="font-bold text-purple-700">GOTCHA:</span> Path dependency means even rigorous backtests show only one possible outcome. A 1% change in volatility or price can produce a meaningfully different premium path. Ideally, simulate multiple scenarios.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── SECTION 6 — EXPIRATION MECHANICS (TEAL) ─────────── -->
+<div class="border-l-4 border-teal-500 bg-teal-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-teal-800 text-sm mb-1">6 · Expiration Mechanics — Pinning, Early Exercise, Settlement</h2>
+  <div class="grid grid-cols-3 gap-2">
+    <div>
+      <p class="font-semibold text-teal-700 mb-0.5">WHAT — Expiration Day Behaviors</p>
+      <ul class="list-disc ml-3 space-y-0.5 text-xs">
+        <li>Many out-of-the-money options end up effectively <span class="font-bold">worthless</span> at expiry</li>
+        <li>In-the-money (ITM) options → delta ≈ 1 (moves like underlying stock)</li>
+        <li>Greeks look "weird" — extreme values near expiry (normal, not a bug)</li>
+        <li>Delta can jump 10-20× in final minutes — not useful for decision-making</li>
+      </ul>
+      <p class="mt-1 font-semibold text-teal-700 mb-0.5">Pinning Pattern</p>
+      <p class="text-xs">On expiry day, the underlying often tends to settle <span class="font-bold">near a strike price</span> more than random chance would suggest. Example: Nifty trading at 25,571 may close nearer 25,550 or 25,600 than exactly 25,571. Useful data point for timing exits.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-teal-700 mb-0.5">HOW — Early Exercise Decision (American Options)</p>
+      <p class="text-xs mb-1"><span class="font-bold">Rule:</span> Exercise early if what you gain &gt; what you lose (time value + opportunity cost).</p>
+      <p class="font-semibold text-teal-700 mb-0.5">Example — Call + Dividend:</p>
+      <table class="w-full text-xs border-collapse mb-1">
+        <tr class="bg-teal-200"><th class="border p-0.5">Scenario</th><th class="border p-0.5">Value</th></tr>
+        <tr><td class="border p-0.5">80-strike call on $100 stock</td><td class="border p-0.5">Premium = $20.10</td></tr>
+        <tr><td class="border p-0.5">Intrinsic value</td><td class="border p-0.5">$20.00</td></tr>
+        <tr><td class="border p-0.5">Extrinsic (time) value</td><td class="border p-0.5">$0.10</td></tr>
+        <tr><td class="border p-0.5">Upcoming dividend</td><td class="border p-0.5">$1.00</td></tr>
+        <tr><td class="border p-0.5 font-bold">Exercise → get</td><td class="border p-0.5 font-bold">$19 + $1 div = $20</td></tr>
+        <tr><td class="border p-0.5 font-bold">Hold → get</td><td class="border p-0.5 font-bold">$19.10 (price drops by $1)</td></tr>
+      </table>
+      <p class="text-xs"><span class="font-bold">Decision:</span> In this example, dividend ($1) &gt; extrinsic ($0.10), so early exercise makes more sense than holding. Practical rule of thumb: compare <span class="font-bold">dividend</span> with remaining <span class="font-bold">time value</span>.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-teal-700 mb-0.5">Cash vs Physical Settlement</p>
+      <table class="w-full text-xs border-collapse mb-1">
+        <tr class="bg-teal-200"><th class="border p-0.5">Type</th><th class="border p-0.5">What Happens</th><th class="border p-0.5">Risk</th></tr>
+        <tr><td class="border p-0.5 font-bold">Cash</td><td class="border p-0.5">Get $difference in account</td><td class="border p-0.5">None — position closed</td></tr>
+        <tr><td class="border p-0.5 font-bold">Physical (Stock)</td><td class="border p-0.5">Stock delivered to demat</td><td class="border p-0.5">Leaves overnight risk unless you later sell it</td></tr>
+        <tr><td class="border p-0.5 font-bold">Physical (Commodity)</td><td class="border p-0.5">Inventory delivered/warehoused</td><td class="border p-0.5">Shipping charges + warehouse rent!</td></tr>
+      </table>
+      <p class="text-xs mt-1">Most retail exchanges: cash settled. But commodity exchanges may physically deliver — traders have been surprised by warehouse charges appearing in their ledger.</p>
+      <p class="mt-1 text-xs"><span class="font-bold">European options:</span> Cannot exercise early. Only close by taking opposite position (sell call to cancel long call) or wait for expiry settlement.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── SECTION 7 — TRADE EVALUATION (CYAN) ─────────── -->
+<div class="border-l-4 border-cyan-500 bg-cyan-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-cyan-800 text-sm mb-1">7 · Trade Evaluation Framework — Performance Metrics &amp; Analysis</h2>
+  <div class="grid grid-cols-3 gap-2">
+    <div>
+      <p class="font-semibold text-cyan-700 mb-0.5">WHAT — Common Mistakes</p>
+      <ul class="list-disc ml-3 space-y-0.5 text-xs">
+        <li><span class="font-bold text-red-600">WRONG:</span> Judging by cumulative returns alone</li>
+        <li><span class="font-bold text-red-600">WRONG:</span> Validating by a single trade outcome</li>
+        <li><span class="font-bold text-red-600">WRONG:</span> Comparing Sharpe ratio of a vol strategy vs momentum strategy</li>
+        <li><span class="font-bold text-red-600">WRONG:</span> Using same entry/exit metrics for evaluation</li>
+      </ul>
+      <p class="mt-1 text-xs"><span class="font-bold">What a good equity curve looks like:</span> Trends UP consistently. Limited time below zero. Quick recovery from drawdowns. Consistent profit per trade — not a few big wins followed by big losses.</p>
+      <p class="mt-1 text-xs"><span class="font-bold">Minimum:</span> Aim for <span class="font-bold">roughly 100 or more trades</span> when judging a strategy statistically. Maintain a trade journal, whether manual or automated.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-cyan-700 mb-0.5">HOW — Performance Metrics</p>
+      <table class="w-full text-xs border-collapse">
+        <tr class="bg-cyan-200"><th class="border p-0.5">Ratio</th><th class="border p-0.5">Formula</th><th class="border p-0.5">Risk Defined As</th></tr>
+        <tr><td class="border p-0.5 font-bold">Sharpe</td><td class="border p-0.5">(R̄ − Rf) / σ</td><td class="border p-0.5">Std dev of ALL returns</td></tr>
+        <tr><td class="border p-0.5 font-bold">Sortino</td><td class="border p-0.5">(R̄ − Rf) / σ_down</td><td class="border p-0.5">Std dev of LOSSES only</td></tr>
+        <tr><td class="border p-0.5 font-bold">Calmar</td><td class="border p-0.5">Return / Max DD</td><td class="border p-0.5">Maximum drawdown</td></tr>
+        <tr><td class="border p-0.5 font-bold">Sterling</td><td class="border p-0.5">Return / Avg(3 worst DDs)</td><td class="border p-0.5">Average of 3 largest drawdowns</td></tr>
+      </table>
+      <p class="mt-1 text-xs"><span class="font-bold">Sharpe flaw:</span> Penalizes large UP moves equally as down moves. Strategy with returns [4%, 10%, 40%, 80%, 2%] has BAD Sharpe (high σ) despite being hugely profitable.</p>
+      <p class="mt-1 text-xs"><span class="font-bold">For vol strategies:</span> "If IV changes by X%, how much alpha do I capture?" is better than Sharpe.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-cyan-700 mb-0.5">WORKED EXAMPLE — Multi-Dimensional Analysis</p>
+      <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# Compare two strategies:
+# Strategy A: profit/year=$50K, win rate=30%
+#   Win avg=$4, Loss avg=$1 → high risk/reward
+# Strategy B: profit/year=$20K, win rate=90%
+#   Win avg=$1, Loss avg=$8 → dangerous!
+
+# Single metric → misleading
+# Multi-dimensional evaluation:
+
+# 1. Regime analysis:
+#   Bull market: which performs better?
+#   Bear market: which has smaller drawdown?
+#   Range-bound: which generates more signals?
+#   High-vol: which survives?
+
+# 2. Evaluate strengths/weaknesses:
+#   If momentum strategy → expect loss in range
+#   If vol strategy → measure by IV edge, not Sharpe
+
+# 3. Backtest ≠ Live results because:
+#   - Slippage (can't buy at exact backtest price)
+#   - Alpha decay (others deploy same strategy)
+#   - Path dependency (single path ≠ all paths)
+
+# 4. Journal metrics to track:
+#   - Trade frequency per month
+#   - Average P&amp;L per trade
+#   - Win rate &amp; win/loss ratio
+#   - Max drawdown &amp; recovery time</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE BREAK 2 ═══════════ -->
+<div class="page-break"></div>
+
+<!-- ─────────── SECTION 8 — PRACTICAL WISDOM (RED) ─────────── -->
+<div class="border-l-4 border-red-500 bg-red-50 p-2 rounded-r mb-2">
+  <h2 class="font-bold text-red-800 text-sm mb-1">8 · Volatility Trading Process &amp; Practical Wisdom</h2>
+  <div class="grid grid-cols-3 gap-2">
+    <div>
+      <p class="font-semibold text-red-700 mb-0.5">WHAT — The Complete Volatility Trade Process</p>
+      <ol class="list-decimal ml-3 space-y-0.5 text-xs">
+        <li><span class="font-bold">Select expiration:</span> Short-dated → higher vol. Compare ATM IV across expiries</li>
+        <li><span class="font-bold">Choose structure:</span> Straddle (simpler, higher cost) or strangle (wider range, lower cost). Add protective legs to cap tail risk</li>
+        <li><span class="font-bold">Calculate delta bands:</span> Whalley-Wilmott with your κ (risk aversion) and λ (transaction cost)</li>
+        <li><span class="font-bold">Choose hedging vol:</span> IV (for daily accuracy) or RV/forecast (for final P&amp;L accuracy)</li>
+        <li><span class="font-bold">Consider drift:</span> Bias vol input based on market trend direction</li>
+        <li><span class="font-bold">Calculate expected P&amp;L:</span> Use Vega×(IV−RV) PER position. Express as average ± std dev, NOT a single number</li>
+        <li><span class="font-bold">Execute &amp; hedge:</span> Typically hedge when delta exits bands. Cap total hedges near the elbow point from your analysis</li>
+        <li><span class="font-bold">Post-trade analysis:</span> Compare actual vs expected. Find WHY deviation occurred. Improve forecasts</li>
+      </ol>
+    </div>
+    <div>
+      <p class="font-semibold text-red-700 mb-0.5">WHY — Key Wisdom from Varun</p>
+      <ul class="list-disc ml-3 space-y-0.5 text-xs">
+        <li>"Hard-earned profits are lost by very few <span class="font-bold">uncontrolled risks</span>." Control risk &gt; maximize profit</li>
+        <li>"Treat trading as a <span class="font-bold">business</span>, not a single trade or single week." Look at quarters and years</li>
+        <li>"Find an <span class="font-bold">edge</span>. Don't judge if it's extremely profitable. Simple and stupid can work if statistically sound"</li>
+        <li>"You don't get paid to be an <span class="font-bold">all-rounder</span>." Specialize in your market regime</li>
+        <li>"It's okay to <span class="font-bold">forego a risky trade</span> than to get held in a risky trade and try to optimize it"</li>
+        <li>Edge <span class="font-bold">convergence</span>: strategy may deviate for months but converge to average over time. Give enough time</li>
+        <li>AI/ML models often work for ~6 months then stop. But some converge back — don't abandon too early</li>
+      </ul>
+      <p class="mt-1 text-xs"><span class="font-bold">Varun's personal practice:</span> Journaled every hour since 2015 (now automated with agents/LLMs). Runs multiple ML models — evaluates each in bull/bear/high-vol regimes separately before going live.</p>
+    </div>
+    <div>
+      <p class="font-semibold text-red-700 mb-0.5">WORKED EXAMPLE — Idea → Trade → Strategy</p>
+      <pre class="bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
+# Three distinct levels:
+# IDEA: "I see big orders every 20-30s in bullish LME"
+#   → Just a hypothesis, NOT a trade
+
+# TRADE: Substantiate with analysis
+#   → When does pattern occur? (expiry day only?)
+#   → What's the win rate over 100+ occurrences?
+#   → Backtest with slippage included
+
+# STRATEGY: Complete risk framework
+#   → What if pattern breaks?
+#   → Entry rules, exit rules, position sizing
+#   → Performance in different market regimes
+#   → Expected P&amp;L as range (avg ± std dev)
+#   → Post-trade review process
+
+# Expected P&amp;L should NEVER be a single number:
+expected_pnl = 16900          # average
+std_dev = 8200                # uncertainty
+range_low = expected_pnl - std_dev   # $8,700
+range_high = expected_pnl + std_dev  # $25,100
+# "I expect $8,700 to $25,100" — NOT "$16,900"</pre>
+      <p class="mt-1 text-xs"><span class="font-bold text-red-700">GOTCHA:</span> A profitable trade doesn't mean good analysis. The SPY case made $24K but forecast was $16.9K — we were wrong by 43%. Post-trade analysis reveals improvement opportunities that single P&amp;L numbers hide.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── QUICK REFERENCE (GRAY) ─────────── -->
+<div class="bg-gray-100 border border-gray-300 p-2 rounded mb-2">
+  <h2 class="font-bold text-gray-700 text-sm mb-1">Quick Reference — Key Equations &amp; Decisions</h2>
+  <div class="grid grid-cols-3 gap-2 text-xs">
+    <div>
+      <p class="font-semibold mb-0.5">Delta Hedging Essentials</p>
+      <table class="w-full border-collapse">
+        <tr><td class="border p-0.5 font-bold">P&amp;L equation</td><td class="border p-0.5">Vega × (IV − RV)</td></tr>
+        <tr><td class="border p-0.5 font-bold">Delta bands</td><td class="border p-0.5">dV/dS ± √(3/2 × e⁻ʳᵀ × λSΓ²/κ)</td></tr>
+        <tr><td class="border p-0.5 font-bold">λ (lambda)</td><td class="border p-0.5">Transaction cost / underlying price</td></tr>
+        <tr><td class="border p-0.5 font-bold">κ (kappa)</td><td class="border p-0.5">Risk aversion (calibrate once, reuse)</td></tr>
+        <tr><td class="border p-0.5 font-bold">Primary driver</td><td class="border p-0.5">Gamma (Γ²) — most impactful term</td></tr>
+        <tr><td class="border p-0.5 font-bold">Dispersion</td><td class="border p-0.5">∝ 1/√(number of hedges)</td></tr>
+      </table>
+    </div>
+    <div>
+      <p class="font-semibold mb-0.5">Hedging Vol Decision Matrix</p>
+      <table class="w-full border-collapse">
+        <tr><td class="border p-0.5 font-bold">Care about daily MTM</td><td class="border p-0.5">Use Implied Vol</td></tr>
+        <tr><td class="border p-0.5 font-bold">Care about final P&amp;L</td><td class="border p-0.5">Use Realized/Forecast Vol</td></tr>
+        <tr><td class="border p-0.5 font-bold">Short γ + bull trend</td><td class="border p-0.5">Bias vol LOW</td></tr>
+        <tr><td class="border p-0.5 font-bold">Short γ + bear trend</td><td class="border p-0.5">Bias vol HIGH</td></tr>
+        <tr><td class="border p-0.5 font-bold">Narrow bands</td><td class="border p-0.5">Risk-averse, higher cost</td></tr>
+        <tr><td class="border p-0.5 font-bold">Wider bands</td><td class="border p-0.5">Risk-tolerant, lower cost</td></tr>
+      </table>
+    </div>
+    <div>
+      <p class="font-semibold mb-0.5">Performance Ratios</p>
+      <table class="w-full border-collapse">
+        <tr><td class="border p-0.5 font-bold">Sharpe</td><td class="border p-0.5">(R̄ − Rf) / σ_all</td></tr>
+        <tr><td class="border p-0.5 font-bold">Sortino</td><td class="border p-0.5">(R̄ − Rf) / σ_downside</td></tr>
+        <tr><td class="border p-0.5 font-bold">Calmar</td><td class="border p-0.5">Return / Max Drawdown</td></tr>
+        <tr><td class="border p-0.5 font-bold">Sterling</td><td class="border p-0.5">Return / Avg(3 worst DDs)</td></tr>
+        <tr><td class="border p-0.5 font-bold">Exercise rule</td><td class="border p-0.5">Dividend &gt; time value → exercise</td></tr>
+        <tr><td class="border p-0.5 font-bold">Settlement</td><td class="border p-0.5">Cash (difference) or Physical (delivery)</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── KEY TAKEAWAYS (YELLOW) ─────────── -->
+<div class="bg-yellow-50 border border-yellow-400 p-2 rounded mb-2">
+  <h2 class="font-bold text-yellow-800 text-sm mb-1">KEY TAKEAWAYS</h2>
+  <div class="grid grid-cols-4 gap-2 text-xs">
+    <div class="bg-yellow-100 p-1.5 rounded border border-yellow-300">
+      <p class="font-bold text-yellow-800 mb-0.5">Delta Bands Save You</p>
+      <p>Continuous hedging can become prohibitively costly. Whalley-Wilmott gives a practical delta range. Hedge when delta moves outside that band. Gamma is a primary driver, and κ comes from your own risk tolerance and trading experience.</p>
+    </div>
+    <div class="bg-yellow-100 p-1.5 rounded border border-yellow-300">
+      <p class="font-bold text-yellow-800 mb-0.5">IV vs RV: Know Your Goal</p>
+      <p>Implied vol → smooth daily P&amp;L, uncertain final number. Realized vol → volatile daily P&amp;L, accurate final number. Can't know RV until expiry — use GARCH/VIX forecast. Pick one, stick to it.</p>
+    </div>
+    <div class="bg-yellow-100 p-1.5 rounded border border-yellow-300">
+      <p class="font-bold text-yellow-800 mb-0.5">Expected P&amp;L = Range</p>
+      <p>Don’t stop at a single expected P&amp;L number. Use an average plus a spread such as standard deviation. SPY case: $16,900 ± $8,200. Actual: $24,218, which stayed within range. Post-trade, inspect why it deviated.</p>
+    </div>
+    <div class="bg-yellow-100 p-1.5 rounded border border-yellow-300">
+      <p class="font-bold text-yellow-800 mb-0.5">Evaluate Multi-Dimensionally</p>
+      <p>Don’t rely on a single metric, especially not just Sharpe. Analyze by market regime such as bull, bear, range, and high-vol periods. Aim for a large enough trade sample, often around 100 or more. Journal and review risk closely.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── FOOTER ─────────── -->
+<div class="text-center text-xs text-gray-400 mt-2">
+  OTS-05 Trade Evaluation — Hedging &amp; Trade Recognition · Varun Kumar · EPAT Week 20-2 · Cheat Sheet
+</div>
+
+</div>
+</body>
+</html>

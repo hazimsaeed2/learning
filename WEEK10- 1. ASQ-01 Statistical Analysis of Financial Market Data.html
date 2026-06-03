@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[WEEK 10-1] — Statistical Analysis of Financial Market Data (ASQ-01) — Cheat Sheet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+           font-size: 11px; line-height: 1.5; }
+    @media print { body { font-size: 9px; } .page-break { page-break-before: always; } }
+    h1 { font-size: 18px; }
+    h2 { font-size: 13px; }
+    h3 { font-size: 11px; }
+    table { font-size: 10px; }
+    pre  { font-size: 9px; line-height: 1.45; }
+  </style>
+</head>
+<body class="bg-white p-4 max-w-6xl mx-auto">
+
+  <!-- ====================== PAGE 1 ====================== -->
+
+  <!-- HEADER -->
+  <header class="text-center border-b-4 border-blue-600 pb-3 mb-4">
+    <h1 class="font-extrabold text-blue-900">STATISTICAL ANALYSIS OF FINANCIAL MARKET DATA — TIME SERIES &amp; ARIMA — COMPLETE CHEAT SHEET</h1>
+    <p class="text-gray-600 mt-1">EPAT Week 10-1 — ASQ-01: Statistical Analysis of Financial Market Data | Instructor: QuantInsti Faculty</p>
+    <p class="text-gray-700 mt-2">
+      <strong>The Problem:</strong> Simple trading rules (like Moving Average crossovers) underperform during regime shifts — pandemics, wars, rate hikes — because they can't adapt to changing market conditions.<br>
+      <strong>Your Goal:</strong> Build adaptive, rolling ARIMA (AutoRegressive Integrated Moving Average) strategies that update weekly, forecast one step ahead, and outperform static rules.
+    </p>
+  </header>
+
+  <!-- SECTION 1: CORE EXAMPLE -->
+  <section class="border-2 border-amber-500 rounded-lg p-3 mb-4 bg-amber-50">
+    <h2 class="font-bold text-amber-900 mb-3 bg-amber-200 rounded px-2 py-1">1️⃣ CORE EXAMPLE — These Numbers Are Used In Every Calculation Below</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <!-- Left: PayPal Weekly Data -->
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">PAYPAL (PYPL) WEEKLY PRICE DATA</h3>
+        <p class="mb-2"><strong>PYPL</strong> = Yahoo Finance ticker for PayPal Holdings Inc., a well-known online payment platform.</p>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-2 py-1">Week</th><th class="border px-2 py-1">Date</th><th class="border px-2 py-1">Close ($)</th><th class="border px-2 py-1">Weekly Return</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">1</td><td class="border px-2 py-1">W1</td><td class="border px-2 py-1 font-mono font-bold">50.00</td><td class="border px-2 py-1 font-mono text-gray-400">—</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">2</td><td class="border px-2 py-1">W2</td><td class="border px-2 py-1 font-mono font-bold">51.50</td><td class="border px-2 py-1 font-mono">+3.00%</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">3</td><td class="border px-2 py-1">W3</td><td class="border px-2 py-1 font-mono font-bold">49.80</td><td class="border px-2 py-1 font-mono text-red-700">−3.30%</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">4</td><td class="border px-2 py-1">W4</td><td class="border px-2 py-1 font-mono font-bold">52.20</td><td class="border px-2 py-1 font-mono">+4.82%</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">5</td><td class="border px-2 py-1">W5</td><td class="border px-2 py-1 font-mono font-bold">51.00</td><td class="border px-2 py-1 font-mono text-red-700">−2.30%</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">6</td><td class="border px-2 py-1">W6</td><td class="border px-2 py-1 font-mono font-bold">53.40</td><td class="border px-2 py-1 font-mono">+4.71%</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">7</td><td class="border px-2 py-1">W7</td><td class="border px-2 py-1 font-mono font-bold">52.10</td><td class="border px-2 py-1 font-mono text-red-700">−2.43%</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">8</td><td class="border px-2 py-1">W8</td><td class="border px-2 py-1 font-mono font-bold">54.00</td><td class="border px-2 py-1 font-mono">+3.65%</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-amber-100 rounded p-2 mt-2">
+          <p class="font-bold">RETURN ARITHMETIC (Week 2):</p>
+          <p class="font-mono">Return = (51.50 − 50.00) / 50.00 = 1.50 / 50.00 = <strong>+0.0300 = +3.00%</strong></p>
+          <p class="font-mono">Return W3 = (49.80 − 51.50) / 51.50 = −1.70 / 51.50 = <strong>−0.0330 = −3.30%</strong></p>
+        </div>
+      </div>
+
+      <!-- Right: Strategy Settings -->
+      <div class="bg-white border-2 border-amber-300 rounded p-3">
+        <h3 class="font-bold text-amber-800 mb-2">STRATEGY SETTINGS &amp; MODEL PARAMETERS</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <thead class="bg-amber-100">
+            <tr><th class="border px-2 py-1">Parameter</th><th class="border px-2 py-1">Value</th><th class="border px-2 py-1">Meaning</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Asset</td><td class="border px-2 py-1 font-mono">PYPL</td><td class="border px-2 py-1">PayPal weekly data</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">Date Range</td><td class="border px-2 py-1 font-mono">2015–2025</td><td class="border px-2 py-1">~540 weekly observations</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Rolling Window</td><td class="border px-2 py-1 font-mono">100 weeks</td><td class="border px-2 py-1">Past data used for each forecast</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">ARIMA Order</td><td class="border px-2 py-1 font-mono">(2, 1, 2)</td><td class="border px-2 py-1">p=2 AR, d=1 diff, q=2 MA</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Forecast Horizon</td><td class="border px-2 py-1 font-mono">1 week</td><td class="border px-2 py-1">One-step-ahead only</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold">Benchmark (SPY)</td><td class="border px-2 py-1 font-mono">SPY</td><td class="border px-2 py-1">S&amp;P 500 ETF for MA comparison</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-amber-800 mb-2">TERMINOLOGY / DECODING THE SHORTHAND</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold font-mono">AR</td><td class="border px-2 py-1">AutoRegressive — predict using past values of the SAME variable</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold font-mono">ARIMA</td><td class="border px-2 py-1">AutoRegressive Integrated Moving Average — AR + differencing + error correction</td></tr>
+            <tr><td class="border px-2 py-1 font-bold font-mono">ACF</td><td class="border px-2 py-1">AutoCorrelation Function — correlation of a variable with its own lagged values (direct + indirect)</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold font-mono">PACF</td><td class="border px-2 py-1">Partial AutoCorrelation Function — ONLY the direct correlation (removes indirect effects)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold font-mono">ADF</td><td class="border px-2 py-1">Augmented Dickey-Fuller test — statistical test for stationarity (p &lt; 0.05 = stationary)</td></tr>
+            <tr class="bg-amber-50"><td class="border px-2 py-1 font-bold font-mono">SPY</td><td class="border px-2 py-1">SPDR S&amp;P 500 ETF Trust — the most widely traded ETF in the world</td></tr>
+            <tr><td class="border px-2 py-1 font-bold font-mono">Sharpe</td><td class="border px-2 py-1">Sharpe Ratio — (mean return / std dev) × √52 for weekly data; higher = better risk-adjusted return</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: WHY SIMPLE RULES FAIL -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">2️⃣ WHY SIMPLE TRADING RULES FAIL — Regime Shifts Break Static Strategies</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">WHAT: Static Rules Can't Adapt</h3>
+        <p><strong>WHY it matters:</strong> A simple Moving Average (MA) crossover on SPY (S&amp;P 500 ETF) from 2019–2025 returned only ~1%, while buy-and-hold returned ~200%. The strategy collapsed during COVID, rate hikes, and tariff wars.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+import yfinance as yf                     # Yahoo Finance
+import numpy as np                         # Math operations
+
+data = yf.download("SPY",                 # S&amp;P 500 ETF
+    start="2019-01-01", end="2026-01-01",  # 7 years of data
+    multi_level_index=False)               # Clean columns
+# Output: ~1800 rows × 5 columns
+
+data['returns'] = data['Close'].pct_change()  # Daily returns
+
+short_window = 10                          # 10-day short MA
+long_window  = 30                          # 30-day long MA
+
+data['SMA'] = data['Close'].rolling(short_window).mean()
+data['LMA'] = data['Close'].rolling(long_window).mean()
+
+# Signal: +1 if SMA &gt; LMA (trending up), else -1
+data['signal'] = np.where(
+    data['SMA'] &gt; data['LMA'], 1, -1)
+
+data['strategy_returns'] = (
+    data['signal'].shift(1) * data['returns'])
+
+# Result: ~1% total return (buy-and-hold: ~200%)
+</pre>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">WHY: Regime Shifts Explained</h3>
+        <p><strong>WHAT is a regime shift?</strong> A fundamental change in how markets operate — COVID, wars, rate hikes, tariff wars.</p>
+        <div class="bg-orange-100 rounded p-2 mt-2 mb-3">
+          <p class="font-bold">Events that caused regime shifts (2019–2025):</p>
+          <p>• <strong>2020:</strong> COVID-19 pandemic → massive crash, then rapid recovery</p>
+          <p>• <strong>2022:</strong> Fed rate hikes → long-term momentum strategies hammered</p>
+          <p>• <strong>2022–2023:</strong> Ukraine-Russia war, Middle East conflicts</p>
+          <p>• <strong>2024–2025:</strong> US tariff wars → sudden sector rotations</p>
+        </div>
+        <p><strong>GOTCHA:</strong> During high-volatility periods, markets are very choppy and tend to trend <em>downward</em>. MA crossovers generate too many false signals in these conditions.</p>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ WARNING — Overfitting to calm markets:</strong> A strategy that works well in 2019 (low volatility) will collapse spectacularly in 2020 (COVID crash). Always test across multiple regimes.</p>
+        </div>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 THE MOTIVATION:</strong> Statistical models like ARIMA adapt because they retrain on recent data each period. Instead of fixed rules ("buy when SMA &gt; LMA"), they build forecasting models that adjust as markets change.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: STATIONARITY -->
+  <section class="border-2 border-orange-500 rounded-lg p-3 mb-4 bg-orange-50">
+    <h2 class="font-bold text-orange-900 mb-3 bg-orange-200 rounded px-2 py-1">3️⃣ STATIONARITY — The Foundation of Time Series Modeling</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">WHAT: Stationarity = Stability Over Time</h3>
+        <p><strong>WHY:</strong> AR and ARIMA models assume the data they work with is stationary. If it's not, forecasts are unreliable.</p>
+        <p class="mt-2"><strong>A process is stationary if:</strong></p>
+        <p>1. The <strong>mean</strong> stays roughly constant over time</p>
+        <p>2. The <strong>standard deviation</strong> (volatility) stays roughly constant</p>
+        <p>3. The <strong>autocorrelation</strong> structure doesn't change</p>
+        <div class="bg-orange-100 rounded p-2 mt-2">
+          <p class="font-bold">KEY RULE:</p>
+          <p>• <strong>Prices</strong> are almost NEVER stationary (they trend up/down)</p>
+          <p>• <strong>Returns</strong> are almost ALWAYS stationary (they hover around zero)</p>
+          <p>→ We model <strong>returns</strong>, not prices (or use d=1 to difference prices automatically)</p>
+        </div>
+        <p class="mt-2"><strong>WORKED EXAMPLE (using Core Data):</strong></p>
+        <p class="font-mono">Prices: 50.00, 51.50, 49.80, 52.20, 51.00 → trending, mean shifts</p>
+        <p class="font-mono">Returns: +3.00%, −3.30%, +4.82%, −2.30% → hovering around 0%</p>
+        <p class="mt-1">The mean of returns ≈ +0.56%. The mean of prices keeps changing. That's the difference.</p>
+      </div>
+
+      <div class="bg-white border-2 border-orange-300 rounded p-3">
+        <h3 class="font-bold text-orange-800 mb-2">HOW: The ADF Test (Augmented Dickey-Fuller)</h3>
+        <p><strong>WHAT:</strong> A statistical test that checks whether a series has a "unit root" — a fancy way of asking: is it stationary?</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+from statsmodels.tsa.stattools import adfuller  # Import ADF test
+
+# Test prices — expect NON-stationary
+result_price = adfuller(data['Close'].dropna())
+print(f"Prices p-value: {result_price[1]:.4f}")
+# Output: p-value = 0.6523  → &gt; 0.05 → NON-stationary ✗
+
+# Test returns — expect stationary
+result_returns = adfuller(data['returns'].dropna())
+print(f"Returns p-value: {result_returns[1]:.4f}")
+# Output: p-value = 0.0000  → &lt; 0.05 → STATIONARY ✓
+</pre>
+        <div class="bg-orange-100 rounded p-2 mt-2">
+          <p class="font-bold">DECISION RULE:</p>
+          <table class="w-full border border-gray-300 mt-1">
+            <tr><td class="border px-2 py-1 font-bold">p-value &lt; 0.05</td><td class="border px-2 py-1 text-green-700 font-bold">STATIONARY ✓</td><td class="border px-2 py-1">Safe to model</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">p-value ≥ 0.05</td><td class="border px-2 py-1 text-red-700 font-bold">NON-STATIONARY ✗</td><td class="border px-2 py-1">Must transform (diff or returns)</td></tr>
+          </table>
+          <p class="mt-1"><strong>Null hypothesis:</strong> Series is non-stationary. If p &lt; 0.05, we <em>reject</em> the null → series IS stationary.</p>
+        </div>
+        <p class="mt-2"><strong>WHAT is differencing?</strong> Instead of modeling prices [50, 51.50, 49.80, 52.20], model the <em>differences</em> between successive prices [+1.50, −1.70, +2.40]. This removes the trend and makes the series stationary.</p>
+        <p class="font-mono mt-1">Diff W2 = 51.50 − 50.00 = <strong>+1.50</strong></p>
+        <p class="font-mono">Diff W3 = 49.80 − 51.50 = <strong>−1.70</strong></p>
+        <p class="font-mono">Diff W4 = 52.20 − 49.80 = <strong>+2.40</strong></p>
+      </div>
+    </div>
+
+    <!-- VISUAL: Stationary vs Non-Stationary -->
+    <div class="bg-white border-2 border-orange-300 rounded p-3 mt-3">
+      <h3 class="font-bold text-orange-800 mb-2">📈 VISUAL: Stationary vs Non-Stationary — Why We Model Returns, Not Prices</h3>
+      <svg viewBox="0 0 620 200" class="w-full">
+        <!-- LEFT: Non-stationary (prices) -->
+        <rect x="10" y="15" width="285" height="155" rx="4" fill="#fef2f2" stroke="#fca5a5"/>
+        <text x="152" y="12" text-anchor="middle" font-size="10" font-weight="bold" fill="#991b1b">NON-STATIONARY (Prices) ✗</text>
+        <text x="20" y="32" font-size="7" fill="#94a3b8">$60</text>
+        <text x="20" y="72" font-size="7" fill="#94a3b8">$55</text>
+        <text x="20" y="112" font-size="7" fill="#94a3b8">$50</text>
+        <text x="20" y="152" font-size="7" fill="#94a3b8">$45</text>
+        <line x1="38" y1="30" x2="285" y2="30" stroke="#fecaca" stroke-width="0.5"/>
+        <line x1="38" y1="70" x2="285" y2="70" stroke="#fecaca" stroke-width="0.5"/>
+        <line x1="38" y1="110" x2="285" y2="110" stroke="#fecaca" stroke-width="0.5"/>
+        <line x1="38" y1="150" x2="285" y2="150" stroke="#fecaca" stroke-width="0.5"/>
+        <!-- Trending price line -->
+        <polyline points="42,145 65,140 88,148 111,130 134,135 157,120 180,125 203,108 226,100 249,90 272,85"
+          fill="none" stroke="#dc2626" stroke-width="2" stroke-linejoin="round"/>
+        <!-- Mean shifting arrow -->
+        <line x1="42" y1="142" x2="272" y2="88" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6,4"/>
+        <text x="160" y="98" font-size="8" fill="#f59e0b" font-weight="bold">↑ Mean shifts upward</text>
+        <text x="152" y="173" text-anchor="middle" font-size="8" fill="#991b1b">ADF p-value = 0.65 → Can't model this!</text>
+
+        <!-- RIGHT: Stationary (returns) -->
+        <rect x="320" y="15" width="285" height="155" rx="4" fill="#f0fdf4" stroke="#86efac"/>
+        <text x="462" y="12" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">STATIONARY (Returns) ✓</text>
+        <text x="330" y="52" font-size="7" fill="#94a3b8">+5%</text>
+        <text x="330" y="92" font-size="7" fill="#94a3b8">0%</text>
+        <text x="330" y="132" font-size="7" fill="#94a3b8">-5%</text>
+        <line x1="352" y1="50" x2="595" y2="50" stroke="#dcfce7" stroke-width="0.5"/>
+        <line x1="352" y1="90" x2="595" y2="90" stroke="#86efac" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="352" y1="130" x2="595" y2="130" stroke="#dcfce7" stroke-width="0.5"/>
+        <!-- Oscillating returns -->
+        <polyline points="360,68 383,115 406,55 429,105 452,62 475,108 498,70 521,98 544,75 567,95 590,80"
+          fill="none" stroke="#16a34a" stroke-width="2" stroke-linejoin="round"/>
+        <!-- Stable mean line -->
+        <text x="480" y="85" font-size="8" fill="#16a34a" font-weight="bold">← Mean stays at ~0%</text>
+        <text x="462" y="173" text-anchor="middle" font-size="8" fill="#166534">ADF p-value = 0.0000 → Safe to model ✓</text>
+      </svg>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 2 ====================== -->
+
+  <!-- SECTION 4: AR MODELS -->
+  <section class="border-2 border-teal-500 rounded-lg p-3 mb-4 bg-teal-50">
+    <h2 class="font-bold text-teal-900 mb-3 bg-teal-200 rounded px-2 py-1">4️⃣ AUTO REGRESSIVE (AR) MODELS — Predict Using Your Own Past</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">WHAT: Regression on Yourself</h3>
+        <p><strong>Normal regression:</strong> Y depends on X₁, X₂, X₃ (different variables)</p>
+        <p><strong>Auto regression:</strong> Y depends on its OWN past values (Y_{t-1}, Y_{t-2})</p>
+
+        <div class="bg-teal-100 rounded p-2 mt-2 mb-2">
+          <p class="font-bold">AR(1) FORMULA:</p>
+          <p class="font-mono">r_t = α + β × r_{t−1} + ε</p>
+          <p class="mt-1">Where: r_t = return this week, r_{t−1} = return last week, α = average return when no momentum, β = how much last week affects this week, ε = random noise</p>
+        </div>
+
+        <p class="font-bold mt-2">What β tells you:</p>
+        <table class="w-full border border-gray-300 mt-1">
+          <tr><td class="border px-2 py-1 font-bold">β &gt; 0 (e.g., 0.3)</td><td class="border px-2 py-1 text-green-700">Trending/Momentum — positive follows positive</td></tr>
+          <tr><td class="border px-2 py-1 font-bold">β &lt; 0 (e.g., −0.2)</td><td class="border px-2 py-1 text-blue-700">Mean-reverting — positive followed by negative</td></tr>
+          <tr><td class="border px-2 py-1 font-bold">β ≈ 0</td><td class="border px-2 py-1 text-gray-600">Random — yesterday tells us nothing about today</td></tr>
+        </table>
+
+        <p class="mt-2"><strong>WORKED EXAMPLE (AR(1) using Core Data):</strong></p>
+        <p class="font-mono">Suppose α = 0.001 (0.1%) and β = 0.25</p>
+        <p class="font-mono mt-1">Week 3 prediction:</p>
+        <p class="font-mono">r̂₃ = 0.001 + 0.25 × (+0.0300) = 0.001 + 0.0075 = <strong>+0.0085 = +0.85%</strong></p>
+        <p class="font-mono">Actual r₃ = −3.30% → Error = −3.30% − 0.85% = <strong>−4.15%</strong></p>
+        <p class="font-mono mt-1">Week 4 prediction:</p>
+        <p class="font-mono">r̂₄ = 0.001 + 0.25 × (−0.0330) = 0.001 + (−0.00825) = <strong>−0.00725 = −0.73%</strong></p>
+        <p class="font-mono">Actual r₄ = +4.82% → Error = +4.82% − (−0.73%) = <strong>+5.55%</strong></p>
+      </div>
+
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">HOW: AR(1) Rolling Strategy in Code</h3>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+from statsmodels.tsa.arima.model import ARIMA  # Import ARIMA
+
+def create_ar_strategy(returns, window=100):
+    signals = []                         # Store predicted signals
+    for i in range(window, len(returns)):
+        train = returns[i-window:i]      # Last 100 weeks
+        model = ARIMA(train,
+            order=(1, 0, 0))             # AR(1): p=1, d=0, q=0
+        fitted = model.fit()             # Estimate α and β
+        forecast = fitted.forecast(
+            steps=1)[0]                  # Predict next week
+        signal = 1 if forecast &gt; 0 else -1  # Long or Short
+        signals.append(signal)
+    return signals
+# Runs ~440 times (540 − 100), takes ~25 seconds
+</pre>
+
+        <p class="mt-2"><strong>AR(1) RESULTS (PayPal weekly):</strong></p>
+        <table class="w-full border border-gray-300 mt-1">
+          <thead class="bg-teal-100">
+            <tr><th class="border px-2 py-1">Metric</th><th class="border px-2 py-1">AR(1)</th><th class="border px-2 py-1">Buy-and-Hold</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1">Total Return</td><td class="border px-2 py-1 font-mono font-bold">+29%</td><td class="border px-2 py-1 font-mono">+19%</td></tr>
+            <tr><td class="border px-2 py-1">Sharpe Ratio</td><td class="border px-2 py-1 font-mono">0.27</td><td class="border px-2 py-1 font-mono">0.25</td></tr>
+            <tr><td class="border px-2 py-1">Win Rate</td><td class="border px-2 py-1 font-mono">52.4%</td><td class="border px-2 py-1 font-mono">—</td></tr>
+            <tr><td class="border px-2 py-1 text-red-700">Max Drawdown</td><td class="border px-2 py-1 font-mono text-red-700 font-bold">−76%</td><td class="border px-2 py-1 font-mono">—</td></tr>
+          </tbody>
+        </table>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ WARNING — AR(1) drawdown of −76% is insane:</strong> Your capital drops to 24% of its peak. Nobody would deploy this in production. AR(1) is too simple — it relies on just ONE past return.</p>
+        </div>
+        <p class="mt-2"><strong>AR(2) extension:</strong></p>
+        <p class="font-mono">r_t = α + β₁ × r_{t−1} + β₂ × r_{t−2} + ε</p>
+        <p>Uses <em>two</em> past weeks. Set order=(2, 0, 0). Generalizes to AR(p) with p past values.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: ACF & PACF -->
+  <section class="border-2 border-teal-500 rounded-lg p-3 mb-4 bg-teal-50">
+    <h2 class="font-bold text-teal-900 mb-3 bg-teal-200 rounded px-2 py-1">5️⃣ ACF &amp; PACF — Choosing Your Model Order</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">WHAT: AutoCorrelation vs. Partial AutoCorrelation</h3>
+        <p><strong>ACF (AutoCorrelation Function):</strong> Measures correlation between r_t and r_{t−k} INCLUDING all indirect paths through intermediate lags. Like measuring how much Week 1 affects Week 5 — both directly AND through Weeks 2, 3, 4.</p>
+        <p class="mt-2"><strong>PACF (Partial AutoCorrelation Function):</strong> Measures ONLY the direct correlation between r_t and r_{t−k}, stripping out indirect effects. Like measuring how much Week 1 affects Week 5 directly — ignoring any influence through Weeks 2, 3, 4.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono mt-2">
+from statsmodels.graphics.tsaplots import plot_acf   # ACF plot
+from statsmodels.graphics.tsaplots import plot_pacf  # PACF plot
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))     # Side by side
+plot_acf(returns.dropna(), ax=axes[0], lags=15)      # ACF up to lag 15
+plot_pacf(returns.dropna(), ax=axes[1], lags=15)     # PACF up to lag 15
+plt.show()
+</pre>
+        <p class="mt-2"><strong>WORKED EXAMPLE (auto-correlation by hand):</strong></p>
+        <p class="font-mono">Returns: [+3.00, −3.30, +4.82, −2.30, +4.71, −2.43, +3.65]</p>
+        <p class="font-mono">Lag-1 pairs: (3.00,−3.30), (−3.30,+4.82), (+4.82,−2.30)…</p>
+        <p class="font-mono">If correlation is negative → mean-reverting pattern</p>
+      </div>
+
+      <div class="bg-white border-2 border-teal-300 rounded p-3">
+        <h3 class="font-bold text-teal-800 mb-2">HOW TO READ: Choosing p (AR) and q (MA)</h3>
+        <div class="bg-teal-100 rounded p-2 mb-3">
+          <p class="font-bold text-teal-900">🔑 THE MEMORY TRICK:</p>
+          <p>• <strong>ACF</strong> (starts with A) tells you the <strong>MA</strong> order (q) — NOT the AR order!</p>
+          <p>• <strong>PACF</strong> (starts with P) tells you the <strong>AR</strong> order (p)</p>
+          <p>"A goes with M, P goes with A" — the OPPOSITE of what you'd expect.</p>
+        </div>
+
+        <p class="font-bold">How to read the plots:</p>
+        <table class="w-full border border-gray-300 mt-1">
+          <thead class="bg-teal-200">
+            <tr><th class="border px-2 py-1">Plot</th><th class="border px-2 py-1">What to Look For</th><th class="border px-2 py-1">Determines</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">ACF</td><td class="border px-2 py-1">Lags that jut out of the blue shadow</td><td class="border px-2 py-1 font-bold">q (MA order)</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">PACF</td><td class="border px-2 py-1">Lags that jut out of the blue shadow</td><td class="border px-2 py-1 font-bold">p (AR order)</td></tr>
+          </tbody>
+        </table>
+
+        <p class="mt-3"><strong>WORKED EXAMPLE (PayPal weekly):</strong></p>
+        <p>Looking at ACF: Lag 1 nearly touches the blue band. Lag 2 is halfway. → <strong>q = 2</strong></p>
+        <p>Looking at PACF: Same pattern — lag 1 significant, lag 2 halfway. → <strong>p = 2</strong></p>
+        <p>For prices (non-stationary): <strong>d = 1</strong> (one differencing operation)</p>
+        <p class="font-bold mt-2">→ ARIMA(2, 1, 2) is our starting point</p>
+
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 TIP — This is a heuristic, not gospel:</strong> ACF/PACF give a starting point. You should also try nearby orders (1,1,1), (2,1,1), (3,1,2) and compare performance. Yash's suggestion: run a nested for loop over all combinations!</p>
+        </div>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 TIP — d in finance:</strong> For financial prices, d is almost always 1. No need to agonize over it. Returns = prices differenced once = d=1.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISUAL: ACF/PACF Interpretation -->
+    <div class="bg-white border-2 border-teal-300 rounded p-3 mt-3">
+      <h3 class="font-bold text-teal-800 mb-2">📊 VISUAL: What ACF &amp; PACF Plots Actually Look Like</h3>
+      <svg viewBox="0 0 620 195" class="w-full">
+        <!-- LEFT: ACF Plot -->
+        <rect x="10" y="15" width="290" height="150" rx="4" fill="#f8fafc" stroke="#e2e8f0"/>
+        <text x="155" y="12" text-anchor="middle" font-size="10" font-weight="bold" fill="#0f766e">ACF → Tells You MA Order (q)</text>
+        <!-- Axis -->
+        <line x1="50" y1="90" x2="285" y2="90" stroke="#94a3b8" stroke-width="1"/>
+        <text x="45" y="50" text-anchor="end" font-size="7" fill="#94a3b8">+1.0</text>
+        <text x="45" y="93" text-anchor="end" font-size="7" fill="#94a3b8">0</text>
+        <text x="45" y="140" text-anchor="end" font-size="7" fill="#94a3b8">-1.0</text>
+        <!-- Blue confidence band -->
+        <rect x="50" y="75" width="235" height="30" fill="#dbeafe" opacity="0.5"/>
+        <text x="290" y="85" font-size="6" fill="#3b82f6">95% confidence</text>
+        <!-- ACF bars (lag 0 = 1.0, lag 1 = significant, lag 2 = borderline, rest inside band) -->
+        <rect x="60" y="30" width="12" height="60" fill="#0f766e"/>
+        <text x="66" y="158" text-anchor="middle" font-size="7" fill="#64748b">0</text>
+        <rect x="85" y="55" width="12" height="35" fill="#dc2626"/>
+        <text x="91" y="158" text-anchor="middle" font-size="7" fill="#64748b">1</text>
+        <rect x="110" y="68" width="12" height="22" fill="#dc2626"/>
+        <text x="116" y="158" text-anchor="middle" font-size="7" fill="#64748b">2</text>
+        <rect x="135" y="82" width="12" height="8" fill="#6b7280"/>
+        <text x="141" y="158" text-anchor="middle" font-size="7" fill="#64748b">3</text>
+        <rect x="160" y="85" width="12" height="5" fill="#6b7280"/>
+        <text x="166" y="158" text-anchor="middle" font-size="7" fill="#64748b">4</text>
+        <rect x="185" y="92" width="12" height="6" fill="#6b7280"/>
+        <text x="191" y="158" text-anchor="middle" font-size="7" fill="#64748b">5</text>
+        <rect x="210" y="87" width="12" height="3" fill="#6b7280"/>
+        <text x="216" y="158" text-anchor="middle" font-size="7" fill="#64748b">6</text>
+        <!-- Arrows pointing to significant lags -->
+        <text x="91" y="48" text-anchor="middle" font-size="7" fill="#dc2626" font-weight="bold">↑ Significant!</text>
+        <text x="116" y="62" text-anchor="middle" font-size="7" fill="#dc2626" font-weight="bold">↑ Borderline</text>
+        <text x="165" y="175" text-anchor="middle" font-size="8" fill="#0f766e" font-weight="bold">Lags 1-2 outside band → q = 2</text>
+
+        <!-- RIGHT: PACF Plot -->
+        <rect x="320" y="15" width="290" height="150" rx="4" fill="#f8fafc" stroke="#e2e8f0"/>
+        <text x="465" y="12" text-anchor="middle" font-size="10" font-weight="bold" fill="#0f766e">PACF → Tells You AR Order (p)</text>
+        <!-- Axis -->
+        <line x1="360" y1="90" x2="595" y2="90" stroke="#94a3b8" stroke-width="1"/>
+        <text x="355" y="50" text-anchor="end" font-size="7" fill="#94a3b8">+1.0</text>
+        <text x="355" y="93" text-anchor="end" font-size="7" fill="#94a3b8">0</text>
+        <text x="355" y="140" text-anchor="end" font-size="7" fill="#94a3b8">-1.0</text>
+        <!-- Blue confidence band -->
+        <rect x="360" y="75" width="235" height="30" fill="#dbeafe" opacity="0.5"/>
+        <!-- PACF bars -->
+        <rect x="370" y="30" width="12" height="60" fill="#0f766e"/>
+        <text x="376" y="158" text-anchor="middle" font-size="7" fill="#64748b">0</text>
+        <rect x="395" y="58" width="12" height="32" fill="#dc2626"/>
+        <text x="401" y="158" text-anchor="middle" font-size="7" fill="#64748b">1</text>
+        <rect x="420" y="70" width="12" height="20" fill="#dc2626"/>
+        <text x="426" y="158" text-anchor="middle" font-size="7" fill="#64748b">2</text>
+        <rect x="445" y="83" width="12" height="7" fill="#6b7280"/>
+        <text x="451" y="158" text-anchor="middle" font-size="7" fill="#64748b">3</text>
+        <rect x="470" y="92" width="12" height="5" fill="#6b7280"/>
+        <text x="476" y="158" text-anchor="middle" font-size="7" fill="#64748b">4</text>
+        <rect x="495" y="86" width="12" height="4" fill="#6b7280"/>
+        <text x="501" y="158" text-anchor="middle" font-size="7" fill="#64748b">5</text>
+        <rect x="520" y="88" width="12" height="6" fill="#6b7280"/>
+        <text x="526" y="158" text-anchor="middle" font-size="7" fill="#64748b">6</text>
+        <!-- Arrows -->
+        <text x="401" y="51" text-anchor="middle" font-size="7" fill="#dc2626" font-weight="bold">↑ Significant!</text>
+        <text x="426" y="65" text-anchor="middle" font-size="7" fill="#dc2626" font-weight="bold">↑ Borderline</text>
+        <text x="475" y="175" text-anchor="middle" font-size="8" fill="#0f766e" font-weight="bold">Lags 1-2 outside band → p = 2</text>
+
+        <!-- Bottom summary -->
+        <text x="310" y="192" text-anchor="middle" font-size="9" fill="#1e293b" font-weight="bold">Result: p=2, q=2, d=1 → ARIMA(2, 1, 2)</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECTION 6: ARIMA MODELS -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">6️⃣ ARIMA MODELS — The Full AR + I + MA Framework</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+      <!-- AR Component -->
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">AR: AutoRegressive (Past Values)</h3>
+        <p><strong>WHAT:</strong> Uses past returns to predict current returns.</p>
+        <p><strong>WHY:</strong> Captures momentum or mean-reversion behavior.</p>
+        <p class="font-mono mt-2">AR part of ARIMA(2,1,2):</p>
+        <p class="font-mono">β₁ × r_{t−1} + β₂ × r_{t−2}</p>
+        <p class="mt-1"><strong>WORKED EXAMPLE:</strong></p>
+        <p class="font-mono">β₁=0.25, β₂=0.10</p>
+        <p class="font-mono">r_{t-1} = +3.00%, r_{t-2} = +3.00%</p>
+        <p class="font-mono">AR = 0.25×3.00 + 0.10×3.00</p>
+        <p class="font-mono">= 0.75 + 0.30 = <strong>+1.05%</strong></p>
+      </div>
+
+      <!-- I Component -->
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">I: Integrated (Differencing)</h3>
+        <p><strong>WHAT:</strong> Makes non-stationary data stationary by computing differences.</p>
+        <p><strong>WHY:</strong> Prices trend; differences/returns don't. ARIMA handles this automatically when d=1.</p>
+        <p class="font-mono mt-2">d=0: process is already stationary</p>
+        <p class="font-mono">d=1: difference once (prices → returns)</p>
+        <p class="font-mono">d=2: difference twice (rare in finance)</p>
+        <p class="mt-1"><strong>WORKED EXAMPLE:</strong></p>
+        <p class="font-mono">Prices: 50.00, 51.50, 49.80</p>
+        <p class="font-mono">Diff(d=1): +1.50, −1.70</p>
+        <p class="font-mono">Diff(d=2): −1.70−(+1.50) = −3.20</p>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 KEY:</strong> With d=1, you can feed <em>prices</em> directly to ARIMA — it differences internally. No need to compute returns yourself.</p>
+        </div>
+      </div>
+
+      <!-- MA Component -->
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">MA: Moving Average (Past Errors)</h3>
+        <p><strong>WHAT:</strong> Uses past <em>prediction errors</em> to improve current prediction. NOT the SMA/LMA moving average from trading!</p>
+        <p><strong>WHY:</strong> If a model systematically over/under-predicts, MA corrects for that pattern.</p>
+        <p class="font-mono mt-2">MA part of ARIMA(2,1,2):</p>
+        <p class="font-mono">γ₁ × ε_{t−1} + γ₂ × ε_{t−2}</p>
+        <p class="mt-1"><strong>WORKED EXAMPLE:</strong></p>
+        <p class="font-mono">γ₁=0.30, γ₂=0.15</p>
+        <p class="font-mono">ε_{t-1} = −4.15%, ε_{t-2} = +2.00%</p>
+        <p class="font-mono">MA = 0.30×(−4.15) + 0.15×(+2.00)</p>
+        <p class="font-mono">= −1.245 + 0.30 = <strong>−0.945%</strong></p>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mt-2">
+          <p><strong>⚠️ WARNING:</strong> The "MA" in ARIMA has NOTHING to do with SMA/LMA moving average crossovers. ARIMA's MA = moving average of <em>errors</em>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-purple-100 rounded p-2 mt-3">
+      <p class="font-bold text-purple-900">FULL ARIMA(2,1,2) EQUATION:</p>
+      <p class="font-mono text-center mt-1">P_t = α + β₁ × P_{t−1} + β₂ × P_{t−2} + ε_t + γ₁ × ε_{t−1} + γ₂ × ε_{t−2}</p>
+      <p class="text-center mt-1">"Fitting" the model = estimating α, β₁, β₂, γ₁, γ₂ from historical data. Python does this for you.</p>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ====================== PAGE 3 ====================== -->
+
+  <!-- SECTION 7: ROLLING ARIMA STRATEGY -->
+  <section class="border-2 border-purple-500 rounded-lg p-3 mb-4 bg-purple-50">
+    <h2 class="font-bold text-purple-900 mb-3 bg-purple-200 rounded px-2 py-1">7️⃣ ROLLING ARIMA STRATEGY — Implementation &amp; Performance</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">HOW: The Rolling Forecast Code</h3>
+        <p><strong>WHAT:</strong> At each week, fit ARIMA on the last 100 weeks and predict ONE week ahead. If predicted price &gt; current price → go long. Else → go short.</p>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+from statsmodels.tsa.arima.model import ARIMA  # ARIMA model
+
+def create_arima_strategy(prices, window=100):
+    signals = []                         # Store signals
+    predictions = []                     # Store forecasts
+
+    for i in range(window, len(prices)):
+        train = prices[i-window:i]       # Last 100 weeks
+        model = ARIMA(train,
+            order=(2, 1, 2))             # ARIMA(2,1,2)
+        fitted = model.fit()             # Estimate coefficients
+        forecast = fitted.forecast(
+            steps=1)[0]                  # 1-step forecast
+        last_price = train.iloc[-1]      # Current week's price
+
+        # Signal: long if forecast &gt; current price
+        signal = 1 if forecast &gt; last_price else -1
+        signals.append(signal)
+        predictions.append(forecast)
+
+    return signals, predictions
+# Takes ~90 seconds for ~440 iterations
+</pre>
+        <p class="mt-2"><strong>WORKED EXAMPLE — One Forecast Step:</strong></p>
+        <p class="font-mono">Train data: Weeks 1–100 (prices)</p>
+        <p class="font-mono">ARIMA(2,1,2) fitted → coefficients estimated</p>
+        <p class="font-mono">Last price (Week 100): $51.72</p>
+        <p class="font-mono">Forecast (Week 101): $52.78</p>
+        <p class="font-mono">$52.78 &gt; $51.72 → Signal = <strong>+1 (LONG)</strong></p>
+        <p class="font-mono mt-1">Next iteration: train = Weeks 2–101, forecast Week 102…</p>
+      </div>
+
+      <div class="bg-white border-2 border-purple-300 rounded p-3">
+        <h3 class="font-bold text-purple-800 mb-2">Performance Evaluation</h3>
+<pre class="bg-gray-900 text-green-400 rounded p-2 font-mono">
+# Compute strategy returns
+data['strategy_returns'] = (
+    data['signal'].shift(1) *     # Previous signal
+    data['returns']               # Current returns
+)
+
+# Total return (simple compounding)
+total = (1 + data['strategy_returns']).cumprod().iloc[-1] - 1
+
+# Sharpe ratio (annualized for weekly)
+sharpe = (data['strategy_returns'].mean() /
+    data['strategy_returns'].std()) * np.sqrt(52)
+
+# Win rate
+wins = (data['strategy_returns'] &gt; 0).sum()
+total_trades = data['strategy_returns'].notna().sum()
+win_rate = wins / total_trades * 100
+
+# Maximum drawdown
+cum_returns = (1 + data['strategy_returns']).cumprod()
+peak = cum_returns.cummax()
+drawdown = (cum_returns - peak) / peak
+max_dd = drawdown.min() * 100
+</pre>
+
+        <p class="mt-2"><strong>WORKED EXAMPLE — Sharpe Ratio:</strong></p>
+        <p class="font-mono">Mean weekly return = 0.076%</p>
+        <p class="font-mono">Std weekly return = 2.03%</p>
+        <p class="font-mono">Weekly Sharpe = 0.076 / 2.03 = <strong>0.037</strong></p>
+        <p class="font-mono">Annualized = 0.037 × √52 = 0.037 × 7.211 = <strong>0.27</strong></p>
+        <p class="text-gray-600 mt-1">This now matches the lecture's reported Sharpe ratio of about 0.27 after annualizing weekly returns.</p>
+
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400 mt-2">
+          <p><strong>💡 WHY ROLLING FORECASTS MATTER:</strong> A static model trained once on 2015–2020 data will fail on 2021+ data. Rolling forecasts retrain the model weekly, so it adapts to new market conditions — the key advantage over fixed rules.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISUAL: ARIMA Forecast vs Actual -->
+    <div class="bg-white border-2 border-purple-300 rounded p-3 mt-3">
+      <h3 class="font-bold text-purple-800 mb-2">📈 VISUAL: What ARIMA Rolling Forecasts Look Like (Actual vs Predicted)</h3>
+      <svg viewBox="0 0 620 220" class="w-full">
+        <rect x="40" y="18" width="550" height="160" rx="4" fill="#f8fafc" stroke="#e2e8f0"/>
+        <!-- Grid -->
+        <line x1="40" y1="50" x2="590" y2="50" stroke="#e2e8f0"/>
+        <line x1="40" y1="98" x2="590" y2="98" stroke="#e2e8f0"/>
+        <line x1="40" y1="145" x2="590" y2="145" stroke="#e2e8f0"/>
+        <text x="35" y="53" text-anchor="end" font-size="7" fill="#94a3b8">$60</text>
+        <text x="35" y="101" text-anchor="end" font-size="7" fill="#94a3b8">$50</text>
+        <text x="35" y="148" text-anchor="end" font-size="7" fill="#94a3b8">$40</text>
+
+        <!-- Training window indicator -->
+        <rect x="40" y="18" width="160" height="160" fill="#dbeafe" opacity="0.15"/>
+        <text x="120" y="32" text-anchor="middle" font-size="8" fill="#3b82f6" font-weight="bold">Training Window (100 weeks)</text>
+
+        <!-- Actual prices (solid blue) -->
+        <polyline points="50,130 80,120 110,135 140,110 170,100 200,90 230,85 260,95 290,105 320,80 350,70 380,60 410,55 440,75 470,90 500,100 530,95 560,85 580,78"
+          fill="none" stroke="#3b82f6" stroke-width="2" stroke-linejoin="round"/>
+
+        <!-- ARIMA forecasts (dashed green — 1-step-ahead from week 100) -->
+        <polyline points="200,92 230,88 260,90 290,100 320,85 350,75 380,62 410,58 440,68 470,85 500,96 530,98 560,88 580,82"
+          fill="none" stroke="#16a34a" stroke-width="2" stroke-dasharray="6,4" stroke-linejoin="round"/>
+
+        <!-- Signal markers -->
+        <circle cx="200" cy="90" r="5" fill="#22c55e" stroke="white" stroke-width="1.5"/>
+        <text x="200" y="170" text-anchor="middle" font-size="6" fill="#16a34a">LONG</text>
+        <circle cx="440" cy="75" r="5" fill="#ef4444" stroke="white" stroke-width="1.5"/>
+        <text x="440" y="170" text-anchor="middle" font-size="6" fill="#dc2626">SHORT</text>
+        <circle cx="530" cy="95" r="5" fill="#22c55e" stroke="white" stroke-width="1.5"/>
+        <text x="530" y="170" text-anchor="middle" font-size="6" fill="#16a34a">LONG</text>
+
+        <!-- Annotations -->
+        <text x="320" y="42" text-anchor="middle" font-size="7" fill="#6b7280">Forecast above actual → LONG signal (expects price to rise)</text>
+        <text x="440" y="48" text-anchor="middle" font-size="7" fill="#6b7280">Forecast below actual → SHORT signal</text>
+
+        <!-- Sliding window arrow -->
+        <line x1="50" y1="183" x2="200" y2="183" stroke="#3b82f6" stroke-width="2"/>
+        <polygon points="195,180 200,183 195,186" fill="#3b82f6"/>
+        <text x="125" y="196" text-anchor="middle" font-size="7" fill="#3b82f6">Window slides → retrain each week</text>
+
+        <!-- Legend -->
+        <line x1="50" y1="212" x2="75" y2="212" stroke="#3b82f6" stroke-width="2"/>
+        <text x="80" y="215" font-size="8" fill="#1e293b">Actual Price</text>
+        <line x1="180" y1="212" x2="205" y2="212" stroke="#16a34a" stroke-width="2" stroke-dasharray="6,4"/>
+        <text x="210" y="215" font-size="8" fill="#1e293b">ARIMA 1-Step Forecast</text>
+        <circle cx="340" cy="212" r="4" fill="#22c55e"/>
+        <text x="350" y="215" font-size="8" fill="#1e293b">= LONG</text>
+        <circle cx="410" cy="212" r="4" fill="#ef4444"/>
+        <text x="420" y="215" font-size="8" fill="#1e293b">= SHORT</text>
+      </svg>
+      <p class="text-gray-600 mt-1" style="font-size:8px;">Each week, ARIMA trains on the last 100 weeks, predicts next week's price. If predicted &gt; current → LONG (+1). If predicted &lt; current → SHORT (−1). The window slides one week forward each iteration.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 8: COMPARISON -->
+  <section class="border-2 border-cyan-500 rounded-lg p-3 mb-4 bg-cyan-50">
+    <h2 class="font-bold text-cyan-900 mb-3 bg-cyan-200 rounded px-2 py-1">8️⃣ COMPARISON — AR(1) vs. ARIMA(2,1,2) vs. Buy-and-Hold vs. Momentum</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border-2 border-cyan-300 rounded p-3">
+        <h3 class="font-bold text-cyan-800 mb-2">Performance Side-by-Side (PayPal Weekly)</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-cyan-200">
+            <tr><th class="border px-2 py-1">Metric</th><th class="border px-2 py-1">ARIMA(2,1,2)</th><th class="border px-2 py-1">AR(1)</th><th class="border px-2 py-1">Buy-Hold</th><th class="border px-2 py-1">Momentum</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-2 py-1 font-bold">Total Return</td><td class="border px-2 py-1 font-mono font-bold text-green-700">+29%</td><td class="border px-2 py-1 font-mono">+29%</td><td class="border px-2 py-1 font-mono">+19%</td><td class="border px-2 py-1 font-mono text-red-700">−80%</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Sharpe Ratio</td><td class="border px-2 py-1 font-mono font-bold text-green-700">0.27</td><td class="border px-2 py-1 font-mono">0.27</td><td class="border px-2 py-1 font-mono">0.25</td><td class="border px-2 py-1 font-mono text-red-700">negative</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Win Rate</td><td class="border px-2 py-1 font-mono">~52%</td><td class="border px-2 py-1 font-mono">52.4%</td><td class="border px-2 py-1 font-mono">—</td><td class="border px-2 py-1 font-mono">—</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Max Drawdown</td><td class="border px-2 py-1 font-mono text-red-700">severe</td><td class="border px-2 py-1 font-mono text-red-700">−76%</td><td class="border px-2 py-1 font-mono">—</td><td class="border px-2 py-1 font-mono text-red-700">catastrophic</td></tr>
+            <tr><td class="border px-2 py-1 font-bold">Adaptability</td><td class="border px-2 py-1">Rolling ✓</td><td class="border px-2 py-1">Rolling ✓</td><td class="border px-2 py-1">Static ✗</td><td class="border px-2 py-1">Static ✗</td></tr>
+          </tbody>
+        </table>
+        <p class="mt-2"><strong>Simple Momentum</strong> = go long if last return &gt; 0, else short. Terrible performer: −80%.</p>
+      </div>
+
+      <div class="bg-white border-2 border-cyan-300 rounded p-3">
+        <h3 class="font-bold text-cyan-800 mb-2">KEY OBSERVATIONS</h3>
+        <div class="bg-cyan-100 rounded p-2 mb-2">
+          <p class="font-bold">What worked:</p>
+          <p>• Both AR(1) and ARIMA beat buy-and-hold (+29% vs +19%)</p>
+          <p>• Rolling forecasts adapt to changing markets</p>
+          <p>• Win rate &gt; 50% (not random)</p>
+        </div>
+        <div class="bg-red-100 rounded p-2 border-l-4 border-red-500 mb-2">
+          <p><strong>What didn't work:</strong></p>
+          <p>• Drawdowns are unacceptable (−76%)</p>
+          <p>• Win rate barely above 50% — not much better than a coin flip</p>
+          <p>• AR(1) is too simple — one signal (last week's return)</p>
+          <p>• Prediction accuracy swings wildly: best 6-month = 77%, worst = 23%</p>
+        </div>
+        <div class="bg-yellow-100 rounded p-2 border-l-4 border-yellow-400">
+          <p><strong>💡 NEXT STEPS (Part 2 of the series):</strong></p>
+          <p>• Volatility modeling (GARCH, etc.)</p>
+          <p>• Try multiple ARIMA orders in a loop: (1,1,1), (2,1,2), (3,1,2)…</p>
+          <p>• Incorporate transaction costs</p>
+          <p>• Test on different assets (SPY, etc.)</p>
+          <p>• Use QuantStats for deeper analysis</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 9: QUICK REFERENCE -->
+  <section class="border-2 border-gray-600 rounded-lg p-3 bg-gray-100">
+    <h2 class="font-bold text-gray-900 mb-3 bg-gray-300 rounded px-2 py-1">📋 QUICK REFERENCE — All In One Place</h2>
+
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Col 1: Key Functions -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">KEY FUNCTIONS</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Function</th><th class="border px-1 py-1">What It Does</th><th class="border px-1 py-1">Gotcha</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">ARIMA(data, order=(p,d,q))</td><td class="border px-1 py-1">Initialize model</td><td class="border px-1 py-1">Order = (AR, I, MA)</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">.fit()</td><td class="border px-1 py-1">Estimate coefficients</td><td class="border px-1 py-1">Can be slow</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">.forecast(steps=1)</td><td class="border px-1 py-1">Predict next period</td><td class="border px-1 py-1">Returns array</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">adfuller(series)</td><td class="border px-1 py-1">ADF stationarity test</td><td class="border px-1 py-1">p &lt; 0.05 = stationary</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">plot_acf()</td><td class="border px-1 py-1">ACF plot → MA order</td><td class="border px-1 py-1">Use on stationary data</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">plot_pacf()</td><td class="border px-1 py-1">PACF plot → AR order</td><td class="border px-1 py-1">Use on stationary data</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">.resample('W')</td><td class="border px-1 py-1">Convert daily → weekly</td><td class="border px-1 py-1">Specify agg per column</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">.pct_change()</td><td class="border px-1 py-1">Simple returns</td><td class="border px-1 py-1">First row = NaN</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">(1+r).cumprod()</td><td class="border px-1 py-1">Cumulative return</td><td class="border px-1 py-1">Subtract 1 for %</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 2: Common Mistakes -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">COMMON MISTAKES</h3>
+        <table class="w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr><th class="border px-1 py-1">Mistake</th><th class="border px-1 py-1">What Happens</th><th class="border px-1 py-1">Fix</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-1 py-1">Modeling prices directly without d=1</td><td class="border px-1 py-1">Non-stationary → bad forecasts</td><td class="border px-1 py-1">Use d=1 or model returns</td></tr>
+            <tr><td class="border px-1 py-1">Using ACF/PACF on prices</td><td class="border px-1 py-1">Misleading patterns</td><td class="border px-1 py-1">Always use on returns/diff</td></tr>
+            <tr><td class="border px-1 py-1">Confusing ARIMA's MA with SMA</td><td class="border px-1 py-1">Wrong mental model</td><td class="border px-1 py-1">ARIMA MA = error correction</td></tr>
+            <tr><td class="border px-1 py-1">Static model (train once)</td><td class="border px-1 py-1">Fails after regime shift</td><td class="border px-1 py-1">Use rolling window</td></tr>
+            <tr><td class="border px-1 py-1">Ignoring drawdown</td><td class="border px-1 py-1">Capital destroyed</td><td class="border px-1 py-1">Always check max DD</td></tr>
+            <tr><td class="border px-1 py-1">Overfitting order (p=10, q=10)</td><td class="border px-1 py-1">Model fits noise</td><td class="border px-1 py-1">Keep p,q ≤ 3 typically</td></tr>
+            <tr><td class="border px-1 py-1">Predicting far ahead</td><td class="border px-1 py-1">Accuracy drops fast</td><td class="border px-1 py-1">Only 1-step-ahead</td></tr>
+            <tr><td class="border px-1 py-1">p ≥ 0.05 on ADF test</td><td class="border px-1 py-1">Non-stationary data</td><td class="border px-1 py-1">Difference or use returns</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 3: Numbers + Checklist + Shorthand -->
+      <div>
+        <h3 class="font-bold text-gray-800 mb-2">NUMBERS AT A GLANCE</h3>
+        <table class="w-full border border-gray-300 mb-3">
+          <tbody>
+            <tr><td class="border px-1 py-1 bg-gray-50">Asset</td><td class="border px-1 py-1 font-mono font-bold">PYPL (PayPal)</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Frequency</td><td class="border px-1 py-1 font-mono">Weekly</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Total Weeks</td><td class="border px-1 py-1 font-mono">~540</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Rolling Window</td><td class="border px-1 py-1 font-mono">100 weeks</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">ARIMA Order</td><td class="border px-1 py-1 font-mono">(2, 1, 2)</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">AR(1) Order</td><td class="border px-1 py-1 font-mono">(1, 0, 0)</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">ARIMA Return</td><td class="border px-1 py-1 font-mono font-bold">+29%</td></tr>
+            <tr><td class="border px-1 py-1 bg-gray-50">Buy-Hold Return</td><td class="border px-1 py-1 font-mono">+19%</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="font-bold text-gray-800 mb-2">WORKFLOW CHECKLIST</h3>
+        <ol class="list-decimal list-inside space-y-1">
+          <li>Download data &amp; resample to weekly</li>
+          <li>Compute returns (.pct_change)</li>
+          <li>Check stationarity (ADF test)</li>
+          <li>Plot ACF → choose q (MA order)</li>
+          <li>Plot PACF → choose p (AR order)</li>
+          <li>Set d=1 for prices (d=0 for returns)</li>
+          <li>Implement rolling ARIMA forecast</li>
+          <li>Generate signals (forecast vs price)</li>
+          <li>Compute strategy returns</li>
+          <li>Evaluate: Sharpe, drawdown, win rate</li>
+        </ol>
+
+        <h3 class="font-bold text-gray-800 mt-3 mb-2">SHORTHAND DECODER</h3>
+        <table class="w-full border border-gray-300">
+          <tbody>
+            <tr><td class="border px-1 py-1 font-mono">AR(p)</td><td class="border px-1 py-1">AutoRegressive, order p</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">ARIMA(p,d,q)</td><td class="border px-1 py-1">AR + Integrated + MA</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">ACF</td><td class="border px-1 py-1">AutoCorrelation Function</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">PACF</td><td class="border px-1 py-1">Partial AutoCorrelation Fn</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">ADF</td><td class="border px-1 py-1">Augmented Dickey-Fuller</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">SPY</td><td class="border px-1 py-1">S&amp;P 500 ETF</td></tr>
+            <tr><td class="border px-1 py-1 font-mono">PYPL</td><td class="border px-1 py-1">PayPal Holdings</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="bg-yellow-100 rounded p-3 mt-3">
+      <p class="font-bold text-yellow-900 mb-2">🎯 KEY TAKEAWAYS</p>
+      <div class="grid grid-cols-4 gap-3">
+        <p>1. Simple MA rules fail during regime shifts (COVID, wars, rate hikes). Statistical models like ARIMA adapt because they retrain on recent data.</p>
+        <p>2. Always check stationarity first (ADF test: p &lt; 0.05). Model returns (stationary), not prices (non-stationary) — or use d=1 to let ARIMA difference automatically.</p>
+        <p>3. ACF tells you MA order (q), PACF tells you AR order (p). Memory trick: "A→M, P→A" — the opposite letters. In finance, d is almost always 1.</p>
+        <p>4. Use rolling one-step-ahead forecasts, never static models. Even ARIMA has severe drawdowns — it's a starting point, not a production-ready strategy.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="mt-3 text-center text-gray-600 border-t-2 border-gray-300 pt-2">
+    <p><strong>THE MASTER FORMULA:</strong> ARIMA(p, d, q): P_t = α + [β₁·P_{t-1} + β₂·P_{t-2}] + [ε_t + γ₁·ε_{t-1} + γ₂·ε_{t-2}] — AR captures momentum, I handles non-stationarity, MA corrects prediction errors</p>
+    <p class="mt-1"><strong>THE ONE THING TO NEVER FORGET:</strong> ARIMA's "Moving Average" is about <em>error correction</em>, NOT trading moving averages (SMA/LMA). And always use ROLLING forecasts — a model trained once is a model that will fail.</p>
+  </footer>
+
+</body>
+</html>
