@@ -1,0 +1,726 @@
+Speaker 1  0:00  
+Hazim is not working in this room. The next thing is, we are going to look at how the evolution happened. So how did we go from here to here? So from here to here? So we are going to see how different components kept getting added and so on and so forth. Then we are going to look at some of the exchange side interactions. So basically, how the exchange site architecture, architecture of the exchange site interaction. So basically the world matching engines, gateways and so on. And then I'm not sure so how much value this part is, but then if some of you are interested, I can discuss this part in detail, and say, current, New Age innovations. So this is, this is how the lecture is structured today. Okay, cool, so
+
+Unknown Speaker  0:57  
+let's start from here. So yes.
+
+Speaker 1  1:07  
+So anyone wants to, like, guess what are the different components of a trading system? So we are going to start with the architecture of a traditional trading system. So anyone wants to guess, what are the components of a trading system? Someone said,
+
+Unknown Speaker  1:28  
+market terminal and go on
+
+Speaker 1  1:33  
+other components. What are the other components that you server, market participants. So this is a trading system, trading platform. So what are the different components of a trading platform? So someone mentioned feed handler, strategies, gateways. Someone mentioned pit brokers. Pit brokers, participants. This is the ecosystem that we are talking about. Someone said server. Server is well within the server. What do you have? Someone says, Please introduce yourself. I know you are one of the co founders of quad density. We've just gotten into the flow of the lecture, so we'll skip this for the time being. Market connectivity gateways, okay, cool. Order management system, risk management system, market adapter processor, broker terminal and index server. What is an index server, Trader workstation. Cool, cool. Thank you. So, basically, yes, so at a broad what to buy, when how much, when to sell and buy? Well, this is the logic part of it, right? Someone mentioned order management, market, Data Execution, management and so on. Data structures. Data structures is basically the program of it, the code you use, data structures in various code block, each code block would have some data structures, right? So that's not okay. So basically, essentially, what you need to have is a system to read data from the market. So you need to be able to comprehend the market data that the exchange is throwing at you. Then you would also want to store that data for future analysis, right? So a storehouse of historical data, storehouse of the market data for analysis. You might want to be able to have a tool to analyze that historical data. Then you would want a system where the trader can input his trading decisions, so a system where the trader can say that, hey, this is the current market data that I see just a second. This is the current, sorry, this is the current market data that I see. So based on this, this is what my trading decision is. So therefore you, based on what the trader sees in the market data the trader would want to be able to input historic decisions. Now, once the trader makes a decision to make some trading decisions, there should be a way to route the orders to the exchange. So basically, you need a way to route the orders to action. So someone asked by storehouse of historical data. Do you mean, like a SQL database? Yes, for example, yes, it's a database. So now this whole thing, it's actually very simple and straightforward. And then we will see how this whole entire architecture has evolved from what it was historically to what it has become now. So a traditional system. So if you are to explain it diagrammatically, this is how it would look like. So you have the exchange, so you get market data from the exchange. So once you get the market data from the exchange, you need a software block which should be able to comprehend that the data that the exchange is to. Throwing at you. So what does this mean? Okay, so just let me open up another piece of what happened.
+
+Speaker 1  5:13  
+So basically, the market data that the exchange sends to you is typically in a format which differs from Exchange to exchange. So exchange, one could send you market data in a particular format wherein they would say, they would say that the first N bytes is the instrument ID, the next N bytes is the best bit. The next N bytes is the best ask. The next and bytes is the best bit quantity and so on. In case of exchange two, this could be in a totally different format. In fact, in case of exchange two, this part could be just some encryption and so on, right? So therefore different exchanges speak different languages. So therefore your market data adapter, what it does is it understands the language of each exchange. So from exchange one, you get it in a certain language, certain format. So the market data adapter for exchange one is able to interpret the format in which exchange one sense, in case you are connected to multiple exchanges, so exchange two, so your market data adapter for exchange two will be able to comprehend the data for exchange two. So therefore, the first program that you need is the market data adapter to be able to comprehend data from the exchanges. Okay, so the next one is, well, you store it for your analysis. It's not mandatory. It's not mandatory. You might, you might not have this, but it's good to have this. Okay, you could also, say, hypothetically, buy data from third party vendors and then store that directly. Okay, cool. Now you might also want to extract a subset of this data for your individual use. Why do you need that? To be able to understand why we need that? What we need to do is we need to understand the scale at which we are operating. So anyone wants to guess what is the number of instruments that we are trading on the exchanges on a daily basis. Number one, number two, what is the amount of data that we get from the exchanges on a daily basis? So how many instruments are listed, say, on CME, on NSE on a daily basis? Any any wild guesses? So someone said, 200,000 someone say 6000 so NSE in India is the exchange with the highest volume globally, right and see by number of trades and even by the highest volume contracts, even by value and CME highest value overall, right? So across all contracts. So how many instruments do you think are listed on CME and NSE boat? So someone said million. Someone two people said around 6000 someone says 4500 5000 blah, blah, blah, blah, blah. And in terms of data. So someone says 30 GB per hour, someone says like two terabytes. So it's a wild scale, wild range. So the true answer is over 100,000
+
+Unknown Speaker  8:34  
+instruments in each exchange,
+
+Speaker 1  8:39  
+the amount of data, few 100 gigabytes per day in
+
+Unknown Speaker  8:50  
+compressed binary form. So this
+
+Speaker 1  8:56  
+is the amount of data that you get on a daily basis. Now your trading strategy might be, hey, the moment there is a change in the price of the index future, I need to buy the if there is a change in price of the first month index future, I need to trade in the second month index future. That's it. So you are looking at the price of one instrument. You are trading in another instrument. You don't care about the rest of the nearly 100, 1000 instruments. You are only bothered about two instruments. You don't care about the hundreds of gigabytes of data that you have. You only care about a very small subset of it. So therefore, what you do is you have an operational data store which is a subset of the which is a subset of the information that you have here. Okay, what next? Well, all that is well and good, but then you need to make money. To be able to make money, you need to able to make trading decisions, input your trading decisions. So this is the trader workstation, as someone mentioned, TWS is where he's. Traditionally, traditionally, all the activity would happen so that trader would be able to see market data. So the market data will be fed here, right? So the trader would be able to see patterns in the market data, and they would compare patterns in the market data with historically observe, sorry, historically observed patterns, patterns which are observed in the historical data in the operational data store and then generate orders to be able to send to the exchange so 123, so one, this the market data is being displayed to be able to comprehend and observe patterns. Number two, you compare the trader manually compares with historical patterns. Number three, if the patterns are of interest, if you see that historically, whenever event A happened, there was, say, a 75% probability of event A being followed by with good probability profitability. So that is your historical observation. And then when you are listening to market data, live market data, you see that event A has happened. So therefore you trade in anticipation of event B. So when you trade in anticipation of event B, you send out some orders, right? So therefore, once you make the decision to send out orders, what you need to do is you need to contact the Order Manager. So some people mentioned OMS Order Manager. So now, you contact the traders work session, sends a message to the OMS. What does the OMS do? It sends orders to the exchange. It does some risk management, and take some things of that sort, and then sends orders to the exchange. The Exchange responds back, saying that this is what happened to the order and so on, right? So the Order Manager would then route the orders to the exchange. The it would also get response from the exchange about executions. So the moment you send an order, the immediate thing that the exchange does is it acknowledges the order. It says that, yes, I have received it. Or sometimes it could reject the order, right? It puts it, hey, this order is not accepted because of whatever. Either say things like your location code in the order could be wrong, your broker ID could be wrong. Your order could be the price could be outside the daily price range, or the instrument might not be trading at that point of time. The instrument could be disabled for that day. It could be outside market hours, or say you have sent out an order to replace an existing order, or to cancel an existing standing order so you could get a rejection saying that, hey, you cannot cancel it anymore because your order already got executed. So basically, you had sent an order at time. So you had sent an order at time t is equal to one and at t is equal to one. You sent an order at t is equal to two. You had an execution at time t is equal to three. You sent an order to cancel it, but at t is equal to three. The exchange would respond back saying that, sorry, you cannot replace because it has already been executed. Okay, so you also get those executions rejections. So, so basically it's a two way communication. The Order Manager has to handle two way communication. So this is going to be a TCP, IP communication. The Data Warehouse could also probably store records of order sent out and today's age because of compliance requirements, you do need to store that unfortunately, you might have noticed that all along, I have broken this diagram into three components using a series try for kited it using a series of two vertical dotted lines. Anyone wants to guess what are those? What are these three components? Component one, component two, component three. So anyone wants to guess what these three components
+
+Speaker 1  14:21  
+are, exchange, broker, trader, cool, mainframe data, warehouse, routing, okay, front end, back end and external, okay. Cool, traders, UI, server side, components, external systems. Cool, so three answers are nearly Correct. Means are correct. So, exchange, broker, trader. So this is the exchange. This is a broker. This is the trader. Someone says, traders, UI, server side, components, external. That is correct. And then there was one more answer, which has now gone into the This means section. So I'm not sure what it was, but that was a. It was also correct. Let me check. Let me just scroll down very quickly to dismiss exchange, broker, front end, back end, traders, UI, okay, okay, so this tree are correct. Okay, so now, okay, exchange, so which is the external world? So you don't have to implement anything on this side. So you don't have to implement this. You don't have to implement this a server which is a central node for understanding exchange data and forwarding to multiple trading applications. So you understand the exchange data, you forward it to multiple trading applications. Instead of the training thread, we might also forward to other applications, for example, an analytical lab analytical article, so you could have an analytical lab under central node for handling all orders to the exchange. So which is that, is this Order Manager? Cool. Now the next thing is, the third part is the application. So it's basically like a client server architecture, the applications in the trader species, which does all the processing, wherein,
+
+Speaker 1  16:29  
+I should not say which does all the processing I should address, where the trading decisions are made, right? Everything, in a sense, this part, this part is supporting this part, right? So these are not rigid, but the diagram provided is a generic architecture. So for example, each there could be multiple each client's machine could have its own Order Manager directly communicating with the exchange or, for example, this operational data store could reside on the server itself and so on. But at a very broad level, this is how the architecture looks like, right? What is
+
+Unknown Speaker  17:24  
+the challenge in this architecture? Everything has to be done by the trader himself or herself.
+
+Speaker 1  17:30  
+Everything has to be done by the trader himself or herself, which is number one, manually compare patterns in the current exchange. Data to historical patterns. So you get market data, you see patterns in them, you compare them with patterns that you have observed historically. The next thing is, you have to furiously type in orders to trade on the exchange. So therefore, the traditional trading system had a few bottlenecks, like hurdles. So to be able to do well, you need to the trader had to be constantly at his desk and keep looking for opportunities patterns of interest. The moment patterns of interest happened. They had to, like carefully but furiously, type in those orders and then get into a what do you call stress situation, and then ensure that the right order is sent out right because they are doing it manually. So this is how the traditional architecture was. So now people say that, hey, if this is the architecture, and we are generating profitability through this, so we should be looking at optimizing this architecture. So first thing, first thing is people say that, Hey, why do we need a human trader? When they are on vacations. They have lunch toilet breaks there. They have to be at their trading desk for to exploit any opportunity. And obviously you have to deal with the HR challenges of managing human beings right, their HR problems, HR complexities and so on. Okay, someone quickly asked a question, so let me very quickly answer it. So if Exchange provides all the information, then why do you buy reference data from vendors like Bloomberg or writers? Well, the thing is, the Exchange provides live data which you can store, but then it's only from the day you start storing, right? So if you make a project that, hey, let me start listening to NSC data so you let me do some analysis on, say. Or NSE. Build a trading strategy on NSE, you start listening connecting to the exchange. To be able to connect to the exchange, you need to put your server in a place which is connected to the exchange. You need to take all those lease line connectivities. Number one, you need to place a server in a in a data center which is connected to it. So first you need to pay for the line, the physical connectivity. You need to pay for it. You need to pay for the server. You need to start recording it, and you only have the data for the days on which from which you are connected. So, so therefore this is not a scalable solution. So before you start trading on an exchange, if you have to set up all this infrastructure and start recording, and then you only have data for days since you started recording. So this is not scalable. So say, what if you want to back test your strategy for hugely volatile days or day means you want to see how your strategy would have performed. Or at the time of, say, covid circuits the market upper and lower circuits at the time of covid in 2020, or say, the volatility when certain big events, like, say, elections, Brexit results, or say, election results, Brexit is also under election or say, the limit crisis or whatever. So you want to see how your strategy would have performed on various historical days. You don't want to put your server and then start recording and so on right. You can buy your data directly from vendors. In some cases, some exchanges are also vendors, so they also sell their historical data. But different exchanges send in sell in different formats. Message exchange has its own format in which we store records and sales historical data. So one reason why people go to data vendors is because they are sell you historical data for multiple exchanges in the same format. So I hope that answers the question, why do we need vendors like Bloomberg and Reuter? I'm not a salesperson for Bloomberg or writers. I'm just giving you a reason why the ecosystem has
+
+Unknown Speaker  22:26  
+service providers like them.
+
+Speaker 1  22:29  
+And then someone mentioned Carlos, Zacarias, Kalyan and cabalos. I'm very interested where you are from. Mentioned that also data vendors. So sell other sorts of data, like, not just price data, it could be like fundamental data, right? So you could they sell fundamental means there's news data, there is economic data, and there is all sort of fun financials of companies. So if you're trading equities, what is the the balance sheet and PNL statement data of those companies. So therefore you need vendors, okay, okay, coming back to, how the coming back to this, actually. So how are we shifted from traditional to modern? Why this, instead of modern? I should say, I
+
+Speaker 1  23:24  
+Yeah. So why we shifted so first, you don't want to deal with the tantrums of human failures. Two, oops, sorry. Anyone wants to guess what is the fastest human response time to what is the fastest response time that a human being could have to any event, any trigger, any stimuli? So someone says less than point, two seconds, half a second, five to 10 milliseconds, one millisecond. F1 driver, 250, milliseconds. Point 252, 50 milliseconds is 0.25. Seconds, microseconds, milliseconds, seconds. I love this. Seconds is actually more like it to be really fair if you're not truly alert if someone shoots at you, and then you're not expecting a bullet to come in your direction. You will definitely take a few seconds, but if you're aware, so what is the process? Response time? Okay, so just to tell you what that number is, there is a very interesting thing that happened once this
+
+Speaker 2  24:39  
+is like, no, what do I cool
+
+Speaker 1  24:50  
+because of the screen sharing I couldn't see properly, yeah, so basically, there was one algorithmic trading platform which tried to sell its more. Market its platform. So what they did is, during the FIA, and then this is in Chicago, and then this I'm talking about 12 years ago. So what they did is they had a game at their booth, and then a few 1000 people
+
+Unknown Speaker  25:22  
+were at the FIA. Event? And then I'm sure a few 1000 played the game. So what the game
+
+Speaker 1  25:30  
+did was they had a an iPad, so a tablet. So I should address a tablet, written iPad. So this was an iPad. On the iPad, there was a button which was
+
+Unknown Speaker  25:48  
+which was blue in color, dead.
+
+Speaker 1  25:53  
+Once the game is started, suddenly the color would change
+
+Unknown Speaker  25:58  
+from blue to red.
+
+Speaker 1  26:02  
+The color will change from blue to red. The moment the color change from blue to red, you have to tap on the screen. That's it. So the input was change of color, the output was tap on the screen. Whoever could do it fastest across the three days of the event, which is across 1000s of people would get the iPad as a gift. What do you think is the fastest time in which anyone did that in that event? The answer was around point one, five seconds. 0.15 so 150 millisecond. But it could depend upon the ability of the iPad to measure response time and so on and so forth. Right? The fastest theoretical limit is of the orders of order of 0.1 second.
+
+Unknown Speaker  26:54  
+Okay, the next thing.
+
+Speaker 1  26:57  
+Now, a human being can monitor prices of up to 50 instruments for predefined simple patterns will not be able to understand and manage risk for portfolios with hundreds or 1000s of instruments and and the moment patterns of interest showed up, they would have to type the order details with great position. So Howard is all solved. If you have a profitable trading strategy and you have a human being trading it, you have this drawback, this drawback, this drawback, this challenge to scaling up, this challenge to scaling up. And this risk element, this downtime risk, this scalability risk, scalability risk, failure or catastrophe risk, and this risk is in terms of not being able to participate in opportunities which are short lived, or being able to participate and in an opportunity late. So let that the opportunity has been captured by someone else, right? So how do you solve for that? Well, the clearest idea is to go algorithmic. So what do you think is the response time of an automated trading system. So a human being has this, what is an automated trading systems? Response time? Any any guesses that you guys want to make? Nanosecond? Cool. One nanosecond? Okay, cool. Cool. Someone mentioned Carlos. Zakarios mentioned 100 microseconds. Shreyash mentions one millisecond, microseconds. Okay, so the answer depends, is it a software only system, or is it a hardware based system? So someone was 10 to 20 nanoseconds, someone mentioned picosecond. Okay, so the correct answer is nanoseconds, but then it's going to be more than 20 nanoseconds just the phi and Mac in FPGA, the fastest implementation that I'm aware of is around 35 nanoseconds. So plus then you need to have your logic, and then you need to build after five Meg, you need to do TCPIP, and then you need to build a package of your for the encryption or any other protocol that the exchange has. So the fastest is going to be double digit or triple digit nanoseconds, okay, if you're doing it in hardware. So what is the nanosecond? Just to give you an idea of the scale you.
+
+Unknown Speaker  30:07  
+Business with AutoCorrect, you never know what's Yeah.
+
+Speaker 1  30:10  
+So when I was typing it, I knew that someone or other would ask, what is a hardware only best trading system? So let me explain that, and then if so, what does this mean? This is like 0.00000x
+
+Unknown Speaker  30:25  
+seconds. Fastest
+
+Unknown Speaker  30:35  
+software only. System.
+
+Speaker 1  30:50  
+Okay, so what does it mean? Hardware only systems and software only systems in software only systems.
+
+Unknown Speaker  30:59  
+Let me try to guess how to explain.
+
+Unknown Speaker  31:12  
+Why am I not able to see
+
+Unknown Speaker  31:22  
+the where is my Chrome?
+
+Unknown Speaker  31:31  
+Okay, yeah, I hope you are able to see.
+
+Unknown Speaker  31:41  
+So, basically,
+
+Unknown Speaker  31:46  
+the moment, moment data comes into your
+
+Speaker 1  32:15  
+okay, even this is not bad. So basically, the way your system is connected to the network is you have a local area network port where local area network cable is connected, so this is connected to a LAN card. So the cable is connected to a LAN card within the land card, you have hardware wherein you could write your logic entirely in the hardware. If you don't write your logic in the hardware, the way it happens is, where is the land
+
+Unknown Speaker  33:00  
+card port? So memory slot,
+
+Unknown Speaker  33:09  
+okay, so,
+
+Speaker 1  33:13  
+yeah, so, so, basically, if your logic is not so in a normal case, the information come, first comes to a network card, and then from the network card, it goes via PCI to the CPU, and within the CPU, Your software code is executed. So the CPU is a place where it can execute any software logic. So basically, it understands the software code and then executes it on the data that resides in the CPU. Okay? So basically, when you write a programming language in C, C Plus Plus Java, Python, or anything that executes in the CPU. So I
+
+Speaker 1  34:25  
+okay? So basically, the way computer to computer communication happens is basically you have a software application so which generates some data, so that goes into the operating system. Part of it, from there, it is converted into zeros and ones in the physical layer, it goes via the network to the other side. Here, the zeros and ones are converted into the electrical signals are converted into zeros and ones here, so the physical layer converts the zeros and ones into electrical signals. Here, the electrical signals are reconverted by. Into zeros and ones. This goes into the operating system, which converts the zeros and ones into bytes and then, therefore and the more meaningful information, which is then forwarded into the software application, where the software application then determines that, oh, this is a packet, which means that the this is a packet which is about the market data. This is a packet about the order sent, and this is, this was the order, and so on and so forth, right? So now people say that, why does information have to traverse all the way up from the land card, which handles the physical layer, all the way up through the operating system via via PCI network on the motherboard, all the way to the application layer. So someone says, screen not visible? Are you not able to see the Chrome, Chrome window?
+
+Unknown Speaker  35:56  
+Okay, yeah, so, so basically,
+
+Speaker 1  36:01  
+all, it means is the moment.
+
+Speaker 1  36:12  
+All it means is the moment the information hits your Yep, so this is the land card. You fit it to this right the moment the information via a network cable hits your server, it is processed here, and then you don't In hardware itself, because remember what we
+
+Speaker 2  36:34  
+discussed about this?
+
+Speaker 1  36:43  
+About market data packets. So the market data from the exchange always comes in a certain format, right? This is how the market data comes. The first field is the instrument ID, the second field is bid, ask, and so on, right? So the moment you get market data in a certain format, you could write code in the you could write hardware logic. So basically, you could burn the hardware gates in such a way that the hardware itself will decipher that. Okay, this is the incoming sequence of zeros and ones. So therefore this means this is the packet about, say, Apple, and this is the bid, and this is the ask and so on. So all this is implemented using hardware code rather than software, and it will be implemented in the LAN card itself. Under the land card itself will have some trading logic, and then it will send out orders. So that could happen to the tune of double to triple digit nanoseconds. Now if, instead of the land card handling this, it goes is from the land card via PCI, all the way into the CPU. So this is a LAN port. It goes to the land card. From the land card, it goes by the PCI all the way to the CPU, and the CPU then, executes the logic in the CPU. It's not the CPU is a generic processing unit, so any software code that you write the CPU will execute it. In contrast, on the LAN card, you will have to, like design, burn the hardware gates in a in a specific format to do a specific task. So you said that, hey, whenever the input market data is Apple, and then the bead is like, this bit is greater than x or the ask is less than y, do a certain task, right? So that is, your hardware can only do that thing. That's it. So when you implement logic in hardware. Your hardware can only do that. That's it. Nothing else. But if the information goes from the land cable to the through the PCI to the CPU, then the CPU can implement it can do anything, right? The CPU just executes whatever the software asks it to do. In contrast, on the land card, whatever you implement in what, how, the way you design the hardware, it will only do that specific task. So therefore, if you have some very specific logic, you implement it in the hardware by designing the hardware in a certain way. So if you do design the hardware in a certain way, you can respond to opportunities in this much time. Now, instead of that, if you want something generic, so basically, or something more complex, which is difficult to implement in hardware. So instead of building the hardware in a certain way to do a certain task only if you implement it in software where there is very high flexibility, the software can do anything, or you can write anything in software, right? So therefore the fastest system could be in single digit microsecond. Okay, so I hope I was able to answer this question. The difference between hardware only trading systems versus software based trading systems. In hardware only trading systems, the logic is written in the FPGA. That is
+
+Speaker 2  43:37  
+year, I Think we are connected back, thanks.
+
+Unknown Speaker  43:49  
+Hello, hello, hello, can you guys hear me?
+
+Unknown Speaker  43:54  
+Hello, hello,
+
+Speaker 1  44:06  
+oh, sorry, guys, so it seems
+
+Unknown Speaker  44:12  
+screen too, it seems
+
+Speaker 1  44:21  
+because today, being a Saturday, there was a upgrade of network infrastructure at our office. And then I'm in the office right now. So this is really tragic, the fact that this got him. I think I'm one of the, probably the only faculty who does this from office, and therefore this coordination was probably missed. So they just upgraded a certain network setting, and then it just disconnected us from sometime. So I hope we are good from now. On cool so. So basically, we were discussing the difference between hardware only trading systems and a software based trading system. In a hardware only trading system, you implement the logic in your hardware in a So, so within the land card, you have certain slots which you can program, and then you can change the hardware logic. This is not a land card memory, so you can program some of these, and then some, some you can do permanently, in case of ASIC cards, and that's, I mean, reprogram, rewrite the hardware, re, burn the hardware. So that is, those are FPGA cards. So, so, so therefore hardware only trading system is where in the logic is very rigid and then implemented in the hardware. And then you cannot change anything. In case of software only, the information goes to the CPU. Within the CPU, the CPU executes any logic that the software program asks it to implement execute. So therefore there is a lot of flexibility. So these are the times that we are talking about. Okay?
+
+Speaker 1  46:22  
+So someone says, Will hardware is equal to GPU plus VRAM plus cloud company? No, so hardware is not GPU plus VRAM plus cloud company. Hardware is just when you implement everything in the land card, that's it within the resources available, some FPGA blocks available within the land card, so you implement it here. That's it. So machine language is zeros and ones because it is electricity on, off. Is that correct? Yeah, some format. I also I'm not a hardware electronics guy. I'm a computer guy. So I know that it's zeros once. How are the zeros and one transmitted over network, cable, optical fiber, cable and so on, whether it is electricity on, off, how is it done signals? So it's about, it's digital signal processing, which I'm not an expert on. Okay, so coming back to our class, where is that system architecture? Okay, cool. So therefore, the fastest response time we got a got an indication. So in case of software only systems, it's single digit microsecond. Now,
+
+Speaker 1  47:51  
+automated trading system can monitor prices of 10s of 1000s of instruments in parallel, and that too, for complex patterns, not just for simple patterns. Plus, here at Irish for example, each trader manages orders, trades and positions in 1000s of instruments in parallel, cool, if tested properly, algorithmic trading system will send millions of orders, logically sound orders in a day, without errors, right? So this is how so basically, there is a definitive benefit to do this shift. So now, what do you need to do this shift? The first thing is to automate what the trader was doing here, which is monitoring of prices, trading, decision and execution of orders, right? So this is now handled in something known as complex event processing block. What does the complex event processing block? Though, it does one, two and three. So so to be able to do one the market data is directly
+
+Unknown Speaker  49:09  
+done here and
+
+Speaker 1  49:14  
+trees it communicates with the Order Manager directly to automate the execution of orders. This is now handled in something known as the complex event processing block. Now for the CEP to operate perfectly, it needs feedback from the Order Manager saying that, this is what happened. This is happening. What happened to orders. This is the current positions. This is what the trades we have gotten, and so on. So it uses this to make the right training decisions. So this is a two way communication. Now, someone talked about GPUs, so this is where the GPUs come into picture. So complex mathematical operations are handled in a dedicated calculation block. Oh. Ah, which could do things in parallel. So this is not in the hot part. As you can see, you get market data fed into CP, which sends orders to the exchange and so on, right? This is a hot part. So this is the hot part, but there is something outside the hot part which keeps calculating certain statistics and so on. Say, for example, it could keep calculating the Greeks of options. The moment you get an execution from the exchange, this is updated in the CEP. Then the CEP will say, Oh, I got an execution. Let me get the Greek of that trade, and then it would update the Greek of the portfolio. So this keeps happening parallelly. It could directly be connected to the maths block. For example, instead of being connected like this, it could be connected like this. So the maths block keeps feeding it information, and the moment the CEP requires that information, it will connect the maths block to get that information. It could be option Greeks. It could be some statistics on correlation or whatever, right? So this keeps doing its calculations. Say, for example, the market data is directly fed here. And the moment some parameters, some characteristics of the market data suggest that the parameters need to be updated, then the maths block will communicate with the c, p, and say that, hey, please update this parameter. Okay. What else now you would say that, Hey, what is the traders app doing? Now, if everything has been shifted
+
+Unknown Speaker  51:35  
+from the
+
+Speaker 1  51:38  
+traders app to the CEP, then what does the traders have do? So anyone wants to guess, what does the traders have do? So,
+
+Speaker 1  51:55  
+someone asked a question, can you give some examples of hardware only trading systems currently in place? But there was a filter currently in place for investment bank, by any investment bank. But if you put the disclaimer by any investment bank, then I would, I would be very hard pressed to think of any hardware only trading system implemented by investment banks. But then if you go to prop trading firms, high frequency trading firms, there are lots of examples of hardware only trading systems.
+
+Speaker 1  52:33  
+So what could it be see? So this is a very common thing, so therefore You
+
+Unknown Speaker  52:58  
+so what you do is, for this is examples, of hardware
+
+Unknown Speaker  53:06  
+based trading solutions, one
+
+Unknown Speaker  53:15  
+pre configured lookup table based triggers. You said that,
+
+Unknown Speaker  53:20  
+hey, if price instrument
+
+Speaker 1  53:26  
+is equal to a bid, turn x and x, send the
+
+Unknown Speaker  53:35  
+following orders.
+
+Speaker 1  53:40  
+Likewise, you could have an entire table, if instrument is equal to A you could have an entire set of table of activity to do, right you?
+
+Speaker 1  54:03  
+Right? So this is a pre configured lookup table. You could say that in the market data, whenever a certain trigger is met, so say the previous day is high, is hit, or you have certain criteria for breakout or momentum, or whatever, the moment that criteria is met, do, do a certain set of threats. Number two, what is good? Could it be? You could say hey, something simple like
+
+Unknown Speaker  54:33  
+say, spread you.
+
+Unknown Speaker  55:08  
+Right? An example of this is the
+
+Speaker 1  55:31  
+so basically, there is a relationship between the prices of crude month one future and crude month to future, right? So there are two future instruments expiring on different dates, but then if there is a uptick in the price of the month one future, which is mostly quit, then there is going to be an uptick in the price of the month to future. Now, therefore, whenever you get an incoming market data packet where the instrument ID is crude month one future. So basically what you do is, in the hardware, you keep looking for this. If this field is the instrument code for crude month one future, you take this field, which is the best bid, you add a certain offset and then create a new packet. So basically, to communicate with the exchange to send an order.
+
+Speaker 1  56:29  
+So to send an order to the exchange, you need to send an order in a certain format. So message in a certain format. So this is probably, say your trader name. This is the location from which you are sending the order. This is the instrument in which you are sending order. This is the price at which you are sending the order. This is the quantity. This is the buy and sell site, right instrument, price, quantity, and this is the side right now. Instrument is whatever is there in this field you just copied here. Price is whatever is there in this field, you copy that, plus add some param, one p1, side, it's pre configured. So if this is side, you say, send a buy order always. And quantity, whatever is the best quantity here, you just copy it here. So the moment a market data packet of a certain format comes you, you already know what is your trader ID and so on. So you create a packet of this format in hardware itself. So within the hardware, what you do is you copy information and create a packet of this format everything in hardware, and then send it to the exchange. So you send it from the network card itself. So the moment the information hits you, this does the processing and then sends it so the information doesn't go via the PCI into CPU and back. So you do it. And that is what this type of strategy is, wherein you just look at the prices of one. Yeah, so basically, if this field is anything other than crude, month one future, you just drop those packets, right? So someone says, If you want to change hardware base, does it mean we have to change the hardware and cannot reuse same hardware? So in case of ASIC, yes, one you have, once you have built a hardware in a certain format. You cannot reuse it. But in case of FPGA, you can re code the hardware so you can re burn the FPGA gates, and then you could keep changing it. Okay, so trading app functionality now is to see the executed trades, correct? Well, here, basically, there are three things. One, the CEP is a strategy for a strategy to execute. It would need some parameters, right? So you say that if ABC happens, if def happens, so now ABC is defined in terms of some mathematical parameters, right? So the value of those parameters you could probably set from the trader set to be able to set those parameters, you need some feedback. How do you get that feedback? You need to know what orders you have sent, what trades have happened, what orders you have sent, what trades have happened, what is the profitability of the trades that you have done so far? What is the position? Are you only doing buy trades or only doing sell threats. Or are you like churning a lot by doing buy and sell both? Are you accumulating huge, risky positions? So based on all of that, the trader could make these decisions, or the system, the CEP itself could be made, bootstrapped and smart, wherein it already knows the PnL position on orders sent and a. Equations done, and then it could try to set the parameters on its own, but you might want to display it to the trader as well. Next the within application RMS. So what does the within application RMS do? So basically,
+
+Speaker 1  1:00:20  
+when you're setting the strategy parameters, there is a logical value for all of that, right? So if you are, say, trying to set a certain parameter to a value which is like, ridiculously high, then the RMS within the traders application should reject it, saying that, hey, this looks wrong. And then can you? Can you set a more logically sound parameter? So that is what within App RMS does. So it so, for example, if you say that, hey, whenever the implied volatility of the index options process 30% then buy the at the money straddle, but instead of typing 30.01 the trader ends up typing 3.01 so the implied volatility is almost always greater than 3.01 so then the moment a trader types it, everything would be bought on the screen, right? So therefore you don't want that. So you so any human typo to ensure that that is taken care of, you need to have a logical range of all input values. So for each parameter that exists here, there has to be a range for parameter one, range for parameter two, low and high, range for parameter three. So that is what the traders have does. Someone asked, that's a very interesting question. Risk management is only performed in the traders app. No, not really. So anyone wants to guess where else is risk management done? Someone asked, what is RMS? RMS RMS is equal to risk management system. So where else is risk management performed? Server level, brokers, Order Manager, Order Manager, cool, cool, cool. So, yes, so theoretically you don't want to do it here, because EC, each CEP, each is a new trading strategy, right? So on your platform, you have trader one who writes his own CEP for strategy one. You have trader two, who roots his writes his own CEP for Strategy two, Trader three, who writes his own CEP for Strategy three. So this is not part of the platform, per se. But then this market data is standard. The market data adapter, irrespective of what strategy you are writing, the market data adapter always stays the same. The Order Manager always stays the same, irrespective of whatever is the trader. So these are known as adapters, market adapter, Order Manager adapter. So these are standard irrespective of the trading strategy. The CEP keeps changing for each strategy, right? So you don't want your risk management to be implemented for each strategy. You have your strategy specific risk checks. So you might have your strategy based risk checks here, but in the main risk check, you will always want to put just before the order flows out of the order miniature, and you would want to implement it once and properly, instead of implementing for each CP, right? So this is where the main order risk management happens. So this risk management only takes care of the fact that the parameters should be within it logical range. This is called a fat finger. RMS taker. What is a fat finger? Imagine you have a really fat finger, and then you're typing on the keyboard. Because your fingers are fat, your fingers end up touching a new nearby key typo, basically, as someone just mentioned, so therefore you don't so this within application RMS checks for typos. But this, what does this do? Any any guesses, what does what are the kind of risk checks that are being handled here?
+
+Speaker 1  1:04:21  
+So this is basically things like, Hey, what is the value of the order? What is the price at which the order is being sent? It is it close to where the market is trading? What is the total size of the order? Is the system continuously buying? So what is the total accumulated buy position? What is the total buy minus net portion. What is the number of buyer outstanding orders? What is the number of say, P and L per instrument? What is the number of outstanding orders? What is the traded value per second, and so on and so forth? So. One says, if you have a strategy, we have to connect it to the CEP rights. Actually, your strategy code would reside within the within inside the CEP.
+
+Speaker 1  1:05:12  
+Okay, so now imagine you are a trading manager. How will you get confidence about how the system is performing? One way to do it is you connect it to something known as an admin monitor. So say, around 12, 1214, years ago. This is one of the this project was something that I truly enjoyed implementing. So having a central dashboard which gives you a peek about how the entire system is operating across across the firm, so it is connected to the Order Manager of each, each of our servers. So Order Manager one, Order Manager two, Order Manager three. And this gives you, is there a texting? Let me see, let me type. I No. So it gives you a
+
+Unknown Speaker  1:06:05  
+server, ah, no.
+
+Speaker 1  1:06:08  
+It gives you, let me try. It gives you information about server health, number one. So basically, Hey, what is the CPU temperature? How many packets are being dropped? I what is the amount of displace left profitability statistics of each server. So that is number two. Then you have some exchange core creation statistics. What does it do? It gives you information about how many orders were sent to the order exchange, how many trades were done with the exchange, how many rejects were received from the exchange, how many of them are critical rejects, then you have something known as the market statistics, so wherein you see that, hey, from each server that you are trading on the exchange. What is the volatility on the exchange? What is the number of trades on the exchange in in those instruments, what is the amount of activity on the exchange in those instruments and so on. So basically, this is one single dashboard, which gives you peace of mind, because everything is working automated, right? So you need to be able to see what is happening. You need to be able to see what is happening inside your you
+
+Speaker 1  1:07:42  
+need to be able to see, oops, sorry. You need to be able to see what is happening inside your Order Manager. So this admin monitor gets an overall picture of how you're the state of all the Order Manager, what is the number of orders and by each Order Manager, what is the traded value at each order manager, and so on. Okay, okay, so and when? So there is one question, and when there is a source of data which is running live, like, let's say, weather forecasts or budget results which might affect the stocks movement, would it be correct? Okay, we will come to this. So since scaling up is now possible, so the traders role has changed dramatically, right? So earlier, the traders role was, keep looking for patterns, make a trading decision, which is the fact that you have to send an order and then, and then also do risk management and so on, right keep looking for patterns and then execute trade. Now the trader doesn't have to keep monitoring and executing the traders role has become much more sophisticated. He has to find it has become much more analytical, because the traders role has become much more analytical, so the traders can now, would want to work with more complex systems, right? So the prices of are known. It's an interconnected world, so the prices of instruments trading on one exchange are influenced by activities on multiple exchanges. So for example, st microsystem is listed in borsite Aliana. It is also listed in euronexperis. It is also listed in bats Europe. So therefore, if there is an uptick in, say, bats Europe, then there would be an uptick in borsite Aliana and euronex Paris. So therefore, you want information across multiple exchanges into your CEP to be able to make the right trading decision, right So, so therefore, not just that, actually, it's very interesting. So you're you. It's also impacted by
+
+Unknown Speaker  1:10:04  
+information across
+
+Speaker 1  1:10:10  
+other asset classes. So for example, exchange one could be a commodity trading exchange where, say, rubber is listed. Exchange two could be equity exchange where a tire company is listed. So when there is an uptick in the price of rubber on exchange one, what do you exchange expect? So when ryer rubber on the Commodity Exchange has an uptick, what do you expect the price of the stock tracking a tire company. How do you expect it to get impacted? So basically, inverse is what some people are saying. Okay, so basically the raw material price has gone up, right? So probably the stock price will go down. So therefore, traders would want to input information from multiple exchanges into your trading system. When gold or silver on the Commodity Exchange goes up or goes down, it would impact the price of jewelry stocks when the currency gets appreciates or depreciates in the currency exchange, then the stock prices of companies which are importing or exporting will go up or go down.
+
+Unknown Speaker  1:11:36  
+So so therefore traders
+
+Speaker 1  1:11:42  
+wanted to connect multiple exchanges. These need not be exchanges, as someone asked, What if someone wants to connect budget, weather forecasts into it? So we are coming to we'll come to that part slowly. Just bear with me. So now to be able to connect multiple exchanges, there were also certain challenges. For example, each exchange, remember, each exchange speaks its own unique language. Each action speaks its own unique language. In case of exchange one, this is where, this is how the market data is. In case of exchange two, the market data could be in a totally different format. So it could probably the instrument code could be here in case of case of instrument exchange three, it could be like, totally encrypted, right? And then after decrypting, the instrument code could be here. In case of exchange for the instrument could be like, code could be a really, it could be in text, for example, for all you know, instead of numerical, right? So each action has its own format. So now, if you have an automated trading system, and then you want to trade on on an exchange and on a new exchange, so you're already trading on a certain exchange, and you want to connect to a new exchange to be able to trade on a new exchange, you your market data adapter and your order manager needs to be able to speak the language of the new exchange. So basically, for every new exchange that you connect, this blog needs to be able to speak the language of that exchange. This blog needs to be able to speak the language of that exchange. So for every exchange that you add, you need to keep adding exchange two. You need to keep adding this. You can add exchange three. So you need to again implement market data adapter on Order Manager for exchange three. Then you connect exchange for you again have to re write logic, write a new blog within market data adapter for exchange three, and within Order Manager for exchange three and so on, right? So this is going to be time consuming, and the exchanges want you to be able to connect to the exchange as seamlessly without any friction, as easily as possible, right? So the exchanges don't want to create fiction friction in terms of you being able to connect to the exchange. So therefore certain standardized protocols, like fix became popular. So what are the standardized protocols like fix? I really love it that people, what do you call it foreshadow the kind of questions that I'm going to ask, or ask questions, which is good to know that you are, like, totally immersed in the class. So someone just asked, what is fixed, right? So basically, it's a standardized protocol that helps that is implemented by multiple exchanges. So let me get
+
+Unknown Speaker  1:14:46  
+so for example, this is what
+
+Unknown Speaker  1:14:50  
+the fixed protocol is. This is how it is implemented. So it's a series of.
+
+Speaker 1  1:15:01  
+A tag is equal to value pair. So you say that to to send an order in fixed protocol,
+
+Speaker 1  1:15:13  
+you said one is equal to q is 001, why is that? Because one specifies the account number, then you need to specify the instrument name, right? So security ID, so 48 is equal to a PL. Anyone knows what is the current price at which Apple is trading? I have Saeed. 270 $2
+
+Speaker 1  1:15:52  
+so now you need to set, set the price at which you are sending order, right 44 so you are a very defensive trader who is always sitting on the sidelines. You send a very defensive order. It's a buy order. So 54 is equal to one specifies that it's by order.
+
+Speaker 1  1:16:21  
+Then you need to specify the quantity, oops, why is this becoming slow?
+
+Speaker 1  1:16:33  
+So you need to specify 38 is equal to 100 shares. Then you have to specify what is the type of order. So 35 is equal to d specifies it's a new order. F means it's a cancelation. G means it's a replace. So 35 is equal to d. Did we miss anything important? So the account from which you are sending orders, the instrument, name, price, quantity, type of order site. So if you send an order in this format, so it's a standardized communication protocol. So if you send an order in this format, any exchange which supports fix will be able to comprehend this. Now there are exchanges which don't support fix. So there you cannot communicate using fix. But then there, there are a host of common protocols. So different groups of exchanges support different groups of protocols, so you would be able to communicate with those exchanges. So there are certain exchanges which support protocol one. So you can, you
+
+Unknown Speaker  1:17:46  
+common says.
+
+Speaker 1  1:17:54  
+So now different exchanges also send market data in different formats, right? So now you want to convert all of them into a same standardized protocol. I'll say the same standardized structure. So exchange one might send each and every tick. Exchange two might say aggregate or whatever, or exchange three might send in a different you might have to, what you call apply some transformation of the data to be able to get the same data. Say, for example, exchange one might give the cumulative quantity at level one, cumulative quantity at level one plus level two, at level two, or whatever. So you need to break to have it normalized. You need to, like, do some transformation sometimes, right? Not all exchanges might give you the same information. Actually, we are going to see this in detail when we look at market data and the different types of market data. So therefore you need to be able to convert that into the same so some gives you snapshot of all the entire order books. Some give you just each and every tick. So now, to be able to convert it into a same format, say, an order book, you need to do some transformation. So therefore the data normalizer. What it does, it converts data from into a same standard format, convert from multiple exchange into the same standard format.
+
+Speaker 1  1:19:31  
+Okay, so someone else, fixed protocol can also be used to retrieve market data. So market data, there are standardized market data protocols. How much is fixed used to send market data? Very little. So I have not put it here. I'm not sure how prevalent is fixed for sending market data, so that's why I've not put fix here. Now, when you're trading on multiple exchanges, you need to you. Be able to route the orders to the right exchange right? So your order manager needs to know whether the order has to be sent to exchange one or exchange two. So you have an order router. Regulatory requirements have become complicated, which means you it is now required to store data of all orders, sent out, all trades, done, in some cases, all parameters, for as long as seven years. So therefore the regulatory complexity has gone up. So therefore all this has to be stored now, not just that. We are going to see very quickly. One why this has become very huge compared to historical so the amount of market data that we get from the exchanges has gone up tremendously. We're going to we are going to see that
+
+Speaker 1  1:20:57  
+quickly. Someone asked a question, can it happen that the algorithmic strategy is invalid or not valid. How will it get verified or filtered out? I did not understand. Can you elaborate a bit? Can you elaborate that question a bit to make it easier to comprehend? Okay, so someone says that they are still some use cases are fixed, but mostly they avoid using now because it's takes place protocol, cost of transmission is high. Yes, that is true. So fixed protocol is a text based protocol. So like this, it's not a binary protocol number one. So the text has to be converted into, interpreted and converted into so you need to decipher and then the text, and then the software has to decipher the text and then interpret that, okay, 48 instead of saying that, hey, instead of it being like this, instead of it being like this, it's a P, it's text. Text has to be converted into delimited and then converted into okay. This is 44 this is whose value is 260, 5.01 therefore so on and so forth. Okay, so what was I? What was I answering?
+
+Unknown Speaker  1:22:15  
+Okay, there's one more thing. This is
+
+Speaker 1  1:22:22  
+the five. First time we are using Zoom, and I've just realized one slide short coming with Zoom is I'm not able to see the top of my open sun core a whiteboard, so I'm not able to click on new because the zoom level has totally blocked.
+
+Unknown Speaker  1:22:47  
+Just give me a face. How can I remove
+
+Speaker 1  1:22:57  
+I'll just keep regime data. That's not what I wanted.
+
+Unknown Speaker  1:23:04  
+Oh, cool, next. Okay,
+
+Speaker 1  1:23:11  
+okay, so basically, now someone mentioned why fix is not interesting. There is another reason so you, this is you, your trading system, and this is the exchange. Now, if you implement fixed protocol, so you send orders in fix, then the exchange has a fix to native converter, and then it goes to the exchange, where it goes in native protocol. So native is the traditional, original protocol of the exchange, right? And because you are sending orders in fix, oops, sorry, because you are sending orders in fix. So the exchange has this fixed to native converter. And then the exchange gets, it gets everything in native, then it sends responses back in native, and then there is a native to fix converter, and then you get your response back in fix. So you see here, if you are implementing everything in native, you this is your communication, this block is totally out of the picture. It's a direct, clean, native, native so therefore, for exchanges which are popular, where a lot of activity happens, where a lot of people are implementing in their trading systems for you would have the trading systems directly supporting the native protocol of the exchange. Now, exchanges which are not that protocol are not that popular, the trading platforms might not implement the native protocol for that exchange. There, you would have to go through a converter like this, which adds latency. So the moment you see that over this section is becoming critical and important, then you would ask your technology guy, vendor to give a direct connection, instead of having a hop in between, right? So therefore, this is another reason why fixed protocol for protocol for popular exchanges, is not that
+
+Unknown Speaker  1:25:27  
+popular, not that common.
+
+Speaker 1  1:25:33  
+What is the back office record in the diagram? So basically, back office record is the bookkeeping record that you have to do for every order that you sent out, every trade that you did, you have to bookkeep, keep that for record keeping, right? So that is sort of Order Manager sends it here, and then you store it for record keeping. Okay, so there are a few more questions. My question is regarding that, where will be the algorithmic implementation of trading strategy which I'm making, it will be here. Your strategy will reside here. HFD does not use fixed. End, right? Yes, they don't use fixed. They have collocation and use native, right? Yes, you're right. So I've already answered this back office record. So someone says, can you explain this architecture keeping BSE, NSE and MCX in mind? Okay, so, okay, I got it. So, one example that I mentioned was previous and next.
+
+Unknown Speaker  1:26:42  
+I mentioned,
+
+Speaker 1  1:26:48  
+I'm not sure where I'm going to do a diagram for it. So basically, ah, yeah, I got it this. I said that st microsystems for Saeed alianna and euronex Paris, the equivalent example could be State Bank of India listed on national stock exchange, State Bank of India listed on Bombay Stock Exchange, National Stock Exchange, largest exchange in the world by number of trades, Bombay Stock Exchange, oldest exchange in Asia, 150 years old and so on right. So the same underlying listed on board exchanges. So if there is an uptick ON OFF state bank of India, stock price on exchange one, you would want to trade it on exchange two as well, right? And another example could be gold on MCX, where the commodities are listed. So which is MCX is the biggest commodity Options Exchange globally, I believe, and by number of contracts and exchange two is the equity exchanges, right? So, yeah, all the examples apply.
+
+Speaker 1  1:28:01  
+Okay, someone also gave an example why this is bad. So for example here, this will go as 123456, characters. That is six bytes, because each character is a byte. But then if this is goes in binary format, then this is an float. Float is four bytes, so therefore fixed protocol is also very bloaty that way. Yeah, thanks a lot for highlighting this. Okay, cool. So now, okay, let's see what else? Ah, this. This part will take some time. So I think we are at a right point in time to take a very quick break. So let's reconvene in exactly 10 minutes.
+
+Unknown Speaker  1:28:55  
+Oh, let's do timer.
+
+Unknown Speaker  1:29:02  
+I my system becomes low.
+
+Unknown Speaker  1:29:10  
+So let's reconvene the moment it is zero.
+
+Unknown Speaker  1:39:39  
+Hello, hi, welcome back, everyone.
+
+Unknown Speaker  1:39:49  
+Cool. So
+
+Speaker 1  1:39:53  
+here we were. So we were discussing how the. Ah, how the CEP requirements could also, could also have a requirement of storing event history itself. To elaborate why, I want to give you an example
+
+Speaker 2  1:40:21  
+of why this might become important, so let me control T.
+
+Speaker 1  1:40:32  
+So how many of you have heard of something known as dispersion trading strategy? How many of you have heard of dispersion trading strategy? No idea, nope, whoops. So, anyway, it's good. You will be exposed to a totally new style of trading, right? So, so basically, what is to reach? What is dispersion trading? I
+
+Unknown Speaker  1:41:04  
+Okay, so, let me. Let me use this note, credit, sir,
+
+Speaker 1  1:41:20  
+there are two stocks, stock a and stock B. It's with 50% weightage
+
+Unknown Speaker  1:41:32  
+in in
+
+Speaker 1  1:41:34  
+index x. So there's two stocks, 50% weightage and 50% weightage in index X, okay.
+
+Unknown Speaker  1:41:44  
+Now price movement, Stock A is up 10% stock B up 10% percent.
+
+Speaker 1  1:42:09  
+The Stock A is up 10% stock B is up 10% so what do you expect the index price change to be?
+
+Speaker 1  1:42:22  
+Okay? Up 10% so almost everyone got it right cool now, instead of price movement being up 10% downpers,
+
+Speaker 1  1:42:36  
+volatility of stock a is up 10% volatility of stock B is up 10% what is the index volatility
+
+Unknown Speaker  1:42:45  
+change? Likely to be any
+
+Speaker 1  1:42:49  
+input insights on this? So when the price of stock a went up 10% price of stock B went up 10 up. A percent. The index price went up 10% but when the volatility of stock a went up 10% volatility of stock B went up 10% what do you expect the index volatility
+
+Speaker 1  1:43:16  
+to be? Same is one of the answers, max of volatility of a comma, volatility of V. Someone says we need individual volatility and covariance. Great, lovely. So basically,
+
+Speaker 1  1:43:36  
+this is stock a which was initially low, volatile, then it became volatile. This is stock B, low, volatile. Suddenly it became very volatile. This is the index, which is the summation of both it has stayed the same. This is because A and B are negatively correlated, right? A and B are negatively correlated. This is, this is again, stock a, low, volatile suddenly became volatile. Stock B, low, volatile suddenly became volatile. This is the index which is low, volatile suddenly become volatile. This is because A and B are positively correlated. This is the index where a and b are negatively correlated. Imagine a situation where a is a producer in the economy. It's a small island, whatever a produces, B consumes. And that's it, right? So if a does well, B does badly, be the A does badly, B does well, that's it. So therefore the index is always going to be flat. In contrast, if the stocks are positively correlated, the index is going to be the volatility of the index is going to go up and the individual components have become volatile. Therefore the index volatility is a function of the. Individual component volatility, the individual component volatility, this is individual components volatility, and the degree of correlation amongst that right now. How do you trade index volatility? Okay, this is going to so, so index vol. Volatile actually is equal to
+
+Unknown Speaker  1:45:26  
+function of
+
+Speaker 1  1:45:41  
+stocks and index right now, how do you trade index volatility? So, how do you trade index volatility? Anyone has any idea? Well, we are from India. We are the highest index options trading nation in the world. So throw options. Someone says, by shorting gamma, shorting gamma is expressing one viewpoint about index volatility, which is that the volatility is going
+
+Speaker 1  1:46:19  
+to be less you could be longing gamma as well. So by trading options is the answer, okay, someone says straddle. Straddles is one way of trading options. Okay, okay, so basically, yeah, so this is the name of the index. So the index has multiple options. These are the various strikes. For each strike, you have a call option and a put option. Each call option has a buy and sell price. It put an option as a buy and sell price. And then not just their options expiring on the 18th of November. There are options expiring on 25th of November. Their options expiring all the way to 25th of June, 2030 and this is why the number of instruments traded on the exchange is very high, right? You have different stocks with options? Do you have different indices with options? Right? So therefore, so now coming back to nifty, so each call option and each put option is priced. So when you, I guess you guys have not started. You guys have not started. Someone said VIX is a way of trading volatility, but then there is no vix futures in India, unfortunately. Okay, so you have to trade make viewpoints and volatility using options. Okay, so you can also remove all this, this, yeah. So now, thanks. So now each option, did you guys already have your lecture on option theory and pricing of options? No, okay, so basically, to price options, you need various inputs. So there are five key inputs, and then they are actually slightly more so. But then amongst the five key inputs, the only input that okay, so four of the inputs are known to anyone. The four key out of five key inputs, four of the inputs are known to everyone. The only input which is not known to anyone is the future expected volatility. So basically, when you're trading option, it's actually a viewpoint about the future expected volatility of the underlying so if I am buying option, I believe that the option, the volatility of the underlying, is going to be more than what the market perceives it to be. If I'm selling options, it means that I perceive the volatility of the underlying is going to be less than what the market perceives it to be. The reason why someone mentioned short gamma instead of saying something else is is, is, because typically options are like an insurance product, right? So therefore, the options are priced using slightly higher volatility, because in case of the buyer, the upside is used the seller, the upside is limited. So therefore, typically, most options price in a much higher level of future volatility than what the actual volatility is. So someone says, How does implied volatility differ from future expected volatility? Implied volatility is the future expected volatility. Okay, so, so therefore, to price options, you need to know what is the expected volatility in the future. So, so Different people use different inputs of the future expected volatility, which is implied volatility and price options now, based on the prices with which options are trading on the exchange, you can arrive at what is the implied volatility in the future. So if. Option is bid, ask is priced at a particular level given the time to expiry and price of the underlying you can say that the market expects nine point something percentage volatility from now till the expiry date. So all these numbers denote the level of volatility expected between now and expiry date. Okay. So as you can see, these numbers vary a lot, so different strikes are priced using different values of implied volatility. There is a reason for that, and then I I'm sure those will be discussed in detail during your option trading class. But the mood point is you cannot say what is the expected volatility from today tilde expiry, because some options are price using nine, some options are prices in 10, some are using 1120, and so on. So there is a formula the way the variance swap is calculated. So there is a formula for calculating the expected volatility given all these values, right? So, so based on the prices of all the options, you calculate the implied volatility for each option. Based on the implied volatility for each of the strike you calculate one value of expected volatility for the underlying so you have the expected volatility used to price options with a certain strike, you use a different value of expected volatility to price another strike, and therefore to aggregate all of that, you have a formula, the equivalent of the variance swap formula, which gives you one value of expected volatility till the future. So you have the expected volatility for the index. You have the expected volatility for all the index components. So based on the so basically from option, price of index options,
+
+Unknown Speaker  1:51:56  
+calculate index,
+
+Speaker 2  1:52:28  
+calculate the Okay, so likewise you need to do that for stocks.
+
+Speaker 1  1:52:58  
+You do it for stock one, you do it for stock two, stock three, stock four, and so on. So by calculating the implied volatility, so one value of volatility for stock, one, stock, two, stock three, and so on, and then by having the expected volatility for the index, you done, calculate the an average value of average constant correlation between all pairs of stocks, which will lead to the
+
+Unknown Speaker  1:53:40  
+index volatility.
+
+Unknown Speaker  1:53:43  
+So you have this calculate, this is i
+
+Unknown Speaker  1:53:51  
+This is s1
+
+Speaker 1  1:53:56  
+you have s2 you have s3 you have s3 so, so basically, you calculate what is the expected volatility for the index, what is the expected volatility per stock, one, expected volatility for stock, two, expected volatility for stock, three, and so on. So based on the expected volatility for all of them, now there is only one value of Now you assume that all the pairs of stocks have the same correlation, average constant, which is, which means the same correlation between all pairs of stock. If you assume that all the stocks, pairs of stocks have the same amount of correlation, then what is that value which will solve this equation? So basically, the index volatility is a function of stock volatility, and then the pair wise correlation. So now assuming all the pair wise correlation to be as the same value. So what is that value? Which will solve the equation, right? So once you do that, so basically you arrive at, what do I pay? Yeah, so, so basically you calculate the average implied correlation. So therefore what happens is you get a graph like this. So depending upon how the index is constituted, so you get, if it's a very index of very similar stocks, then the correlation will be higher. If it's an index of very diverse stocks, the correlation will be less so. But then the you arrive at the implied average constant correlation anticipated by the market. So you said that, hey, the market expects all the components to move differently. So is pricing them to them to be too dispersed, or the market is pricing all the components to be trading too similarly. So So you trade the implied correlation or the dispersion between the stocks. So are the stocks going to trade in a dispersed way, or are the stocks going to trade in a similar way? So now, if the stocks are going to trade in a dispersed way, if stock one is going up, stock two is going down, so then the index volatility is going to be low. So therefore, if the dispersion is so now at this point that implied correlation is less, the correlation is going to go up. If the correlation is going to go up, so the stocks are going to move more in sync, then the index is going to be become more volatile if the dispersion is going if the correlation is going to come down, so which means that if one stock goes up, another stock goes down. So if the correlation is going to go down, then if one stock goes up, another stock goes down, therefore the index is likely to become less volatile. If dispersion is going to if the correlation is going to go up, then the stocks are going to move more in sync, which means, in this case, the index volatility relative to the stock volatility is going to go up. Therefore what you do is you buy the index options, sell the stock options. In this case, the index volatility relative to the stock volatility is going to go down because the components are going to move in different directions. And therefore the index volatility relative to the stock volatility is going to go down. Therefore you sell the index options by the stock options. So here you sell index options, buy stock options. Here you buy index options, sell stock options. So this is a dispersion strategy. So to calculate dispersion strategy, so someone asked, what is the Varsa equivalent? So basically it says, The way to arrive at one value out of this universe of values is, it's a very fascinating maths, actually, but then it will take up an entire lecture in itself. So
+
+Speaker 1  1:57:54  
+basically, what it does is, it says that, how do you create a structure which has which has a pure exposure in volatility, and to get a pure exposure in volatility, once you do the maths, it turns out that your positions have to be in the ratio of one by k square, where k is the strike. So basically, if you give a weightage in terms of one by k square to each position, then your portfolio has a pure exposure to volatility, rather than having exposure to other companies. It's a very interesting topic. I've done a very detailed presentation on that, but it's beyond the scope of today's class. So they are very fascinating papers by both Goldman Sachs and then JP Morgan. I think all that you need to know about variant swaps and more than all that you need to know about, yeah,
+
+Speaker 1  1:59:10  
+more than you ever need to know about variant steps, and then this just what you need to know about variances. One of them is by JP Morgan. One of them is by I Goldman Sachs, okay, so just read that. Okay, cool. So now the thing is, yeah, so basically, essentially, to get one value out of all these numbers, all you need to do is multiply each of these by one by k square you calculated the weighted average, so that will give you one expected volatility for that underlying. So you get one expected volatility for the underlying, one, underlying two and so on. So basically, the point that I was trying to make is, how did we reach here we are talking about E. Event store. Why do we need to store event history? Because you could one just calculate the average constant correlation between all pairs of stocks and store it. Or you could say you could just have market data and then from the market data, you have to keep calculating this, this value every time. So during live trading, if you're calculating this, you might as well store it, because in the future, if you have to calculate it again, you have to again figure out, ensure that the time to expiry for the historical data you are you have taken it, you are measuring it correctly, and then you are using the right expiry date based on the expiry date that existed on that date. And then you have to recalculate all of this, right? You have to first calculate implied volatility for each option, then you have to do a one by k square weighted average. Then you have to again do it for each stock. And then once you have done it for each stock, then you have to calculate the right the value of constant correlation, which solves this equation. So just a minute, there is a presentation on dispersion also that.
+
+Speaker 1  2:01:14  
+So here, so index volatility is equal to volatility of components into weightage of each component. This is a function of volatility of each stock and a weightage of each stock, plus the covariance between each pair. Right now assuming this to be constant. So what is this constant value which solves this equation? So that is what is done in dispersion, so average constant correlation between all pairs of stocks and then, so basically, you have to do so much maths, so much maths, just to be able to arrive at this. So why not just keep storing it, right? So that's a very small point that I wanted to make, and took a very long time to explain that. So sorry for that. Okay. So, so yeah. So therefore, the storage requirements have gone up. The amount of data has also gone up drastically. I'm going to discuss this later why it has gone up drastically. And then remember we talked about how the trader's role has become someone who's analytical, rather than monitoring prices and executing trades. So so, so therefore, when you are evaluating different automated trading platforms, you need to see how well they integrate with third party analytical tools like R, Python, MATLAB, etc, right? So market data is fed into those analytical tools, date and set the strategy parameters. They might even interact with the Order Manager saying that haze and disorder, or they might calculate certain statistics and show it in the trader's app for the trader to then make his trading decision. Right? So someone says, Can you please explain the last part of dispersion strategy? So basically, what you do is you calculate the average implied So assuming all the pairs of stocks have the same amount of correlation. So you already calculated one value for the expected volatility for stock a, stock B, stock C, you already have calculated the expected volatility for the index. So what is the constant, same value of correlation between all pairs of stocks, which solves this equation? So you use that value, you calculate that value, and then you see where you reside with respect to where are we. So is the market pricing in too much? Is the market pricing in too much correlation between stocks? Is the market pricing in too much, too less correlation between stocks and so on? In fact, it's not just one dimensional like this. So at times of panic, right, the correlation goes up. So when the market is falling, all stocks fall together. When the market is in a peaceful situation, investor speak and choose individual stocks. So some stocks go up, some stocks go down, but when there is panic and that people have to liquidate to take out money, all stocks fall. So therefore correlation goes up when there is high volatility, when there is panic, correlation comes down when the market is rising or calm. So therefore you have to it's not there are multiple facets to it. Okay. So, okay, so I hope I have explained that. What do we do when stock volatility correlation is positive? Yes, it's going when it's miss, when correlation is positive, but then it's not one, so it would be some. Are within, somewhere within its own right. It's not going to be exactly one and not going to be exactly minus one also, but two is mostly positive numbers and Okay, inputs need not be various exchanges. Someone mentioned weather data, right? So inputs need not be exchanges. It could be, oh, it could be external data, sources like quantified news, economic data. So what is economic data?
+
+Speaker 1  2:05:48  
+So for example, or most geographies, they release various economic data points at various granular timeframes. So typically, these are once every month. So what is the industrial production, rate of change, month over month? What is the consumer price index, inflation number, month over month, and so on and so forth, right? So new housing starts, Purchasing Managers Index, what is the number of new mortgages taken? What is the Non Farm Payroll? How many new jobs were added, and so on, right? Or you even have things like, how many, how much crude oil is in, is in storage at Cushing and so on. So those data points the moment they are announced, so they have the impact market significantly. So now, why should someone read them, decipher the text? So why can't there be systems which interpret the numbers in an algorithmic fashion and act upon them? They don't need to be like manually fed, right? They could be interpreted algorithmically, and that is where quantified text, and so there are two parts to it. So let me very quickly go to the part of interest.
+
+Unknown Speaker  2:07:15  
+Let me search for it. Sorry, I should have where is it? Oh, it's going to be much lower.
+
+Speaker 1  2:07:29  
+That's not here. Oh, yeah. So there you go. So basically, economic figures are now provided by different vendors in structured format. So basically, for every economic release that we saw here, so they don't just show the current value, but then they also do an adjustment to the value of the previous previous month. So therefore, all of these are provided by vendors like Reuters, Bloomberg and so on, in machine readable format, so you could feed them into a trading system. So basically, the way it happens is the journalists from these vendors, they are taken into a electronically sealed room, and then they are provided the data and then precisely say at what time is it 10am local time, or whatever time it is in the city. So precisely at the point of time the electronic, what do you call blockage is removed, and then, therefore they can send out. So basically, this vendors, they have, they create this pre packaged, pre packaged messages, ready to send out precisely at 10, 00, and so on, the moment the data point. The data data is released. So this vendor send out in machine readable format, all these data points, and then this go to the everyone who has subscribed to it. So not just this, even for even for corporate releases, right? Any publicly listed company, once every quarter, they have to release their quarterly earnings, which is basically how much sales they had, how much revenue there, and any how much dividend, how much sales, and so on, right? So those are also provided in machine readable format. So I don't have a diagram for that. There was a diagram for it, but then I think this at this point. Okay, so such economic release is also provided in machine readable format. And not just that. People realize that the First Order thing, which impacts prices is actually news. So the. Price of Coca Cola might go up because the price of Pepsi on the exchanges has gone up, the price of but that is a second order impact. Or the price of Coca Cola has gone up because the broader index has gone up, or the market in general is going up. But the first sort of factor which impacts price of Coca Cola, is news on Coca Cola, so that would impact it in a totally different direction than, say, the way the prices of Pepsi are moving or the way in which the broader market is moving. So therefore being able to interpret news and being able to act on it is if you can do it algorithmically, you can scale it up massively. So this field is known as quantitative news analytics. So basically there are a few vendors, Thomson Reuters news analytic, Raven Peck in collaboration with Dow Jones, and then Bloomberg sentiment analysis. So what these vendors do is, all of them, they have tried to make it easy for people to interpret and become comfortable with this field by making it very similar so you don't have to totally re understand things. So all of them, what they do is they generate sentiment scores. So for each news article, they generate sentiment scores and then also give positive, neutral and negative scores. So they said that, hey, this news article, does it denote something positive, negative or neutral about the companies mentioned in the score? So these are the companies mentioned in the news article. Then they also generate relevant score, which says that, hey, how relevant is this news article to companies mentioned in this core in fact, there is a relevant score for each company in the in the news article. So there are multiple relevant scores, one for each company. Then, okay, I should have actually in the benefit of time. Let me do it quickly. So, so basically, then, okay, let me walk through it very quickly, because I think it's important to understand how and what, how each of them is done, and what are the challenges in it. So basically, sentiment score, the is calculated using say machine learning methodologies or say, just by pure counting number of positive negative keywords, weighted word count, grammatical parser trying to figure out which word works on which objects and so on. Then you have
+
+Speaker 1  2:12:46  
+their issues, like being able to parse it correctly and so on and so forth. Then the next thing is something known as Relevance Score. Is the sentiment good enough to quantify a news article? So what do you do a news article might be predominantly about a company, mentioned that company and others as well, mentioned that company in passing in the article. So basically, it could be predominantly about a company, or it could just mention that company. So how do you solve for that? You look at how many companies are mentioned. Where is it mentioned for the first time? Is it mentioned in the header? Is it mentioned in each paragraph? Is it mentioned in passing at the end, as an example, and so on, right. So issues with calculating relevance, the same company could be referred to using different synonyms, so that is relevance. The third thing is something known as novelty. So how is novelty calculated? Why is novelty important? Because every time there is an event, it's not reported. It's reported in bits and parts. So
+
+Speaker 1  2:14:05  
+so the moment the event happens, it is first reported as an alert for anyone to straight away. So say, for example, CEO ABC, find $20 billion is the alert one, alert two. Sent out because you want to be fast in sending out information. Say there is a court hearing, and then something is expected. So you immediately write CEO ABC, find $20 million then after some time, you can send out CA, ABC fine, $20 million expected to be paid in two months. Then you send out a bit of a news break article where it says that ABC is fine because this has been found to be and then he has to pay it in six months. And so on and so. So forth. Then you send a proper update one. After some time, you send update two, and so on, right? So therefore, for each event, there are multiple reportings of the same event by the same news wire. Then multiple news sources also report the same news, right? And then there you also have price changes because of the news, which themselves become news. So therefore, if you respond,
+
+Speaker 1  2:15:31  
+if you do not keep track and respond to repeated instances of the same news, we will end up repeating our actions manifold for the same event. Therefore each news action article should be checked for newness or novelty before responding. Okay. How do you calculate it? ML based methodology is trying to see that how it is it's similar. How similar is it to the previous articles on the same then you also have things like market impact score, which tries to categorize the news into different types of news, and what is the impactability of various news? Then you these, in essence, are the four key factors using which news is quantified, and all vendors would provide some of the or the other variant of this scores, so the moment you get a new so each news article will be quantified into some or the other format of this four scores. So there are two ways to using quantified news. One is, one is in trying to be very fast to respond to news articles, rather than a human being reading a news article responding to it. And one is it processing the huge amount of news articles that are published across days, and trying to form a broader sentiment viewpoint on the economy and so on. So there are services which provide broader scores about say, what is the amount of innovation mentioned in news articles so, versus how well has the NASDAQ index done? So NASDAQ is the index of tech stocks, right? So if the people are talking more about innovation, then the index is likely to go up, and if the innovation discussed in news articles is coming down, then the index is likely to stay stable or go down, right? So, so you have such data points as well. Okay, so basically, someone says, are sentiment, market impact novelty, etc, provided by the data vendors, or do they just provide the news themselves? So they are vendors which provide news, and for each news, they provide a series of scores which includes sentiment, relevance, impact, novelty, etc. So someone asked, So Bloomberg writers, etc, give the data already digested like that. So they give the news article. They also give the news header and a series of scores. Okay, now say you are a smart person, or whatever, see there is someone who's trading on the exchange, and then that person observes certain patterns in the in the data and then therefore says that, hey, I think this is how a trading strategy could be built, or feels that, oh, this is how my existing trading strategy could be enhanced. So what do they do? They modify their CEP logic, right? This is where the strategy resides. Now, to be able to test it, what do they do? Do they send orders to the exchange? Well, in case there is an error in this, they're going to lose a lot of money. This
+
+Speaker 1  2:19:19  
+is the flowchart of, typically how the strategies are built, right? So a quant makes hypo
+
+Speaker 2  2:19:27  
+thesis about what moves prices quant back test hypo testers against historical data
+
+Unknown Speaker  2:19:43  
+if this hypothesis turns out true.
+
+Speaker 1  2:19:58  
+So now the person who made. Hypothesis, and the person who implemented it, or in the CP, are two different people, so this guy might have meant buy, and this guy might have implemented a sell, right? So therefore you have to validate the correctness of it. The way to do it is you
+
+Speaker 1  2:20:34  
+but on something known as a simulator, exchange simulator. So what does the exchange simulator do? It tries to behave the way the exchange would have behaved, the kind of response you would have received, if the, if the if you had actually sent the order to actions, what would have happened to the order? Would you have gotten a field? Would you have gotten a would it have just stayed like that and so on, right? So you send orders to something known as a simulator. So that's nice and good. So on Wednesday afternoon, you got a bright idea, and then later in the afternoon, you coded it up, and then you tested it against historical data, and then the historical data Saeed that it does show promise. So you implemented it on the CEP on Wednesday evening, you are like a really passionate guy, and then you stayed late in office, and then you implemented it in the CEP. What do you do next? Next day, there is trading. What do you do next? So to be able to send orders to the simulator, you need market data, right? But the market is closed now. So what do you do next? So you can you are storing historical data, right? So why not have an ability to replay historical data? So read from here, replay here, okay, for the simulator to work, fine. They should be able to see the current state of the market data. Okay? So the next thing that you need is an ability to replay historical data, so which means, even though it's midnight on Wednesday and then the markets are closed, you can still replay historical data and then see whether your system is correctly implemented, whether the quant and then the software developer are in sync. Number one, number two, the quant and the software developer understand each other's language very well, but it's possible that there could be software bugs. It's possible that there are no software bugs, but then there are scalability issues in the software so when there is a lot of data, it just hangs or stops or whatever, or it becomes so the calculation takes up so much time that the strategy is working on stale data. So basically, if each cycle of calculation takes up a few seconds, and then you get market data every every few microseconds, then you might be working on very old, stale data, and then, therefore you are responding to things which are like very old so therefore, therefore there could be a lot of issues with the system. One, the implementation could be wrong. Two, there could be software bugs. Three, could there could be scalability issues and so on, right? So, so therefore you need a simulator. You do like this, okay, replay of stored data and so on. Now, this actually opens up to a lot of possibilities. Instead of building back testing systems, back testing code which tries to validate each and every hypothesis, so what you can do is, the moment you have an hypothesis, build it as a trading strategy. Implement here, run it again simulator and replay all types of data, replayed data for a day on which the market was flat, replay data for a day on which the market was highly volatile. Replay data for a day in which the market was uniformly going up throughout the day. For a day when the market was going down, day when there was a massive gap up, day when there was a massive gap down, day when the market was usually correlated, uncorrelated, and so on. So replay market data for various types of historical days, see what is the profitability for each and every type of market situation. And based on that, you could say that, hey, I want to take this live. I don't want to take this right. So this is a way to do paper trade
+
+Unknown Speaker  2:24:45  
+by in an algorithmic way.
+
+Speaker 1  2:24:49  
+Is your CEP is sending orders to a simulator. The simulator is recording each order and then trying to give a fill or not a fail based on. How, what is the probability of a fill of that order? So therefore this is a way to do paper trade based on not a thing which becomes complex is doing paper trade for algorithmic systems. Gets a bit complex, because if this is the best bid, best offer, this is the best bid. So the best buyer is at 99 the best seller is at 100. And you send a buy order at 100 point, 101 for one lot, one share. What will happen? You'll immediately get it right at 100. There's no doubt about that. But you send an order for 100,000 shares, and there isn't that much liquidity, so you will have some left of the orders here. But then there could have been some hidden orders here, right? Iceberg orders at this level. So you don't know what fields you would get. That is number one. So hidden iceberg orders. Number two, you put your buy orders at 99.01 people want to sell at 100 and then the buyers want to buy at 99 you want to buy at nine. Slightly more aggressive at 99.01 what is the likelihood of a trade happening? You don't know. You want to buy at 99.99 what is the likelihood of a trades people already are willing to sell at 100 would they be willing to sell at 99.99 probably much higher. But there is only one guy willing to sell at 100 and then the next guy who is willing to sell is at 120 and there are a lot of buyers here, 99 98.99 98.97 98.96 and so on. So now, in that context, Now, will this like be? Have a likelihood of getting a trade probably much lesser. So basically, when you put orders between the bid and ask, the probability of trade is very difficult to ascertain, and then it's a function of what is the Buy Sell pressure in the order book, also right? And how quickly the buy orders or the sale orders have entered the order book. Are they standing for a long time? Are they fleeting? Are they changing too frequently and so on, right? So based on that, your ability to simulate when you're doing high frequency is not that easy when you're doing mid frequency, one share, one trade in a day, it's very easy to simulate and do paper trade, but when you're doing simulation for high frequency. It's very difficult. You is you put an order at 99.5 what is the probability of trade? This is there is a market microstructure part of it. There is also the technology part of it, because the response time in the exchange keeps changing based on the amount of activity that is happening. You need to simulate that. When you send an order, What time will it be received at the exchange? Because it is a function of how much activity is happening, how much queue is there at the gateways, how much queue is there at the matching engine. So if the price is changing a lot, you've sent an order here, it's possible that the order will be processed by the exchange at this point in time. By this point in time, the price has moved here. So at this point in time, if you send an order at this at this price level, at this point in time, you send an order at this price level, you expected a trade, but because of the huge amount of activity on the exchange, the exchange only processes disorder at this point in time, in which case this buy order is never going to get a trade, because it's so far away from the current best task, right? So therefore, building someone mentioned here in the chat window that all the simulators are hugely proprietary, right? The design of simulators? Yes, you are very, right. So simulator is not a very, what do you call it? It's not an objective science. It's it's a it's a lot of probabilistic science, right? So therefore, the better you can fine tune your simulator. The better you will be able to see the evaluate the profitability of your trading strategies, and then better would be your ability to filter out different hypothesis. So I
+
+Speaker 1  2:29:44  
+and in fact, very Funnily, it's very funny. So this event was a conference in Chicago, like
+
+Unknown Speaker  2:29:53  
+long back, 2013 so.
+
+Speaker 1  2:30:00  
+With other speakers. One of the person who was speaking at that event was the head of simulator design at what was then one of the top two high frequency trading firms globally for a long time, probably five years, six years and so on. It requires such a strong understanding of the market microstructure to be able to fine tune the simulator that very quickly he became the head of trading, head of entire trading. Because to be building the right simulator requires you to have such good understanding about my market microstructure,
+
+Unknown Speaker  2:30:43  
+that your means
+
+Speaker 1  2:30:46  
+often the difference between a good firm and a bad firm could be on the level of sophistication of your simulator. Okay, so essentially, this is where we have ended up. Now, this is where we had started. Someone else. Can you give some good simulator names, as discussed slightly earlier? Similar good simulators are almost all proprietary or in house, so therefore you have to build your own My dear friend, okay, so the complexity is often more than what is depicted in this diagram. Often entire blocks are implemented entirely in hardware, instead of being coded in high level application languages, other way, ways where FPGA is done is basically filtering out data.
+
+Unknown Speaker  2:31:48  
+Where is the text? No, not back.
+
+Speaker 1  2:31:56  
+Three will remember there are 100,000 instruments. Or
+
+Unknown Speaker  2:32:06  
+instruments. So there
+
+Speaker 1  2:32:11  
+are 100,000 instruments, and you are only trading in five of them. You don't care about the others. So the market adapter could say, Hey, I don't care about this. Or you could build the order book here and forward it to the rest of the system, your OMS risk check. So basically, your you send out the order someone has. What is FPGA? FPGAs, field programmable, get arrays. So it's a way of implementing logic in the LAN card hardware, okay, you basically reprogram that error. Okay, so the RMS, you send out an order. Your software sends out an order. Before the order goes out in into the exchange, it has to go out for the land card. Right in the land card. You have the risk management system implemented in the land card. Why do you do it in the land card? Because this can be done in parallel here in the FPGA, instead of being done sequentially in software, right? You could do that. You could implement the entire order management system in FPGA, so the CEP only sends out certain information, and then the packet could be generated in the FPGA, so it only sends out instrument, price, quantity, and then here it generates the entire packet, right where you have to put in account number, which is always fixed. So the CP does not have to send a big packet. It only sends out a small sets of information to the land card. The land card then creates the packet in a certain format, right? Then you can have the entire strategies implemented in FPGA, which is basically
+
+Unknown Speaker  2:33:50  
+this, right?
+
+Speaker 1  2:33:55  
+So extremely simple strategies which are very, very, very latency sensitive. So this is important, because writing code in hardware is not very easy when for changing the logic from minus query requires a lot of effort, so it's very complex. So therefore, implementing in hardware is very time consuming, so you only implement it for very latency sensitive because you don't have the flexibility to be able to change it. Some someone says, do we need to learn FPGA? Sorry, if you are not from that background or already, you could try, but then it would take up so much time, effort, energy, I think there is this thing known as ricardo's principles of comparative advantage. So if you're competitive advantage. So if you are more competitive, if you are stronger in something x, if your skill is x, then don't try to learn FPGA today. That is my FPGA programming, which is very long, VHDL and so on. So leave it to the experts. You focus on the quant part and so on. So.
+
+Speaker 1  2:35:04  
+So one guy mentioned, think just signal or price, and by Cp, all whole message is already ready. Just change one or two. Yes, that is what I mentioned. The CP only sends instrument, price, quantity, and then the Order Manager has the rest of the packet implemented in FPGA. So say you need to send 20 fields to be able to send orders. The rest, 17 fields are already ready in the FPGA. These three fields from the CP are put into the packet message by FPGA and forwarded to the action. Okay, very quickly we are going to look at the different ways in which market data is transmitted so broadly the exchange transmits. This is the market data, right? Broadly the market data is transmitted in one of three popular ways. Method, one, this is snapshot. So what happens in snapshot, every n time frame? So this could be once a second, once every 1/4 of a second, once every half a second, the top M buyers and sellers. So this is M buyers, M sellers and M buyers, the information about a top M buyers and web sellers is sent every n time frame. What do you guess is the frequency of the N time frame? What do you guess is the frequency of the M time frame? So,
+
+Speaker 1  2:36:51  
+someone says two seconds. Someone says per take, every take, okay, so we are talking about snapshot. Snapshot is time based. Someone says millisecond, okay, so typically, it's about, say, half a second, 1/4 of a second, once every second. That is a scale at which different exchanges send out snapshot, because if you send more frequently than that, because there's a lot of information right, the entire order book is you have to send right. If you send more frequently, it will just get clogged up. So for example, on in the Indian exchanges, different segments have like, once every second, once every 1/4 of a second, and so on. I read the Taiwanese exchange had once every 1/4 of a section second, and they wanted to change it once every 1/8 of a second. And people said didn't know, we are not ready for such huge volumes of data.
+
+Speaker 1  2:37:50  
+Okay, the next is something known as someone says that snapshot is level two data. Yes. The next is something known as TIG by tick data. So someone says that we get data every tick. So that is actually tick bite data. So in tick bite data, you don't get the entire order book. You have to construct the order book from the raw data. The raw data says that this is a new buy order that has come, or this is a new cancel order, or this is the Modify order where the order got modified from X to Y. Someone says option chain data is sent every three minutes. That's a broker to broker. So the broker or vendor that you are working with, they would be sending once every three minutes, but then, ah, okay, so open interest is sent once every three minutes. Okay, so this is tick bite, so every order the moment that happen is sent to you. You have to maintain the order book on your own. If you if you did an error in maintaining the order book, then you have a totally incorrect picture of how the order book looks like. So it's totally dependent on you now, because you have to maintain the order book. And then if you do a mistake, then your understanding of how the market looks like is wrong. So there is a third methodology, which is known as snapshot, tick by tick, in which a snapshot is sent, but it is only sent when something within the top of the order book sent changes. The moment anything changes within this top five buy and sell prices, the snapshot is sent, but if there is a order outside of this top five, say someone replaced something here, 10th best bid or say 15th best offer, then that is not sent to you. The market participants don't have to maintain the order book, and they also get the information the moment. Changes. It's a lot of information. So if there is a lot of changes at the top of the order book, you get a very big packets. So snapshot, typically, for most users, snapshot is good enough traditional style. But if you are using if you have a need for speed, you very need to respond to events very quickly, immediately to events. Then you go for tick by tick, short tick by tick. This architecture has become stale, so let me not spend time on it in terms of order sending two things have to be handled. One is order per second. So typically you can buy higher rate by paying more. So if you pay X dollars to get 100 orders per second, you can pay the rate for sending 200 orders per second will be more than x, and then 400 orders per second will be more than that and so on. So difficult there are different rates, and then there is an upper limit. So for example, it's 2000 orders per second on NSE. Different exchanges have different limits and so on. Then there is also the ratio of order to trade that you have to keep tracking. This depends upon the liquidity category of the instruments, so often in low liquid. Unfortunately, this does not apply to India, in CME, UX, etc. So if you're sending orders in illiquid instruments, then the order to trade ratio is slightly more relaxed. In India, the order to trade ratio, unfortunately, is same. So which penalizes people for sending orders in instruments which are somewhat less liquid, right? So because you will not end up getting trade even though you're sending orders at very competitive levels, open interest in in the Indian exchanges is updated every three minutes, same as what is shared by different vendors like senzi Bull and other websites. Yes, you're right. Cool. Okay, so that completes
+
+Speaker 1  2:42:14  
+one and two. We'll talk about three and then this four is irrelevant. And we could very quickly talk about five. So let's go to three.
+
+Speaker 1  2:42:34  
+Basically, when you send orders to the exchange, how is the flow like? This is your server.
+
+Unknown Speaker  2:42:42  
+You send orders to the to your
+
+Speaker 1  2:42:47  
+switch, it goes to some hop in between, then goes to the exchange gateway. So this is your server
+
+Speaker 2  2:43:02  
+text. Trading server is the this
+
+Unknown Speaker  2:43:18  
+is the exchange gateway. Then it goes to the exchange. I'll explain what each each of them is
+
+Unknown Speaker  2:43:36  
+exchange matching engine. So what is the gateway? So basically, you could have different trading servers
+
+Unknown Speaker  2:43:51  
+or connected to
+
+Unknown Speaker  2:43:57  
+individual gateways.
+
+Unknown Speaker  2:44:00  
+So will deal.
+
+Speaker 1  2:44:04  
+You could bypass all of this. So, so each server there, the exchange has a fixed set of gateways, say, 3200 whatever, depending upon exchange to exchange, or 10 or whatever. So four, it's different trading server. So if there are 1000 trading servers, all of them are connected to one or the other gateway, right the gateway. Then for each set of there are multiple matching engines, and in one matching engine, they would be like a few instruments, financial instruments, which are supported. So remember, 100,000 instruments on the exchanges. So each matching engine matches the buy and sell orders for say 20,000 instruments, then you would have five matching engine but say 10,000 An instrument so then you have 10 matching engines. So the exchange gateway then looks at the order and then says, Okay, this is an order for instrument a, so let me forward it to matching engineer. This is an order for instrument B, and instrument B is in matching engine two. So let me forward it into matching engine two. So the exchange gateway, so you coming in to the gateway, the gateway forwards it to the right matching engine. What next? At the matching engine, the exchange tries to put your order into the order book. And then, when it puts into the order book, it could result in a trade, or it could stay there, whatever it first needs to get a given acknowledgement straight away. So it gives an acknowledgement the gateway then forwards it back to the trading server. This is you send an order. You get an acknowledgement from the exchange, but the rest of the market also needs to be informed that an order has been added to the matching engine, right? So therefore it goes to the to the market data server.
+
+Unknown Speaker  2:45:58  
+So this is the you a market data
+
+Unknown Speaker  2:46:08  
+server, so there is a primary and then a copy of the data.
+
+Speaker 1  2:46:19  
+I'm not sure if it's like this, or if it's directly copy goes into the secondary market data.
+
+Unknown Speaker  2:46:29  
+Why is this text button not logging? Ryan Larry,
+
+Unknown Speaker  2:46:41  
+so this is the secondary market data,
+
+Speaker 1  2:46:50  
+somehow. So this is the primary and this is the secondary market data now, from this market data server. Okay, someone asked, Can you explain the gateway a bit further? So all trading servers are connected to the to one of the various gateways. Assume the exchange has four gateways and five matching engines. So say there are 100,000 instruments in total. So each matching engine assume are uniformly they support 20,000 different instruments. So there are 20,000 different order books supported in each matching engine. So each of them is a server which is processing and managing the order book for 20,000 different instruments. Okay. So now when you send an order, the exchange is to forward that order to the matching engine, which is managing the order book for that instrument. So you send an order for instrument a, instrument a is being done. The order book for instrument a is one of the 20,000 instruments that is being processed in Server, in the second server. So therefore the matching gateway, forwards the order to matching engine, the second matching engine. So once the matching engine, the order is processed in the matching engine, it goes to the market data server, the market data server. Then this is a tick by tick. And then it would also have a snapshot right, which is a granular version of it. So sorry, resample version of it, so this data would be transmitted to anyone who's listening to this server, so anyone who's listening to this server. So server one, server two, server server one, server three, server four, server five, say that they want to listen to market data for matching from matching engine one, so from matching engine so each matching engine is denoted. So when you look at the exchange circular sort of technology documents, it says that, hey, this is market data stream one, market data stream two, market data stream three, and so on. So each stream is actually a matching engine. So if you are listening to market data stream one, it essentially means all those instruments are in matching engine, one, okay, so if you're listening to stream one, so it means basically the matching engine information from on this server, which goes to the tick by tick data server for the all the orders entering this matching engine are forwarded into the market data server, and it is disseminated to everyone. So therefore, yeah, so you send an order, it is processed here. It is also forwarded into the market data server, and the market data server then forwards it to everyone. Okay, cool. There is a secondary market data server just in case this, you can connect to the secondary one for primary or secondary. Then there is a snapshot one. Remember, tick by. Tick snapshot. So some people might not want each and every tick. So there is a snapshot right then there is also something known as a recovery server. So this is broadcast. This is one way the market data. Whenever an order is entered, any event in the matching engine is forwarded here, and it's one way transmitted to everyone. But then what? While listening to market data packets, you get millions of days, those every day, right? You missed a certain set in between for whatever network issue, you missed a certain set of packets. So you done from your server, you connect to something known as oops, sorry from your server, you connect to something known as the recovery server.
+
+Speaker 1  2:50:55  
+So at the recovery server, the recovery server is connected to
+
+Unknown Speaker  2:51:01  
+the market. I'm sorry,
+
+Speaker 1  2:51:03  
+the recovery server is connected to the market data server, and then it gets that data, and then it does a one to one communication. So this is a one to one TCP communication. The tick by tick is typically a multicast. Is just one way communication, and then the recovery communication is one to one, wherein you say, I missed this data. Can you please send it? And so on. So you have matching engine, Gateway, market data server, primary, secondary, recovery server. Then this is the snapshot.
+
+Speaker 2  2:51:42  
+This is the snapshot. Then there is one more. What is that?
+
+Speaker 1  2:51:56  
+All the matching engines are connected to something known as the it's from. All five of them. This is known as drop copy server. So this is a copy of all the trades. The moment the matching engine sees that a trade is happening, it forwards an information to the drop copy server. The moment the matching engine figures out a trade has happened, it is forwarded here. And you could say you it could connect to it, not necessarily from your trading server, but then you could connect to it from any server. You have a server residing at some other location, at the CEO's Villa by the seaside, this can connect to the drop copy server, and it can get a copy of all the trades. You could keep the server here. You could keep it adjacent to the rest of your servers in your data center. You could keep it at your central risk headquarters. You could have multiple copies. Not a lot means, depending upon whether the exchange supports multiple drop copy connections in parallel or not. So basically, the moment a trade happens in the exchange matching engine, it is forwarded to the drop copy server. The drop copy server has a list of all the trades. So therefore this is a login based communication, two way communication, where you connect to it after throw a login, and then once your credentials are verified, then you get a keep getting a copy of each and every trade the moment those trades happen. So someone says, for an investment bank use case, would gateway be the layer where one is KYC checks performed. Sorry. KYC checks happen when you are
+
+Unknown Speaker  2:53:56  
+creating an account
+
+Speaker 1  2:53:59  
+which is independent independent of this check, independent of this flow at the trading server itself before sending the order, the the credentials of the client has to be verified. So this is at the trading server itself, via the client has to log in. So this is where all credential checking will happen. Okay, so this is the exchange side architecture. So basically you have a gateway, matching engine, market, data servers, recovery server, drop copy server, and so on. Did I miss anything?
+
+Speaker 1  2:54:40  
+Oh, I can't think of so I think yeah, this is, yeah. I think I've covered
+
+Unknown Speaker  2:54:50  
+predominantly everything, yeah. So now, so this is the exchange signed interaction,
+
+Speaker 1  2:54:58  
+or someone said unique ask. Multicast and so on. Okay? So basically, the communication is, so there is a there are two protocols using which communication happens in the computer world,
+
+Unknown Speaker  2:55:16  
+in Computer networks. So
+
+Unknown Speaker  2:55:34  
+one is i
+
+Speaker 1  2:56:02  
+What do you call the two ways the TCPIP is one, so in multicast, it's just one directional, so you have broadcast multicast. It's just so the market data is transferred multicast, and then order sending is, it has to be one to one, right? So you connect, and then the you get a response. If you don't get a response, then you resend the packet. So that's the TCPIP protocol, and for drop copy. Also, if you miss a packet in between, then there is a then that's a problem, right? So that is, again, TCP IP, which is a two way communication. So market data is one way order, sending, drop, copy, recovery. These are two way okay.
+
+Speaker 1  2:57:16  
+There is There was one interesting thing here, so let me quiz you guys on there, Yeah, UDP and TCPI, yeah,
+
+Speaker 1  2:57:39  
+yeah, so the next thing is, when you send an order to the exchange, remember or Order Manager has this pre order RMS, where all these risk checks are done before sending an order, it has to pass through two queues. Anyone wants to guess what those two cues are.
+
+Unknown Speaker  2:58:08  
+When is what
+
+Speaker 1  2:58:20  
+those two queues are. Anyone wants to guess what these two queues are? Someone says, Gateway queue? No, this is internal to your system. This is not the gateway.
+
+Speaker 1  2:58:37  
+Fat finger checks well that is done in the traders have
+
+Speaker 1  2:58:50  
+sorting decision, where over, where we send the orders, network, queue. Okay, so let me answer so one is the order per second queue. So if you have a message line which can send if your if your server is connected, so for every IP that is connected to the exchange, you have to buy message lines, which is basically, you have to buy message rates. So your server has a particular IP, which is the, basically the way in which the so basically, each server is allocated a certain rate till the exchange, by the exchange, by the exchange, based on how much you have paid the action. So if you can send 1000 orders per second, and then you have already sent 1000 for the current second, you cannot send more. So then you have to wait in the queue till the end of the second, right? So this is q1 where in order per second, q2 is interesting. It will take some time to explain this, not sometimes, yeah, it's interesting. So I. So this is, see how I denote the flow of time.
+
+Unknown Speaker  3:00:10  
+This is how time progresses. Okay, so this is you. This is exchange.
+
+Speaker 1  3:00:18  
+Here you say that I want to send an order to the exchange. So by the time it reached here, certain time has passed. At this point in time, you said it, oh, I want to replace this order. Can you replace that order? No, because to replace the order, you have to identify that order with the exchange. You need to tell the exchange, hey, I want to replace that order with a order ID x, you get the order ID when the exchange responds to you. At this point, you know the order ID. So even though you wanted to replace it, that same order here, you have to wait all the all the way till here to be able to replace it. So therefore, you need to have a second queue internally, which checks for acknowledgement of the order. If the order is not acknowledged for the first time, you definitely cannot in many exchanges while sending a replace, oops, sorry. While sending a replace, you not only have to send the order ID, but also the exchange timestamp of the acknowledged order. So every time it is acknowledged, actions put say timestamp here. So even though the order ID stays the same, you want to replace this order. Then you have to wait for the timestamp of when this order is accepted in the order book here. And once you have that timestamp, and at this point in time, when you receive the acknowledgement, you have the timestamp, you can send a replace at this point in anywhere, anywhere prior to this point in time. You cannot replace this order because you don't know the timestamp at which this order will get added to the matching engine. So therefore, to be able to replace or cancel an order, you need to wait for the acknowledgement. So therefore there is this acknowledgement queue, so wherein you wait for the orders to be acknowledged. Someone said, Can you please share the presentation on quantified news? I
+
+Unknown Speaker  3:02:52  
+That's it. In fact, it was one slightly better.
+
+Speaker 1  3:03:04  
+Yeah, this is slightly better good. So that is one someone said the presentation about I have In passing mentioned about the
+
+Unknown Speaker  3:03:32  
+what do you call? I
+
+Unknown Speaker  3:03:49  
+Oh, what was it?
+
+Speaker 1  3:03:59  
+It's there on the web somewhere. I'll find it and then ping you guys. So which describes, which is a summary of the entire variance web and trading, volatility stuff. Okay, so someone else will this be applicable for unfilled orders? I'm believing you are talking about this? Yes. Okay, so now remember, there was this last point, current, New Age innovations, so let's talk about that very quickly.
+
+Unknown Speaker  3:04:35  
+Won't take a lot of time.
+
+Speaker 1  3:04:42  
+So we talked about how the market data flow has gone up tremendously. That's because earlier, when it was only snapshot data, the snapshot would come once every second or. Once every 1/4 of a second. So between two snapshots, you have no idea what's happening on the exchange, so you cannot respond nowadays when you have tick by tick data.
+
+Speaker 1  3:05:13  
+So earlier, this is one snapshot. This is one snapshot. So everyone responded to this snapshot. Blah, blah, blah, blah, blah, and then again, waited for the next snapshot. Then everyone responded to it. Nowadays you get one tick. Participant two response on the basis of the tick by participant one, participant one sees that participant two has responded. Therefore it does like this. Participant two again, responds to participant one, then participant three sees participant two responding, then participant one sees participant three responding, then participant three responds to participant one, and then participant two responds and blah, blah, blah, blah, blah. So the amount of data has gone up exponentially. So therefore the amount of storage requirements have gone up and now with faster systems, people can respond to events faster. So with innovation in technology, people can respond to events faster. Because people can respond to events faster, their risk of their orders being stale on the exchange is less so they can afford to quote tighter, means have a lower margin of safety, and then quote closer to what is a fair price. And therefore, if you're quoting very close to what is the fair price, therefore the amount of replaces goes up. So because of all these various reasons, the amount of activity on the exchanges have gone up. Data packets on the exchanges have gone up way more. So, so different people responding to different ticks. And then earlier you had only this punch. Now the same participant is responding, 1234, probably 100 times, you know, in a second, in the same instrument, right? So, so therefore the amount of activity on the exchanges has gone Up
+
+Speaker 1  3:07:16  
+in terms of interesting stuff happening on the exchanges. CME is where the index features trade New York, actually the data centers in New Jersey is where the stocks trade. Now, the price of the index is a function of the price of the stocks, or any uptake in the index should impact the price of the stocks, or any price changes in the stock should impact the price of the index. So therefore, being able to transmit this information very quickly is very critical right
+
+Unknown Speaker  3:07:54  
+now, earlier,
+
+Speaker 1  3:08:01  
+this information was transmitted through optical fiber cables, and then these cables were laid down along the path of human civilization. So it is from one city to another, city A to city B, C D, B to C D, C, C D, C to C, D, D and so on. This was not necessarily the shortest line. So earlier this was like, say, around 17 to 18 millisecond between New York to Chicago. And someone said that, hey, why does it have to be like proto, existing optical fiber cables? Can't we, like, dig a shorter route? So therefore, they started digging under the mountains, under the lakes to make it shorter. They got it to around 1314, milliseconds. Then people said that, hey, why does it again have to be optical fiber cables? Can't we do a series of
+
+Speaker 1  3:08:55  
+series of microwave towers? So a to b, b to c, something around 20 something, sir, microwave towers. So from
+
+Unknown Speaker  3:09:16  
+this is great, somehow blurred, yeah, so,
+
+Speaker 1  3:09:24  
+so you shoot from one tower to another on the air, and then from again, strengthen the signal, and then shoot from tower B to tower C, tower C to tower D, D to E to F. Blah, blah, blah, blah, blah. So this is like, near close straight line, right? Almost as close to a straight line. In fact, I remember, wow, this is like over 10 years old. 10 and a half years ago, I was in Chicago for a conference, speaking at a conference, and then one of the hottest topic there, everyone was discussing how their connectivity was as. Rate a line as possible, and how theirs were straighter than their competitor by a slight fraction of a degree, and so on and so forth. So this is how, this is the level of competition here. So therefore, once it moved from optical fiber cables to microwaves, it reached like seven to eight milliseconds. Then very soon, people realized that they could use short wave and things of that sort, I think so then it went to around four milliseconds as the speed of light. Time between New York to Chicago is three point something millisecond. So therefore, we are very close to the limits of physics when it comes to transferring information from place A to place B. Not just that. There is also these interesting
+
+Speaker 1  3:10:59  
+concepts wherein people shoot into the ionosphere, very tiny bits of information, and then it is reflected from the ionosphere. It gets reflected to the through the ionosphere and gets captured here. So from, say, Chicago, you shoot into the ionosphere and capture it. In Greenland. At Greenland, you again shoot into the ionosphere and get captured, say, in London. So copper is running both CME and LME. So copper is any uptick in copper at CME would impact prices of copper at LME. So you shouldn't ionosphere get reflected back and then again, I sorry, it was Iceland or green. You should in the ionosphere, reflect it and collect it at London and you trade on it, SNP futures at CME and stocks, Euro stocks futures on UX, two very leading index features right both highly correlated. So if there is an uptick in SNP, would there be an uptick in Euro stocks, possibly, so basically shooting in the iosphere. And instead of collecting at London, you can collect it at Frankfurt. That is another way in which. So that is another interesting thing that is happening these days. Oh, yeah, any any questions that you guys have? Yeah,
+
+Unknown Speaker  3:12:43  
+any questions, any more questions, rather,
+
+Unknown Speaker  3:12:55  
+not just that, when it comes to like,
+
+Unknown Speaker  3:12:59  
+when it comes to i, comes to the
+
+Speaker 1  3:13:04  
+speed of here in a lot of spaces, I believe we are approaching the limits of physics, speed in terms of how quickly you can compute stuff, be it in terms of how quickly you can transfer data. Because we are approaching the limits of physics in a way. So I believe the next wave of innovation is going to be in terms of, not in terms of being able to do things faster, but being able to process the huge amounts of information. Remember, the amount of data that we get from the exchanges is in hundreds of gigabytes per day. Now this means, this means that you are basically sending orders to the exchange. Is expensive. You have to buy those message rates. You have to put your servers in the data centers, and then if you send spurious orders, you get penalized by the exchange, if you send orders and not do trades, if you send orders without an intention to do two trades, the compliance department of the exchange, the compliance department of the regulator, will hound you. So therefore, people send orders if they have a genuine need to buy and sell. But traditionally, oh, sorry, these days, the ratio of order to trade is in the zone of 1000 is 200 right? So for every 1000 orders sent to the exchange, only one result in a trade. So traditionally, trading system strategies were built because of computational deficiencies, computational shortcomings, the ability to process data. So traditional trading systems were designed using resample data, wherein you take end of the data, if not end of the data you take end of second data, end of minute or once in a second data you. Right? But now, with increased computational power, you can look at each and every order. When you look at each and every order, or say, historically, it was just a series of last traded prices. So now, because the ratio of trade to order is in 1000, is to one, and then the number of ticks to number of end of second snapshots is is even way higher. And then people don't send orders for fun, because if each order is sent, because there is a need to buy or a need to sell, right? So therefore, I believe the way things are moving is in terms of being able to process the huge amount of information and being able to generate insights from them. And that is where things are progressing because the limits of physics are being rich, and the race is, in fact, very funny. Recently, two days back, there was this article on Bloomberg about a leading high frequency trading firm which has said that over the latency game is over. Now we are focusing more on machine learning methodologies to look at the huge volume of information to generate trading signals.
+
+Speaker 1  3:16:10  
+Someone said about dispersion, about dispersion, so you are making a viewpoint. Sorry, what you mentioned is not truly correct. What you do is you say that, hey,
+
+Speaker 1  3:16:31  
+use look at the huge you look at the average implied correlation value. After looking at the average implied correlation value, you make a you make a decision whether the correlation is going to go up or go down, here you would set it, oh, it's an unknown territory. I'll not do it right? It could either go up or go down, but here it seems it's very close to the bottom. So let me buy buy correlation. What does it mean when you buy correlation? When you buy correlation, if correlation amongst the stocks is going to go up, what is going to happen to the index volatility? All if correlation is going to go up, all the stocks are going to go up together, or all the stocks are going to go down together, in which case the index volatility is going to go up. So if correlation is expected to go up, the index volatility is expected to go up. So therefore, you buy index options, you sell stock options, because relative to the stocks, the index volatility is going to go up if correlation is expected to go down, because you said that, hey, this is near the upper band of correlation. So in given the correct Mark current market regime, if you expect index volatility to go down, correlation to go down, then stocks are going to move in independent directions. If one stock is going up, another stock is going to go down, and so on. So index volatility is going to come down. If index volatility is going to come down, then the index volatility relative to stock volatility is going to come down. And therefore you sell index options, buy stock options. So if there is information overload, will this lead to exchange or broker or Trader system crashing? Well, it will just slow down if it's designed nicely, various exchanges, for example. Okay, this is a nice question. Some exchange is not various some exchanges, what they do is, if the number of messages waiting on a matching engine are very high, it just flushes out the all of them and then says that, I all the pending orders are canceled. Bloom, so sorry, not just that. It flushes out the entire matching engine. It says that, oh, I have just too much information.
+
+Unknown Speaker  3:18:53  
+What do you call it? Product state,
+
+Speaker 1  3:18:57  
+it's happening in some of the exchanges these days, when there is a lot of activity, it just cancels when the amount of information is too high, it just cancels out everything from the order book. So suddenly the order book becomes blank, and then you have to again, resend orders.
+
+Speaker 1  3:19:19  
+So thanks a lot. Everyone. Any more questions? Happy to answer them. Bye.
+
+Unknown Speaker  3:19:48  
+What was this? Can you name one? Sorry, what are you referring to?
+
+Speaker 1  3:19:58  
+If the correlation of stock goes up, then. Relative to so someone had a question on this, relative to the stocks, the index volatility is going to go up. Stock volatility might go up, but relative to stock, the index volatility will go up. So you buy the index wall.
+
+Speaker 1  3:20:18  
+Oh, exchange name which flushes so exchange on the Euro eurox architecture. So it's urex BSE MCX in India. Someone says, Can you throw lights on collocation? Okay, so basically, people realize at one point of time that I've dirtied almost each slide. So people realize that, if this is the hot part, sorry, if this is the hot part, get data from the exchange, process it internally and send it back. Then this part, the communication between exchange and your physical communication, also impacts significantly. Right this physical communication, one, two, therefore, if you move your server close, the physical communication latency comes down. So people started looking for real estate space close to the exchanges to be able to put their servers. When they started looking for real estate space close to the actions to put their servers access, they did, Hey, you don't have to work so hard on something where we can help you and we can make money. So the exchanges started renting out space within the Exchange building. So if their matching engine is in data center. A the action side that hey, the data center, let us increase the size of the data center, and then let us also allow you to put your servers in the exchange data center,
+
+Unknown Speaker  3:21:52  
+so which meant
+
+Speaker 1  3:21:56  
+that you could put your exchanges started renting out space within the exchange data center for people to be able to put their servers, so that this latency came down so much so that this has become such a big business that I'll show you I used to Miss I remember seeing some videos on YouTube about some of those exchange data centers, I thought that they looked bigger than football fields.
+
+Unknown Speaker  3:22:34  
+Low
+
+Unknown Speaker  3:22:43  
+and lo and behold,
+
+Speaker 1  3:22:47  
+there was this diagram. There is this image. How do I see the light view? Yeah.
+
+Speaker 1  3:22:57  
+Layers, yeah. So this is the CME data center. And this is a football field. Is the size of a couple of football fields. So this is, this is this data center has all people putting their servers next to the exchange matching engine. And so this is how big a business it has become, so they make more money from this collocation than a lot of other services that the exchange has. How fast is it? Well, what do you think if you send an order from the collocation? How much time does it take to reach the exchange matching engine.
+
+Unknown Speaker  3:23:56  
+So typically,
+
+Speaker 1  3:23:59  
+despite all hops and stops and so on. So you would get and exchange gateway and the matching engine processing time and so on. So you low 10s of microsecond is is the time in round trip time. So one way time would be half of that. So say you will be able to reach the exchange matching engine in around 20 microseconds. But that is that answers the question about it's
+
+Speaker 1  3:24:39  
+going to be more than 10 meters cable. Someone answers 10 meters cable divided by the speed of light, because all participants have to be guaranteed the same latency, right? So even if the matching engine is here and then someone is placed here, well, the exchange would put their matching engine somewhere around here. So even if the matching engine is here and someone has their server here, this would have the same length. Cable length of cable as the length of the cable from here to the matching engine. So everyone theoretically is supposed to be given the exact same cable length. In fact, it's possible that this is also it's not just one football it's not just the football fields that you can accommodate here, but also here probably,
+
+Speaker 1  3:25:29  
+okay, cool, so seven one minute back is when the last question came in. So if there are more to shoot them across otherwise, best of luck. I hope this is meaningful and helpful for you guys, as you guys work on a carrier in this industry, so build trading strategies, trading wherein being able to comprehend how the different components of a trading system are, how they interact with each other. So basically, you might be a driver of a car, you might drive a car, but then you see a constant whizzing sound, and then you have no idea what it could denote. But then someone who understands the different components of the car and what the sound could mean. Would be able to find fix the problem easier, or they would be able to customize their car for their requirements easier. Remember this interesting movie called rush. So there is this guy, Nikki, Laura, who's the who became a Formula One champion. He was from Austria. He's was an engineer, and this British guy was a driver. He was a formula both of them are Formula One drivers. But then this was not a driver, because this guy was an engineer. He could customize his car as per his strengths, like how the Red Bull Car is customized for verstappens strengths, right? So this guy could based on the sounds and so on and so forth, or his strengths, because he understood each component himself better, he could guide how to customize the car for his requirements better at that point of time. This was 1970s right? Technology was not as sophisticated. Having one really strong tech guy as a driver with a strong tech background helped him customize each component of the car better for his strength, and therefore he became the f1 champion twice in a row. So yep. So I hope an understanding about the different tech components will give you the insights to be able to optimize for your strategy requirements better best of luck. You
+
+Unknown Speaker  3:28:31  
+cool. Have a great day. Everyone. Bye.
+

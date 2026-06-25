@@ -1,0 +1,318 @@
+Speaker 1  0:01  
+Hello, everyone. A very good morning, evening, afternoon again. So we meet again. Last week we had met for the PBQ 01 tutorial. Today, we have the tutorial session for the PBQ 02 session that haven't that was conducted this weekend before we
+
+Speaker 1  0:29  
+Yes, thank you. Happy. Good evening to you as well. Zubin, good evening, good evening. Thank you. Manikandan, audible and visible, okay, happy, yes, visible, Audible, great. Let's dive into the topics now. So in case you have any specific or pointed queries that you have in mind that you need to ask us, post them in the questions panel as and when possible. I'll take a look at them. Okay? And parallelly, I'll continue with the agenda. So the agenda is so over the period of this weekend and the last weekend, you would have learned some things about pandas. Okay, so let us look at the capabilities that pandas have to has to offer as a library in Python
+
+Speaker 1  1:28  
+now. So the agenda for today's session would be setting options on pandas, how to do all these things on pandas, how to extract data using Pandas from pandas. How do you modify data in pandas? And how do we plot candlesticks using the Plotly library. Many students keep asking, Hey, is it possible to use Python for this thing, for candlesticks? Yes, it pretty much is. I'll just give you a sneak peek into it. In detail. If you need anything, just let us know. We'll help you out. Okay, let's get started. So first of all, the Set option method, if you remember, every time we work on Python, it is always library followed by method with arguments. If you need help on any particular method, what you do is you simply go on to the documentation. Documentation, if this is the documentation, of course, today we have the llms to help us out. You have Gemini, chat, GPT, Claude, grock, whatever, llms of the world, but still a stable way to check it would be to check the documentation. Okay. Now these are all the different arguments that you can enter. So in case of Set option, the argument here.
+
+Speaker 1  3:06  
+So PD stands for pandas. That is the aliasing that we provide. It can be anything else as well, but we choose to work with PD, since that is the the industry standard, the industry convention Set option is the method, and since it comprises of two English words, there is an underscore in between, okay, that is a standard way of naming methods. And within the brackets, we would have the different option settings. So there are many you'd have all these different option settings for today, I'll display just one of them, rather two of them. These are some of the libraries that we always import. So let's import them. I'm running. As you can see here, this asterisk shows that the code is running. It has run now. Now I'm defining a list. This variable is a list, since it begins and ends with square brackets, there's some questions.
+
+Speaker 1  4:22  
+Okay, how to know which function to search in documentation so you do not normally use okay. Now you should know what is the objective that you're trying to fulfill in your code? Okay? So you need to have that clarity. Once you get that clarity, you can simply search. Now I know that I need to see the same list. Of options so you do not search for documentation to learn. You search on documentation to see the proper syntax the valid arguments. That is why you would use the documentation okay. And someone else was asking something, some other question which was so this was the question that I answered. Now, why? Why import warning? So the thing is,
+
+Speaker 1  5:36  
+in between, there are many So, all the libraries, all the packages that we use at times they they can become deprecated. That is, after a certain version, the support may stop. The code may change. The way you code, the methods used, those may change, okay, so Python keeps throwing warnings at you. Now these warnings, they can be an eyesore. They also take real estate, that is, they take up this space, so that's the reason we prefer not seeing warnings. Okay, that's the reason why we import warnings, and we use this method of filter warnings, okay, many a times we receive queries from students. Previously, we used to receive a lot of queries on this. Now it has reduced, I think going to maybe the llms for that matter, where students used to come to us saying, Hey, I got this error, whereas it was, it actually did not used to be an error, it used to be a warning. So errors are some things that you get when the code doesn't function properly. Warnings, even when the code runs, it can very well give you a warning. Okay, but still, it becomes an ISO. It takes up space, so it's best to set it to be ignored, which also makes me emphasize that this itself is a setting. This is a setting that we are doing on Python, so in my current kernel or in my current namespace or memory, just to give you an analogy, what we're doing is we are keeping this setting on, okay, so here, after whatever warnings Python gives us, we would be able to ignore them. So I hope that answers your question, and again, if you need to search, coming back to the initial question, if you need to search any website, any web page, you can use the search functionality over here. If you know what you need to search for, or simply hit Ctrl F, that also should help you out. Right.
+
+Speaker 1  7:59  
+Cool. So coming back here, I created this list that has this decimals. Now when I check it is in scientific notations. Now the problem is scientific notation says we are working with market data, so it's not a good way to denote price levels or any number, for that matter, using scientific notations, even when I when I check yes, the type is its end, its float, okay. These are essentially numbers. This is 10 to the power minus five. This is 10 to the power minus six, right? But what we need is we need to convert this to a number that is more intuitive for financial market data so on Excel, for example.
+
+Speaker 1  9:11  
+So on Excel, for example, you have all these options. There's different types of numbers that you can set. Similarly, I need to have the option that I can view a number in the format that I want. So first, what I'll do is I'll convert this list into a series. How would I do that? Pandas, dot series. And the argument would be my list. I can also convert it into a data frame. So this is the series, this is the data frame, okay, both showing the values in scientific notations. The type would be, yes, there's a series and data frames, respectively. What's the difference between a series and the data frame? So a data frame would be a collection of all these different columns and all these different rows. Okay, that is what a data frame would be. Now, every such data frame would have oh
+
+Speaker 1  10:47  
+okay, so every collection of data frame would have, sorry, every data frame would have a collection of many such columns. Okay, so every column in a data frame is a series. So this is a series. This is visible to us as a data frame, but when you view this separately, it's a series. Okay? So every column in a data frame, you can say it to be a series. You can call it as a series. We'll see this going ahead as well. Now in in some time, now what I'm doing is I am asking pandas to set this option so whatever series or data frame I see here after I would want it to display numbers in a float format. Okay, I do not want to see scientific notations. I want to see numbers displayed in float that too, up to two decimals. Now, when I set this on these numbers that were that had scientific notations, they don't have that anymore, and the precision is only up to the second decimal. That's the reason you have zero over here, because these two till the second decimal are zero. Okay, they are very small. But if I take them till the eighth decimal, if I change the option to be till the eighth decimal, symbol. Now the numbers are visible that they were the way they were okay till the eighth decimal. Now if I need to reset this option, instead of set, I simply need to type reset. That's it. And again, back to scientific notation. So the idea of this section that we saw right now is to understand that on pandas, you have the option to set certain options and also reset them. Okay, you can go through all these lists if you want. So
+
+Speaker 1  13:11  
+and if you want to have access to the doc strings, that is some all the valid arguments and how those arguments are to be entered, examples, you simply need to call For help using this or using this,
+
+Speaker 1  13:36  
+or using this. This is what you can do. Okay? So either you can refer to the documentation or you can refer to this. Let's see if there are any questions.
+
+Speaker 1  14:00  
+Happy is asking warnings are there for a code to be better? Warning is something that is given by Python. Okay? It just wants you. So if you're driving along a road, the road gives you warnings, right? Keep your speed low, or this may be an accident prone area, drive slow. So it's so that you are aware of some potential dangers or pitfalls. Similarly, Python gives you certain warnings. Okay? You can have those warnings on. That's not a problem, but we choose to keep them off. I choose to keep them off. If you want to see those warnings, you can include them. Okay, that's not a problem.
+
+Speaker 1  14:53  
+Yes, that's right. Zubin, so before llms, if one wanted to figure out how to do something in any computer language, we would search. Stack Overflow. That's right, Stack Overflow, and also the documentation. In case, there is one method that you need to use that others are not talking about, might as well check the documentation.
+
+Speaker 1  15:18  
+How to memorize the codes and functions you need not do that. Shares. Just keep practicing, keep coding. You would get there. Okay, so more than knowing, you should know how to read code, rather than know how to write code in today's time. Yes, if you're able to write code, nothing like it, but at least you should be able to interpret code. Okay, so don't worry about it. Just keep doing it's just like any other skill, the more you practice, the more you any sport you play. For example, you don't learn everything on the first day you learn the basics, then you understand what your strong points are. You start building upon those you understand what the weak points are going ahead, then you try fortifying more yourself on those weak points. Okay, same is with coding. Just keep doing. Keep practicing. You'll be there. Don't worry. I generally use llms when I don't know codes or functions. Is that a question or a statement you have put in a question mark? But if you are meaning to ask, should you use llms? The answer would be no, not initially, once you understand the syntax of coding, once you understand the fundamentals properly, once you have some confidence in writing basic codes by yourself, at least the kind of codes that you have studied in PBQ one and two, at least, when you're able to write those type of code by yourself. After that, using llms might make sense, but not at this stage. Don't forget, we need to use llms as a tool, okay? And it should not be the the whole and soul of it. They should simply be used as a tool. When you don't understand the output that they give, it becomes difficult, it becomes dangerous, rather okay. For exams, we need to memorize codes or functions. So that's what I said. Set shares, you keep coding, you would be there. And for functions, this is what you do, the exact thing that I showed right now, if you need any method, you import, for example, You import NumPy.
+
+Speaker 1  17:40  
+What is NumPy? This would give you everything about NumPy. If you need to know the various methods in NumPy, you use the DIR method. So this some of these functions you need to use, okay? And this you would get familiarity with you would become proficient in this prior to the exam. So don't worry about that. And that is what our students have been doing over the years. So don't worry now, for example, if you need to use quantile, then what you do is NumPy dot quantile search. Then it tells you what quantile is all about. Okay, what are the different arguments that you need to give and everything. Okay? So, so practice accordingly. Practice like this.
+
+Speaker 1  18:36  
+Is there a library specially created for quants? There are many happy. There are many so, so, for example, quant stats,
+
+Speaker 1  18:52  
+constructs created by Dan Rossi. Then we have pifolio. All the PI filler has not been working that well recently. I don't know how it's functioning. Now, an example tier sheet, okay, this is used to gage strategy matrix and strategy back tests and Strategy Performance, strategy or approach performance, just to name two. Then you we used to have back tester. We still have back tester. There was zip line, which has become more of a legacy. Now it's not, it's not supported anymore. This used to be an amazing tool. So there are many, and these are just some of the back testing libraries that I talked about. There are many such, and that is how the community evolves and develops, right? Be it for quants, be it for any other domain that you need. Be it for machine learning, be it for data science, be it for astrology, astronomy, whatever you do, have many specific libraries and tools. So as you keep progressing in the field, you would be. Uh, keep experiencing exploring more of that. Okay, it's just a function of time before you start exploring many such libraries. So yes, in short, there are many. Yes, that's a good analogy. Yes, you can learn to swim by reading a book. That's right. So that's the idea. Keep keep coding, keep practicing, and you would be there. Cool. So let's continue
+
+Speaker 1  20:36  
+right next. The first and foremost thing that you would do for ideating a strategy, one of the first steps that you would do for editing a strategy, or while working on any project, would be accessing data. Now there are many ways of accessing data. We use y After download. That is Yahoo Finance, we have alpha Vantage. Then there are broker specific APIs that you can use to download data. Then there are other data vendors as well. There is pandas data reader. Then there are frayed APIs for macroeconomic data that it's a whole plethora of things. Okay, you have quandal, what used to be we have NASDAQ, Data Link, what used to be condol, previously. So ways are many. What I'm going to do now is the simple thing that you people have been doing. So, one of the authentic data sources would be to go over to the exchange and download data directly from the exchange. I have already mentioned the example of reliance, which is a stock listed in on the NSC, that is the National Stock Exchange of India. And if I need the data for this,
+
+Speaker 1  22:18  
+this is where you have the term. Of the, yeah, we have historical data now, whether you need three months, six months, one year, even derivatives data you can get from here, of course, it would be the derivatives that are trading currently for expert derivatives, some places may provide some don't, but more often than not, you would be able to avail it from your brokers. So you can check with your brokers and just download this as a CSV file. So I've already downloaded one such data that is for HDFC, bank equity section. This is the date, which is over here. This is the CSV file which I'm going to read now. Now, like we saw last time, this data needs to be the same directory as your notebook. If it is not, you need to change your current working directory using OS, dot, cht, IR, if you remember, import OS and OS, dot, cht, IR, change your directory to whatever directory, file path you need to mention. So let us read this using read CSV. The name is very intuitive. That's a good thing about Python. This is how the data structure is. You would see what series it belongs to. That is whether it's equity or derivatives. The column names, volume, value, number of trades on and so forth. Now what I was referring to is this.
+
+Speaker 1  24:12  
+So this whole thing is a data frame, this HDFC whole thing is a data frame. However, HDFC value is not a data frame. It's a series. So data frame is built up of all the series that you see. That's the difference. Now, one more thing you would have noticed when I ran this, it gave an error that this name is not to be found. Even though you can see this name over here, it's not to be found. To overcome this kind of errors, what you can do is you can simply check the name of all the columns, which you do using the dot columns method. And here you will see. The value also has a space after it, okay? Previous close has a space after it. Low has a space after it, right? So now when I place a space after value, that is when it runs without giving me any errors. And if I need to iterate and list all the column names. Now, when I highlight the column names over here, it would not show me that space, okay, the blank space that we saw. Now, however, when we do it here, it shows us this blank space. If you can see, it shows up. It shows this blank space, right? So how do you take care of this blank spaces? This is one method that you can use, using the strict method. Now those blank spaces don't exist anymore,
+
+Unknown Speaker  26:09  
+okay? And now when I check for what's the Name, HDFC,
+
+Speaker 1  26:40  
+okay, I need to make this. Okay, let's not spend time here and this. Let's just move ahead. So the idea that I'm trying to convey is, when you use the strip method, it simply strips off this. Spaces. Cool. Now another way of so. There are some certainties that we need to bear in mind when we work with market data,
+
+Unknown Speaker  27:19  
+or when we work with any kind of financial data. We are dealing with time series data.
+
+Speaker 1  27:29  
+So there are many reasons why we need to have our data sorted in chronological order of date and time. That is time series matters. The date and time order matters. Okay, that is essentially what I'm trying to convey here. Why some reasons you will understand today. I'm going to showcase a few other reasons as and as you proceed ahead, maybe in industry, maybe in the ePAT, you will get understanding of that.
+
+Speaker 1  28:11  
+Okay, now I'll get on to some questions. Sure comes is saying, As a beginner from non IT background, how to maximize the learning efficiency and move topic to topic is consistency. The only key not at all consistency is just one requirement. You need to make your consistency efficient as well. And how do you do that? So there are many ways of doing it. For one.
+
+Speaker 1  28:52  
+Use this, you study and learn, okay, something similar is there on Google, Gemini as well, or any other elements that you use, okay, the study and learn functionality that is one way. Number two, there are online platforms as well where you can practice your code. Number three, use something that is similar to the Pareto Principle. Just identify the crucial, say, 30% of
+
+Unknown Speaker  29:32  
+coding paradigms or routines that lead to, say, 70% 70% of the results of the outputs or results.
+
+Speaker 1  29:46  
+So you're not you need not learn everything. You simply need to know some of the functions that you should Well, verse yourself with, and you're good to go, at least to begin with. Okay, don't try to. Go through each and every line of code. Don't try to learn everything that is covered in PBQ one PBQ to just take a gander, glance through PBQ one PBQ to notebooks, see which functions are used more extensively, and spend more time behind those right? Because there's a huge possibility, since those functions are used so much, they are going to be more useful than the others, okay, that is how you can increase your initial learning graph. Okay. So this is one way, one way by which you can learn smartly. So consistency is needed so that if today you are learning, say,
+
+Speaker 1  30:50  
+if today, this is what you're doing. If you have started learning now, if you don't keep consistency, it's going to come down. Then you'll have to pick up from this level, then again from this level, then again from this level. Okay, so your rise is something the way the markets do, okay, which is not something that you should want ideally. Let Your learning curve be something like this. Okay, let the gradient. Let the angle be steeper, okay, let the tan theta be steeper. Be a be a greater number, okay, rather than this, that's the idea.
+
+Speaker 1  31:37  
+And whatever you do, whatever code maybe you're creating using an LLM, or, of course, don't use an LLM to create code now at the onset, when you have just when you're just beginning to learn. But just go over to different websites, check out some code. See what those codes are doing. Try to infer those. Copy, paste them over here, ask it to explain each and every step of what those codes are doing. Okay? That should help you out. That should make your learning much faster. And goes without saying, any place you get stuck, you feel stuck, we are here to help you out, so don't worry. And if you need more customized sort of a maybe study plan or an approach, given your temperament and your background, we can get on a separate call and we can discuss it. That's not a problem. How to account for stock when downloading historical data. This is a good question. I mean, all questions are good, but this is a thoughtful one. So adity, yes, some places do account for this corporate events, and some places don't. So Yahoo Finance accounts for this. Now, the place from where you are going to be downloading your data, be it your broker, your data vendor, you need to check with them whether it's adjusted or not. If they're adjusted well and good, if they're not, then you will need to look up for NSC stocks, blood and dividend history. So okay, so all this corporate actions lists that would be here. This would not be a very efficient way of doing it, okay, but this is what this is how you it used to be previously, when people used to do things manually. This is how they used to do it, okay, but now, typically, you would get data that has these things accounted for, and if not, you can check other options, but you need to ensure whether you have to check whether it has been accounted for that or not, if it is well and good, If it has not been, look for an alternative. So
+
+Speaker 1  34:05  
+yes, that's right. Zubin, so only difference between
+
+Speaker 1  34:15  
+raw and Markdown is markdown you can add esthetics, make it presentable. So a single hash would give you one heading, one heading level, so double hash,
+
+Speaker 1  34:46  
+triple hash, okay, different heading levels. And single star would give you italics. Double star would give you bold.
+
+Speaker 1  35:03  
+Triple star would give you italics and bold, and when I convert change this to raw. This is just plain simple sei text like you mentioned. Okay, so
+
+Speaker 1  35:30  
+yes, so Ajay, I was not talking. I was talking about the initial learning. Okay, I was talking about the initial learning. I'm not asking you to restrict or limit your use cases. The question that someone asked, I don't remember whether it was you or someone else that was in the context of how to pace up the initial learning once you get to a confident level in your trajectory. So anything that you learn the learning trajectory, the learning trajectory assemble something like this, right? This is something that any learning trajectory would resemble. Now, for how long is this going to be horizontal? That depends on maybe your background, how valuable to pick up? How involved are you? And many factors this part is going to be common to everyone. The angle, the steepness of the angle, would differ, but it's going to be common to everyone. So that's what I said. For this initial part. You need to be selective, okay, so that you gain some confidence, you gain some hands on. Okay, this part is where you should not be selective. I was talking about the initial part, not this part.
+
+Speaker 1  37:01  
+How to know what to learn and what not to just, just practice everything that is taught. Okay, when I say practice, at least, go through the code, run the notebooks, take a glance at the notebooks, finish the assignments, finish the evaluations, and you should be there. Now you might say, hey, this content is to what you said about pacing up your learning. So that was a smart way of learning any skill or any new thing that you should be doing, okay, but, and that was in the context of coding, okay, only coding, plain, simple coding. But when it comes to now, the ePAT is not just about coding. The ePad is also about some maths and stats, at least initially, eventually, when you get to machine learning and things, having a good understanding of maths and stats would help you. Then coding is one part. Then general financial markets. This is something which you are going to learn. Then market microstructure,
+
+Speaker 1  38:15  
+then portfolio management and risk management. Now time series analysis, so all these things you're going to learn in the impact. When I say financial markets, of course, there would be futures, there would be options. Now, maths and stats would come into machine learning. Okay, you are going to learn many things. Only thing is keep a keep some dedicated time for your learning and ensure you are doing the assignments and tests and submissions on time. That's it. That's the best that you can do, which is the case with any course, right? Any course that you do, you just need to follow certain timelines so and you shouldn't fall behind. That's it. That's the bare minimum that you must do. So for example, the PBQ 01 notebook
+
+Speaker 1  39:07  
+run this notebook end to end, and see whether you are able to understand the whole notebook or not. If you are well and good, if you are not immediately seek help. That's it. Okay, that's the bare minimum. But when you practice, if you want to, if you want to take out extra time for practice, if you want to, if you have extra time for practice, then you
+
+Speaker 1  39:50  
+then going through these two notebooks should give you an idea of what you need to focus on, and this is something that I also have been i. So I talked about in the previous session. I'm talking about now. One important thing is which brackets to use where this
+
+Speaker 1  40:12  
+is one thing that you should know. Another thing is the syntax that is library, followed by method with arguments, then you should know if else conditional statements. You should know loops for at least four loops. There are while loops, but you can skip for in the beginning you can skip them, okay, so these are some things that you should focus more on. Okay, initially, once you have a good hold on all this learning, Python becomes a cake walk. That is what I meant by identifying some of the crucial things that you should know. Okay, rather than getting your attention diverted everywhere.
+
+Speaker 1  41:12  
+Yes, Zubin. So if you all are able to see what Zubin is, Zubin is saying this, the stupid region that you talked about, that is exactly what this part is, okay, where you feel like you're not making any headway, right? That is what I meant. And when you say, just get the basics. This is exactly what the basics are when it comes to learning Python, for the ePAT and in general, for quant finance and algo trading. Just understand these things. There might be, there are a few more additions, but do ability this, this much is fine, okay? And then comes the persistence part. And when I say persistence, you should ensure, even if half an hour to one hour on a daily basis, if you're able to devote separately over and above for Python learning at least initially, then this would be a smooth upward curve. Okay, a monotonic curve. We we do not want this to become something like this. We want it to be monotonic. It should keep on going up. That's the idea, okay, which Subin has articulated quite well. Thank you. Anyway, let's move on to how to download data from NSE website, archive files instead of using Yahoo Finance. Yeah, that's what I said. Now, right? This is the NSE website. You come over here, you search the name. For example, SPI
+
+Speaker 1  42:49  
+you click on historical data, see what data you want. You if you want equity data, let's go ahead with equity data and download the CSV file. That's it. If you need data for other time periods, change the time periods over here. That's it. If you need it directly from the exchange, if that's what you're seeking to do. Okay? I'll just close off all these unnecessary files. Those are unnecessary for now. Now I'll quickly cover this part, and then we'll move on for a quick break.
+
+Speaker 1  43:39  
+Okay, now manikanan is asking, Can we get data directly from NSE website? You can there are libraries available, but those are not green flag by the NSE. That's the reason we don't talk about them. Okay, if you look online, you would be able to find those kind of libraries. Yes, they are there, but those are not authorized by the NSC. That's the reason we don't talk about them. Yahoo Finance is also not authorized by any exchange, but still, it has some credibility and some authority. That's the reason we have included Yahoo Finance as part of the epet curriculum. That is when we demonstrate any kind of data download or data, but this libraries that you are talking about, we typically don't talk about them, okay, but you can look them up. They are pretty much available,
+
+Speaker 1  44:39  
+okay? Now coming to the part on time series, so we need to have our data sorted in chronological order of date and time. How do we do that? Where was I? Yeah.
+
+Unknown Speaker  45:02  
+Here I have this file.
+
+Speaker 1  45:24  
+Where I have this I have this file within this folder or this directory, Apple, dot, CSV. What I want is, I want to, I want to read this, so I'll read it. This is how it gets rendered. That is, this is how it looks like. It's a data frame. If I need to perform a sanity check. That is whether it is loaded properly or not. We can check for the first 60 rows. Typically, we simply use head without any arguments. So by default, the first five rows are given next what I'll do is, this is yet another set option argument that pandas offers you with if you check, if you simply write data, it shows you first five last five with all these gaps and breaks in between. If you need to go through the whole all the rows, you just say, display Max rows. Okay, this is the argument that you need to enter within inverted commas, of course, but this comes with practice, and now when you check for data, it's going to take a while. It's still loading. Now it's loaded. Here you'll see all the 3900 rows displayed, all 3900 rows are displayed in front of us. And if I don't want it to be that way, because this takes up a lot of namespace and it makes your kernel very slow. So I do not want my kernels to be slow. So what I'll do is I'll just reset it, because any data frame that I check now is going to keep showing all this 3900 or even 100 1000s of rows that the data frame may have. Simply reset it, and now when I check for data,
+
+Unknown Speaker  47:59  
+is reverted back to how it was okay. Now.
+
+Speaker 1  48:14  
+Now, info is one method that gives you as the name suggests info. It tells you the overviews of what your data frame is. How many what are the column names? How many valid values are there that is non null values are there? What is the data type for every column, so on and so forth. It also tells you what kind of index Do you have. Now we have range index. What do I mean by range index? My data is sorted according to this values, this numbers. I have the date column. But my data is not sorted according to the date column. It is arranged. It is in chronological order of this numbers so and if you check for what the index is using the dot index function. It starts at zero, stops at 3900 that is the index, okay, at steps of one. Now what I need is I do not want the index to be range index. That is, I do not want it to be integer based. I would the index to be based on date. So I'm using my date column to set the index.
+
+Speaker 1  49:56  
+So Shreyas is asking how to avoid any end data while downloading. In See you can write, you can simply say, drop na. But problem is, you need to know how many null values are there. Okay, because suppose you have a suppose you have
+
+Unknown Speaker  50:26  
+1000 rows and you have eight columns, nine, column 12345678,
+
+Speaker 1  50:43  
+in column one, suppose you have two null values. Column two, you would have 56 column 345, Column four, 200 column five, 600 null values. Column six, four. Now the problem with using a drop Na is you are straight away going to drop all the 600 rows of data. Okay, and that too, if this null values do not correspond with this row, you may end up dropping even 800 rows, provided these are mutual exclusive. So that won't be a smart thing to do. So the idea is to first download the data, then run an EDA that is exploratory data analysis, and then decide what is to be done with the null values, or how to handle the the null values. Okay, so you should not remove the null values by downloading, because you simply don't know what values are you removing. Okay, first take the data as it is, and when you clean the data, when you cleanse it, when you modify it or manipulate it, that's the word that is used in the industry. That is when you decide how to handle the null values. Okay, so if null values are greater than a certain percentage, you may impute them. Now, whether you use mean imputation or maybe max imputation, whatever the case may be, whether you want to impute it, that is, replace the null value with the mean value of all the other rows for that same column. What do you want to do? How do you want to handle that data? Do you want to use the median that would also depend on what kind of data is it from? Where have you procured the data? Why are the null values coming in. Okay, so there's a whole different study behind this that people study in the field of data science. But simple answer, cut short, you should not handle null values while you download it. Although I'm not a data scientist, so as to say, but this is how I look at it. In case any of you present on this call have a better approach, I am more than open to hearing that, but you should not okay. So now what we have is I have set the index, I have set the date column as the index. Okay, so you would see here the data is now this column is highlighted, okay, it is black and it's bold, and when I say black and it's boldened, emboldened, that's the index column. But still, wait, yeah, but still it is showing me as range index zero to three, eight, double, nine. What's the reason for that, the reason is I have not made this change permanent. Okay, this is a temporary change. Either I should write data equal to data dot set index and everything that is one thing that I should do, or I should use in place equal to true. So this is one way of doing it. This is the other way of doing it. So in place equal to true means I'm just moving it. I'm shifting it from the initial condition to the now condition that I see. This code that I'm running that is simply going to show me how the data frame is going to look like. I'm simply asking Python to show me how this change is going to look like. But I did not ask Python to replace my existing data frame with this change. Okay, I did not ask Python to x. Size this change, okay, or to emphasize that change, so when I replace the existing one with the new one, this is how it looks like I'm
+
+Speaker 1  55:27  
+now the index is no longer a range index, it is an object index, okay. And now when I check for the info,
+
+Speaker 1  55:56  
+it does not use the word index, range, index. It simply uses index. But this is also not what I want.
+
+Unknown Speaker  56:09  
+What I mean is, this is a date, okay? This is a date variable.
+
+Speaker 1  56:20  
+A now contains a date, but when I check for the type of variable A, that is what data type is it? It shows me a string character. I mean, it shows me a string data. Okay, now I do not want Python to treat my dates or times as strings. I wanted to treat dates and times as dates and times. So what I'll do is I will use the date time method. Okay, the two underscore Date Time method. So, okay, let's not go there now. So the two dead time method. What it does is it converts anything that looks like a date or a time, it parses it, and it tells Python, hey, you should treat this as a date. Okay? And now, when I do that, and when I check how the index looks like now it has become a date time index. Okay, it is now a date time index. So what we did previously, it was range index, then it got changed to index, finally, to date, time, index. Okay, so let's take a quick halt here. Let's go for a quick break, and when we return, we'll resume the session. I'll just restart the kernel. My system is slowing down a bit, so
+
+Unknown Speaker  58:49  
+okay, I'll be seeing you people in five minutes from now.
+
+Speaker 1  1:03:57  
+I Yes, I was talking about range index and date time index, so range index only, index and date time index. That is the evolution that we did for the index. Okay, that is what I was explaining.
+
+Unknown Speaker  1:04:28  
+Let's move on now. What we did had two drawbacks. Number one is we
+
+Speaker 1  1:04:45  
+made the transition twice. Okay. We first downloaded the data, then we changed it to index, then we changed it to date, time, index. Number two, even though the index is still. A the date column, there is a separate Date column as well, okay, and that can create conflicts that is also not something that we want. So the best way would be when you read the data then and there itself tell Python, hey, I need the date column to be my indexing column that is the index. The index needs to be the column whose indexing is zero. That is the first index, the first column. And you also need to parse states. That is, wherever you see objects or strings that resemble dates, you need to read them as a date time object. And when we do this directly, we are getting date time index. And also, there is no separate Date column here. Okay, date is now the indexing column, right? This is the reason why we use these two arguments, index column equal to zero and parse states equal to true. So we saw how to read CSV files, how to verify whether it's loaded or not, all these methods.
+
+Speaker 1  1:06:37  
+Now let us move on to how to extract data from a data frame, or from a from any data structure. But today we are going to explicitly talk about a data frame. So there are two ways of doing it. One is if these are the names of the columns, foo, bar, bars. And if these are the names of the rows, that is the level, as we call them, what we are going to do is we are going to use an operator or a method known as the dot lock, loc lock, or it's a short form for location. Some tend to pronounce it as local as well. Okay, so the dot log, dot log operator, what you need to specify inside it is you need. This is the syntax, the name of the data frame, followed by the dot log operator, followed by the name of the row. Okay, not the index value of the row, the name of the row followed by the name of the column. So for example,
+
+Speaker 1  1:07:53  
+before that, let us learn one quick thing. So last time we talked about data structures, okay, this is a list. If you need to extract the first value of the list, that is the value with index zero, this needs to be index zero, which is the first element in the list which is meta, the last element would be minus one, or in this case, 01234, this is there are five elements. So element number four is going to be the last index. If you need to go from, if you need to slice the data, that is, if you need to go from one value to the other. So here what I'm doing, I'm taking value, index value zero, and I'm going till two. What this is going to do is this is going to include index zero and one two is going to be excluded, right? Like we saw last time, this means index two onwards.
+
+Speaker 1  1:09:18  
+So as an illustration, the first value, end value, start value, end value, how many numbers are going to be there and minus start those many numbers, that is six minus two, equal to four. But this is not going to be included. Okay, always keep this in mind here. This is, it's going to begin from two, that is index number two, and it's going to move on till the end here. This is going to stop at index number three. That is, it's. Is simply going to take index 01, and two, okay, three is still not going to be considered, and this means it's going to take all the values. Okay, you might ask, Hey, why do we need all the values? We could have simply written stock list, and we still could have got all the values the way you see in front of you.
+
+Unknown Speaker  1:10:22  
+Now, the reason for that is, when I use the dot lock operator,
+
+Speaker 1  1:10:35  
+I need to give the row levels. Comma the range of column levels. If I need all the rows, I'll simply use this colon. Okay, that is very helpful, followed by a comma. And this is the data only of the close column, which is the same as extracting the data for the close column directly, like this.
+
+Speaker 1  1:11:05  
+Now if I want to extract the data for multiple columns,
+
+Speaker 1  1:11:16  
+this is how we do it. Okay for open, comma, close. Now, if I need all the column data for one particular row, that is for one particular date over here, this is how we do it.
+
+Speaker 1  1:11:41  
+Now, you see there are two different codes in front of you. Can you tell me the difference between these two? What should be the output? What should be the difference in output when I run these two codes, please try to guess.
+
+Speaker 1  1:12:02  
+Shirais. Is asking so column zero is indexed as state column no shares, I'll show you.
+
+Speaker 1  1:12:29  
+I suppose this is a CSV file which is my first column. First column is Date column. That's the reason I'm asking Python the column with index zero that needs to be set as the as the index now had,
+
+Speaker 1  1:12:58  
+had the date column Been number three, the third column, or index number two, I would have said index column equal to two and not zero. Okay, that's the reason.
+
+Unknown Speaker  1:13:20  
+How to get last five elements. So last five elements would be DF, dot lock
+
+Unknown Speaker  1:13:38  
+last five elements of rows. This is how it would be,
+
+Speaker 1  1:13:45  
+and last five elements of columns, this is how it would be. Sorry, not log. I look, but I look, we haven't touched yet. If you need last five elements of a list, for example, then list minus five onwards. Okay.
+
+Speaker 1  1:14:14  
+How to reverse list? So there are many ways of doing that. You can use loops, you can use list comprehension. You can also use the double colon method. Okay, one is from this to that, and other is this and that.
+
+Unknown Speaker  1:14:31  
+Yes, Manikandan, good. Okay, so this is the answer that manigan has given.
+
+Speaker 1  1:14:41  
+So one is from this to that, and the other is this and that. What he means
+
+Speaker 1  1:14:53  
+is this gives the data between first June till 29 June. But this is. Going to give you the data only of first June and 29 June. So the first one is continuous data. The next one is discrete data. Okay, that's how you term them.
+
+Speaker 1  1:15:20  
+And here you will see event 29 June is included. The reason being, the exclusion that I talked about is only when we use index values, not when we use labels on names. Okay, so keep that differentiation in mind. So suppose I need the data only for first Jan to 10th. Jan, 22,005 this is the data. If I need the data for only three years, and that to the adjusted close data. This is the code, if I need the data only, for the month of April, I'll say the index month would be four. That is the date should have a month value of four, okay, but this is possible only because I set my index as date time index. Okay, that's the only reason why this is possible. Had I not set it like this, it would not have been possible, okay, that's the reason why we need to have the index as a date time object, and this here is the data only for the month of April, okay, plotted over this whole time frame update, okay. This is how the price action has been every April. So if you need to check for seasonality, or maybe seasonal demands, whatever the case may be about the price action for monthly or even weekly. This is how you can do it. Okay. Same for maybe Jan, December, whatever you want. Now we move on to the next kind of operator, which is the iloc operator, which is the same as lock, only difference being i here stands for integer, okay, or indexing, so, so, yes, instead of using the level, we use the indexing. Okay, instead of using the level, we use indexing. Now, since this is indexing, the second value would be excluded, and here it's not indexing, that's the reason why the second value is included.
+
+Unknown Speaker  1:17:56  
+Now in our data frame, what is the index value of close? It is 0123, closes.
+
+Speaker 1  1:18:09  
+Three. Open is one. When I use this colon, all rows are going to get selected or extracted. Three would refer only to the close column. There we are, which is the same as doing this okay, or simply doing this. So all three are exactly the same. All three are going to give you the exact same output. I lock, colon, comma, three. Lock, colon, comma, close, data, close, okay. Now if I need again, all rows and only open and close column zero and three.
+
+Speaker 1  1:18:58  
+Now if I need, for example, that data of the first 100 rows, okay, but every fifth day, so for the first 100 Days, I'm taking the data for every fifth day. That is approx one week of price action. Since this is daily data. Five days would account for around a week worth of price action. Okay, so you should have 20 data points over here. Now, if I need to plot the weekly price action for, say, the first 1000 days, this is how it's going to look like.
+
+Speaker 1  1:19:56  
+Shubham is asking, what's the difference between lock and I lock? I lock, we would need to give the index values. Look. We would need to give the levels. So in our data frame, these are the levels, Open, High, Low, Close. This is what we need to give in, look in, I lock, it would be 01, and this way, this would be the levels at the actual dates. When you use lock, when you use i log, this would be zero. This is one, two, and that is how it's going to continue. Can you change the date from this format to this format? Yes, yes. Aditya, okay, we can pretty much do that. If you need help on it, we can take it off. We can take it up, offline, not a problem. Or you can explore it. And if you need help on it, just get in touch with us. So this is how the weekly the daily pattern has been but taken in terms of weeks, okay, for the First 1000 days.
+
+Unknown Speaker  1:21:14  
+And if I compare that with, say,
+
+Speaker 1  1:21:36  
+and if I plot it for for every day, you can see how sharp it is, okay? It's essentially capturing the data for every day, okay, the price action for every day. Now, this is not moving average, okay, in case some of you are thinking this is moving average, it is not moving average. Why? Think about it? So this is how we use the lock and I lock operator. Let us move on to how to modify data frames.
+
+Unknown Speaker  1:22:17  
+So this is how you can define a null value,
+
+Speaker 1  1:22:32  
+and you can create a column with all the values as null in it. This is how we have a static value, we assign a static value that is irrespective of all other values. All the values in this column are going to remain the same, or rather, those values don't depend on the values in other columns.
+
+Speaker 1  1:23:03  
+If you need to, say, calculate the percentage change. This is one way of doing it.
+
+Speaker 1  1:23:21  
+So here I have calculated a sanity check for you, this adjusted value minus this adjusted value divided by this first adjusted value. This is the value it should yield that is minus 0.017236
+
+Unknown Speaker  1:23:47  
+this exactly What is getting yielded. Okay, same for log returns now.
+
+Speaker 1  1:24:09  
+I'll quickly take you to plotting candlestick charts using Plotly, because we are nearing the end of the session. So Plotly is a library. I think I already have it installed, but let's still install
+
+Speaker 1  1:24:28  
+it. This is typically how we Yes. So some of you who needed to see a warning, this is how a warning looks like. Okay. Now.
+
+Unknown Speaker  1:25:00  
+Are just slowing down a bit.
+
+Speaker 1  1:25:15  
+These are candlesticks, so you would see here, we did get this warning, but despite that, the code ran properly. It did not give us any bugs or any issues or any trouble, right? So, and if I were to use
+
+Speaker 1  1:25:54  
+I were to use warnings filter warnings, and then had I run this code.
+
+Speaker 1  1:26:36  
+You shouldn't give me a warning. I don't know why it's giving me a warning. You shouldn't give me this warning, nevertheless, I'll check this out. This is something strange. This is weird. I'll check this out. But typically this warning shouldn't have come
+
+Unknown Speaker  1:26:54  
+Okay, so coming to candlesticks, this is an interactive plot.
+
+Speaker 1  1:27:03  
+So this kind of interactive plots you can plot using cufflinks, the cufflinks library, where you can straight away plot I plots. I stand for interactive and Plotly, also gives you the same functionality as cufflinks I plots. So, so, yes, we simply need to mention
+
+Speaker 1  1:27:30  
+the open value is the column that has open name, high, low and close accordingly. Okay, and it draws this candlesticks for you, okay, so you can perform your technical analysis, the charting technical analysis on this. You can zoom out, you can zoom in, you can pan and you can reset the axis. Okay, this is cufflinks.
+
+Speaker 1  1:28:19  
+Yes, yes, I can do that. I just didn't want to spend time behind that. Now, since we are nearing the end of the session, that's the reason I chose not to do it. Now,
+
+Speaker 1  1:28:37  
+okay, here you have moving average crossovers as well. Cool. So add SMA, this. These are inbuilt functions that you simply need to now, someone was asking, Hey, are there ready made libraries for quants? So this libraries are pretty much there. So Qf, that is, CF that quant fig. So cufflinks has this quant fig functionality where you can do all these things. Okay, I won't say it's for quants, so as to say, but you can use it in technical analysis now, yes, since someone did mention, let's just do it.
+
+Speaker 1  1:29:34  
+I can take a snap and I can share it on chat, GPT, I can do that, but let's not go there now. So officially, let us end the session now, because it's time, those of you who have some queries or some doubts or anything that you need to discuss or ask, you can stay back. Others, you're free to leave. Okay, I do not want to hold you back for now. So that's it, that. All from me, officially. Any queries, any questions, please stay back and ask else. You're free to leave. Thank you. Have a good day, good night, depending on a geography you
+
+Unknown Speaker  1:30:58  
+Okay, any questions, any queries, people,
+
+Unknown Speaker  1:31:09  
+ah, yes, okay, okay, got it.
+
+Unknown Speaker  1:31:24  
+Okay, so this is okay. So those of you who
+
+Speaker 1  1:31:32  
+are interested in knowing the filter warnings suppresses only Python runtime warnings, but this kind of warnings, it doesn't suppress. Okay,
+
+Speaker 1  1:31:50  
+cool, that's fine. So nevertheless, that's all for now. I assume there are no queries that you have, I think I should stop the session here if you need if you have any queries, or you need help on any of these, just feel free to get in touch with your support managers, and we can take it up offline. Okay, let's see bye, bye, people.
+

@@ -1,0 +1,675 @@
+Unknown Speaker  0:12  
+Hey, guys, can you hear
+
+Speaker 1  0:21  
+me? Yeah, all right. And can you see my screen? Can you see the presentation? Yeah? All right. You know, I apologize for a couple of minutes delay. Actually, you know what? I was just setting up a different system because of yesterday's issue. Is the internet better now. Yeah, i Because, you know, I've called a technician, so, yeah, all right, should be, should be fine. Just let me know I've, you know, I've tried to figure this out. All right, perfect, perfect. Okay, let's begin. All
+
+Speaker 1  1:09  
+right, so you know, this lecture is about, it's a hands on lecture, and we will, you know, start with the capital asset pricing model, right? So remember, we in SFM, 02, we had all the formulas for covariance, correlation, standard deviations. So what I'll do is I'll get all so, you know, I'll actually tell you what. So when we type the formulas, right, standard deviation in Excel, or covariance in Excel, what is Excel doing, right? So in the first half of the lecture, or the first one hour, what I'll try to do is, I'll just try to tell you, when we type those formulas, what is actually happening behind the scenes, right? So that you better understand, you have a better understanding of these formulas, I'll just revisit the capital pricing model with an example, and then in the second part of the lecture, I will actually introduce you to the first model of stock price prediction. I had given you a hint about that in SFM 02 in my second lecture. But I will, you know, carry forward that and build a whole model for stock price prediction. And towards the end, I will also tell you how you can run Monte Carlo. What are Monte Carlo simulation? How you can run those? And then I'll give you an introduction of bollinger bands. Sounds good, as I said. Let me know if you have any questions. You know, again, I would urge that. You know, you guys keep your questions limited to what is relevant to the lecture during the lecture, and then you know, towards the end, obviously you can ask me anything about this lecture, previous lectures and trading. All right, okay, so let us begin what we what I have here for you is say you have data for two stocks, State Bank of India and ICICI bank, right? And you have, say, three months of data, and we want to construct a portfolio. We we want to invest in both these stocks, and we want to figure out how much So say, if I have $10,000 or $1,000 how much should I invest in each so that the standard deviation, the volatility of my portfolio is not more than 1.03 limit. Now, 1.303% why exactly this? Again, this limit would depend upon the investors risk aversion. I've just taken 1% you can take two person 3% depending upon the higher the standard deviation, the more, the lesser the standard deviation, the more risk averse you are, right? So the more aggressive, higher the volatility can go so you have three months of data. Let me just do this.
+
+Speaker 1  4:35  
+So guys, I hope you have this sheet with you you can download this sheet. In case you don't have it, you can download it from LMS. Just let me know if you face any problem. So I'll just give you a minute so that you can download this data. All right? It so it would be there in your LMS, guys,
+
+Unknown Speaker  5:11  
+have you found it? Should I begin?
+
+Speaker 1  5:21  
+Can anybody be kind enough to just send the link? So these are all, you know, these are all downloadable files from LMS, so you, you know, you can do it before the start of the lecture. Okay, so I'll just copy the link.
+
+Unknown Speaker  5:44  
+All right, I hope so. I'll just wait for a minute. I
+
+Speaker 1  6:06  
+All right? So you can, if you want, you can definitely walk along me. Otherwise, I'll definitely share this Excel with you at the end of the lecture. So even if you miss something, don't worry about All right, I've sent the link. I've already sent the link.
+
+Speaker 1  6:33  
+All right, so the idea is, you know, we want to calculate the portfolio returns and the portfolio variance, right? So we need so now what was the formula of portfolio return? So we have two stocks. So a State Bank of India, B is Punjab National Bank. We want the average returns of both the stocks, right? So we want to calculate the returns and then the average returns. We also want to calculate the standard deviation of the returns for both stocks, and then the covariance. So we'll do these three things, so the average returns the standard deviation and the covariance. Now we could have definitely straight away type the formula, but let me just go through step by step what exactly happens when we type those formulas. So what I'll do is daily returns of State Bank of India, right? And I'll have daily returns of ICICI bank right now, how do I calculate this? I am actually taking the log returns, right natural log returns, and I'll just write the formula right on the top, so that you know what I am doing. So this is the daily these are the daily returns, right? And similarly, the daily returns for ICICI Bank.
+
+Speaker 1  8:41  
+Is this clear? So for each day, I have the daily returns of ICICI Bank and State Bank of India, and now I'll calculate the mean of returns for both these banks right
+
+Unknown Speaker  9:02  
+now, mean of returns, right? So I'll just take the average now.
+
+Speaker 1  9:14  
+So obviously the average would be exactly the same for each row, right? I and I'll just put the formula right here.
+
+Speaker 1  9:30  
+So average. Any questions on this? Okay, so people are saying, why log returns? Okay, I'll just come to that. It's a good question. Why not simple returns. Why log returns? Right? Let me just, let me just answer that. Just give me a minute. You.
+
+Unknown Speaker  10:09  
+I just give me a minute.
+
+Unknown Speaker  10:22  
+All right, can you see this Excel? Okay,
+
+Speaker 1  10:38  
+right? So, okay,
+
+Unknown Speaker  10:52  
+all right,
+
+Speaker 1  11:17  
+uh, okay, so now, why log returns, right? So simple returns every so if say, r is the rate of interest for T periods right, P not is the initial investment and PT is the final amount, right, after t time periods, simple returns would be p, t minus p, not divided by P, not Yeah. And from high school, we know that if I if my money is getting compounded at an interest rate of r and n are the number of periods for which we need to compound, then we know that the final amount would be P, not into one plus R by n power NT, right? This is a simple formula of compounding returns, right. Now say r the interest rate is 10% for one year, right? So we, you know, we are compounding our money annually. So at the end of one year, my final price would be, P, not into one plus 10% power one, right? R is 10% power one. So P, not into one plus 10% if we are compounding every six months, right then, after a year, I have semi annual compounding, so I can divide my interest rate by two, and because there are two periods in one year, so power two, everybody is clear till row three, this is simple formula for compounding. If my money is getting compounded every day, so there are 365 days in a year, my PT would be P not into one plus 10% divided by 365 power. 365 right. And now, if my money is getting compounded every second or every microsecond, or every, you know, nanosecond, then n tends to infinity, right? So this is for continuous compounding. This formula, if so, this formula for continue, for compounding P naught into one plus R by n power NT, if n tends to infinity, then this formula through, you know limits theorem is my final amount would be initial amount into exponential power r, or in other words, rate of interest. If I assume continuous compounding, my rate of interest is natural log of final price divided by initial price. So if I'm assuming continuous compounding, then I have to use natural log. And you know, we because stocks, the price changes every moment, right? So it's just better that we use continuous compounding. Now, there is another explanation for it that you know, log returns can be added, right? But frankly, for me, you know, when I try to understand why we use natural log, it's simply because we assume continuous compounding any questions on this, so it's clear why i. Using natural log, because I'm assuming continuous compounding.
+
+Speaker 1  15:10  
+One of our colleagues rightly mentioned that the average is different because I did not lock the cells, so now I have logged the cell so the average is the same. All right? So this is the same average, you know, had I done this thing? This is exactly the same as this number, right? So this is just the average, right? Any questions till column G, yes or no till column G, everything is clear. Okay, now we so for standard deviation, we've calculated this x bar for standard deviation. We need to calculate xi minus x bar, square it up, sum it up for my 60 days, divided by n minus one, and then take the square root. So I'll do this. Xi returns of each day, minus average returns, square it up, and then add it up. So let me do that now. So I will calculate these four things, x i minus x bar, and then the squares. All right. So so let's do that. So xi minus x bar is simply, this is daily return. Is my xi minus x bar, right? And similarly, for ICICI, bank y i minus y,
+
+Unknown Speaker  17:21  
+bar, right and then let me just write the formulas right here.
+
+Speaker 1  17:30  
+Any questions till column I, any questions till column I? People are asking me, why did I log the cell for calculating the average? Because I am calculating the average of the whole 60 days. So each row the average has to be the same, right? Because the average doesn't change. So I'm taking the average of the whole 60 days, right? And it just helps me. I mean, I calculated for I logged it for each row, because now I can just simply say d3 minus f3 right? It's just easier this way, all right. Now x i minus x bar, so now, square of This.
+
+Speaker 1  18:26  
+And square of my i three square.
+
+Unknown Speaker  18:35  
+Any questions?
+
+Speaker 1  18:43  
+Any questions, there's a good question, how would I get the 60 day average on day one? This is a good question. So you know the person is asking that, Nitin, how could I know the average on day one, isn't this forward looking? So you know the and I appreciate this question, but the point is, I already have three months of data with me. I'm not forward looking. I am not saying that on 31st January, 2023 I know the average. I know the average only on 28th April. It's just in this Excel so that you know, for each row, I can easily calculate xi minus x bar and yi minus y bar. Each row I'm taking the average. All this is all this analysis is done on 29th April, 2023 does this make sense? So my decision based on this Excel will be made on 29th April. It's just for easier formula. Is, you know, I'm just putting it the average on each row. I'm not saying that based on this x i minus x bar. I'll take the I'll take some decision on first, Feb or second, Feb or something. Make sense? Just for ease of formulas, I'm putting the average in each row so that I don't have to lock these cells. Does this make sense? Yes or no.
+
+Unknown Speaker  20:29  
+D 61 sure this is d 61 and e 61 so this is it? Right? Okay.
+
+Speaker 1  20:55  
+Question, so he's one of our colleagues. Is asking me, Nathan, in that case, the average of future days will change. Absolutely it will change. But you know, I have to take a decision on, say, 29th April, right? I have to invest my money on 29th of April. Now it's your call, whether you rebalance it every month, every week, every day, but on 29th April, this is the analysis that I can do, and this is what usually fund managers do, right? They they calculate the data for, say, end of the month, they rebalance their portfolio accordingly, and then after a month, they rebalance again, when you know they have a different average make sense?
+
+Unknown Speaker  21:44  
+Now I'll calculate the standard deviation.
+
+Speaker 1  21:51  
+Now, what was the formula for standard deviation? I have to calculate the sum of x i minus x bar divided by n minus one, and then take the square root. So let me do that. So I have to take the sum of x i minus x bar, right?
+
+Unknown Speaker  22:21  
+Yeah. Lock it divided by count, so n minus one, right, minus one and
+
+Unknown Speaker  22:44  
+and then take the square root of this whole thing.
+
+Speaker 1  22:55  
+Okay, so I did something wrong. What did I do? So, okay, now, let me just figure this out. What I did wrong.
+
+Speaker 1  23:16  
+Okay, let me do it one by one. So, okay, so let us take the sum of this. Wait a minute, sum of this, right? So this is clear. Now I'll divide it by Count of this, minus one. This is also there, and then I'll take the square root
+
+Unknown Speaker  23:46  
+of this. So I don't know what happened, but this is it. Right.
+
+Speaker 1  23:57  
+Okay, any questions till here? No. So I don't know what had happened previously, but this is it, right. So this is the formula, so square root, so sum of x i minus x bar, whole square divided by n minus one, and then the square root. Now we could have easily done this right? We could have taken the standard deviation dot s of the daily returns, and we would have got exactly this number right, point 0160, 9.0 6.01 6.09 so this is exactly what we would have gotten had we put the formula standard deviation dot s and but I just And again, you can directly use the formula. Absolutely no issues with that. It is just that. I wanted to show you what is Excel doing behind the scenes. And there's one more reason why I wanted to show you this. Again, as I said, you can directly use the formulas, no problem. But you know, I just wanted to show you what Excel is doing behind the scenes. And one more thing, one more thing, there are two formulas in Excel, right? So this is point 044, and this is exactly, so, you know, standard division of ICICI. I could have done exactly this. Now, why am I using? There are two formulas in Excel, right standard deviation, dot p and dot s. Can anybody tell me the difference between So, which one should I use? Should I use dot P, or should I use dot s? And what is the difference? What is the difference between dot s and dot P? Or you can ask me nothing. You know, usually students ask me nothing. Why n minus one? If we take the averages, we take n. So why is standard deviation different? Right? Yeah. So, okay, so most of you guys know it, if, okay, so if you know it, Should I, should I leave? The reason is, any is there anybody who does not know why we use n minus one, and what is the difference between population and sample? Otherwise, I'll just skip I have an explanation. If there's anybody who does not know, I'll go through the explanation. Otherwise, I'll skip it. Okay, okay, so there are okay, there are people who don't know, so let me just go through the explanation. Okay,
+
+Unknown Speaker  27:02  
+guys, please pay attention here.
+
+Unknown Speaker  27:12  
+Say we have a
+
+Speaker 1  27:19  
+variable and the mean of the whole population, of that variable is 2050 right? So we have the whole population, and the mean is 2050 now we pick samples from that population, right? We pick samples from that population. So we take five samples right now, it's pretty obvious that, not necessarily, our average of the sample that we've taken is exactly equal to the mean. Yeah,
+
+Speaker 1  28:07  
+so say the average of the sample data is 2052 now, if I know the population mean, and I have to calculate the variance right? I have to calculate the variance. What will I do? This is my sample. So for sample is 2051, so I calculate the x i minus x average.
+
+Unknown Speaker  28:39  
+Okay, just give me a minute.
+
+Unknown Speaker  28:52  
+Just give me a minute.
+
+Speaker 1  29:04  
+Okay, okay, you know it's asking, let me just reopen this it's Excel is asking me to reopen this sheet.
+
+Unknown Speaker  29:22  
+Just give me a minute.
+
+Unknown Speaker  29:31  
+Just give me a minute.
+
+Unknown Speaker  29:43  
+Just give me a minute and I should be done.
+
+Unknown Speaker  30:04  
+Okay. So, yeah, so I think it was just
+
+Unknown Speaker  30:15  
+okay. I think I'm back. Yeah. I
+
+Unknown Speaker  30:33  
+better it go.
+
+Unknown Speaker  30:45  
+I did it Okay, forget it anyways. All right, so if so, this is the
+
+Speaker 1  31:05  
+sample that we collected, and this is the sample data, so we are calculating the variance from the population mean. So x i minus x average would be 2051, minus the population average, right? So for each data set, I can calculate this. If I square it up and then divided by the actual number of data points, I get 7.2 so this is called the population variance, right? Now I can calculate the population variance, only if I have the population mean. But usually in you know, if you have the data for stocks, you don't know the average of the whole population, right? So, for example, if you are dealing with stocks of General Motors, now, it will have 50 years of data, right? You never have the whole population set, so you always have a sample data, and you calculate the average of the sample, and you calculate the variance from that average, is the difference? Clear, if I'm calculating the variance from the average of the sample, then it would be sample variance. If I'm calculating the variance from the populations mean, then it would be population variance. Is that clear? So now if I say, if I didn't have this population mean, right and I have to calculate the variance of my sample data, I will have to use the average of the sample, because that's my best estimate. So if I do x i minus x average, now I use the sample average right square. It Up summit divided if I divide it by five, my sample variance will always be lower than population variance. So you you have to divide it by a lower number, so n minus one. Now, so if I divide by n, my sample variance, which is calculated by using the sample average, will always be lower than the population variance, so I have to do n minus one. Now you might say, why not n minus two? Why not n minus three? And the reason is degrees of freedom. Now just pay attention for five minutes, and I'll make sure that you know you guys understand this. See, the issue is, if I'm using the sample average, my issue is that the sum of x i minus x average would be zero, right? Now this is if I'm using the sample average, and then calculating x i minus x average from the sample average, the sum of X i minus X averages has to be zero, right? Because x average is nothing but sum of x size divided by n. So x average into n would be the sum of x size, right? So if I do x i minus x average, and I take the sum of this, it will always be zero, which means that the last data point, the last x i minus x average is of no meaning to me, right? Because if I know the sum of the last four, even if I didn't have this sample data point, I would know what would be the last x i minus x average, because the sum has to be zero. So I have used one data. Point to calculate the average, and essentially I have only four data points left. So that is why I can only use four data points to calculate the sample variance. Another way of of understanding this is say I have, you know, this is called degree of freedom. And let me just explain what that is. Say I have, if I have a quadratic equation with me, a quadratic has two roots, right? And say, you know, if I have an equation with, you know, with degree n, that will have n roots. Now, if I know that the sum of the roots is zero, right, I've put a constraint on this equation that the sum of the roots is zero, then I only need to know n minus one roots. Right? The more constraints I add, my degrees of freedom, degree decrease, right? So if I say that you know what the sum of n roots is zero, then I have lost one degree of freedom, and I only need n minus one roots, because last route, I will know by this constraint, if I have say another constraint, that the product of these n roots is 10, then I have lost two degrees of freedom, or something like that. So essentially, what I'm trying to tell you is that if I only have the sample, which is always the case, and I use the average of the sample, I have essentially lost one data point, right? So for sample variance, I only have four data points because one of the data points was used to take the average. So I always divided by n minus one. Is this clear? Should I move on? So this is called bessels correction, and that is why, for standard deviation, we will always use dot s and never dot P, all right.
+
+Speaker 1  37:15  
+Okay, moving on. So now, now I will calculate the covariance. So covariance is x, i minus this mu x is the average so x bar into y, i minus y bar divided by n minus one, again. All right, so x, i minus x bar into y, i minus y bar for the covariance term. So
+
+Speaker 1  37:50  
+so x i minus x bar Is h3 into I, three, right? So, I
+
+Speaker 1  38:29  
+Okay, and now the covariance. So for covariance, I need to sum this X, i minus x bar into y, i minus y bar and then divided by n minus one. So sum this whole thing up, and then divided by Count minus one,
+
+Unknown Speaker  39:06  
+any questions till column O? Any questions till column O? There's
+
+Speaker 1  39:22  
+a question, are we assuming that sample variance will be less than the population variance? We don't need to assume this. I mean, we have to divide it by n minus one, because we've used one degree of freedom to calculate the average. So we don't need to assume that. But right? So there is no need for an assumption here. Guys, any questions still column, or should I move on?
+
+Speaker 1  39:56  
+What is e minus 05? Is 10 power minus. Five. This is simply 10 minus minus 10 power minus five. Alright. So when this is done now I've calculated this. Now I will calculate the portfolio return. So now I will make different portfolios with different weights invested in State Bank of India and Punjab National Bank, and based on that weight, I will calculate the returns and the portfolio variance. All right, so let me just do that. So let me create portfolios.
+
+Unknown Speaker  40:50  
+So let me Cal let me create 100 such portfolios. All right,
+
+Speaker 1  41:07  
+so I'm okay, so I'll just create 101 portfolios, all right, and now I'll change the weight so portfolios just like I did in my CAPM All right, okay, so first portfolio has everything invested in ICICI Bank. All right. The this and then any
+
+Speaker 1  41:57  
+questions to column R, A, again, there's a question, why are all the covariance says the same? Because the covariance is only one number, right? I could have done this covariance dot s is equal to so this is array one, comma. This is array two. So 6.86 power minus five. So this is it, right? So covariance is the same for those 60 days, right? This is there is one covariance for these two stocks for
+
+Speaker 1  42:38  
+for 60 days. And I've just logged this cell so that, you know, it's just easier for me. That's it. How am I assigning weights? I am just creating 101 portfolios with a difference of one 1% right? So my first portfolio, and again, this is just hidden trial. And I mean, I could have made 1000 portfolios by varying the weights, but it's just easy, right? From zero to 100% with a gap of one, 1% if I would have taken a gap of five, 5% then I would have built only 20 portfolios, or 21 portfolios, right? So this is again, I'm just trying to see which portfolio gives me what return and how much standard deviation, right? So now I'll calculate the returns of the PFS and return is, so you know, for different portfolios, what would be the return. Now, returns are obviously additive, right? So returns are so the weight multiplied by the average. So this is the average, right? And I log this plus weight on ICICI. I wait on ICICI multiplied by the average returns of ICICI.
+
+Speaker 1  44:16  
+Oh, sorry, this sorry, right, so weight of ICICI in my portfolio plus weight of sorry state bank, multiply by its average return plus weight on ICICI in my portfolio, multiply by its average return. Right. Any questions till column T, and let me just put the formula right here so that it's easy. Any questions till column T, guys, is it clear? Yes or no. I.
+
+Speaker 1  45:02  
+A question, so we always use dot s in covariance and in standard deviation. Yes, that is correct question. Why aren't we using correlation? Or because this is the formula. If the formula had correlation, then I would have calculated the correlation, right? So that's, I mean, I'm just using this formula to calculate the portfolio variance,
+
+Speaker 1  45:34  
+right? How was the portfolio made? Oh, the portfolio. I'm just creating 100 portfolios just by varying the weight. So zero weight in SBI means that I have put everything in ICICI. If I have $10,000 I put, I invested everything in ICICI, then you know, and I'm just wondering, so remember what? What was my question? My question was, I wanted to calculate a portfolio where the standard deviation of the portfolio was 1.03 I don't know which portfolio will give me that standard deviation. So this is by hit and trial. So by hit and trial, I'm just calculating, and I'm just, you know, randomly creating 100 portfolios with different weights, so that one of these portfolios will have that standard deviation. So 1% weight in as been means, if I have $10,000 I'll put $100 in state bank of India, and $9,900 $9,900 in ICICI. If I have 10,000 portfolio, 11 would mean 10% in has been. That means $1,000 in has been, and $900 $9,000 in ICICI, back and my large portfolio would be, everything in has been, nothing in ici make sense. Person who asked me, you know, he did not understand how the portfolios are created. I am randomly creating portfolios so that by hit and trial, I know which portfolio will give me that one stand, 1.03 standard deviation. So
+
+Speaker 1  47:31  
+can we have more than two stocks? Absolutely you can have 10 stocks, 100 stocks, the theory remains exactly the same, right? No problem. Portfolios, all right, so
+
+Speaker 1  47:55  
+now I'll calculate the standard deviation of all these portfolios through this formula, right? Where did it go? So weight square into standard deviation, square plus two into weights into covariance. So let me do that. So I have weight. Square into standard deviation. Square standard deviation, whole square. This is for State Bank of India. Now this is for ICICI, right?
+
+Speaker 1  48:54  
+So, this is weight square into ICICI, weight square into average of State Bank of India and weight square into average of ICICI Bank plus two times weight of both these stocks multiplied by the covariance
+
+Unknown Speaker  49:21  
+and then the square root of whole this thing,
+
+Unknown Speaker  49:30  
+right?
+
+Unknown Speaker  49:43  
+And then I'll do this. And now let me just plot this.
+
+Unknown Speaker  50:05  
+Right. Okay, so,
+
+Unknown Speaker  50:26  
+so this is your standard deviation, and these are your returns.
+
+Speaker 1  50:45  
+Now, does anybody remember? Hopefully everybody remembers this. But again, it's my job to ask if this is the graph, then there are some portfolios beyond which we don't want to invest. Right?
+
+Unknown Speaker  51:22  
+The Does anybody remember? What are those portfolios?
+
+Speaker 1  51:38  
+Okay, so wait a minute, I missed the variance term. Okay, let me so people are saying I missed something in the formula. Let me just double check if I did it. Okay. Thank you. I appreciate it. So the formula was now the formula was two into weights plus covariance, so I'm not sure if I missed something, or did I let me just double check. I hope I did not wait a
+
+Speaker 1  52:15  
+minute, let me just double check with my solutions. Did I miss anything? Okay, no, so this is fine, right? Guys, this is exactly what I should be getting, and this is what I'm getting, right. So I did not miss anything, right? Okay? Now the question people are asking for now, okay, let me just do this.
+
+Unknown Speaker  53:07  
+Hmm, so is it?
+
+Speaker 1  53:18  
+Is it clear that I should not be, you know, I shouldn't be able to invest In, okay,
+
+Speaker 1  53:34  
+so, I should not invest in portfolios. I
+
+Speaker 1  53:45  
+that are below, that are inside this box. Is this clear? Because for the same standard deviation, I have portfolios which have higher returns. Does this make sense? Yes or no, so I should be able to in. I should ideally invest in portfolios in this green box.
+
+Speaker 1  54:22  
+Is this clear? Because there are see, there are portfolio for the same standard deviation. I have portfolios that give me better returns. Does this make sense? Yes or no.
+
+Speaker 1  54:48  
+So for the same standard deviation, so standard deviation is increasing as I go towards the right. For the same standard deviation, there are portfolios that have higher. Now people are asking me nothing, why aren't these you know, this graph going like this, so ideally, you know what. So what you can do here is, if I increase this portfolio and I actually do this now there are What does investing? So if I do this now, you know, if I create more portfolios, this is the weights are minus one. This minus 1% means that, you know, I shot ICICI Bank, and I invest more money in State Bank of India through those proceeds. So when I sell ICICI Bank, I can get more proceeds and invest in State Bank of India. If I do this, then you know, this graph would actually so
+
+Unknown Speaker  55:57  
+if I do this, then you know, okay, so wait a minute, why isn't it increasing? Ideally, it
+
+Speaker 1  56:09  
+should increase, or maybe it's changing the x axis, yeah. So you know, I think it's just changing the x axis here. So the returns should actually increase, or is it the other way? Or maybe, okay, wait a minute, let me just see if this is one. Or maybe it's the other way, right? Let me see this. So if this is the case, and let me just figure this out, yeah, so see if I increase those portfolios, then, you know, then this goes up. But in reality, I cannot do this. I cannot short State Bank of India and invest in ICICI bank, right? If I had created more portfolios where, you know, where the weight of ICICI Bank is actually negative, which means that I sell this and invest in ICICI bank, but in reality, that's, that's not how it that's not how I can do it, right? So that is why this graph is sort of cut short, right? But in case you were wondering why this graph is not going up, because I'll have to then short SBI, which I cannot do, make sense,
+
+Speaker 1  57:37  
+right? And now our question was, so. Our question was, which is the portfolio, you know, with 1.03% limit. So let us just see which that portfolio is. So 1.03 so this is the portfolio, right? So this is the portfolio in which so we need 5% SBI and nine, excuse me, 95% in ICICI, because this is the standard deviation goes low. So this is the standard deviation with the highest return.
+
+Speaker 1  58:32  
+If we short one and long another. Is it peer trading? Yes, that is sort of peer trading. But this is investing, right? So there's a difference between trading and investing. So here we are investing, right? The question was, we've been asked to construct a portfolio, right for investing, right? So if you were, you know, if there was a short term trading, then you could have shorted the futures or something. But for long term investments, you cannot short, at least in India, you cannot short a stock and then take those proceeds of the shorting and then buy another so that is why I didn't create those portfolios where you had to short, right? So this is portfolio number six. So if I have to draw here, it would be somewhere this. So let me just see if I can. So this would be the portfolio,
+
+Unknown Speaker  59:34  
+right? So this is the portfolio. And then, you know, I.
+
+Unknown Speaker  1:00:02  
+Right? And just for you guys to remember, you have to invest in portfolios in this box, right? You
+
+Speaker 1  1:00:39  
+make sense. So I'll just stop here for a couple of minutes, in case you have any questions regarding this. So people are saying in some lecture notes, it's a 2.7% volatility. So again, you know I mean then, so maybe the date the data is different in that right? So again, as I said, the 1.03% is just it is just a number depending upon your risk aversion towards the standard deviation of returns. So this is on your discretion. There's 1.03 is your discretion. Okay? How did I make a decision out of the chart, this decision that I need to invest in portfolio in the green box, because there, because this graph will go like this. So there would be portfolios which have the same standard deviation but better returns, right? And this is this point. Below this point, there are portfolio that have a mirror image with the same standard deviation, they'll have better returns. So that is why I know that you have to invest in this green box. How is standard deviation formula derived? Oh, you are saying. How is this derived? You
+
+Speaker 1  1:02:23  
+so for Okay, so if your question is about derivation, you know this derivation assumes that variance is additive and it has an impact of covariance in it. So you know, again, the derivation of the standard deviation is out of scope. If you're still interested. I can, you know, we can take this offline, but this is the formula that we have. And you know, the the senses that portfolio variance is addictive and it depends upon, you know, if it is perfectly correlated, then portfolio variance, you know, it would be weight into standard deviation square, plus weight of the other stock into standard deviation square, whole square. If this variance is one, if this variance is negative one, then you can just subtract the weighted standard deviations, right? So variance is what is editor and not the standard deviation, because there is a covariance term that needs to be taken care of, all right? If there are more portfolios then the returns are still additive, and the portfolio variance, you will have to add so w square c into standard deviation of the returns of that portfolio c plus the combination so covariance of Ra, rb, rb, Rc and RA RC, and then so on. And it will just,
+
+Unknown Speaker  1:04:01  
+you know, scale symmetrically, alright, so the formula scales symmetrically. So sigma, X,
+
+Speaker 1  1:04:14  
+you know, covariance of xi, yi, and then you know, I changes from, you know, one to n and j changes from i, from one to n, all right, okay, there's a question to get the correct estimation of population mean of stock returns. Can we compute rolling three month average for past five years and then the, well, you know, no population that is still sampling. So to get a to get the population mean, you need the whole universe. So there is no good way of getting, you know, of estimating the population. Population mean, frankly, so you know, all all the statistical variables on, you know, estimates are based on the sample, on the moments of data from the sample. All right,
+
+Unknown Speaker  1:05:19  
+any other questions? Any any other questions? Or should I move on to the next part of this lecture,
+
+Speaker 1  1:05:36  
+the portfolio simulation. Consider the volatility of each portfolio. Should we include their correlation? So I've all so I've included the covariance, right? So I've already included the covariance in the standard deviation, and which is a must, right?
+
+Speaker 1  1:05:58  
+We can do that in futures. We can short the futures and long the other one. That is correct. Unfortunately, if you short the future, you cannot use the proceeds of that shorting to invest in the other stock. You know. Shorting the future and buying the long in the future, they remain. They require the same, approximately the same margin. Here we are assuming that you know you short one, and by selling one, the amount that you get for selling, you can invest that in the other stock. So shorting the future does not give you the proceeds. So that is why it is different. Make sense.
+
+Speaker 1  1:06:42  
+Can I go through the standard deviation and returns? Sure the returns are, you know. Okay, so this is the formula for the returns, simply additive weight into average of State Bank of India, plus weight of ICICI into average mean returns of ICICI, and then the standard deviation of portfolios. Is this weight square into the standard deviation square, weight square, standard deviation square of both the stocks, plus two times weights into covariance and so on. Can we divide the capital? Oh, you can, you know again, if you, if you divide the capital, to use the margin. Then, you know, then, then, then, it's a different story, right? I mean, then you have to calculate the returns accordingly, right? So then the formulas would be different. The portfolio standard deviation column is showing percentage and portfolio returns column is not forward. This is okay. It doesn't matter. I mean, there you go, right? I mean, it doesn't matter. Should the say short sale proceeds be logged. They should be this formula assume that they should be used to buy the other stock. All right.
+
+Speaker 1  1:08:13  
+Yeah, so if, if that is the case, you can use this for forex and commodities as well. It's the formula remains the same. All right, okay, let me move on to the second part of this lecture. So as I said, I would discuss the a model to predict stock prices, right? In case there are any leftover questions, I'll take them offline. All right, okay, random walk model, the first model to predict stock prices. Very controversial, but it's a good start. As I said, this is financial engineering. And you know, we start with basics and then finally, we move on, you know, we remove the the assumptions, and we go as close as close to reality as possible. Okay, so what is the model all about? The model simply says that tomorrow's price will be equal to today's price, plus some change. Now we want to model this change right. So how do we model this change? Right? So we know today's price, we need to predict tomorrow's price. So we need to predict the change. That's pretty much it. So say day zero, the price is 100. Day one, the price is 101 so the change is one. Day two, the price is from 101 it goes to 98 so the change is minus three. Now, essentially, what we are saying is we are seeing this change, right? Is nothing but KP, not or this change. We can model this change at the returns. So if we know the return, if we can predict the return, we can predict tomorrow's price, because we know today's price, if we can predict the return, then we would know the price and for returns. So return is nothing but tomorrow's price minus today's place divided by today's price. So if we know this return, we know p1 essentially, then how do we model this? We are saying that return. So this model would assume that returns are normally distributed, and the returns they don't depend on any previous information. This is the model, and I discussed this in my second lecture. But now you know, we'll we'll take practical applications of this. So what is the model? The model is, returns are normally distributed, and they are independent of all previous information. So the returns and the this second line is telling me that returns are independent of prices. So, for example, say there are two cases, one stock, you know, yesterday, the stock was at 100. Case second, you know another stock, it was at 1000 say, today's stock return is 5% now both stocks, irrespective of their price, are equal likely to have a return of 5% right? I'm not considering news. If there is no news, then you know the there is no reason why a higher price or a lower price stock should have more propensity towards higher or lower returns. Right? Returns are independent of the price, and they are normally distributed, right? So my forecast of today's price will only depend upon the return and yesterday's price. Is this clear, and we will build in for you know, we will build on our prediction through this guys. Is this clear? Yes or no. So returns are normally distributed, and they do not depend upon the price of the stock. Yeah. Okay.
+
+Unknown Speaker  1:13:09  
+Now,
+
+Speaker 1  1:13:19  
+now, there's an interesting corollary. If I know the mean and the standard deviation of the returns, then I can estimate the probability of where the stock will lie. Because the from the property of normal distribution, I only need to know the historical returns, the average of returns mean and the standard deviation. Yes or no, if I if I know the returns are normally distributed, and I know the mean and I know the standard deviation, then I can estimate the probability of the returns. Guys, yes or no. Any questions on this, you
+
+Speaker 1  1:14:07  
+right. Okay, so let me just give you a simple example, and I'll take a real life example. Say the mean of returns of a stock is zero and the standard deviation say that of Google is 10% right? This is through historical data. Row 28 right. From historical data I know say the mean of returns is zero and the standard deviation of returns is 10% current data tells me say today's price is $100 for that stock. My model tells me, let me assume that the returns are normally distributed. Any questions till row 30? Any questions till row 30? Clear yes or no. I. Guys, any questions till row 30? Everybody's clear. Should I move on?
+
+Speaker 1  1:15:19  
+Okay? A return 10% annually. So the question was, the return is 10% daily, monthly, it's annually. Mean of return is zero, and standard deviation annual is 10% all right, how do I calculate the return from historical data. We have this from historical data, right? So say we have 20 years of data, and then we just calculate each year what was the return, and then take the average. Now, through property of normal distribution, I know that 68% of the values lie between plus minus one standard deviation around the mean. So if I know the historical returns and the standard deviation, and I assume that the returns are normally distributed, I know that there's a 68% chance that the returns will lie between plus minus 10% and there's a 95% chance that the returns will lie between plus minus 20% around the mean. Now, how does this fare? So if the mean is zero from historical data, I know there's a 68% chance plus minus 10% around the mean. The mean is zero, so plus minus 10% around 100, which was current stock price. So there's a 68% chance that the stock price next year will be between 90 and 110 and 95% chance that the stock price will be between 80 and 120 next year. Any questions till row 41 any questions till row 41 there's a question, why are log returns not taken in this concept, this is a good question. I will take log returns. I when I do the my practical application, I will assume log returns. Here, just for simplicity, assume simple returns. But when I do the actual trading application, I'll take log returns. How about that?
+
+Unknown Speaker  1:17:40  
+All right, what should I repeat till 41 what is not clear? Till row 41 what is not clear?
+
+Speaker 1  1:17:54  
+Why am I using mean as zero and 10% at standard deviation? Oh, this is just from again. This is, this is, say, I'm just giving you an example, say, through historical data, I have this right mean of return, this zero and standard deviation of returns is 10% from historic this is, I'm just giving you an example that, you know, there's a stock, And from historical data, we've got this all right. So yeah. Now question, is there a possibility of outlier happening in normal distribution, absolutely, if there was, so, you know. So now you are saying that, you know. Is it possible that our model is not correct? Absolutely, even the best of models fail, right? But they should not fail more often. I mean, they should be correct more often than not. There is no model in this world which is 100% correct, right. Row, 3536 and 37 are mere assumptions. They are corollaries. So this is the assumption, yes, from this assumption, these are corollaries. Make sense,
+
+Speaker 1  1:19:16  
+there's a question, what do we lose if we use simple returns? I will explain that. And then after the break, you know, a lot of my time will go into explaining why not simple returns, and what happens if you use simple returns, right? Don't, don't worry about it. Okay, so let me move on. So if things are clear till row 41 then a simple application would be, say, the price on first Jan 2021, was $100 and on first July, Google goes down trading at 70 now I would want to buy it. If I have no other information, I would want to buy it because this. The 90 there was a 95% chance that the price next year would be between 80 and 120
+
+Speaker 1  1:20:12  
+alright? So you know, all I'm saying is that if there's a 95% chance that the price next year would be between 80 and 20. Then if Google starts trading below 80, then I can buy it. If it starts trading above 120 I can short it. Right? People are asking me, What does 4041? Mean? So if all I'm saying is, if today's price is 100, then there's a 68% chance that price next year will be between plus minus one standard deviation. The standard deviation was 10% so minus 10% from 100 is 90. Plus 10% from 100 is 110 so between 68% chance price next year will be between 90 and 110 makes sense.
+
+Speaker 1  1:21:14  
+Okay, just a simple change in some data, if so, you know, here I assume that the mean is zero if the mean is 10% so for some other stock, if the mean is 10% and the standard deviation is also 10% you know, then how Will things change? So, you know, without any standard deviation, price next year would have been 110 today, the price is 100 but the mean, say, the yearly mean is 10% so price next year would be 110 and then, you know, if returns are actually normally distributed, and there is some standard deviation, say, 10% then you know, there would be a 68% chance that price next year will be between 10% plus minus 10% of 110 so around the mean. So one standard deviation around mean 110 is 99 and 121, two standard deviations around 110 would be 88 and 132 if the standard deviation is 10% then next year, the price will be between 88 and 132 right? So essentially, what's happening here is we are we know the historical mean of returns, and we know the historical standard deviation. If we assume that the returns are normally distributed, then we can predict the range of the prices with certain probability, any questions.
+
+Speaker 1  1:23:12  
+So again, you know the mean of return. Say, I just took Google, whatever the mean is. So say, you know, this is returns of ABC stock, right? So historically, and I will take an example with actual data to sort of get this right. I'm just saying Google, I mean, it's ABC stock, right.
+
+Speaker 1  1:23:40  
+Question, our stocks usually normally distributed. They're close to normal distribution. They're not exactly normally distributed, and that is why it is a naive model, but it's a great start to calculate standard deviation. We should use the price at the end of the year, so plus minus one standard deviation from next year's price, right? Okay.
+
+Speaker 1  1:24:18  
+Row 43 and 44 Okay, so I'll just repeat 43 and 44 and then I'll repeat this. What I'm saying is, essentially, if the mean was zero, then next year, the price would have been $100 but, you know, with some standard deviation, so there's a 95% chance price next year will be between 80 and 120 so all I'm saying is that if in the middle of the year the price goes below 80, I can buy the stock, because I know there's a high chance that the price should be between 80 and 120 This is what 43 and 44 are saying. If the stock goes to $70 I should buy it. I want to buy it. Is that clear? I will tell you how to implement this in the real world. Don't worry about it. I'm telling you. I'll take, I will take a real life example, and I have nifty data. This is actual data, and I will use this actual data to predict the prices, right? So don't worry about it. But again, you have to understand, this is a naive model, right? It's a naive model. So you know, our our prediction would be slightly they could be slightly off, but you know, there is an application to it, okay, could you please mean is 10% and standard okay? If the mean is 10% then next year and the stock price is today, 100 next year, if there was no standard deviation, the price should have been 110 right? If there is no standard deviation and the mean is 10% the next year, the next year, the price should have been 110 unfortunately, there is a standard deviation. There is volatility in the price, and we are assuming that that volatility is normally distributed. So we are saying that, you know, instead of 110 exactly being at 110 there's a 95% chance that the price would be a plus minus two standard deviations around 110 All right, so it would be between 88 and 132
+
+Speaker 1  1:26:43  
+all right, just one more thing before I give you a break. Just one more thing. Here, you know, if say one day's return is known to us, right? We say we've calculated the daily returns and daily standard deviation right return. So we have one day standard returns, and the standard deviation of one day is one person, we want to estimate annualized standard deviation. So if daily standard deviation is one, what is the annualized standard deviation? Can I just add one person? 365, times, or 250 times? So 252, trading days. Unfortunately, standard deviation is not additive. So you know, if the if the standard deviation is one person for each day, I have to calculate the variance of each day. So variance is nothing but the square of standard deviation. So, so the variance of each day would be one square. Fortunately, variance is additive. So if I know variance of one day, the variance of 252 days would be point 0001, into 252. Into 252. Two.
+
+Speaker 1  1:28:26  
+And this is assuming that the returns are independent. Each day returns are independent. If that is true, then I can add variance. Once I know the variance of 252 days, I can just take the square root. So the square root of 252 would be around 16% so you know, simply, if I know the standard deviation of returns of one time period, and I want to calculate the standard deviation of t time periods. I can I know the standard deviation from that. I can calculate the variance, just add the variance t times and then take the square root. So if I know the standard deviation of returns of one time period, and I need to calculate the standard deviation of t time periods. I just need to multiply the standard deviation of one time period by square root t, right? So standard deviation of t time periods is nothing but standard division of one time period into square root t, because variance is additive, standard deviation is not and I will use this when I come back after the break.
+
+Unknown Speaker  1:29:56  
+All right. There's
+
+Speaker 1  1:30:07  
+a question, how do we have mean of return, mean of stock in percentage? No, this is mean of returns. The mean of return, the mean of returns, is zero, not the price, is the mean of returns. Does that make sense?
+
+Speaker 1  1:30:35  
+It's a good question. There's a good question. We said that, you know, variance is not additive. That is why we have this formula right here with covariances. So this is a good question. How can we add variance if we have this two times covariance term? So you know, we said that variance, the returns are independent. If the returns are independent, that covariance becomes zero. That is why they are additive. Good question. We've assumed that returns are independent. That is why the variance is additive, because covariance is zero, make sense. Sigma is the standard deviation, right? So standard deviation, standard deviation, if standard deviation of one time period is sigma, one time standard deviation of one time period is sigma, then you know, variance of one time period would be sigma square. We can add the variances, variance of T. Time Periods become T into sigma square, and then the standard deviation, or the variance, becomes sigma into square root of T. Make sense. Question, how is this link with Monte Carlo simulation? I've not touched Monte Carlo simulations, right? How is this linked with CAPM? No, no. CAPM is over. Now, as I said, you know, the second part of the lecture. Now I'm discussing random walk model, right? So this is the model for first top prediction, and I will take practical applications of this question if the distribution is very skewed, yes, you know, again, we are assuming that they are normally distributed. If we calculate the return on each other, how we'll be considering them independent? No, we are only, you know, if we have this data, we have the data for each day, so we can calculate the returns for each day, and the returns we are assuming they are independent of each other. So there we are not breaking the assumption in our calculations. Yeah, okay. In reality, are the returns independent of other time periods? That's a good question.
+
+Speaker 1  1:33:13  
+You know they are, or you know, in better words, they can be so there are tests that we can apply to figure out whether the returns are independent or not. All right, what I'll do is I'll give you a six minute break. We'll reconvene at 542 alright? And I'll take your questions after that right now. It's a five six minute break. I'll reconvene at 542 All right, so.
+
+Unknown Speaker  1:39:29  
+All right, guys, can you hear me?
+
+Unknown Speaker  1:39:43  
+Guys, can you hear me and can you see the screen?
+
+Speaker 1  1:39:51  
+Okay, no. Returns are editor. Returns are editor. Standard deviation is not editor. Returns are definitely editor. F, it's the standard deviation that is a problem. And standard variance is additive, because, you know, if covariance is zero, this data is a close price. This data is a close price. Okay, guys, any any questions so far?
+
+Speaker 1  1:40:38  
+Any questions so far? Yeah, so let, let me just repeat what I've what I've covered so far in the first hour, I actually, you know, tried to tell you how standard. You know, what is Excel doing when you use this, these formulas, what is Excel doing behind the scenes, right? Pretty simple. You don't have to. You can always use these formulas. But you know, just to make you feel more comfortable with Excel, and you know, how are these formulas working? You know, behind the scenes, I told you how, you know how covariance and standard deviation can be derived from formulas. I mean, can be worked upon through formulas. And then I just built 100 portfolios with different weights of has been an ICICI calculated the standard deviation of these different portfolios and the returns and build this CAPM, you know, chart of standard deviation and returns. And you know, we and told you that we need to invest in portfolios in this green box because there are portfolios with the same standard deviation but better returns, right? So this was the first star in the second part I discussed the random walk model. The model simply says stand returns are normally distributed, and they are independent. The return of each day is independent, or each time period is independent from the previous time periods. So if this is true, then from the properties of normal distribution. If we know the historical mean and standard deviation of returns, we can estimate the likelihood of the range of returns. Clear I
+
+Speaker 1  1:43:01  
+uh, variance is only additive. When covariance is zero, you don't understand this, okay, this is the formula for variance, right? If covariance is zero, say the weights are one, right? If covariance is zero, then I can simply add, this is the variance, right? Then I can add variance. If covariance was not zero, then I had to add a covariance term between each day's returns, right? So if the covariance is zero, then I can simply add variances. This is standard deviation square. Is the variance, right? Is this clear? Okay? Why are we computing standard deviations of return, not the price itself, if we need the volatility in the price. Oh, this is, this is a very important question, guys, please pay attention. And this is, this is an important question. See what, what our friend is asking me nothing, why are returns normally distributed and not the prices, and not the prices, right? Essentially, your question is, why? So, the question was, why are we calculating the standard deviation of returns and not prices? Because we are assuming that returns are normally distributed. Now you can tell me nothing. Why aren't prices normally distributed. And it's a very fair question. The issue is, the issue is, returns can be independent of each other. Prices cannot be if yesterday, the stock was at 102 Tomorrow. It cannot be 1000 right? It has to be around 100 returns. Have no such constraint. If the price is 1000 or the price is 100, or the price is 10 or 10 million returns have nothing to do with the price, but price itself has to do with yesterday's price. It cannot be very different, right? So returns are independent. Prices are not make sense.
+
+Speaker 1  1:45:39  
+Okay, okay, let me move on any questions, you know, I'll take them at the end of the lecture. Now, guys, please pay attention. And this is, you know, this is very interesting. What I'll do is, I'll take a fake example. I know enough of fake examples, but once this example is done, then I'll, you have my word. I'll take actual trading example with data with real data. So let me just complete this example with sort of fake data, and then I'll take the actual data. All right. Okay, let me begin.
+
+Speaker 1  1:46:24  
+Just give me a minute. Okay, so this is what I have. The stock price say is 100 from historical data, I know the average daily return is 1% and the standard deviation of daily return is also 1% the objective is, I have to estimate the stock, the price of the stock at the end of 10th Day. All right, this is what I want to do.
+
+Speaker 1  1:47:08  
+Now 10 day average return is just returns are additive, so we will say 10% all right now the formula is slightly different, but I will explain why this formula has something else in it. But right now you can say that you know returns are additive. So one person plus one person plus one person gives us 10% so great. Unfortunately, standard deviation is not so if I know the standard deviation of one day, I need to calculate the standard deviation of 10 days, because I need to estimate the price of the 10th day. So standard deviation of daily returns is 1% that means one day variance is just the square of standard deviation. Now variance is additive, assuming that returns are independent of each other. So variance is additive, so one person square into 10. And then, so this is 10 day variance, and then the square root of this 10 day variance is 3.2 or in other words, if the standard deviation of one day return is 1% then standard deviation of 10 days would be 1% into square root of 10. Any questions still wrote 12. Any questions till wrote 12? All good, great. Now comes the interesting part. If, because I have to estimate the price of the stock at the 10th day, returns are normally distributed. So on 10th day, there's a 68% chance that the stock returns lie between 10% right 10th day, the average return is 10% plus minus 10 days standard deviation plus minus 3.2 3.2 so the returns will lie between 6.8 and 13.2
+
+Speaker 1  1:49:11  
+95% chance that the stock returns will lie between 10% plus minus two standard deviation, so plus 3.6 and 16.4 16.4
+
+Speaker 1  1:49:29  
+so 68% chance that the stock price will lie between 106.8 and 113.2 95% chance that this In 10 days, the stock price will lie between 103.6 and 116.4 any questions. Still wrote 20.
+
+Speaker 1  1:49:54  
+So if on day five, the stock is trading, say on 120 I can short this. Stock and my trade hazards, 95% chance of being correct. How did I get the variance? If I know the standard deviation from historical data, from historical data, I know the standard deviation. So if one day standard deviation is 1% 10 day standard deviation would be one into square root of 10. All this is from historical data. Okay, now I'll take the real life example. So much for real life example.
+
+Speaker 1  1:50:42  
+Okay, is there a chance of my trade being wrong? Absolutely there is no model that is 100% correct, but there is a high chance if my assumptions are correct, there is a high chance 95% chance of me being correct. Now I will take the actual example. Alright, so much for it. So this is nifty's data.
+
+Unknown Speaker  1:51:07  
+All right. Now let us calculate the daily returns. So this is 10 years of data.
+
+Speaker 1  1:51:21  
+Say we are on 28th April, 2023 so now let me take the daily returns. Right here, I'm taking simple returns. I'll do it with log returns. Also, don't worry, I know your question. Why not log returns? I will. Okay, let me do this.
+
+Speaker 1  1:51:45  
+So let me do one with simple returns and one with log returns, okay, and I'll tell you the difference, and I'll spend some time here, because you know, this is important, simple returns or log returns. Okay, let me just take simple returns first,
+
+Speaker 1  1:52:09  
+today's price minus yesterday's price divided by yesterday's price. Any
+
+Unknown Speaker  1:52:21  
+questions on column C. Now I'll calculate the average of daily returns
+
+Unknown Speaker  1:52:37  
+and the standard deviation of daily returns. B, and then I'll calculate the variance.
+
+Speaker 1  1:52:53  
+Two so the average is simply the average of this whole thing, yes or no,
+
+Unknown Speaker  1:53:08  
+and the standard deviation dot s simply this,
+
+Speaker 1  1:53:20  
+right? And then the variance would be square of this, right? So now, point 05, and 1.083
+
+Unknown Speaker  1:53:37  
+Where did it go? Point 05, and 1.083 All right.
+
+Speaker 1  1:53:45  
+Everybody, clear. So nifty's daily returns average is this point 05, I think it was one and 1.08 any questions till row 27, now I'm taking actual prices, actual daily returns, average, actual standard deviation. Correct. Any questions on this, right? Everybody understands this. Now. This is real data. Now comes the interesting part. Nifty's price is 18 065, let us just confirm it's 18 065, six, five, we have to estimate the price after 10 days. All right. Price after 10 days? Okay, I have not added anything. I've just taken the average of daily returns and just taking the standard deviation of daily returns, right? Okay, now comes the interesting part, 10 days average. Let me just multiply it by 10. Now there is, again, in this formula, there is something, some term that I have subtracted. Don't worry about this. Right now, just point 05, multiplied by 10 is point 5% I will tell you why I have subtracted this, right? I will spend 10 minutes on this. But right now, point 05, into 10 and 10 days standard deviation would be one day standard deviation into square root 10, any questions till row 32, any questions till row 32 all set. All good, yeah, guys, any questions till row 32 because now there's a practical application. Right? Everybody was like, Nathan, Hey, where's the practical application? Here it is. I we're all good, okay. Now there's a nine if returns are normally distributed, 95% chance that after 10 days. Nifty price is between plus minus two standard deviation of the mean returns. Mean return is point five plus minus two standard deviations. So 10 days returns minus two standard deviation. 10 days return plus two standard deviation. Any questions till row 38 any questions till row 38 you're all good now, 10 days now I'm taking continuous compounding. So E, power r, 10 days return. So 10 days price would be between initial price, p, not into E, power r, right, just like we had here.
+
+Speaker 1  1:57:01  
+PT was P not into e power r. So PT is equal to P not into e power this exp is e power r. So this is the range of nifty is price, what is the application? Range of nifty is between this so I will short nifty, 16,900 put and shot. 19,450 call. Now, you know, people who are familiar with options will get this, but don't worry. You know this action would be absolutely clear to you after the your options class. But again, if we know the range, believe me, you can take trades in options, right? So this is an actual application of this whole model. How did I get the variance. So, okay, the variance is from the daily returns, right? So standard deviation of this, okay, explain row 31 what is row 31 Oh, 10 days return is just 10 multiplied by point 5.05, into 10. Right now. For right now, it is just point 05, into 10. Don't worry about this formula, right
+
+Speaker 1  1:58:37  
+what is the actual nifty price after 10 days? This is your homework. See if it is between. You can just download it, so see what was the range in, in, in May, right? Do this. I can guarantee you it would be between this. This is my guarantee. It would definitely this is a huge range, right? So it will so it will definitely be between this. There's no doubt in my head.
+
+Speaker 1  1:59:12  
+It's, it's, it's definitely wide. It's definitely wide. So you know, and because, and you know, that is the thing we want to be 95% chance that we have to be correct, right? If you decrease this, if you only want to be 66% chance that. So then mean returns plus minus one standard deviation, then the range would be less right. So the risk and the returns are, they go hand in hand right now, there's a question, why did I use e power r, since I'm using simple return now, and you know, enough of delaying this. You know when simple. Why simple returns? Why not log returns? Just give me two minutes. Let me just answer any other question, and then I'll take that simple return, then log returns part. Can you do it with nifty data? Again, that's your homework. You can do it with, you know, live nifty returns. What expiry option would you be shorting here 10 days, two weeks expiry because we are estimating for 10 days, so two week expiry range is not practical. Absolutely. Don't do two standard deviations to one standard deviation, this range will go down. Right. A, 37 Oh, where did I use this? This is where I use it, right to calculate the range this e power a 37 and e power 32 so this is the return for the range. So to calculate the prices, I use this range. Okay, all right. Okay, now, guys, you know, I had, I have this formula, you know, for 10 days return. I said, you know, don't worry about this. Now, I'll just tell you what is this, right? And when to use log returns, when to use simple returns, right? Guys, please pay attention now this is important, right? And this is one of the most important things, key takeaways of this lecture, when to use simple returns, when to use log returns, guys, please pay attention. Okay?
+
+Speaker 1  2:02:04  
+Say you have five years of data. This is the stock, and you calculate simple returns. To calculate the simple returns, and you take the average. Now you know, there's a very good practical implication of taking the average of simple returns. Say you invested in a fund, and this is the returns of the fund. First Year 15% second year, 23rd, year, 26 and then minus 11 and minus five, and the fund says that, you know what, on an average, we have given you 9% returns every year. Is that correct? That is absolutely incorrect, and the fund is overestimating the returns. And let me show you why. If the average was 9% it tells me that, you know, had I started investing in this one with 100 bucks each year, it would have gone up 9% and my final worth, my 100 bucks should have been worth 150, 4.39% 4.39% each year, average of simple returns. But that is not correct. In fact, in some countries, it is banned to for funds to report their average returns like this, because this is overestimating. If I start with 100 and the average returns each year was 9% I would have ended with 150 4.3 However, my actual price would be 140 7.5 so It is over estimating. Now what is happening?
+
+Speaker 1  2:04:02  
+It will overestimate the returns. Now, what will what can one do? There are two things. Simple average is this, either you take log returns, because log returns are additive, or you subtract drift from simple averages. Let me show you what drift is. So you can do two things, either you do log returns, or you add a drift. Why this drift? This is actually from Ito's lemma. If you know the stocks are normally distributed, then you cannot take the average of simple returns. You actually have to take the average and subtract the standard deviation whole square divided by two. Now you know, if you are interested, and you know people. Are asking me for references. There's a book by JC hull options and futures. JC hull options and futures, this lemma might I think they have explained this lemma, but it's not important. The only thing that you have to remember is, if you take simple returns, you need to divide the average by the standard division, whole square divided by two. Or if or you can take the log returns. So if you take the log returns or the drift, you would be in a position to much better estimate the much better position to better estimate the return. So from 147 point if you start with 100, this is predicting 140 5.4 which is way better than 150 4.3 so the key takeaways, if I use simple average, I have to take the drift. If I use log returns, I am fine. I don't have to use the drift. Now, you know, you might say nothing. Why did you take simple average, right? Just let, let it, let it have been. You know, log returns are great, but you know, you should know if somebody, if your colleague, ever gives you a worksheet by taking the simple average, then you should know it is wrong, until, unless he's used a drift makes sense. There is no no. You can easily use log returns, no issues whatsoever. But in case somebody wants to use simple average, you have to use this drift. The value of drift is average minus standard division, whole square divided by two. So if I took the average. Now, you know, in my sheet, I actually took the average of daily returns, right? And my daily returns were simple. That is why I had to use a drift. And the drift was average minus standard division, whole square divided by two, right? So that is why I use this formula. Instead of simply multiplying it by 10. You could have also used, so, you know, let me do it with log returns. And then you don't have to, and then you don't have to use drift. And I'll, I'll use, I'll do it both ways. So I
+
+Speaker 1  2:08:08  
+so this is what you get if you use standard deviation from log return. Now what I will do is I will again. No, you know, I will do two things.
+
+Speaker 1  2:08:26  
+Now there's a question, why not use simple average with geometric? Oh, because then in geometric, you know, you'll have to there, you know, if you have to, if you assume that returns are normally distributed, and you know, those assumptions sort of break. So either take simple average and take the drift, or you take the log returns, that's that's then, you know, everything is in place. You all right, okay.
+
+Speaker 1  2:09:13  
+But then you know, then if you have to estimate for 20 days or 30 days, and then you know, what standard deviation. Do you use so that that part breaks all right? So either use simple or the log returns. What is the concept of drift? Is it simply a correction factor? Absolutely it is a simply a correction factor. There is nothing else to it. If I'm using simple returns, I cannot use the average to estimate future returns. So I have to use a correction factor. Drift is just the correction factor. So I have to subtract standard deviation, whole square by two from my average returns. So. A question, why aren't my log returns giving 140 7.5 because I did not use exponential. If I used exponential here, then it would have given me the exact same thing. I just wanted to show you that, you know this is, these are with drift and with log returns. It's pretty much the same. That is what I wanted to show you. Had I taken e power, then it would have been exactly that, which is what I did here, right? Which is what I did here, then it would have been exactly the same. Okay, okay. Again, IRR. Then you know, your estimate of future returns from standard deviation breaks. So let me just give you a summary, and then I'll I'll do two things.
+
+Speaker 1  2:10:58  
+Through random walk model, we assume that stock returns are normally distributed. If I take simple returns, this s is the stock price, right? So, s is stock price, t is the time period, mu is the the average return, sigma is the standard deviation of the returns. If I take simple, this is simple returns, then they are not if I assume that they are normally distributed, then for longer time t periods, I have to, for my average, I have to subtract this drift term, right? So then my returns are normally distributed around mu minus this drift term multiplied by time period t, and this is the variance, right? So this is the summary of what I've told you. You take simple returns. You have to subtract the drift with log returns, you don't have to do anything there. Now what I'll do is,
+
+Unknown Speaker  2:12:13  
+guys, please pay attention here. I'll again estimate so I have today's price. I'll do three things. Or, you know, I'll do three things.
+
+Speaker 1  2:12:29  
+One, the problem is this. For all those three things, this is the problem. Estimate the price of nifty for 20th day from today. I'll do this using log returns. I'll do this using simple returns, and I'll do this using Monte Carlo simulations. Alright? So this, I'll tackle the same problem in three ways so that you understand, you know what's going on and you know what is the difference? In reality, there is really no difference. You can take either three approaches. All are correct, but I'll just do this exercise here. Estimate the price of nifty for 20th day from simple returns. If I take log returns and if I take Monte Carlo simulation. So in my third way, I will also explain what are Monte Carlo simulations make sense. Yes or No,
+
+Speaker 1  2:13:39  
+guys make sense. Yes or no. Okay, so let me do it with simple returns first, right?
+
+Speaker 1  2:13:56  
+So I need to calculate the drift of 20 days right? Variance of 20 days and standard deviation of 20 days, right? So let me just do it. A variance of 20 days is nothing but variance of one day into 20 everybody understands this, and then the standard deviation is nothing but square root of this, right? So I'll just put the formulas here.
+
+Speaker 1  2:14:39  
+So now drift for 20 days. What would be the formula? It would be simply average minus a standard deviation, whole square. Divided by two and then multiply by 20.
+
+Unknown Speaker  2:15:13  
+Any questions till Row eight, any questions till Row eight, let me just do this. Hazim guys clear.
+
+Speaker 1  2:15:32  
+So people are saying, Hey, can we do it for actual data? I would have loved to you can do that at home, but you know what I want to do is, if I do it for historical data, then you can actually check whether this model is correct or not, because we have all the data. If I do it with today's data, then you know it will take me 20 you'll have to wait for 20 days to figure out whether our predictions are correct. So whether historical data is just easier, and you can go back, check at home, check all this model at home, right? Guys, any questions till the standard deviation for 20 days, right? Because our multi variance for one day into 20 and then square root. So this is for 20 days. So this drift is for 20 days. Correct. Drift. Is the compensation factor Correct? You can do this for lower timeframe, five minutes, 10 minutes, absolutely you can do that. No issues. Okay, let me move ahead.
+
+Speaker 1  2:16:42  
+So this is the formula that we have. Returns are normally distributed around the drift, right with this standard deviation. So in other words, there's a 95% chance that the returns, returns will lie between mean returns minus standard two standard deviation and mean returns plus two standard deviation, exactly What we did before. So we've calculated
+
+Speaker 1  2:17:19  
+the mean returns of 20 days, minus two times the standard deviation.
+
+Speaker 1  2:17:35  
+And so this is minus and two times plus the returns two times standard deviation clear, so there's a 95% chance that the returns will lie between minus 8.8 and plus 10.6 or in other words,
+
+Unknown Speaker  2:18:09  
+the price of stock will lie between so let me just paste the formulas here.
+
+Speaker 1  2:18:24  
+Initial price into E, power f 12, and initial price into e power h 12. So this is what is the price.
+
+Unknown Speaker  2:18:42  
+So this is today's price. Is this 18, 065, so into exponential?
+
+Unknown Speaker  2:19:03  
+And today's price into exponential
+
+Unknown Speaker  2:19:11  
+make sense? Any questions?
+
+Unknown Speaker  2:19:20  
+Any questions till row 1520,
+
+Speaker 1  2:19:28  
+days are trading days. I'm not considering holidays because my data did not have holidays. If your data does not have holidays, then this is for 20 working days.
+
+Speaker 1  2:19:50  
+Okay, so people are saying again, 3500 does not make sense, because there's a 95% chance, right? Do it? 160 6% chance, and this range will go. Down, right? So nifty price will lie between these two prices after 20 days. All right now I can do the exact same thing with log returns, and I will not add. So this is the drift. I calculated the drift with log returns. I can do the exact same thing. So this is average of daily returns log. This is the standard division. So I have to estimate the
+
+Speaker 1  2:20:45  
+have to estimate the price of nifty for 28 day from today. So now, if I do this,
+
+Unknown Speaker  2:21:06  
+so now if I do this variance for 20 days is nothing, but
+
+Speaker 1  2:21:18  
+this standard deviation is again square root of this, right of the variance. The only difference so this is exactly the same. The only difference is, I don't have to calculate the drift. The average of 20 day returns now I can simply multiply into 20. I don't need to take the drift and let me get the formulas right here. So this is without drift.
+
+Unknown Speaker  2:22:04  
+All right, and now the same thing,
+
+Speaker 1  2:22:14  
+95% chance that the stock will lie between plus minus two standard deviations, or in other words, minus two into standard deviation and plus two into standard deviation.
+
+Speaker 1  2:22:49  
+So if I do this, and then, you know, so
+
+Unknown Speaker  2:23:04  
+so this is the range, right?
+
+Speaker 1  2:23:11  
+So see how close. This is 16538 and 2096 and this is 16547 and 2085 right? This is because, you know, we are assuming the drift, assumes normal distribution and whatnot. But see how close is this. So either you can use log returns and not use the drift, if you have to use simple returns, then you have to use the drift any so two things I've covered. Any questions, can
+
+Speaker 1  2:23:49  
+you do it for one standard deviation? Absolutely you can do anything now that you know I've taught you how to fish. You can fish as many you know. You can trap as many fish. You can do it for one standard deviation, point five standard deviation. Point five standard deviation. What not, right? So you can do it at home. Any questions, I'm always there for you. I'll take a couple of minutes here. Any questions,
+
+Speaker 1  2:24:19  
+there's a question on derivatives, I can take it offline, by the way. You know, I love derivative options. Futures and options are my bread and butter. So you know, if you have any question, I'll take them offline, but I don't want to do it here. Any questions on this pill? Row 16, everything is clear, interesting, yes or no, I hope you are learning, right? I mean, I'm keeping it as simple as possible. I hope this is clear. People might think that, hey, this is a very simple model. But again, this is just a fourth lecture, right? So we start with simple, then we do. Peel off the assumptions, right? Okay, should I move on? So I've done two things. I said I'll do two things. One is I'll do through simple returns, through log returns. Now I will show you simulations. I will run Monte Carlo simulations. All right, guys, please pay attention now. I will run simulations. I will estimate the range of stock price on 20th day from Monte Carlo simulations. Guys, do I have your attention? Yes or no.
+
+Speaker 1  2:25:47  
+Okay, so I will run 1000 simulations. All right. Now, what? What is this, see, at the end of the day, what are simulation? I have to estimate the price of the stock right? I have to estimate the price of the stock
+
+Speaker 1  2:26:18  
+day. So I have and I have to do it for the 20th day. So I'm starting with 0/20. Day, I need to estimate the price, and I'm running 1000 simulation. I will run 1000 simulations. Day Zero, obviously, is my today's price, so it doesn't change for my simulation.
+
+Speaker 1  2:26:50  
+So Day Zero is the price is the same for all my simulations. Now I need to estimate the price of the stock on day one, day two, day three for 20 days and 1000 simulations. How do I do this? Now? There's a very interesting thing that we can do,
+
+Speaker 1  2:27:18  
+and Excel comes to the rescue. See, my only constraint is, how do I build prices? My only constraint is that returns are normally distributed. And historically, I know returns are normally distributed around the
+
+Speaker 1  2:27:45  
+uh, this is the mean and this is the standard deviation. So for all simulation, I need to make sure that my returns are normally distributed around this mean and this standard deviation. How do I ensure that there's a very interesting formula in Excel, NORM INVERSE. NORM INVERSE. This R, a, n, d, random every time so random for this generates a different number between zero and one randomly. This is absolutely random. It will generate random so I'm just refreshing my sheet. Every time I refresh, it is producing a different number, random number between zero and one, and if I do NORM INVERSE, I put the mean and I put the standard deviation right so probability so this is between zero and one random is generating that I put the mean and I put the standard deviation, and I use this formula for, say, 10,000 observations, this distribution will be not because I've used NORM INVERSE. Essentially, Excel will generate for 10,000 observations, Excel will generate these x's in a way that x's are normally distributed with mean zero and standard deviation one. So if I so, you know the mean of all these is, see how it is around zero, right? So I've taken the mean here. So if I use this NORM INVERSE formula, Excel is generating these variables in a way that they are normally distributed and the standard deviation is so the mean is around zero. Standard deviation is around one. Is this clear? So this is what I use. So I need to generate random distributions which are normally distributed around mean zero and standard deviation one. And in case you need to check, you know, there are nine. So you know, here I've used a frequency graph. So how many observations lie between minus five and 4.9 how many observations lie between minus four and 3.9 so this is a frequency graph. You can see that till minus two from minus infinity to minus two and plus infinity to plus two. There are 95% observations. Sorry, so yeah, five 5% observations lie between minus infinity and minus two and plus infinity and plus two. Right? So, 263 plus 204 it's almost 5% right. 5% of 10,000 is 500 so 263 here and 204 here, right? So 5% lie between, so 95% values lie between plus minus two standard deviation, right? And this is how the graph looks like. So this is quite normally distributed, and quite normally distributed with this mean, this standard deviation, and 95% of the values lie between plus minus two standard deviation. So if I use this formula, I can create normally distributed observations. Is this clear? And I will use exactly this formula in my simulation. So what will I do? I need to create returns that are normally distributed. So I do random mean is this, and standard deviation is this, right? So this is, if I do this, I am creating a return that is normally distributed around.
+
+Speaker 1  2:33:04  
+Around point 051, with a standard deviation of this, and you can check this out. So if I take the average, see how close it is. You
+
+Unknown Speaker  2:33:23  
+and standard deviation. So this is what I've done.
+
+Speaker 1  2:33:31  
+I've created normal distributions that are around this stand, this mean and this standard deviation. Right? Now, from these returns, I need to calculate the actual prices. So if these are the returns and these are normally distributed, all I need to do is multiply yesterday, price and e power r is
+
+Speaker 1  2:34:09  
+are right. This is all I need to do. And if I do this, then I have the prices. Does this
+
+Speaker 1  2:34:21  
+make sense? So all I did was I had the returns and then multiply yesterday's price into e power r. So I had the return multiplied by yesterday's price into e power r, and this is what I did. So I have 1000 simulations for 20 days. Why are these different? Because this random number for each cell, this random number is generating a different number between zero and one. That is why I have different numbers for these simulations. Any questions? No.
+
+Speaker 1  2:35:02  
+A question, why are we using simple daily average instead of drift? Or because we use drift to estimate 20 days return. Here I'm just using, I'm using the average to calculate next day's return for next days. You don't really need to take, take the drift for next day it is you can simply take the regular average, all right, E, R is the returns. R is this, and E is the natural number. Right? So, e power so when we where did it go? So this e power r, right? So exponential power r, so r is the NORM INVERSE random and then return and standard deviation, and
+
+Unknown Speaker  2:36:07  
+E is this exponential, right?
+
+Speaker 1  2:36:16  
+What is the use of random? Again, as I said, set
+
+Speaker 1  2:36:28  
+this formula, NORM INVERSE, random, random number creates a number between zero and one and in NORM INVERSE, we need to give the mean and the standard deviation. So random number generates a number, random number between zero and one. And if I give the mean and the standard deviation in this formula, NORM INVERSE, and I generate observation, then these observations are inherently normally distributed between mean is zero and standard deviation is one. So Excel gives us this, this formula,
+
+Speaker 1  2:37:15  
+do we always consider prices instead of returns? So these are Monte now it did it again. It depends what is your objective here. My objective was to find the range of stock at 20th day from simulation. So this is what I've done. This is the range of stock from for 20 days because I need to calculate the stock price. That is why I took the price. You can you can also use Monte Carlo simulations from instead of average, simple average daily returns. You can do it from log returns. Also it will be pretty similar. So let me just find out. So you know,
+
+Unknown Speaker  2:38:04  
+for what is the range, let me just tell you, what is the range.
+
+Speaker 1  2:38:15  
+Now, for range, I need to use a function, function called percentile. Now, what is this percentile? If I need to find the range between 2.5 and 97.5 right? So 95% of the value should lie between plus minus two standard deviations, right? So that so 95% in between, so 2.5 on the left and 2.5% on the right. So if I have to use so from the simulations, I need to figure out what is the range of my stock on the 20th day. So I use a formula called percentile. Now, what does this percentile. Do this percentile formula simply, if I have numbers, say one 200 right? I have an array from one 200 this percentile formula gives me which is the number that lies around 2.5% so it is three. So if I use percentile array and then the percentile the output gives me Okay, three lies around 2.5% in this whole array of numbers. If I use percentile at 97.1 so 97.5 this number lies at the 97 point fifth percentile. So if I use percentile here, so 5.95 is around five percentile in this whole array of numbers. So if I use this same formula, percentile, so it tells me that 60. 1604 is around 2.5% in this array. And when I took the array, I took the 20th day prices right again. See even from simulation. See how close these numbers are, right. See how close these numbers are. So all the three methods give us this exact same result, right? It just depends upon which method you want to follow. Now, people are saying, Hey, what is the benefit of using simulation? You write, I have straight away, I have formulas. So what is the utility of this? I'll tell you the utility of this. This is a very simple formula that I have created, right? And we are just estimating the price if my if my model had very complex formulas, then sometimes simulations are just easier, right here. I know the properties of normal distribution, so I know that you know mean returns will lie between plus minus two standard deviation. What if you know, I had a different formula, and I don't know, you know what percentage will lie between plus minus two standard deviation? Then I just use simulations to I put my model here. I run simulations and I generate, okay, you know what? This is the range of prices that I can have. Also, if I need to estimate, you know what would be the so say, you know, I am I in my in my strategy, I want to short an option, or I want to buy an option, I'd say I buy 18,500 call from these simulations, I can easily estimate how many times will I actually the price will go above 18,500 so you know the if I know the range through simulation, I can use this range to to get the P and L of my strategies. Also, I don't need exact formulas. For example, if I you know, if I tell you, so I'll give you I'll give you an example. I'll give you, in fact, two examples. What if I want to calculate the minimum stock price at 95th percentile, and if I want to calculate expected shortfall. Now, the both these are important things, right? I'll do these through simulations. Now, what is minimum stock price and what is expected shortfall? I'll take another 10 minutes to make you understand what is this expected shortfall and what is the minimum stock price at fifth percentile. All right, guys, there's a question. This is Monte Carlo simulations. This simulations are called Monte Carlo simulation because I'm estimating the prices based on my model. So these are Monte Carlo simulations, right? I've run 1000 simulations, and I've estimated the price each day for each simulation. You can calculate. So there's a question. You can calculate the PnL of your iron condors or straddles or strangles and guys, please don't get overwhelmed with these things when you have your options class all these strategies will be clear to you, but you know, instead of writing formulas and doing math, if I have a range of prices, through these simulations, I can easily calculate the PnL of my different strategies make sense.
+
+Speaker 1  2:44:03  
+Again. So this is the significance, right? I'm telling you the significance. Say you want to calculate the minimum stock price at fifth percentile and the expected shortfall at 5% either I have to use complex formulas, but if I have my simulations, I can easily do this. So let me just explain to you what is the minimum stock price at fifth percentile, what this simply means. What does this simply mean?
+
+Speaker 1  2:44:40  
+This simply means that, you know, what is our in in these 20 days, in these 20 days, say, I, you know, I bought nifty, you know, for $10,000 at this price. I want to know. Know How low can nifty go in these 20 days? Right? How low can nifty go with a 95% confidence, I want to know that you know what nifty would be above this price in the next 20 days. This is what minimum stock price at fifth percentile is telling me. So let me. Let me do this again. So percentile.
+
+Unknown Speaker  2:45:33  
+So my whole array is this, right? My whole array is this. I
+
+Speaker 1  2:45:44  
+and this is the so essentially what it is telling me that in 90 in this whole 1000 simulations, 20 days, 95% of the values are above this number. So this is the benefit of
+
+Speaker 1  2:46:11  
+this is the benefit of simulations, right? I can immediately calculate that 95% of the values are above this number, so I can say with a 95% confidence that the stock will not fall below this number, right? So with this model, I am 95% confident that nifty's price will not fall below whatever this value is in in this cell, right? Any day in the next 20 days, right? So this value changes. So that is why these are not matching, but say fall below. I
+
+Unknown Speaker  2:47:05  
+uh, changes, and whatever this is right makes sense. Or what I can do is I can do this.
+
+Speaker 1  2:47:28  
+Right? Make sense is this? Does this make sense? Yes or no.
+
+Speaker 1  2:47:45  
+And so people are saying, upper limit. Upper limit would be this. So there are only 5% values that are above 19,002 and 70 in those 20 days, right? So percentile people who are asking me, What does percentile do? This is what percentile is doing? There's a only 5% values out of this whole array lie below 17,001 40, right
+
+Speaker 1  2:48:18  
+now, what is expected? Shortfall and guys, please pay attention. What is expected? Shortfall?
+
+Speaker 1  2:48:36  
+Say, I invest in a portfolio with $1 million and you know your investors say so you, you, you're you've created a fund. You have investors money, and you buy some stocks with $1 million and your investors say that, you know you cannot lose 10% of your invested value. Now there are two cases. One is, if the current stock price is $100 the probability that the stock falls below $90 is only 5% so you know, you say you think that, you know it's great, the maximum risk permissible is 10% and you know, the probability that the stock will fall below $90 is only 5% so I'm great. I'm doing good. But there are two cases here.
+
+Unknown Speaker  2:49:26  
+What if, if the stock falls below 90% it might only go to $89
+
+Speaker 1  2:49:36  
+but in case two, if it falls below $90 it goes to $50 these two are different sort of risks, although the probability that the stock will fall below 90% is only 5% but how much pillow is also a risk that you need to consider. So let me tell you. How you calculate the expected shortfall. So expected shortfall is, if the stock goes below 100, how much low can it go? So the expected shortfall here would we say this is the case, right? So this is the case. Case one, if it goes below 100, it only goes till 99 in case two, if it goes below 100, it goes to 80. So how do we calculate this?
+
+Speaker 1  2:50:44  
+So here you take the average of these three numbers, right if it goes below 100, the average is 98
+
+Unknown Speaker  2:50:57  
+here, if it goes below 100, the average is 88.33 or in other words, how I can write this number is average. If this is my range, my criteria is less than 100.
+
+Speaker 1  2:51:30  
+So what I'm doing average, if, average, if the stock is less than 100, and this is what it is giving me right. So this is the expected shortfall. If it goes below 100, how much money can I lose? Does this make sense? Yes or No, guys make sense. Yes or no, you
+
+Speaker 1  2:52:12  
+so what will be the expected shortfall for nifty? Let me just calculate this. So this is at 5% right? So is equal to average, if this is my whole range, comma, less than 5% so this was my criteria.
+
+Unknown Speaker  2:52:52  
+So this is the number. If nifty falls below 17,095 the average of all those numbers is 16,779
+
+Unknown Speaker  2:53:07  
+makes sense, yes or no.
+
+Unknown Speaker  2:53:15  
+Make sense. I will share this sheet. Don't worry about it.
+
+Speaker 1  2:53:26  
+So now you know, I have five more minutes. I had one more thing to discuss. I only need five minutes for this. So just bear with me. Bollinger, bands, just bear with me for five minutes and I'll be done so I can delete this.
+
+Speaker 1  2:53:55  
+Guys, just bear with me for five minutes and then, you know, I'll open the board for any discussion that you have, all right, there's a question every time I'm refreshing this random number is getting regenerated. And you know, the range is changing absolutely so if I have only 1000 simulations, if you have, like, 1 million simulations, then the change in this range would be very less. The more the simulations, the lesser the variation becomes, right, okay. Finally, you know, let me just go through bollinger bands. So, you know, you must have heard about bollinger bands and, you know, trading charts and whatnot. I'll just quickly cover this. What people do is people actually calculate the moving average of 20 days and the standard deviations you. So let me just do this. So what people do here is they will calculate the average of 20 days. So average of moving average of 20 days, right, and the standard deviation of the prices of 20 days. So this is how I mean. This is, again, one strategy that people use to trade. So they have their average of 20 days moving average and the standard deviation of 20 days, right? And then they do, you know, they have, they calculated two standard deviations up and two standard deviations down, two
+
+Speaker 1  2:56:02  
+standard deviation deviations down. So they'll calculate these ranges, right? So this is an ft price plus two times, oops from the from the moving average. So this is the moving average plus two times the standard deviation. And this is the moving average, minus two times the standard deviation. And they'll calculate these prices, and then they'll plot this.
+
+Unknown Speaker  2:56:39  
+Where does the plot go. There it is.
+
+Speaker 1  2:56:59  
+So, yeah, so this blue line is the nifty closing price. Two standard deviation is the red line. Up. Two standard deviation down is the green line. So their trading strategy is, if the blue line crosses the red line from top to the bottom you shot it because when so you know, the point is that there's a 95% chance. So they are creating this range. So all they are saying is that there is a 95% chance that nifty will lie between these ranges, right? So whenever nifty goes below this green line. Buy it whenever nifty goes above this red line, shorted. Because, why two standard division? Because they assume it is normally distributed, and there's a 95% chance that it will be around in this range. So you can also calculate the you know, this is again, a trading strategy. You can calculate the returns and the signals of this trading strategy through exactly the way we did it in our first lecture. Right? So if you're evaluating the price at date twin. Okay, so you know this is, this is what I had for you in today's lecture. I'll just give you a brief on what I've covered. In the first hour, I calculated the standard deviation, the covariances right from scratch. What is going on when Excel is using those formulas, and I created those 100 portfolios and the standard deviation and the returns, and showed you how returns and standard deviation go against each other. In the second part, I discussed random walk model, which is nothing but returns are normally distributed against a mean, a historical mean and historical standard deviation. And then through this model, I gave you practical trading applications. I told you how to create a range if you have a data set for any stock you can calculate for any time frame. You can calculate the range, calculate the the mean and the standard deviation, and then based on how accurate you want your your you want your prediction to be, if you want 95% accuracy, you use 2% two standard deviations, 68% then one standard deviation, and so on. And you can estimate the range of the stock through estimating the returns. I also showed you the difference between when how you can take log returns. You don't have to bother about the drift if you take. Log returns. However, if you're taking simple returns, then you have to add a correction factor known as drift, and then you know, the results are pretty much the same. And in the final part, I showed you, you know, Monte Carlo, how you can generate stock prices through Monte Carlo simulations, assuming a model for your prices. What is the advantage? The advantage is, you know, you don't have to run into formulas. So say you have to calculate the minimum stock price at fifth percentile or the expected shortfall, or you have to calculate the p and l of your strategies. All you have to if you have a range of the prices, you can easily calculate the PnL, then you don't have to do complicated mathematical formulas. I mean, you can do all these things through integration, differentiation, but through calculus. But if you have simulations, you don't have to get into the hard part of maths. And then finally, bollinger bands again, this is a strategy used by people. Take moving average of 10 days, 20 days, 25 days, calculate the standard deviations, make ranges of plus minus two standard deviation, and take a trade if assuming that the stock will mean reward because there's a 95% chance that the stock price will be in that range. So this is what I had for you in this class, I'm here for another 1015, minutes to answer any question that I left during the lecture, assumption of Bollinger Bands, yes, prices are normally distributed. How average formula was used for expected shortfall? Sure, I'll use the average formula through this so average, if the whole range less than 100. So this is less than 100, so it Excel will only average out those numbers that will that are below 100. So like this. So if you use average, if in the whole range less than 100, Excel will only average out those numbers that are less than 100 in this I use this formula right average the whole range of prices in my simulations less than and now here I had 100. But here, you know, in this, this number can change, right? If I refresh this sheet, this number will change. So, because I wanted to make it dynamic and not static, I used and and the cell. So basically, Excel will calculate the average of numbers that are below 17,001 57 in this range. All right,
+
+Unknown Speaker  3:03:10  
+okay,
+
+Speaker 1  3:03:16  
+question, if you do passive white iron condor, then you buy hedging legs, near expected shortfall. You know, yes, I mean, again, I don't want to discuss this because, you know, most of us, most of your colleagues, would not be familiar with option strategy. But this, this has immense application, then option strategies absolutely and you can use this in options. There's no doubt about it.
+
+Speaker 1  3:03:51  
+Question The understanding in Excel takes time, but concepts are clear. So you know, the more you work with Excel, the better you get. Believe me, you know, this is all through experience coding. And, you know, working with Excel is all experience. It's like, you know, one of my, my partners in my firm, who's a who's a great developer, he tells me, Nathan, coding is like, you know, it's like art. The more you do, it's like, it's like creating sculptures, right? Initially, you'll just break stones with the with the hammer, but then you know, when you are more experienced, you know you will, you'll actually figure it out with a chisel. And you know you'll, you'll do way better. You know, you will get the new answers. So it's just experience. The more you work with Excel, the more you code, the better you will get. There is no short cut to be great in Excel. You.
+
+Speaker 1  3:05:03  
+A question about shortfall. He doesn't understand that. You know, the average is 88.3 but isn't the stock already at 80? No, no. These are simulated prices. These are simulated prices, right? Just like we had simulation. So it's not that the stock is 80. These are different simulations. So this is simulation one, this is simulation, right? So you know, these are different cases, right? So in case one, these are the prices that we are getting in our simulation. In case two, these are the prices. So we are trying to estimate, you know, if the stock falls below 100. In case one, our simulation says that, okay, you know what I mean, depending upon how the stock is. So these are, you know, these are different stocks, you can say. So that's what I was discussing that, you know, if you are investing in a stock, the stocks can have different features. One stock, you know, if it falls below 100, it only goes to 98 other stock, if it falls below 100, it can fall to 80. So this is from like expected fall. It's not that the stock price is actually 80. Price, practically, what is the optimum duration for Bollinger band strategy? There is no optimum. You know. It depends upon your trading horizon. If your trading horizon is 10 minutes, then you can do it with 10 minutes. If your trading horizon is one week, then you can do it with five days. So there's no optimal so I can, I provide a simple, practical experience when we use the strategy, using these metrics to in options and options, you can use this so, you know, create, you know, ranges with one standard deviation and short the strikes, and you will make money. I mean, test it before doing that, right? Test it out. But the actual practical experience is with one person, standard deviation, find out the range, and short that range. How often do I use excel in comparison to using Python? Okay, that's a good question for testing out my strategies. I use Python, but I use Excel to do back of the envelope calculations. So, you know, like, a couple of months back, I was having a discussion with a trader. And you know, we had a very fierce argument that, you know, he was saying that this strategy will make money, option, strategy will make money. And I was like, you know, it won't. And you know, I have great respect for that trader. So what? What I simply did, we just simulated. We exactly use this simulation, and with his strategy in Excel. I quickly showed him that, you know, I simulated, like, 10,000 simulations. I don't remember whether it was for for, like, maybe it was for a month or something, for 10, for 20 I think it was for either 10 days or I think it was for 20 days. But I, you know, I quickly simulated it in Excel, and I showed him that, you know, his his strategy and options will not make money. So, you know, Excel is very powerful and very easy. And that ended the argument right there. And, you know, a lot of analysis. I do a lot of analysis through Excel. You know, if I have to do quick back of the envelope calculation, I always use Excel. If I have to do thorough calculation, then I use Python. Expected shortfall is the average value of prices below fifth percentile, correct. Do Bollinger Bands really work with one standard deviation? They can. They can. I mean, again, test it out. But short answer is, they can. Should we always check the independent nature of returns in real time, because today's concepts revolve around independence. Excellent question. You should? You should, a lot of times they are but if your question is whether you should, there is no getting around it, and there are ways, there are Arima tests, and you will learn all these things to test independence. So you can calculate, you know, you can calculate the correlation between returns of day one and day two and the next day returns. So you, you should most of the times they are but sometimes they are not. So yes, you should definitely test this out. Monte Carlo simulations can be done for anything, for any model, absolutely, for any model they you can do it. What are the parameters? For example, here the mean. Return. Can change for the stocks, the model itself can change. Here we are assuming a normal distribution. You can add skew, you can add kurtosis to it, and then run simulation. So this NORM INVERSE. If you change the standard deviation and the mean, these parameters will change. If you change, if you assume it's not normally distributed, it has some skew or kurtosis, then this NORM INVERSE formula will change, and you'll have to figure out how to change it. Does simulation work in Trump's time?
+
+Speaker 1  3:10:40  
+Short answer is no, because what is happening in this world is beyond the 95 percentile. But as time goes in, you know your the volatility increases, so the standard deviation increases, so your range will increase. So for the first few weeks, days or weeks it won't but then it will catch up.
+
+Speaker 1  3:11:18  
+Do I use Excel for refining my data set, no, no. Okay, you know, okay, let me, let me, let me clarify that for my mid frequency strategies, I still use Excel. For my high frequency strategy, where the data set is huge, then I use Python, right? So if I have like, you know, my thumb off. Rule is, if I have less than 100,000 rows, I still use Excel. If I have like, millions of rows, then I use Python. Alright. So ML models I only use in my HFT, so I use Python. If the returns are not independent, then what methods we can use? There are different strategies, then ARIMA models and whatnot, so you will learn them in next lectures. All right, I think we covered them, but then there are different strategies for that. Do we use hidden Markov models in our strategies, we did use hidden Markov models. And one of our strategies, we did, I mean, we tested it out. I'm not sure if, if it, if it improved our strategy or not, but we definitely, we've worked with hidden Markov models. One of my colleagues, he's, you know, he's very good at math, and he definitely put this in our in our model, Hidden Markov, if you are finding it difficult any concept to understand any concept in statistics, you know what I covered today. I think JC hull, option futures is a great resource to understand this. It's a it's an absolute great resource. If you are stuck in statistics, what I'll do is pick up say you're not comfortable with with standard deviations, or, you know, again, just go through the lecture again. Let me know what you're not comfortable with is, are you not comfortable with regression? There's a lot of resources with regression. So, you know, I don't want to tell you one resource. I can tell you one resource for this lecture. JC, Hall, options and futures, right? I mean, that's a that's a great resource. Let me just I
+
+Speaker 1  3:13:44  
+Okay, I'll let me just find that out.
+
+Speaker 1  3:13:59  
+So yeah, JC, Hull option and option futures and other derivatives by JC, that's a great it should be available freely online, but that's, that's a great resource. HFT, with Python, isn't that slow? No, no to back. Test to back. Test execution is all done through C Plus Plus I test through through Python, you can find, you know, you can just it should be freely downloadable. JC Hall might be like a previous version or additions, but that's fine, but it should be freely available, if all models are known, what is the difference between what company uses or they build their own strategy? No, we build, we build our own strategy from the existing models. So.
+
+Speaker 1  3:15:00  
+Guys, any, any other question that I, that my I might have left during the lecture. I'm here for another three minutes. So last five, six questions, Nishant man's book on mean reversion.
+
+Unknown Speaker  3:15:14  
+I haven't read that book, so, you know, I, I don't know. I can't comment on that book.
+
+Speaker 1  3:15:25  
+Special edge for retail traders compared with institution and big firm, there's no special edge for either institution and big firm. They have. They have no special edge. What special edge? I mean only resources. If you are thorough in your back testing, you are exactly like a institution, percentile significance, or you can use if you know the range, if you know this range, then you can apply your trading strategies right? So when you study options, you would know that you know with this range, if you know that the stock will always be inside this range, you can short this put and this call. So you will get to know that. But you know, again, in your options class, you'll you'll have a very clear understanding of of how you can apply this trading knowledge through options. Main takeaway of this lecture, should we just no main takeaway, two, three things, right? A random walk model the ranges you know, the difference between simple returns and log returns. So I think these, these are the main takeaways. But then again, you know, you should keep in mind how to calculate analyzed volatility from one day's volatility and whatnot. So all these, you know, just, just keep this in mind, and you will use from trading point of view if you want to immediately do it. And this is the main takeaway, right random walk model and the ranges. But you know, again, all these things, estimating annualized volatility from one day's volatility, all this will, you know, you will use this in options in other classes. So just, just go through the lecture, be be comfortable with the concepts, and you'll automatically, as ePad goes on, you will understand the trading applications much better. All right, Okay, last question, guys, I have to move on, by the way. I hope the lecture was good. You know, I cannot emphasize enough, please be free. Feel free to, you know, email me your questions. Have personal calls, I'll be more than happy to do that. I'm here with you. You know, I'll, I cannot emphasize this enough, I'll be more than happy to help you out, help you guys out in any way I can, right? And this is, this is my commitment. I'm here because I love this, these things, right? So again, any any question, any doubt, if you're not comfortable with any concept, just shoot me an email, right? I'm absolutely here with you, right? It's we are here and we're in this together. I always look at it that way. So once, you know, I always say this, once an e pat in, always an E pattern. You know, we are blood relatives. Now you can email me anytime, right after, I mean, during the course, you have to touch base with me through the RM. After the course, I'll share my personal email id, my personal number. You can definitely chat with all right. People are asking me about what returns. You know, test this out. I don't want to mention any any particular return, right? Okay, all right, guys, thank you so much for your patience. I had a great time with this lecture. Great questions. I appreciate all your questions. I will see you next week with my final lectures, one is on continuation, on execution, and the last one, I will discuss my metrics to evaluate strategies. All right, guys, thank you so much for your questions. I really appreciate you giving me your time. All right, have a good one. Guys. Have a great week ahead. Thanks, you. And.
+

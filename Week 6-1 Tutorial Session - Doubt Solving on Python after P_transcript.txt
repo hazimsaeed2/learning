@@ -1,0 +1,300 @@
+Speaker 1  0:02  
+So I will okay. Hello, everyone. We meet again after, I think, around one and a half months or so. So the last time we had met was during our prep session, the Python preparatory sessions. So a very good morning, evening, afternoon, depending on your local geography, I'm Mahavir. I would be the instructor for today for this tutorial session. Before we begin, please let me know whether my audio is crystal clear or not, and whether my screen sharing is visible to you all or not, please confirm that my audio should be good. My screen sharing should be visible. Please confirm everyone. Then would I be able to proceed ahead? Thank you. Zubin. Zubin Manikandan, okay, so two people have confirmed that should be a good enough sample to extrapolate the fact that I am clearly audible and the screen is visible. Okay, so the agenda for today's session would be essentially some basic concepts that were covered in the prep session in PBQ, one session which was taken up by my colleague manusha This past weekend, and any other Python basic doubts or queries that you may have, I do have a listed agenda which talks about how to import Python libraries. What are the different ways of importing Python libraries? What are Python libraries? What is a working directory? How do you change it? How do you know which directory you are on, which brackets are to be used? Where the square brackets, the round parentheses, the curly braces, which one do I use? Where so many a times this causes confusion. Then what are magic commands? Some examples, some insight, some sneak peek into magic commands, and if time permits, some optional topics. So this is the agenda that I have in mind. But if any of if most of you feel we need not discuss this extensively, and we can focus more on discussing something else with regards to the subject and the topic at hand, I am more than open to do that, so in the questions panel, let me know if you have any pointed queries or doubts that you need to have some clarity on, and if a majority of you don't say anything, then I'll Just continue on with the agenda that I have in mind.
+
+Speaker 1  2:57  
+Okay, so Zubin is asking, how does one speed up Anaconda startup. So it's not a very straightforward answer. Let's take this offline. Zubin, okay, please get in touch with your support manager, and we'll help you out on this. Happy. Panjwani is saying I'm facing issues on how to open a file in Jupyter Notebook. I need more context to this question. Happy, so please get in touch with your support manager. The Support Manager, and I'll respond to this offline. Okay, and when you get in touch with the Support Manager, do let us, or rather, let me, know which kind of file are you trying to open and what exact issues are you facing? Okay, for shape, we use no round brackets. But for describe, we use that how to know when, okay, can you please brush up with the agenda? Sure. I'll continue with the agenda. Then. Okay, so manikan, then I'll just hold on to this query of yours. This we would any which was indirectly be covering. Okay, cool. Let's get started. Or else, let me just respond to manikanda query here itself, and then I'll get started. Let me create one more file.
+
+Speaker 1  4:32  
+Cool. So import y finances y f and APL equal to y, f, dot download Apple data. Start equal to 2020 0101, for example. End date would be equal to 2025,
+
+Unknown Speaker  4:57  
+0101, for example. To multi level index equal to false or to adjust is true by default. Let's leave it at that.
+
+Speaker 1  5:23  
+So I have become very accustomed to not using Jupiter, owing to some of the functionalities that other IDs provide, but it's after long that I'm actually working on Jupyter Notebook. Cool, nevertheless. So here, if I say Apple, dot shape.
+
+Unknown Speaker  5:54  
+And
+
+Speaker 1  6:01  
+okay, so the reason we are getting this error is whenever I'll first show you people the question that I'm responding so that you all know and all of us are in the same page, are on the same page. Okay, so this question is being responded to. Now the question by Manikandan K so what you see here is the moment I check what is the type? What is the data type, or data structure type for Apple? Dot shape. It shows me that it's a tuple, okay, and tuple is not a method. That's the reason why we simply cannot have round brackets. Beside that, however, if I type apple dot describe, and when I check the type, it shows me that it's the data frame. And when I check the type for this, it shows me that describe is a method. Okay, so whenever you have a method, you can have these round brackets. But when it is not a method, the round brackets actually do not mean anything. Okay, as simple as that, and the typical structure or syntax, as we call it, is you would have library followed by method with round brackets which are populated with arguments, okay, or package dot Class followed by arguments, okay, whatever the case may be, but essentially it would be the major library name followed by the specific method within that particular library, and within round brackets we would give arguments. Okay, now, what are arguments? Why only round brackets. We would cover that today, but I hope manikan, this sort of responds your query. For the time being, we would dive deep into it going ahead now,
+
+Speaker 1  8:36  
+while passing date, even after the commands given, it is given it will be different in future. What to do in future I'm not able to follow your question. Please elaborate it, or we can take it offline. Okay, cool. Let me proceed ahead with the agenda. So first of all, we would talk about libraries. Now, I do not want this to be a session where you are bombarded or overwhelmed with something that another person is saying virtually at the risk of you people may be falling asleep or so. I would try to keep this interactive so the first question is,
+
+Unknown Speaker  9:28  
+is, what are Python libraries? That's the first question. What are Python libraries?
+
+Speaker 1  9:41  
+Please put in your answers on the chat box, and also, please don't search it anywhere. Don't search it on chat GPT or any other LLM, or even over the internet. Just let me know whatever it is that you have been able to understand till now. The purpose of this session is. To learn and to revise and brush up your concepts. So let's try to stick to that. What are Python libraries?
+
+Unknown Speaker  10:16  
+Some answers.
+
+Speaker 1  10:25  
+Okay, got it. So this is the error message that manikan then got, and many of you may have got something similar. So what essentially, you need to do is, as it is suggested by the kernel, that you need to use date format. That is the work around to it. Okay? So those of you who have got something like this, an error that is similar to what Manikandan has shared, do get in touch with the support manager and share your files with us, and we'll let you know how to overcome it, okay? Or if you can share it straight away, maybe through a Google Drive or something, I can give you a demonstration. Now, coming to our question, libraries are pre assembled code used for a similar set of operations. That's great. This is an answer given by Zubin. That's great. Then there are libraries of programs. This is also good answer. Libraries are specified codes for a specific purpose, such as math. Okay, that's a good answer. Shubham is asking or saying, I don't know, library or modular packages are same. We do use them interchangeably, but they actually are not okay. So the words libraries, modules, packages, they have subtle differences today, where you people have just begun up with Python, you can treat them to be interchangeable, but there are differences. Okay, just know that for now. Now, Shubham is giving a definition group of different types to reuse functionalities we want. That's also a good answer, Yes. Cool. So what most of you So, what all of you have said in bits and pieces is pretty much Correct. Python libraries are a compilation of codes that are used for different functionalities, okay, for specific functionalities. So, for example, in your home, you may have a box that would comprise of, say, a screwdriver, a hammer, a spanner. It would have some nuts, some bolts. You would have another box that would have a nail clipper, a face wash, a razor. You would have yet another box that would have an USB cable, a pen drive, a charger. So essentially, this box would be the box that you're going to use for home repairs. Okay? You're not going to use this for grooming, for personal grooming, right? And if you do that, that should be very weird. Same over here, this is something that you're going to use for personal grooming. You're not going to use this for electronic purposes. And if you try to do that, that again, would be disastrous. And this box you are going to use for whatever electronics related functionalities or use cases you have, right? Similarly, we have different such libraries. One is for data manipulation or modification. Data manipulation or reading data, modifying data, analyzing data, data manipulation and analysis. That is pandas, the full form is panel data. Okay, there's another acronym as well, but panel data is one of the names that has been condensed into pandas. Now, panel data is essentially a term that comes from econometrics. You can look it up. You're not here to discuss that, although we can. It's a very interesting topic, but that's out of scope for today, for numerical calculations or anything that has to do with mass. Essentially, we use numerical Python, which is NumPy. For visualizing data, we use the mathematical plotting library, which is mathematical plotting library, dot, Python plot Okay. Matplotlib, essentially, so on and so forth. So these are all different libraries that we have now in Python, we have what are known as
+
+Speaker 1  15:34  
+inbuilt and third party libraries. Before that let me just
+
+Speaker 1  15:50  
+okay, that's fine, not a problem. Okay. Now, before we move on to this again, without searching on the internet or without going to any LLM or any generative AI tools answer this question,
+
+Speaker 1  16:10  
+how many Python libraries exist Today? Okay, take a guess. How many Python libraries exist today. Take a guess.
+
+Speaker 1  16:45  
+Shirs is asking, what is a tuple? Or, as some people tend to pronounce it, a tuple. Zubin is saying more than 200,000 Jesse is saying 500,000 Shivraj is saying 10,000 plus. Money. Content is saying 3000 Okay, let me perform a search.
+
+Speaker 1  17:26  
+Okay, so this is the figure 130 7000 okay. Now every library has its own functionality, has its own way of doing things. Many libraries are built over one another and in the E pack, and more so in algo trading, or even in the broader domain of quantitative finance, if any of you wish to for into that, eventually there are just 15 to 20 libraries that we commonly use, okay? And out of those, there would be 10 to 12 libraries that you would use on a very regular basis. Okay, so you should know that Python is extensive. Python has a huge community out there who is altruistically pro bono keeping Python up and making lives easier for everyone who is working with Python, but at the same time, you need not use all of all these libraries. Now there are libraries for astronomy, for astrology, for conducting science experiments, for conducting simulations, be it related to physics, chemistry, mathematics, different branches of mathematics, be it visualizing geometry, or be it working with algebra, or linear algebra, for that matter, that is matrices, whatever the case may be, okay? It's huge. It's extensive. You have sci fi, you have spacey only for mathematics. You have TensorFlow, Keras, SK learn only for machine learning and deep learning, right? So it's extensive, but that's just for you to know. And out of this, we have some inbuilt libraries and some third party libraries. Now inbuilt libraries. We will discuss two of them today, that is the OS library and the URL lib library. Os the full form is operating system. URL lib is uniform resource locator. That is, URL lib is library. So inbuilt packages are similar to, for example, you purchase a mobile phone. There are some apps you purchase an iPhone, all the apps that come within the the apple community or the Mac community, those apps would be there as part of your phone. Okay? Inbuilt. And there would be other apps, some gaming apps, or some aggregator apps, maybe cab aggregator apps or food aggregator apps. Cab aggregator would be uber Ola here in India, food aggregator would be Zomato swiggy. So those kind of aggregator apps, if you download those are not the ones that are hosted by Apple, okay, those are what we term as third party libraries. So NumPy, for example, pandas, SK, learn and every other library that we need to install. Those are third party libraries. Inbuilt ones are OS and URL lib. The difference is, we don't need to install these simply import and these ones we need to install. Okay, that's the only difference. Now let us have some illustrations of how OS works.
+
+Unknown Speaker  21:20  
+First of all, we'll need to import OS.
+
+Speaker 1  21:32  
+Now this is one method, if you recall. The syntax is always library dot method followed by round braces or brackets. And within the brackets, we would have arguments here. This is the name of the library, which is OS get CWD. That is the name of the method. And you would see here, its color is bluish, right. Import, the color is different. It's a bit emboldened. It's highlighted because it's a keyword in Python. So wherever on Jupyter notebook or on Jupyter lab, you have this kind of a coloring and highlighting that is a keyword import as true, false. Wherever you see methods, those methods would get this kind of a color, okay, anything after the.so get CWD. What is CWD? The Full Form of CWD is current working directory. So directory is essentially the systematic organization of files and folders. So I'm using a Windows PC. These are all the files and folders that I have that is what we call as a directory, system or a directory. Now when I import OS and check my current working directory, this is what it gives me. So I have only one drive that is the C drive within C drive, I have users, admin, PBQ tutorials, and this particular notebook, the Untitled one that I'm working on now, and This other ones, okay, and that is the path that it showed me that, hey, you are on this directory currently. What is the significance of that? The significance of that is, suppose I take I go on to some other library.
+
+Speaker 1  24:09  
+In my downloads folder, I paste this CSV file. Okay, now this CSV file I need to import, I need to read it. So what I'm trying to do is I would import pandas as PD, and new file equal to PD, dot read CSV.
+
+Unknown Speaker  24:40  
+What's the name of the file? That's the name of the file,
+
+Speaker 1  24:52  
+it would throw this error. Why? Because this file needs to be in the same day. Directory where this code is present or this notebook is present. Now my notebook is present inside this folder. Okay, so I can directly, straight away download or read, not download, sorry, read CSV files or other files that are present in the same directory or within the same folder. Okay,
+
+Speaker 1  25:29  
+now in this folder, I have say this CSV file. Let me change the name, and immediately I'm able to read this file. Cool, right? This is what we call, as we term as a pandas data frame. The reason I needed to import pandas was because I wanted to use the read CSV method from pandas, okay, using which I was able to read this CSV file, and I was able to see it as a table, which, In pandas parlance, we term as a data frame. So data frame. Now, what if I wanted to read this file? There are two ways, either I can copy paste it inside my working directory. That is, I bring it here, or I change my current working directory. Okay, let me see.
+
+Unknown Speaker  26:53  
+This is my current working directory. Now I need to change my working directory to two right click Properties.
+
+Unknown Speaker  27:21  
+But it is going to give an error. The reason is we need to give
+
+Speaker 1  27:34  
+two backstrokes. Okay, that's the reason why it was giving an error, and that's it. Now if I check for my current working directory, it is downloads. And now if I try to open
+
+Speaker 1  27:58  
+this one, TD, dot read CSV. I need to import pandas first.
+
+Speaker 1  28:19  
+Okay, that's the data understood. This is how we change the directory. And the purpose of all this was to showcase a small use case of OS, the OS inbuilt library, okay, now there is another library that goes by the name of URL lib. Let's see what the capabilities of that library are. Are there any questions? Okay, so Shreyas is asking, what's the difference between importing and installing?
+
+Speaker 1  29:16  
+Okay, that's Great. It's already there. I
+
+Speaker 1  29:50  
+There are two things that I did. Number one, I installed it. When I say install, what happens is. It from the people who host any given library, let's say torch.
+
+Speaker 1  30:17  
+Okay, pytorch. So just like NumPy, pandas, every library is hosted, okay? That is, there is a server where that library is present. What we need to do is, we need to download, in simple terms, the library from that server onto our local machine, so that downloading is what install does. Okay. Installing brings it to my
+
+Speaker 1  31:00  
+storage or my hard drive. But every time when I need to run a Python code or when I need to use this, when I need to use this library, I need to import it. That is I need to bring it on my memory or namespace. So install you need to do only once. Once you install it now throughout your life, as long as the library documentation doesn't change much. The dependencies don't change out there. Your machine remains stable. There are no configurational changes that you make to your machine. You don't format it or whatever the case may be. As long as all this remain the same, once you install the library, it is always going to stay installed on your system, okay. However, every time you open Python or you restart the kernel, that is, you restart the namespace or the current working memory, okay. In simple terms, you would need to import it, okay. You are telling Python, hey, Python, I need to use my library. So an analogy would be purchasing a toolkit and keeping it safe at home.
+
+Speaker 1  32:49  
+In a cupboard. Taking it out from the cupboard whenever I need to use it, that's the difference. So you purchase only once, but every time you use it, you need to fetch it from the cupboard, okay, provided you are well organized and stuff, right? You take it out from the cupboard, you use it, you put it back where it was, so on and so forth, using it, putting it back where it was. All those things are taken care of by Python over here, just to give you an analogy, but I hope you understand the point. Okay, that is essentially what the difference is between installing and importing. I hope that answers your questions, yes, you could copy paste the file in user folder where Python is installed. Yes, we can do that.
+
+Unknown Speaker  33:47  
+Escape character, okay. Do we need to import pandas every time? Yes.
+
+Speaker 1  33:55  
+So you actually don't need to type the code. See now I have, for example,
+
+Speaker 1  34:07  
+now these are some codes that you're going to learn eventually. Okay, now this code is these are codes from your DMP sessions which are going to happen in the subsequent weeks for you. Now here import NLP, import requests. All these are already imported. I mean, the code is already typed. When you run the whole code, this is going to get run by itself, correct? So it's going to get imported. That's it. Okay. You just need to have your code ready in such a way that the pre precursor codes, or the prerequisite codes, are run first. So for example, here, I could not have run this without running this. I'll show you. Let me restart the kernel. Let me take this out. When I try to run it, it says PD is not defined, so I need to tell Python that PD is pandas. What is pandas? It's a library, and I need to have pandas installed on my system. Okay? Without installing pandas on my system, I simply cannot run this code. Okay? If I have not purchased my toolbox, I simply wouldn't be able to use it, as simple as that,
+
+Speaker 1  35:43  
+yeah, it's giving me this error because I have now restarted the kernel. Hence, my current working directory is again, tutorials, okay, so when you restart the kernel, everything gets restarted or reset it. And this is not in my current working directory. That is the tutorials thing. Okay, so I hope that answers your question on do we need to import pandas every time where to find the different types of libraries and their use cases. In today's time, you can simply run an LLM search. That's it. Just ask chat GPT you
+
+Speaker 1  37:03  
+okay, this is a an elaborate prompt focus on libraries relevant to, okay, that's good enough. I can use the deep research functionality as well. Okay, I think I've hit it. That's not a problem. I can regain some tokens, but, yeah, that's it. You can use the simple Google search and in our materials, also we do enlisted. So in this notebook itself, I have enlisted a few. Okay, you would find this kind of enlisting in some of the notebooks that you get from us, that is from quantity. Okay, so there are a lot of ways to get which libraries are to be used, but don't worry about it at this stage. As you proceed ahead through the iPad, you would keep on understanding this, and you would keep on getting understanding of more libraries under your kitty under your belt. Okay, so don't worry about that. Are there specific risks using OS lib as it directly interacts with our kernel? No, there aren't any such risks. Oh, okay, that's great. Thank you. Zubin, will you be sharing today's Python file? I believe it has already been shared. If it has not been, you would be receiving it. It should already be there on the LMS. Don't worry about that. Does NumPy and pandas come pre installed with Anaconda? Yes, typically it does. That's right. But still, we do not classify them as inbuilt libraries, okay, because the simple reason being, NumPy and pandas are hosted elsewhere by third parties, so there's a whole community that is hosting and that is keeping NumPy and pandas sane and Working and usable. First, Great. Now let's move on to the next inbuilt library that we have, which is URL lib. I'll quickly give you a demonstration of that, and then we'll move on. So now this is one more syntax that you need to keep in mind, at least when you're beginning out to learn Python. The syntax is, beginners do tend to get confused. Hey, is it import a from b, or is it from B, import a without running any code? Can you tell me which of these two is correct? You can use some intuition on how codes run, on how Python interprets codes. Please try it. Take a guess
+
+Speaker 1  40:11  
+which of these two is the proper format without searching anywhere. And let's see what our assistant has given us till now. Okay, talks about NumPy, pandas, matplotlib, tele, back trader, blah, blah, blah, that's good. Cool. Yep. Obviously I can ask you to give me some proper citations. I can ask it to proofread whatever it has given me so that I don't get hallucinated answers or half baked responses that's always there. We need to know how to use this llms properly, and as we know how to give proper prompts, as we know how to steer them or nudge them towards giving us outputs that we desire or we require, we can always rely till a good extent, on these LLM tools. Okay,
+
+Speaker 1  41:13  
+okay, some people are saying it's from import. Some are saying it's import from, okay, let's see. So the way you can bear this in mind is, which of these two are we gonna have stored in our storage? Would it be the library that we are gonna have store, or would it be the method that we would be having stored? It is the library that we have stored. Okay, that's the reason why I think is going to first look at URL lib and then it is going to know, okay, from URL lib I need request. If it's the other way round, it's going to give me this error. Okay? And it's simply a syntactical error that's purely not the syntax. Now let me import URL lib. What I'll do is I have now taken our impact website. Which looks like this. Are you seeking a new job, starting a trading desk, so, so on and so forth. These are the faculty names, Stark Bora Hill page. We have this curriculum, then the certifications and accreditation that we have everything now, I have taken this URL, that is the address in simple words, and has stored it within a variable called my link. What is the type, it would be a string correct. Next, what I'll do is I have imported URL lib. Now from URL lib, there is a method called request. I am saying Python. I'm asking Python, listen. Python. Within URL lib, there is a method called request. Within that method request, there is another method or functionality named as URL open. So what I want you to do is, I want you to open this URL, which URL, this URL, and I need you to store it inside this variable called as response. Next, I need you to read that response for me. And where am I storing that reading? I'm storing it inside content. Now when I run content, this is what we see, algorithmic trading course in India with 120 plus hours of live Python sessions.
+
+Speaker 1  44:20  
+Let me look out for a faculty name. Let's say we have
+
+Speaker 1  44:38  
+bank, nifty strategy, okay, everything here we have faculty name uliu aniliado, okay, so the same web page that you see here, you can read it over here, okay, so this was a very small Sneak Peek. What the URL library does. There are many ways to use it. You can explore it, and if you need any further help on it, feel free to reach out to us. Just to give you a quick refresher, I asked Python to store to read whatever is there in response, okay, and to store that reading inside content. Now, what is there in response?
+
+Speaker 1  45:34  
+In response we we are requesting Python to open the URL. Which URL? This URL? Okay, so this was about the inbuilt libraries in Python. I think it's time to take a quick break. Let's take a quick five minutes break, and then we would be resuming the session.
+
+Speaker 1  46:14  
+This is my local time ist so it's 1947, we would break for five minutes. Okay, see you people. Then.
+
+Speaker 1  51:45  
+Okay, let's get back to business. Now there are many ways of importing libraries on Python. Okay. One way is import, why finance. Another way is import why finance as yf. Now we prefer this because time and again we need not keep on typing, why finance. Why finance? Okay, simply, why? If that should do the trick. Now, if you say, Hey, why can't we simply copy paste? We can, but if there are many libraries that you have in your namespace currently, and if you need to take in methods from different libraries, it would be tedious to keep on copy pasting every library. Okay, better would be just to use an alias. Now you might ask, Hey, why only why if? Why can't it be FY? It can be FY, it can be anything.
+
+Speaker 1  52:51  
+So instead of yf, I can use y fin. It's absolutely fine, not a problem. And this is going to show me what it is that is, which method Am I invoking when I say Wi Fi, but Wi Fi essentially is y finance over here, if I try, if I check for y, if it's not defined, unless I define y finance as yf. Now in this case, both imports are there in my memory. All three imports are there in my namespace. That's the reason none of the three are giving me is giving me an error. So what I'll do is let me restart the kernel.
+
+Speaker 1  53:48  
+Let's simply do this now, why fin is going to give an error? Yf, no. Y finance again is going to give me an error. Okay. Now, which packages does any given library have? Simple answer is Dir. That is directory. It is going to give you a list of all the methods that the given package or library has. Okay? Now why? If you know, we majorly are going to use the yf dot download method, which is not here for some reason. Yeah, it's in a small case that's right, okay. And if you need to know again, the arguments that you need to enter, you can simply type in y After download, followed by a question mark, it gives you the doc string. That is, what different arguments does it expect from you? What is the syntax? Okay, everything, along with some examples. This is what it gives you when you put in a single question. Mark. This is how the arguments are to be entered, which arguments are to be entered, and valid examples of those arguments that is valid arguments. So suppose you need to download the data for a particular ticker for one day, which is a time period, or year till date, or for 10 years now, for what granularity or what interval do you need? 90 minute data or one minute data and intraday data cannot extend beyond the last 60 days. That also, did you tell you? That is how it is and and yf, dot download double question marks. It gives you the source code as well. That is essentially how you can check for the doc strings. That is, which arguments do you need to enter, and what are some good syntaxes. Another way of importing a library is, let me check, I think number three was the STAR method. Yes,
+
+Speaker 1  56:18  
+I'm just trying to stick to the agenda the way I have we had planned it. Now the pro Now, what this star does is, when you import y finance, when you import y finance, you are just importing the package of y finance, okay, in your namespace.
+
+Unknown Speaker  56:52  
+But when you do this, what happens
+
+Unknown Speaker  57:00  
+is it imports all the
+
+Speaker 1  57:11  
+methods within the package. Essentially. What this means is again the same toolkit. Example, if you have a toolkit, when you import, why finance, you're simply bringing the toolkit home, okay, which is content within a box, but here you're bringing all the different accessories home separately. There's no box, okay? It's flooded all over the place. Now the potential problem that that this can cause is, I have an example here.
+
+Speaker 1  57:49  
+So if number four, one, it clutters your namespace. Okay, it's an inefficient way of working. Number two, now we, whenever you have multiple libraries sharing the same function name, tracing the parent library from where this function name came, that becomes difficult. Okay, so here, which sign do you think when I run this? Which sign do you think is going to remain in the namespace? Would it be this one, or would it be this one? I imported both. Okay, so both are valid. But when I run this code, when I run this code, which one is it going to point out to to math or to see math and why? Let's see what you come up with. Vignesh is asking, Will we get a recording of this tutorial? Yes. Vignesh, every tutorial, every lecture that happens, the recording is there on the LMS, okay, within 24 hours, you would have the recording even less than that. Of course, within means less than that. So
+
+Speaker 1  59:04  
+Heath is asking, as I'm not from a tech background, all the syntax of comma, underscore, dot can let us know when to use where I can Yes, and it comes with practice. Okay, so don't worry. Just keep doing and before you know, you will be there. So I remember the time when I was learning Python, I had similar queries, and it just got resolved as I kept learning and practicing. So it comes with time. I'll show you now, but it's going to come with time. So don't worry. So people are saying, when we invoke sign, we may get ambitious error or ambiguity, okay, I find learning Python very stressful as a beginner. Yes, happy, and we all have been there, so don't worry. It's just like learning any new skill. Okay? Just keep doing. Keep. Picking up things from here and there. Whatever is being served to you, just start eating it. Start absorbing and ingesting whatever you can. And it's just a function of time before you reach there. So don't worry, okay? And if you have any pointed queries, any particular things that you're not able to understand or comprehend, just get in touch with the Support Manager will help you out. Don't worry. So before I answer this, let me respond to heats or needs. What was the name I forgot question. So.we typically use when we have the package followed by the method name, okay. Comma, we used to space different elements. For example, we have a list, we have a tuple, and within lists and tuples, we have different elements, that is where we are going to use comma or different arguments. So for example, here you see, this is one argument which is basically a condition as well a conditional statement. I used a comma to separate it from another argument. Okay? This is one argument, another argument. So the use of a comma is two separate, different entities, the same use case that you would have in the English language, okay? And underscore, we used to name basically underscore is typically used to name. If I say my very first Python variable, it won't be that clearly readable. Just to segregate the different words, I would use underscores that makes it readable, right? That's the use case of underscores. This is what you can keep in mind for now. Going ahead, you are going to learn more use cases, okay, and On second thought, let me also ask. Let me see
+
+Speaker 1  1:02:49  
+let's see what this LLM tool has to say. I mean, you can do this as an exercise if you need to dive deeper, but for now, just keep this in mind. Okay, coming to the next part. So yes, this way of importing is not preferred because it clogs up your memory. And number two, it can create conflicts. It can create not conflicts, but it can create confusion while tracing back to the parent package from where any given method was used. So when I check for sign it comes from math. Why? Like someone rightly said, We imported it later, so whatever came later that overwrote the first one the previous one, right? So that's the reason we don't recommend it, then another way of importing is from y, finance, import, download. This is good when you know beforehand which functionalities are you going to use for why finance, it's fine, but for more memory intensive packages such as SK learn or TensorFlow or pytorch, it's a good way. It's a good practice to import only the required functionalities or methods. Okay. Now you can import multiple classes that also
+
+Unknown Speaker  1:04:21  
+you can do. So let's check dir, y, f, from y, f, import, say, warnings, comma, version from scrappers.
+
+Unknown Speaker  1:05:00  
+Okay, but sorry, sorry, sorry, it wouldn't work this way.
+
+Speaker 1  1:05:10  
+Cool. So let's see what warning says. It's a module from why finance version. It's a module from y finance, scrappers, some model from y finance. Now, amazingly, this is not coming from why finance. This is coming directly from warnings, which, again, itself is another library. So import warnings. This itself is another library. So now when I check for warnings, it is showing me this one. So the idea is you can import multiple modules or classes or methods from any given library. Finally, we have the amalgamation of some of the previous methods from package, import the functionality and alias the functionality. Okay, so till now, we were aliasing the package. Now we are aliasing the functionality itself. What it means is from, by finance, import, download as DL. Now what is DL? It's a function from y finance. It shows you all the different arguments that you need to enter. And let's say I have DL Apple, so I was not even required to enter yf dot download or something, because yf dot download is now replaced by DL. Okay, that's the idea. So these are many different ways of importing libraries and packages, but typically we use these two. That is method number one, which is, sorry, method number two, which is yf, Yahoo finances, yf and method number four, whenever we are working with something like SK learn or Keras and the sort okay. So this was about libraries. We saw how to change the working directory and stuff. Now listing the methods or sub modules from from a given library, you simply use the DIR command, okay, the directory finally, when to use which? Brackets. Let's pay some attention now.
+
+Speaker 1  1:08:03  
+Okay, so money kandan is asking for beginners. Can you suggest good websites to build knowledge and practice programs? So there are many lead code is one lead code for beginners. And when you start working with lead code, it also starts building up your profile. You start building up your CV. But again, in today's time, it would be a good idea, then even the content that we have in house, since you have since you are an iPad student, I would want to draw your attention to a very good resource that you already have. If you have not completed the Python primer, please do it. The Python primer is a very good resource to get started. Okay, please do it first. After that, would it make sense to foray out there? Of course, websites are many lead code alternatives. Yeah, we have hacker rank. Then there is hacker Earth. So these are some sites where you have problems that are given to you that help you to learn any programming language right on, from the basics till intermediate, then advanced level, maybe legend level, God level, whatever the case may be. Okay, you can use this and but for examples and use cases that pertain to algo trading, better you stick to this to get started. Okay, after that, if you need more resources, we would be happy to share with you. Then in house, also, we have many practice notebooks and materials for practice as well, which I think would be there in the PBQ model itself. Yes, there you have some. Python practice exercises. So there are many practice exercises also that you have this I think should be visible to you on your LMS, if it's not just ask your support manager to give access to this to you. Okay? And, and, yes, why not use llms, the guided learning feature,
+
+Speaker 1  1:10:38  
+study and learn so create a good prompt, saying, I need to study Python. This is my background. So you need to share your background. For example, you are from.
+
+Unknown Speaker  1:10:53  
+You're an architect, working for this many years. This is doing XYZ.
+
+Speaker 1  1:11:06  
+So Python would know, I mean this, LLM would know that it has to give you examples that you can easily grasp given your background, okay. Nope. And level, complete beginner. Use Case is it algo trading or scientific research, whatever the case may be. Okay? So whatever it is, give an elaborate prompt, and it's going to help you out. And at the end we are in which was here to help you out. Okay, so, so in today's time, the resources are many. Is this up to you to stick pick up one, choose one, stick to it, and just keep learning. That's pretty much it. I hope it makes sense. Yeah. So this is it. Symbol, comma. It separates items. Okay. There are no other use cases, accesses, object attributes or methods, okay, used for ignored variables. Ah, yes. This is another use case, evaluator, expression, indicate, private names, okay. There are also use cases, the one that I mentioned that didn't find a mention here, that's fine. So yes, coming to let's see whether there are any more questions left unanswered.
+
+Speaker 1  1:12:37  
+Okay, shares is asking. What is the difference between C Math and Math, okay, so whenever you have questions on specific libraries, a good idea would be to Go to the documentation website, see math documentation. Math documentation,
+
+Speaker 1  1:13:05  
+okay, and just go through both the documentations. Okay? Now there are so from this, you will see the kind of functions that you have in CMAT that is trigonometric, hyperbolic, exponential and log Power Functions, error functions, gamma functions, rounding remainder functions. Here you would have something that has to do with permutation, combination, greatest common divisor, square roots, then again, floor division, absolute values. Okay, so both have different sets of functionalities. Whichever functionality you need, just invoke that. And there's a huge intersection between both, between cmath and earth. Okay,
+
+Speaker 1  1:14:01  
+could you please repeat answer when we import sign from different package? Then what happens? Sure. So what happens is, here I was essentially trying to showcase the fact that when you import both the second sign overrides the first one. So whenever someone is reading your code, suppose you have many variables where you write we'll see here it shows math and not see math. So where you have many variables, which says a equal to sign x, b equal to sign y, so on and so forth, it becomes difficult to trace from where the sign came from, okay, in especially when your code is very modular, when you have many Python files, when essentially building a. Project, it becomes difficult to trace. Why can't we tell AI to quote for us? You should tell AI to quote for you. Yes, happy. But problem is, you should also know the output of the code that AI is giving you. Okay, if I ask AI,
+
+Speaker 1  1:15:30  
+okay, of course, I'm not giving any contest. I'm not saying, Hey, you are an experienced algorithmic trader. You are an experienced financial markets practitioner. You and You are an excellent programmer, so on and so forth. Also, which trading hypothesis Am I asking it to give me? What is the edge? What is the trading strategy? What are the entry exit signals? I'm not specifying anything. Okay. Now problem is, if you don't know Python, you would not know what rolling means. You would not know what NP, dot where means, what com, prod means. You would be able to figure out, but it's going to become difficult, what shift means, what PCT change means. Okay, what would mean, when? What do I mean by the square bracket? What is sma 200 so all these things become difficult. And this is a very simple code. Anyone who is a beginner in Python with some practice, this is something that is going to get covered in the DMP sessions. Okay? So you would be able to follow along this kind of codes. So yes, going ahead, that is what you would be doing. You would ask AI tools to code for you, but when you are in a position to understand what the tool is coding for you, if you don't know what it's coding for you, it would simply be a black box for you, okay? And that is not a situation where you would want to land yourself in. Should we also start using Git and GitHub from now on for future benefits? Yes. Manikanan, definitely, you should. This is something that I heavily recommend and prescribe. You should start using Git and GitHub. Yes, you
+
+Speaker 1  1:17:24  
+cool, so I think that answers all the pending questions.
+
+Speaker 1  1:17:35  
+Great. Let's move on to the final part of the session, which is on which brackets to use where.
+
+Unknown Speaker  1:17:51  
+So we use always. Keep in mind we use round brackets
+
+Speaker 1  1:18:00  
+to define functions or classes to enter arguments, which is similar to defining functions and classes in numeric, in arithmetic, for arithmetic calculations, when you need brackets, right? Suppose I say one plus two into three. I need to specify a bracket. Should it be one plus two into three? Or should it be one plus two into three? Okay, which of these two? That is what I need to specify, right and for defining
+
+Unknown Speaker  1:18:47  
+tuples, square brackets are used for defining lists and extracting elements.
+
+Speaker 1  1:19:07  
+Or indexing or slicing, this is used curly brackets are used for F print to define dictionaries, to define sets. There are other use cases as well, but these are the ones that you should know for now. So suppose I need to define a function, diff, add and multiply. I have say three numbers, A, B, C, return, a plus b plus c. Comma, A into B into C.
+
+Speaker 1  1:20:05  
+Here, what I did, I created a function for creating this function, I needed to have round brackets within which I am entering arguments. Okay, so add and malt. Let's say 259, the addition is 16, multiplication is 95 to the 10 nines are 99 fives are 45 to the 92 nines 18 five the 92 plus five plus 960, okay. And this is one use case of a round bracket. Another use case of a round bracket is to create a tuple, say, one, 5.9 true, false, four minus 8j, e, packed
+
+Unknown Speaker  1:21:13  
+one. So this is a tuple, and this is
+
+Speaker 1  1:21:28  
+a list. Only difference between a tuple and the list is the round and square brackets. Lists are appendable, that is, we can change lists on the go. Tuples are non appendable. That is immutable, and lists are mutable. What it means is, we can add or subtract elements from a list on the go, but within a tuple, once you add some elements, it just stays there. Okay? So the use case would be for a list. Say you want to generate signals. Signal for day one, signal for day two, day three, you would keep on adding it to the list. Okay, but you need to check conditions. If this condition is met. If this condition is met, that is where you're going to use a tuple. You need to keep the name of conditions fixed. Okay, that is where you're going to use a tuple. These are simple examples. Now you can index through tuples. You can index through lists. Suppose I say for i n, t, u, p1, print, I
+
+Speaker 1  1:22:58  
+now print also is an R. Is a method, okay, print is an inbuilt method. And I is the argument print, type I, so one is an integer, a float, string, Boolean, this without the double inverted commas, is going to be a boolean data type that is true or false, one or zero. Within inverted commas, it becomes a string character, okay, essentially string, not character, string. This is complex, complex numbers, if we are aware of them. This is again, a string. This is an integer. So you can see here, we can iterate through different elements. We can have duplicate elements. Elements have an index.
+
+Speaker 1  1:24:00  
+So I can have LST, one, zero, that means the value that has index zero, which means the very first number. Okay, index zero,
+
+Unknown Speaker  1:24:16  
+index zero to three, it would give me the first three values.
+
+Speaker 1  1:24:24  
+It would include index zero, but it would exclude index three. Okay, more on this later. You will learn this later, but the idea is to showcase where all are we using square brackets. So here I'm using square brackets to extract a different range of a range of elements. Here, I'm not going to use round brackets. Why? Because that is how Python works. Okay, simple answer. Whenever you need to enter arguments like this, like this, we are going to use round brackets. Okay. Over here, whenever you're going to define tuples, the. Brackets whenever you're going to define lists, square brackets. Square brackets for extracting elements. Now, LST one, dot append 47 now, when I check LST 147, got got added to it. So I can essentially add or subtract values to a list, which I cannot do to a tuple.
+
+Unknown Speaker  1:25:30  
+There's no attribute append right and sets and dictionaries.
+
+Speaker 1  1:25:52  
+Are defining sets and dictionaries. We need curly brackets so set you'll see here are not ordered. It's not following the same order that I have here. Sets are also not iterable. This should be clear to you, if you remember the concept of sets from high school mathematics, where set is just to check, just to have one instance of that particular entity. Okay, we cannot have repeated instances of that particular entity. So you can use a set to check whether one particular condition has been met once or not. If it already exists in the set it has already been met, we can skip it, okay. For example, dictionaries are key value pairs. More. More on this you are going to learn in the iPad. Okay, so don't get overwhelmed. Don't get worried. I'm just sharing across some use cases and examples those I have, say, stock, MSFT, price, 300 for example. So DCT. Now this is a dictionary.
+
+Speaker 1  1:27:25  
+It's a type. The type is dictionary. The type of set is okay, so don't worry about this. Like I said, I'm just giving examples of which brackets are to be used, where this is not, of course, today I'm not explaining in depth what dictionaries and sets are, so don't focus on that. Just know they exist, and curly brackets are to be used for them. Okay, then we have F print. Suppose I say, course is feedback. Qua quality is high. Faculty is amazing.
+
+Speaker 1  1:28:20  
+Print, we enter F first, and then we begin with the inverted commas. Hey, I enrolled in the course,
+
+Unknown Speaker  1:28:40  
+and I found it to be of very quality, quality. The faculty is faculty. I That's it.
+
+Speaker 1  1:29:08  
+So course, got replaced by e pat quality got replaced by high faculty got replaced by amazing. Okay, just an example of F print. Since we use the letter F here, it's referred to as an F print that is, again, where we use curly braces to place the variables whose values we need to include. Okay, so in short, where do we use different types of brackets?
+
+Speaker 1  1:29:45  
+We use curly brackets to create sets, to create dictionaries, to create F strings, round for tuples to define functions, methods, classes and to pass arguments, square brackets to define list. Is to access data, to slice data, okay, like we saw here, this is how we access data or sliced it. Finally, we have magic commands. So these are special instructions, and they essentially provide shortcuts. Okay, magic commands begin with the person sign. These are, this is the list of the line magic commands. And this is a list of cell magic commands, okay, you can explore and play, play with this later at your leisure. Now, suppose I define this variable, stock price. I import all the function entities from pandas. Now in my current namespace, I need to see all the different variables that are defined. It's not that organized. Using this, I would print all the variables and the data types as well. It's very organized. And here you would see I have all the pandas methods here. Why? Because just now I imported all the pandas methods. I also declared this variable that is stock, underscore price, that also should be visible here.
+
+Speaker 1  1:31:32  
+Okay, now the current working directory. This is another way to do that. Now, if you need the execution time, that is typically where we use magic commands, I need to know how much time it takes for a certain code block to run, okay, so that I can either know its complexity or I know how much time I should expect for it to run, and I can compare different approaches, different approaches towards running the same different approaches towards getting the same objective, and whichever approach is better, I can simply choose that one to create robust codes, to create scalable codes. So to print the first 1000 numbers, the first 1000 whole numbers, it takes four milliseconds.
+
+Speaker 1  1:32:44  
+To add the first 10 numbers, it takes 761, nanoseconds. This is the error that is the standard deviation of this many total runs. Okay, 7 million runs it ran, and this is the average of it for the first 100 numbers. So difference between only time is it gives you how much is the execution time that it currently took, and this gives you the mean plus standard deviation. This many microseconds plus nanoseconds, that is what it essentially is.
+
+Speaker 1  1:33:41  
+Let's try to gain some useful inferences. To sum the first 10 numbers, it takes this much time, but the next 10 numbers, when added, it does not scale linearly. Okay, addition is not scaling linearly. We should have expected around 638, so 1276, but this is lesser than one to seven six. And this should have been to the tune of 1800 to 1900 but this is just 1100 Okay, so it's not scaling linearly. That's the point that I'm trying to emphasize. Now product, it is also not scaling linearly.
+
+Speaker 1  1:34:33  
+But essentially, you need to know for first 10 and first 20, what is the ratio and first 10 and first 20 here, what is the ratio? Okay, that would give you some insights into the complexity of the code. That is the time complexity of the code. And this is the history of all the commands that I executed on. This file after starting the kernel today, including history itself, okay. Then finally, this, in which ways we are, we have exceeded our time. This anywhere had kept just as an optional thing. So try this in case you get stuck somewhere, just let us know. And I kept this lines deliberately like this so that you can try to smoothen it, figure out why it looks like this, and share your responses to us via support managers. Okay, try to rectify it. So
+
+Speaker 1  1:35:46  
+okay, great. I think that is it. This is a list of some Python libraries that we are going to be using during the impact. And that's it. In case you're curious to know the difference between the Jupiter notebook and Jupyter lab. So notebook is a standalone notebook. Lab is more of a browser kind of a setup. If I launch the Jupyter lab, it's going to look more like a browser kind of a setup. That's the only difference. Then we also have spider, we have pie charm. You have spider, we have spike pie charm. So at times I use pie charm. At times I use spider. We also have Visual Studio that is VS code. So tools are many. It all depends on your personal preference and the experience that you have. That's it. I think that's it. From my end, if any of you have any queries, any questions, stay back and ask if no, you're free to leave. Have a good day, and I'll see you around all the best for your learning. Now, let me get to the questions that some of you have asked,
+
+Unknown Speaker  1:37:13  
+yes, yes, no, for board mastery, bracket is not needed, I mean,
+
+Speaker 1  1:37:21  
+but it's always good to provide brackets so that the code is readable and well interpretable, okay, but having said that, if there are no brackets, bot mess rule takes over. That's right. Can you explain a bit more on I close enumerate, Vedanta, close price. I yes money, so enumerate is this is What enumerate does.
+
+Unknown Speaker  1:38:09  
+I showed you the i
+
+Speaker 1  1:38:49  
+So for tup one that is tuple one,
+
+Speaker 1  1:38:59  
+these are the values and these are the indexes. That is zero is for one. This is for this two is for true. So enumerate is essentially when you have zero and alongside one gets printed one that is second index alongside this value gets printed so you're enumerating, okay? The simple common English meaning of enumeration is to arrange certain entities in numerical ascending order of their indexing, okay, or the serial number. That is what enumeration essentially means.
+
+Speaker 1  1:39:50  
+Shreyas is asking, Why did you use F print instead of simple print? Because may in your code many a time what is going to happen decides if. Be given. Give us an example. Okay, don't treat this as the ultimate in your code. Many times what is going to happen you would have many variables declared, variable A, B, C, D, E, F, and there are going to be many conditions. If condition x, then print, then choose a, else, choose B, else, choose C Else, if condition y, choose B, else, choose C okay, this kind of many conditions are going to be there. So what we would need is we would need to print, since condition X or Y was chosen, we worked using a comma, B or C. Okay, that's the idea. So since condition X was chosen, we chose to work with a. Since condition y was chosen, we chose to work with B. Condition Z was none of these two was chosen, we chose to work with C. Again, this is also a very crude example, but I hope you get the get the idea. So when you actually work with heavy codes, you would have many variables, you would have many different conditions, and you would need to print for the sake of clarity. So printing is always a good idea to make your code very readable. Okay, that's the idea.
+
+Speaker 1  1:41:55  
+I do not understand time it so what time it does is
+
+Unknown Speaker  1:42:07  
+how much time would it take to run this? If you have a particular code,
+
+Speaker 1  1:42:15  
+how much time would it take for you to run that block of code? That is what time it does. So what it does is this code. It runs for this many times. It runs for seven runs with 1 million loops each. And what is the average value of that? It prints that average value and the standard deviation. Essentially, what this tells you is to run this code, it should normally take you 761 nanoseconds. Okay? It should take your kernel this many nanoseconds, with a standard deviation of 136 nanoseconds. That is around 68% of the time. It would be plus 136 to minus 136 minus 136, around 95% of the time, it would be double of this, provided it's a standard, it's a normal distribution, okay, that is the idea. Essentially, we are trying to estimate how much time would it take to run a block of code, okay? And after this many loops, the value that it gives should have some statistical significance. That's the idea. So I hope that's clear. Shares.
+
+Speaker 1  1:43:41  
+Cool. Okay, we have exceeded our time by almost 15 minutes, so I think we should stop here. If you have any further queries, you can anytime, get in touch with the support managers. We are here to help you out. Happy learning, happy trading. People. Have a good day, a good night, depending, again, on your geography. See you, and I'll be meeting you people next week as well for the PBQ to tutorial session. If you have any pointed queries that you need to ask us, that you need me to discuss, share it beforehand, and I'll discuss that next week with you. Okay, see you. Till then, bye. Bye. You.
+

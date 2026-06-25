@@ -1,0 +1,789 @@
+Unknown Speaker  0:08  
+Hey, hi everyone, good
+
+Speaker 1  0:10  
+morning, good afternoon and good evening, depending on which geography you are joining in from. So I am the host for today's session. My name is Rickett patchneker, and if you know, I have been associated with content. She for the past six years, more than that. And yeah, I'll be taking the lecture on risk management, portfolio and risk management part one. Now, before we start any thing, like any project, any task, any session, you should always ask, what's in it for you, right? So with that in mind, let's see what we have in store for us, right? First thing, obviously, it's a lecture on risk management, so we'll have a short understanding of the risk management process, then we'll seek certain case studies of major risk incidents globally, because, well, we don't want to do all the mistakes ourselves, right? So yeah, we'll check out a few case studies over there. Then we'll see algorithmic trading related risk and how we can mitigate them or overcome them. And finally, it's a short addendum, like how risk management is there for Indian exchanges. This is something which is optional, and it can be applicable to you as well, depending on your geography. Now, before I start this session, I want this to be an interactive one. So if there's anything, any doubt, or anything you can obviously ask us directly over there, and I'll try to get to it in between, in between, pauses and somewhere. And also like, let's try to keep it like enthusiastic, so if you feel that there's anything you want to add, you can also do that so that the whole community can benefit from all right. With that in mind, let's start with the first one, which is the risk management process. Now what we have done is we have, like tried to classify them into various buckets. So first, obviously, before you build anything, you have to understand what you're building, and you need to have some sort of a game plan, a blueprint or a foundation in that sense. So we'll try to see how we can set a risk management structure and the policies, then, obviously, you should identify the sources of risk. Then we'll evaluate them, because we want to quantify them in a way that we can take certain action against them. And finally, we'll establish something called as risk limits. And finally, we'll have a broad view of how you can design a system with these risk controls. Alright, so let's dive in now, again, since I said I wanted to be interactive, I hope you guys can hear me out. You can just type in yes or no in the question and answer, and I'll just check whether you guys are there or not.
+
+Speaker 1  3:32  
+One person has already asked a question. They have said, given that the influx of quants accelerates Alpha DK and market efficiency, why is the focus often on HFT, where competition is highest, wouldn't MFT, lft, offer more sustainable outsize returns today? That is a good question, and the answer is not exactly rigid yes or no. HFT, obviously, people think of HFT as this, you know, Apex, the peak of finance and trading, wherein you can get lots of profits in like, the minimum amount of time, yes and no, depending on how your trading strategy is configured. But then, yes, there is competition over there. And thanks to AI and all, we have various strategies which can be used by different hedge funds and HFT firms as well. But at the same time, due to AI and llms, there is competition in MFT and lft as well. So you can't really say that we should focus on one particular market, one particular type, depending on the latency, so that we will get more sustainable outsize returns. Because. Well, we have sort of got competition everywhere now, it is just how you are getting that edge, and how long can you sustain that edge? So, yeah, that is, I hope that helps answer. So alright, we have got a few answers. Yes, you guys can hear me. Thank you. That means a lot to me and yeah, let's start with the first part of the risk management process, which is phase one, setting risk management structure and policies. The first thing is dedicated risk department. Now, if you are a individual retail trader, you might think that, okay, this might not apply to me. You are a single person who is doing it right. As we move forward towards the session, you might feel that, okay, this does not apply to me, but it is good to understand what everyone else is doing, so that if you make that jump towards joining a firm or creating your own firm as well, you will have the foundation ready, and you won't have to go from scratch. So even though you think that okay, the dedicated risk department does not apply to me. You can think of it from an individual perspective, having a sort of risk management module in your trading strategy. So that is something which you can do as well. Now, coming to this part where we are creating the structure and policy, this risk department needs to be there. And further, it should be cut off from the trading department. There should not be an influence as such, and they should have a certain autonomy and powers to risk department so that they can control how many trades are going on and what type of trades are going on. Further, there should be an approval process for each new product and operation interest. Now you might think that, okay, this sounds way too bureaucratic, and why should we do all of this? Well, here is a certain examples, which I'll just go through like in a short while to make you understand that, okay, this is important, and only after someone failed did this actually come into place. So let's go to appendix, and first person is someone called as Jerome Kerwin. Now let's
+
+Speaker 1  7:30  
+hide this part. Now this was a person who, would you say that was average? He was working in a normal bank. Well, he started with society general, and he started in the compliance department, which is a back office, you can see, and further then he moved to the junior trader position, and then he moved up in the trading department. Now what happened is that since he already had a background in the compliance department, he knew how it worked, and he knew how he could cover his trades which were not exactly authorized or standard. So he tried a few things. Some work, some did not work, but by the end that this candle, or this part came into the spotlight, it was found out that there was a loss of almost 4.9 billion euros, or $7 billion by an individual trader. He was trying certain trades which were not exactly authorized, right, as I repeated, and this is because he knew how the back office worked, or how the risk department worked. Now you might think that this is just one person, right? Even though this was a very high, very high sort of loss by an individual one. This is an exception. Well, there was another person called Kweku Ali. He also started work as a normal person. He was at a certain firm. He was working as a trading analyst in the back office. Then he went to the trading one. He finally, in 2008 he was a director on the ETF desk, and he had with nice little salary as well. But by 2011 there was an internal investigation, and it was found out that he was actually doing certain trades which were false trades, and it cost the bank almost $2.2 billion so yeah, this is the reason why the risk department should be cut off from the trading department, and they should have autonomy on which trains which trading strategies are into play. And which are not. So that is the first thing whenever you are going to create the risk management process, right? So this was just phase one. Now we move on to the phase two, which is really important, and which is something called as identifying sources of risk. Now, here's where I take a short pause. And there are a few risks which are like listed down over here. Just a quick question, what do you think market risk is? So you can just type it out and yeah, we can go through it one by one. You one person has said Risk Manager alter ego of yourself? Well, yeah, in a way, in a manner of speaking, but someone who is making sure that you're not taking undue alright? So I'll just repeat the question, what are market risks that you can just add it to you, risk faced by the whole economy,
+
+Speaker 1  11:06  
+not exactly, but yes, you are getting the systematic risk affects the market volatility, right? Simple thing if you are going long on a certain asset, let's say Tesla, and, well, the price drops, the market goes against you. That is a type of market, similarly portfolio you have, which is long on a certain asset class, and, yeah, something happens, and there is a the position is now at a loss. So that is a type of market risk. So yeah, you can look at that. You can identify the source of risk. What is happening. Second is the credit counterparty risk. Now, this is simple. Credit risk is when you take leverage, you take certain positions, and you are taking leverage from a certain party. So that is a credit risk Counterparty is when you are obviously, when you are in a next year, you you are trading with a broker on an exchange with respect to equities or futures options. There is someone at the other right, you are buying an asset, there's someone else who is actually selling that asset, correct? That person is the counterparty. Now, you would think in an exchange, it is all regulated, so you don't have to worry about it. That is sort of true, but there are times when certain institutions themselves can fail. So right, there have been occasions, let's say, let's take the example of the 2007 housing market collapse in the US, which had wide repercussions around the world. Banking institutions collapse, the government had to step in to prop them up and make sure that the market is not ultimately devastated. So yeah, in that is the sort of counterparty risk which can happen as well. Financial Risk is something which is when your take, when you're borrowing from a certain entity or a certain company, and your that company is not able to finance your operations. So that is the financial risk, which you can talk about. Operational Risk systems, mechanical, criminal. Well, this is simple. You can also think of operational risk as you had a certain storage capacity for storing the market data, but then it becomes full due to certain extent, there's a virus or something, so that, in that respect, your your entire infrastructure might be at a brink of a collapse. There's mechanical risk. Some systems might get outdated, or there's a fault in that electronic component, so that can be a risk as well. Criminal is when maybe someone steals your data or steals certain strategies as well. You know about various cases which have happened in the past where in a certain institution has filed a case against the other for well, stealing the trading strategy ideas as well. So that part is liquidity risk could be exogenous or endogenous. Exogenous means in the market if you are in a certain asset, and suddenly it's not liquid anymore, so you can't get out of that position. So that can be due to the liquidity risk. And then there is natural disasters, political, tourism, etc. So yeah, these are the sort of classifications which you can do based on. The sources of risk. So I hope you are you guys are here with me till now. So right, let's take the next phase now, which is market risk. Now, how do you actually evaluate or quantify the market risk. Well, one thing could be, you can try to understand the sensitivity of your portfolio towards certain factors. Now, these factors, you could take the portfolio with respect to Greeks as well. So for example, you
+
+Speaker 2  15:43  
+let's just take this quick example.
+
+Speaker 1  15:54  
+Right now, if you have gone through the options lectures, you know that there are various Greeks. There are first order Greeks like delta Vega theta, which gives you the sensitivity with respect to factor. So value of the option with respect to spot price would be delta Vega is volatility with respect to time is theta. Then there are second order, third order Greeks as well. So you can try to analyze your portfolio with respect to the Greeks as well. So that is one way you can go about it. Another part is you can look at the dividend as now. This is an interesting thing. Let's try to
+
+Unknown Speaker  16:44  
+go through it one by one. Yeah.
+
+Speaker 1  16:51  
+So Right. One thing is that, if you are taking a stock, let's say you have bought a stock at 100 could be dollar zero rupees, depending on which market you are in. Now, if the stock which is associated with the company, the company decides that, okay, they are going to issue a dividend of 10 rupees, all right. So now, when the dividend is issued, the market prices that in as well, and the next day, the price might drop to 90, but then you don't have to worry about it, because you will get that dividend in your bank account. So 90 plus 10, your total price would still be 100. So that is fine as well, but if you're having a call option, you do not get that dividend right. It's just a option. You haven't exercised it. So after the dividend has been issued, there might be a chance, depending on the time value of the option, depending on where you are at that point of time, it might go out of the money earlier. It might be in the money, and the premium will be different, and it might go out of the money and the option price will drop. So that is also one thing you can consider when it comes to your portfolio as well, right? So that is one point. Now let's get back to do
+
+Speaker 2  18:30  
+it all right? Then there is the currency exposures as well. So it is simple, right? And let's take this example.
+
+Speaker 1  18:49  
+Now, let's take the example of USD to IANA. So right now $1 is at 90 rupees. So if, for example, I was in India, and I had taken a position in Tesla. Let's say, at a certain amount in the past week. Let's take it. Let's take it around, not in the past week. Let's say, Let's for greater exaggeration, I've taken the position in June 2025 where it was around 84 right? And even though the stock price of Tesla did not move much, this is just a hypothetical scenario. I know it has moved quite a lot, but let's say it has not moved at even it hasn't even moved $1 right so, but then the USD to INR has switched, and now $1 equates to 90 rupees. So even though I'm not in the FX market, and if I sold that Tesla stock. So I would have still got a six rupees increase without anything with respect to a trading strategy or looking at the socio political impact or anything like that, just because the foreign currency rates have changed, right? So that is one thing which you can look at. You can look at sensitivity with respect to the market which you are in and the dollar conversions. You can also look at the interest rates. For example, you can look at currency exposures to so that is how you are trying to quantify the risk when it comes to your portfolio. So that is one way you do it, where you can look at the sensitivity analysis as well. There's also one other thing called as what ifs now your analysis? Now, this is also an interesting thing. What you can do is say
+
+Speaker 1  21:05  
+Right? So you can just have a simple table. You can have, like, on the rows, you can have, like the change in price, and then on the columns, you can have the change in implied volatility. So right now, your portfolio value might be 100. Now this portfolio can consist of anything you can have, stocks, options, derivatives, whatever you have in your portfolio. Now let's say the implied will if you have an option, for example, and the implied volatility changes. It drops to minus 20% and so you can think of it, and the price might change by minus 10% so overall, your option or your portfolio value became 99 if the implied volatility did not change, and the price was changed, it dropped by 90, so it will be 90 as well. So in this way, you're sort of building a what if table where you are checking the price of your portfolio or your portfolio value with respect to one factor. This can be implied volatility again. Now we are in the age of automation. We have very nice and good programs like Excel, we have Python, we have been working on it as well. You are MATLAB. You have a lot of things so you don't have to be limited in just two by two table with you're just looking at one factor like implied volatility. You can also look at your theta, your Greeks as well. You can look at change in the interest rate. You can look at change in the currency. You can look at change in tariffs, for example, how is that going to affect it? And in that manner of speaking, you can create a table or a 3d part where in a single factor, how it is going to impact your total portfolio. So this is how you can analyze your portfolio and see how it affects your portfolio. There's also another thing called as bad analysis. Now VAD analysis is like value at risk in simple terms, you have two things to worry about. So if you are looking at where you can think of this sentence, you have a certain asset, you have a certain portfolio. Let's say your portfolio value is 100, and you have done a VAR analysis, which is nothing but a sort of
+
+Speaker 2  24:04  
+what if only, let's say this is your graph right now. The Y will be the value, the x will be the time. Let's say this is your break even, 100.
+
+Speaker 1  24:24  
+Now you will try different sort of analysis. One is the historical analysis. One is you can look at implied volatility and do certain measurements, and you can have like, let's say, different trajectories over time, what you think will be the impact, it could go to losses as well. And what you are doing is you are taking the bottom or the lowest five percentile value.
+
+Speaker 2  24:58  
+So. This is your Val portfolio value at risk.
+
+Speaker 1  25:07  
+Excuse the great penmanship of mine, but yeah, this is a five percentile value of it, and then let's say it was 8% loss. So you can think of it as a financial firm, or you have determined that the asset has 8% one month, where of 2% what this means is there is a 8% probability chance
+
+Unknown Speaker  25:39  
+of the asset declining in value by 2%
+
+Speaker 1  25:44  
+so you know that first you have taken a number, you have found out the probability, which is 8% chance, that the portfolio might decline by 2% And there is a time period during the one month time frame. So this is how the value at risk can be. Or rather, mentioned there are different ways to calculate it. So you can, you have the historical simulation as well. You have the Monte Carlo simulation. You have historical analysis, which takes into point the covariance and all that it is, if I were to explain that, it might take an hour or something. So I'll just leave it at that. It is an interesting thing. You can do the analysis yourself. It is nothing but formula, mathematical formula, which can be done as well, right? This is how you can do a VAR analysis for the market risk. Also, there is a thing called a stress test. Stress Test is nothing but trying to understand how the portfolio will be impacted at different amount of time. For example, you can take different periods in time, like, let's say, the 2007
+
+Unknown Speaker  27:14  
+global recession or the housing collapse.
+
+Speaker 1  27:17  
+Then there was a 2011 Eurozone crisis. If you want recent ones, there is 2020 covid, 19, pandemic declaration.
+
+Speaker 2  27:37  
+You have the 2021 Russia, Ukraine, conflict,
+
+Unknown Speaker  27:47  
+and recently, you have seen
+
+Unknown Speaker  27:54  
+tariffs announcement as well, and it's repercussions.
+
+Speaker 1  28:03  
+So yeah, there are a lot of points where the market has reacted in an extreme manner due to certain events. So you can think of them as stress events, blacks on events. You can call it that. And you can try to see how your portfolio would perform at that point of time. So yes, this is how you can do, or rather evaluate the risk components with respect to market risk. And just take a pause over here and see if there's any question or anything like that. So
+
+Speaker 1  28:43  
+or there is one question, could trading strategy be patented? Depends on how you present it. But before answering that, usually when you are going to patent any idea, you have to make it public, and most of the trading strategies thrive on privacy. So I'm not sure if patenting or trading strategy is a good idea where is always respect to one month, you can have your own assumption over there, and you can talk about it.
+
+Speaker 1  29:36  
+Well, one person has nicely mentioned where tells you about a bad day. Stress Test uncover risk varinesses That is true, helps understand impact of black swan events that is also true.
+
+Speaker 2  29:58  
+You can apply value. At risk on your own portfolio or even a strategy as well. Yeah, you can do that. And
+
+Speaker 1  30:36  
+and so one question is, do we also consider C V? Well, that is an interesting question, severe or conditional Value at Risk goes beyond the normal value at risk, and it actually looks at the part where it might be an extreme event or a fat tail event, and the risk would be higher than what we have calculated for where. So where is like the worst five percentile value, but in that five percentile value, it is still a sort of calculation. Cvar goes beyond that, and it could actually tell you that how extreme will be that loss. I hope that helps you out as well. Alright, let's go to the next part,
+
+Speaker 2  31:41  
+where we try to evaluate risk components, which is the credit counterpartations. Now, one way that financial institutions evaluate this risk is based on the B cell to IRB method. This is a complex method, which is used by financial institutions or banks. For that matter,
+
+Speaker 1  32:10  
+it is more of how much percentage of your book or your loan book might lead to bad debt, or what you will have to leave aside or do a write off, but you can try to understand how they try to classify things. So it is a let's take
+
+Unknown Speaker  32:35  
+another part. So, yeah,
+
+Speaker 1  32:41  
+so what we have done is you try to see where you're taking credit from the credit, and you are looking at the frequency of loss most of the time. You know or you can expect a certain amount of loss like you can easily identify that you might take a loss from this thing. So this loss can be simple normal cost of doing business, which is by provisioning pricing policies. So this includes your day to day operations. This could also include your transaction costs, slip pages and all those sorts of things. If you are a trading firm, or if you are an institution, you would be looking at regulations and making sure that all the mandatory costs are being covered. And so these are the expected ones. The frequency of losses might be higher over here because you have taken into consideration all the type of losses which you can have, there can be certain unexpected losses. Now here's where it gets interesting, this potential unexpected loss you can't exactly predict or take provisions against because it is unexpected now, knowing in 2020 January that there was the covid 19 pandemic would lead to a drastic decline in the index, or over the entire world would be difficult to predict, right? So in the same way that the Russia, Ukraine conflicts, impact would have been difficult to understand this, these are the sorts of unexpected losses which you have, and these are the frequency of it is less. But yes, there can be an unexpected loss, but there is something called a stress loss, which we have talked about, stress events which are too expensive to hold capital against, to safeguard against, to. Hedge against. So these are the stress losses. So usually the the frequency of this is very rare, but when it happens, your potential loss can be high as well. So this is something which you are doing for credit and counterparty risk, that this is the table which was there, which was elaborated in the previous one. And here, the expected loss can be calculated by probability of default into loss given the party defaults. So that is how you can calculate the expected loss over here.
+
+Speaker 2  35:43  
+So, yeah, these are those things which you can look at when you're evaluating risk components.
+
+Speaker 1  35:50  
+Financial risk is, of course, if you are borrowing against something and you find out that, okay, this may lead to losses that is a financial risk. In fact, here's an interesting case study which nobody thought would have been possible. So there's this book called as when genius field, and it talks about long term capital management. So long term capital management was a hedge fund which had the rock stars of finance. When I say rock stars, it included, yeah, all right, it included Myron Scholes and Robert C Merton as well. And you guys know them as the ones who had developed the option pricing model called the Black Scholes pricing model, right? And they, along with others, had created this firm, LTCM for short, and you can see how much they made in The first few years. So
+
+Speaker 2  37:17  
+you will find that right right?
+
+Speaker 1  37:35  
+So in 95 and 96 they actually had a 40% return, and they passed it on to investors. So after cutting costs and all that, they gave 40% returns, and that just shows how much they were profiting, correct? And but then that is what happens at one point of time. They had total assets of 100 billion, and everything was doing like was going good. They thought that they had it all mapped out. What they were doing was actually having arbitrage strategy. They but they had done arbitrage in bonds with which were highly leveraged, so that was the point of it. Obviously, after a while, they found out that, okay, they have a lot of capital. They weren't able to find markets, so they were taking more riskier trades, and it ultimately went down after the Russian government actually defaulted on the bonds, and they had a lot of positions over there, then they tried to get away from it, unwind their losses. What happened was, you can think of it as such well. Let's say they were doing arbitrage like let's say the fair value must have been 100 so, and they were taking the spread. They found out it was 95 they bought the spread so that when it moved up to 100, they would profit. But since the default happened, government bonds defaulted, everything sort of collapsed, and they had to sell at a loss. They had to actually get the government stepped in, actually, and then the Federal Bank, even for that matter, Warren Buffett stepped in. They had to let. Like rescue them. They give a bailout. And they had various other banks and investors as well as part of their clients. So yeah, that happened. This is a sort of risk which is there, which has financial risk. They had investors. They suddenly the liquidity dried up. So even the liquidity risk came into play over here as well. So you might think that you have a good strategy. You have taken leverage, you have taken financing, but then suddenly that strategy does not work, and to make sure that you can get out of it, you have to have enough liquidity, but even that is not there. So it ultimately led to the companies growing, not to mention the embarrassment for the founders of it, as well as the huge financial impact on the entire market. So yeah, that happens as well. You have to analyze the financial risk, also for a certain portfolio, then there's obviously the regulatory risk. It's simple, like there might be new regulations, and due to these regulations, your trading strategy might have an impact. So the simple example is during the housing market collapse in 2007 there was a ban on short selling. Now, if your strategy is actually having both components, the long and short component, this short selling ban can actually impact your trading strategy negative. Similarly, there can be a margin increase because of heavy activity in a certain asset or in in a certain asset class, that might will lead to Alpha loss, alpha decay. And there can be also taxes which are introduced. So a somewhat similar thing is happening right now with President Donald Trump issuing new tariffs on various countries based on well their relations with other countries as well. So yeah, this sort of regulated risk can impact your trading strategy as well, and you should always have a lookout for information, or you should know what is going to happen and when it is going to happen.
+
+Speaker 1  42:36  
+Alright? Now we are moving to operational risk. So this is simple. You just have to look at your system. So this is applicable to both the individual, the trading firm, the trading desk, even large hedge funds as well. Your system should be able, or should be robust enough to handle the day to day operations. Now we'll see certain things. If a system is not robust enough, what happens? What is its impact when we look at algo trading incidents, which have happened in the past, but yeah, your system should be able to take the load of placing orders. And there, you should also know that what is the maximum order flow, which can happen before your system detects failure, and the maximum leaving in the error when you're setting the parameters? So yeah, that is also there. Then we also have liquidity risk. So obviously this is something which we talked about before as well, and which is now in isolation, liquidity adjusted back. So, as we saw in long term capital management, since they could not get out of certain positions because of loss of liquidity, they did not take into factor that government, or other country can default on its individual bonds, right? So what that happened? There was no liquidity, no one. There was no one at the other end as well. So in that respect, you should also look at the liquidity adjusted where as well. How will you do that? The process is somewhat complicated, but the idea is that, let's say you are let's say you want to buy 100 shares,
+
+Unknown Speaker  44:39  
+shares in 10 minutes.
+
+Speaker 1  44:43  
+Now what you can do is you can look at the order book, you can analyze the order book, and you can see how many, what is the volume, which has been in the past? How much volume will be, let's say 10 minutes. And try to take the. Impact of what is going to be like. Let's say on the left side, you might just lose. Let's say 10 units when you're placing. Let's say 100 shares, right? We'll do this 100 shares in 10 seconds, so that the impact will be higher. So there it will be only 10 in the on the other extreme, it might go up to 1000 if it is a less liquid instrument. So that way you can try to find out, using historical analysis, what is the impact, and based on that, you can understand what is the liquidity which is present in the same way, you can map it out to the portfolio level as and then there is a risk when it comes to natural disaster. You can this part is difficult to quantify or even predict, because nobody has an understanding of when a storm will come into play, or when it will be heavy rainfall or snow, which will impact the operations in a particular city or a geography, right? So in that sense, you can look at News Analysis, and you can look at the past as well, what is happening over there, and accordingly, you can evaluate it or quantify this risk. All right, now we have taken quite a bit of time for understanding and evaluation. Let's try to complete this part on a faster scale. The next phase is setting risk limits. I'll just take a short pause and see if there are any questions or not.
+
+Speaker 1  47:14  
+So one question is, when would we use IRB method to calculate the losses? It is more for credit and counterparty risk. You can look at it when it comes to quantifying the laws if there was an extreme event like let's say you are there have been occasions when the clearing house, for example, was not able to meet the demand, and even the clearing house might just go out of business, the exchange might go out of business. So that is how you can use you can try to apply the principles for it, not the actual IRB method, but you can try to evaluate it to see how much capital is at risk. Should a firm hold capital for expected loss as well? It is your own understanding. Should you keep capital as cash, or if you want to hedge it with certain other assets, so that you can be sure that if the loss happens, you are covered for it increase in margin for silver contracts, right? That is one point which is there, and is it possible to feed the risk news analysis in the trade? If you are going to automate or if you are going to create a automated trading strategy, you can have a component which is looking at real time information. There are news feeds which you can subscribe to see how you can analyze it and take a sentiment score, and based on that, you can try to see whether the trade still makes sense or not. Obviously, in a real time environment, it will be difficult, but it can be done. One more question, how to use IRB on brokers that is an interesting thing. There's no right or wrong answer for this one, and you might have to do certain research on your own for this one. But yes, that is there
+
+Speaker 2  49:47  
+all right now we are in the setting of risk limits. So here is, is where it gets interesting, total cash exposure. So I. You can think of it as this way.
+
+Speaker 1  50:06  
+Let's say you have a portfolio of 100,000 right?
+
+Speaker 1  50:18  
+So what you can do is you can divide it, let's say
+
+Speaker 2  50:26  
+in terms of asset classes as well. For example, if you are someone who
+
+Speaker 1  50:35  
+is risk averse, you might apply a capital of like, let's say, 60% for bonds, 40% for other asset classes, which includes equities, futures and options. If you are more risk taker, then you might allocate less to bonds, but more for fNo and other asset classes like crypto as well. So that you can do you can set the risk limit based on cash exposure, based on exposure to geography as well. Now here's an interesting part. Let's take an example. How can you set a risk limit according to geography? Now, for example, let's say you have invested in a company, or you're looking at a company called ABC, right?
+
+Speaker 2  51:33  
+I think this much is fine. Now this company, ABC has its operations in different countries around the world. So what you do? And you see that it on it is concentrated in three major geographies. One will be us, one will be Europe. And then and then one will be Asia Pacific,
+
+Speaker 2  52:11  
+right? So, and you see that its revenue from us is 50% now. With Europe is 30% and then with Asia Pacific is the remaining, which is 20% right now, there is some regulation, and this ABC is actually situated in, let's say, Asia. I don't know why I'm drawing this instead of using the test text command, but so now this ABC is situated in Asia. And now news comes that the US says that any company which is not based in the US will have a tariff of, let's say, 200% right?
+
+Speaker 1  53:12  
+So now here's a question, simple question, right? I mean, I just want some interactive and make sure that you guys are listening. So if the US says that any company which is not in the US will face a 200% tariff, and now ABC is situated in Asia, do you think this will impact the revenue of the company ABC? You can just type in yes or no in the Q and A box, okay,
+
+Speaker 2  53:44  
+I hope my question was simple enough, yes, we got a lot of yeses. One person has said no. That is interesting. I would like to know the logic why it has said no. I
+
+Unknown Speaker  54:04  
+right? So more,
+
+Speaker 1  54:08  
+more than likely that ABC revenue will be impacted, because, since it has a higher tariff now on the products of ABC, the cost will go up. And if it, if the cost goes up for ABCs product, it will not be as competitive as it was earlier. So people might not be buying, and then the revenue might become less over here. So yeah, this is one reason why traders, investors, look at the geography as well when it comes to the risk when it comes to trading. So one way that you can set the risk limit is you can have a certain
+
+Unknown Speaker  54:59  
+limit for. The geography, for example, if you're if you have the same like 100,000
+
+Speaker 1  55:10  
+portfolio, you might consider like just keeping 30% for us, 30% for Europe, and the rest, 40% for the rest of the world, right?
+
+Unknown Speaker  55:27  
+So that is how you can have the risk limit when it comes to geography.
+
+Speaker 1  55:39  
+Exposure to sector is similar. You can think of sectors as financial sectors, automobile, tech industry, and accordingly, you can set a limit. You can have the same with respect to asset classes like equities, fNo, crypto and all the other new type of assets which are there in the world
+
+Speaker 2  56:05  
+now, exposure to assignment, delivery risk and settlement type, future versus cash. Now, these are interesting ones. Let's see the settlement risk now with respect to settlement risk, it is an interesting part.
+
+Speaker 2  56:33  
+There is something called as pinning the risk all right. Now before that, I'll just take a short detour.
+
+Unknown Speaker  56:47  
+Now you know that there is
+
+Speaker 1  56:53  
+you have call options and you have put options right now you can go long, you can go short, you can go long. You can go short on either of them, right? So now, if you are going long on call option, you get,
+
+Speaker 2  57:12  
+rather, you get an option to exercise the call option, correct. Let's say the strike price is at 100 and for example, you bought the call option at a premium of 10. Right now you can, let's say the price is 110
+
+Speaker 1  57:34  
+so now you can exercise the call option, so you will buy it at 100 and your cost, which was option value 10 gives you 110 which means that you got neither profit nor loss for it, correct? So that happened. So on the other end, if you have sold or if you have gone short on the call option, you have the obligation to
+
+Speaker 2  58:04  
+sell the underlying at the strike price, whatever it was. So let's say the other person exercised their call options. So you will have to,
+
+Speaker 1  58:16  
+or rather, you will have to make do on the call options, right? So that is one reason why the option seller, they say, is at a higher risk than the option buyer.
+
+Speaker 2  58:38  
+Now, you saw this, right? It was an interesting thing. Let's say the option,
+
+Unknown Speaker  58:49  
+the strike price was at 100,
+
+Speaker 1  58:53  
+right, and the underlying is also at 100, for example. So it is in the money, but we don't know whether the call option buyer will exercise it or not. I mean, there might be an option premium they have paid so they wouldn't want to exercise it. They would say that, we don't want that loss, or they might just say that, okay, this is interesting. I will take this right. So here, there is an uncertainty whether the option buyer or the one who has gone long will exercise the option or not. On the other end, this person who has sold the party they are they are also not sure whether the other person will exercise it or not. So that is called this is a risk, or rather the uncertainty of why we are talking about this is most of the times traders. Work on the put call parity. So they might be buying the call option, shorting the put and shorting the underlying at the same underlying, which is at under so there are the other parties as let me just write it down over here,
+
+Unknown Speaker  1:00:29  
+see there is call option by short on put short on underline, and these are the counterparties to it.
+
+Speaker 2  1:00:49  
+Right. And let's say it is at 100 only the strike. Now you must have seen telling the risk. Usually what it means is that if this underlying is close to the strike price, let's say 100, it is more likely to expire at the same price as it was at the strike this is where there are various market forces into play. There are Gama scalpers as well, who, if it goes ahead of it, they would try to sell, get it back. If it goes below, they will buy and try to keep it at 100, so that it is delta right. So usually in there, the option might just expire at 100 only. Now, why is this so important to us? Correct? Why are we talking about this is because this, there is a exposure to the settlement. Now, let's say you are the party a for this one, right? So for example, if someone exercise their put options, correct? In this case, it is fine. This was exercised.
+
+Speaker 1  1:02:13  
+They sold one share to you. You got one unit. And since you are short on the underlying this goes as minus one, one, minus one. Finally you get this zero, and you didn't exercise your call option, and it was fine, right?
+
+Unknown Speaker  1:02:31  
+So this was one case, but here what if you
+
+Speaker 1  1:02:45  
+whatever. The person on the put buyer does not exercise their
+
+Speaker 2  1:02:51  
+option, and you exercise your call option, so you get one unit. Here you get you have to remove one unit. Oh, you sold okay, sorry, you bought this. You got one over here. You sold it over here. You got zero. And in the earlier case, you had actually,
+
+Speaker 1  1:03:16  
+yeah, if all of them were applied, let's say the put option buyer, they sold it to you. You got one. You actually applied the call. You got one, and then you have sold the underline. So one plus one minus one, you're still left with one unit of the underlying so here you can see that you don't know whether the person will exercise their option or not, and that is what is called the risk when it comes to delivery. So this is why we have to put a limit as well on the exposure to the settlement risk. So that is one thing you have to look at when it comes to setting the risk limits. Another part is the settlement type, which is future versus cash.
+
+Speaker 2  1:04:17  
+Now this is also very interesting, because you might think that this is very common sense, but then various firms actually hit this point, and they had to put it into practice there to put the limit. It's a simple thing. You have options, and then you have futures over here. Obviously you know that if you're taking a position in options, you can hedge it using futures. The problem over here is that option. Can be exercised. You can buy or sell, and then you will get the profit, or at expiry, you will get the profit. But with futures, the value, or rather the m to n, is daily and it is daily settled.
+
+Speaker 1  1:05:36  
+So for example, if in options you made a loss. You had negative but in futures, you made a profit of, let's say 5k this 5k will actually go to your account. Sounds simple, right? I mean, that is great. No need to worry. But think about it. This was when futures you got a profit. Now, if you got a profit in options,
+
+Unknown Speaker  1:06:14  
+let's say you got a profit of 5k
+
+Speaker 1  1:06:19  
+this amount is not going to your account.
+
+Speaker 2  1:06:26  
+This will only come to you when you are either buying or selling or during expiring
+
+Speaker 1  1:06:35  
+but if, since it is hedged in one point, you have a profit in the other you have a loss. This loss is going to be there in your account. And there were quite a few occasions where companies used to get a call at the end of the day saying that they have to settle this loss. Obviously, there's a margin account, but if it goes beyond that, you will have to make sure that this loss is settled. Otherwise, what happens is, then it leads to, even though you are having a profit in options and you could have got a better return, there were times when the companies had to unwind the positions so that whatever profit they got they could offset it in the futures. So yeah, this is something which you have to look at when it comes to setting the risk limit as well, exposure to interest rates, exposure to exchange rates. We just saw this before. You have to look at the exchange rates if you're going to trade in assets which are in a different geography with different currency as your own.
+
+Speaker 2  1:07:54  
+So Right? This was the risk limit as well. I'll take a short pause over here and See if there are any questions.
+
+Speaker 2  1:08:20  
+Right? You one person who said, You mean delta aging, yeah, that is correct, based on the Delta the futures are hitched, so that we have a delta neutral portfolio.
+
+Speaker 2  1:08:41  
+All right now let's go to one person has asked, Can you give short brief on exposure to interest rates? So
+
+Speaker 2  1:08:56  
+one point is that when you are trading, you there have been occasions and there have been institutions which look at the interest rate when it comes to borrowings. And so you know that on any given time frame, let's take the help of paint over here, so long term borrowing
+
+Speaker 1  1:09:31  
+will actually be more expensive
+
+Unknown Speaker  1:09:37  
+than short term borrowing. So
+
+Speaker 1  1:09:47  
+this is because well interest compounds, and if you keep it at the same scale, you will find that long term will have more impact, right? So there have been times where companies or industry. Institutions borrow on a long term and they provide, they provide financing to on a short term time scale so that they can make sure that overall they are profitable. Also when it comes to leverage, you can look at this as well. Exposure to interest rate would be different when you are taking certain leverages, when you're borrowing at a certain time scale. For how much time are you going to be in that trade, whether it is not changing on or it is so that is one way that you can look at exposure when it comes to interest rates. I hope this answers your question.
+
+Speaker 1  1:10:50  
+When it comes to credit counterparty risk, we have seen that in a similar manner as how we are divided based on asset classes. You can divide it in terms of counterparties as well. So you can look at exchanges, you can look at geographies, and you can accordingly set limits on the counterparty, how much exposure you are going to need against it per credit rating level as well. This might seem more relevant for institutions, but yes, you can also look at it whether the institution with whom you are engaged in trading operations with, what is the credit rating of it and how you can invest in it. So, you know, even countries have credit ratings, right, while they might be biased, depending on which side of the world you are in, but yes, every company country also has a credit rating. So based on that, you can take the exposure financing risk is the same thing if you are looking at the borrowings, if the financing, financing institution is able to make do on its promise or not, you can look at it and make sure that you are not borrowing from Just one party. So yeah, this is how you can set the risk limits. Setting risk limits for operational Max exposure, Max orders, Max orders in a day. All of these are certain limits which you can do. We'll look at it when we are looking at algo trading risk incidents as well. So over there, we have real life examples which will help you understand why these limits have to be there. And of course, there should be access control for the system. The operations should be transparent, and there should be a rotation of team members as well.
+
+Unknown Speaker  1:13:00  
+Now, you have seen how individual traders could
+
+Speaker 1  1:13:08  
+hide their trades, or rather do not show their unauthorized trades, which leads to loss in the same way, there have been occasions where individuals in a bank or an institutions have not taken leave for the past seven to 10 years. Why? It's just that they wanted to hide certain trades and if they were to take leave, you have seen this in your own organization as well, right? If someone rather, if you take leave for one day or two days max, it doesn't bother anyone. No one looks at your work or anything like that, unless you are in a very high stakes environment where your position is really important. But more or less, everyone would be fine, and you would have certain systems in place, right? But if you are to take leave for one week, let's say if a trader takes leave for one week, others will have to step in and see whether you have to, like close any trades of this and make sure that everything is proper or not right. So that is the reason why someone would not take leave for like seven to 10 years as well, just to hide the trades which they have done. So that is why rotation of team members is there. There have been occasions where there is mandatory two week leave for individuals, which is enforced by the organizations. There are audits in place. You should have a centralized PNL reconciliation so that it is not so that everything matches on a firm level or on a broader scale. So, yeah, these are certain things which you can look at when it comes to operation. And risks as well,
+
+Speaker 1  1:15:13  
+right? And yes, then there is, we have seen liquidity risk. Depending on which category you are in, you can set the exposure to, for example, there are highly liquid assets. Let's say stocks, right, or the stocks which are in the top 15 in terms of market cap, these might be considered liquid compared to, well, let's say mid cap or small cap stocks, correct? So there's a difference between them in terms of liquidity, too. So yeah, in that way, you can set the limit with respect to natural disasters. You can have a scorecard approach, which is used by insurances and actuaries. For example, if you have, if you know that a certain company's operations are based in or rather concentrated in one region only, what are the chances that it might that as well. So based on this, you can have a scorecard approach too.
+
+Speaker 1  1:16:33  
+And finally, we are on Phase Five, wherein you can design systems with strict adherence to risk controls. You should have a centralized system, and you should, as you have seen, you can do a what if analysis and a centralized control as well. So Right? This is how you can design systems so that everything is in place. Great. So now you have understood what the structure should be of a risk management team or a module. You have identified the sources of risk, you have evaluated them, you have also set the risk limits. Now we go to the next phase of the session, which is case studies. This is very interesting, so I would like if you can hang out and you can understand and you will see a rather well known names over here in these case studies. And you might think that, okay, this is just common sense, but then, well, it still happened. So right? Let's directly start with the first one, which is my credit Swiss, and which happened in November, 2007
+
+Speaker 2  1:17:47  
+so this is, let's take the help of paint over here. And all right now earlier, for a trader, when they used to place trades, this is before 2007 what used to greet them on screen was this dialog box, and you had these Arrow
+
+Speaker 1  1:18:17  
+up, down, and then there was a button
+
+Speaker 2  1:18:24  
+on which it was written, okay, right. So now let's say trader E comes in and he wants to place five trades. So what they used to do was they used to click on the button once, twice, thrice, four times, five times. Finally, it used to come as five, and then they used to press this button, okay. And so orders for five, let's say shares, was sent to the exchange. That is great. Everything was going great. Then a developer came in and they said, why do we need this okay button. You can cut the time taken to place the order, and you can simply remove the button, and just by this dialog box, the trade will be sent. That was the logic of it
+
+Unknown Speaker  1:19:23  
+without any need for confirmation.
+
+Unknown Speaker  1:19:27  
+Now, since we are at the point where we are looking at
+
+Speaker 1  1:19:33  
+risk related incidents, you would know that this would have a negative impact. How is this possible? Let's see now, this trader is back. There is no okay button over here. Ignore this thing. He wants to place an order for five shares, since there's no okay button and there's no way to type in. The number again. What they do is they click on the app arrow, so one was there now without an okay button. What happened was, when they clicked on this app arrow, this order for one share was sent to the exchange. The trader did not know about this, the trader clicked on it again.
+
+Speaker 2  1:20:25  
+So then it changed to two. And since there is no okay button, the earlier order got canceled. And order for two shares send got sent to the exchange, they clicked on it again, three. So the order for three shares went in. The earlier got canceled. They went forward. Then they went finally five, and they stopped. And so the four was also there, and five also got there. So in effect, they just wanted to place an order for five shares, let's say, but in total, they shared, or they placed an order for 15 shares,
+
+Speaker 1  1:21:09  
+albeit, 10 of them were canceled, but total 15 shares order was canceled. Now this was just one trader. Multiply that by traders in an organization like credit Swiss, and there were hundreds of 1000s of cancel orders which were sent to the exchange, and they affected trading for over 900 stocks.
+
+Speaker 2  1:21:32  
+Obviously there will be some repercussion to it, so they had to face a loss of 150 1000. So yeah, this was credit Swiss, the next one, Infinium capital. This is one
+
+Speaker 1  1:21:50  
+of the hedge funds which, at one point of time, they were among the top three
+
+Speaker 2  1:21:56  
+institutions in the US. Now, their strategy was, if you think about it, it might look very simple. They were creating a strategy which looked at two assets, oil futures, crude oil futures and energy ETFs. So take this thing. Like this thing, right? So you know the order book, right? So this, let's assume that this is the order book for crude oil.
+
+Speaker 2  1:22:42  
+Future. Futures. Now, Crude Oil Futures was, you can say, more liquid compared to the energy. ETF, this was the order book for energy ETF right.
+
+Speaker 2  1:23:09  
+So what the point was that energy ETFs volume was not as high, and while there were a few bid ask positions, it did not change. Or rather, it was not as liquid as crude oil futures. But obviously, component of ETF includes futures as well. So if there's any news in futures, the first impact would be on the or rather, if there's any news for crude oil, it will be impacted. The impact will be shown in crude oil futures, first and then in the energy ETF. So what they did was they took crude oil futures. They try to find out fair value of it. Let's say this was the fair value,
+
+Speaker 1  1:24:03  
+or rather, for simplification, you can say the mid price of the bid ask.
+
+Speaker 2  1:24:11  
+Based on this, they came up with the fair value of the energy, ETF, and they took some offset, and they used to place positions in the ETF right? This was how it was done. And once this was this ETF cell position was
+
+Speaker 1  1:24:36  
+covered or filled, they took position over here. They immediately took over here. They bought it so that they were trading the spread. Similarly, if it was bought over here, they would send over here, right? So it is a bit more complicated than what I am saying over here. But then, yeah, essentially, they took the price. Of crude oil futures to price energy ETF, and based on this, they were trading the spread, and they were getting a certain revenue, profits, whatever you want to call initially, it was great. It was fine. And since they are a firm which looks at risk management in seriousness, what they were doing is they were looking at energy ETF orders, and they had a certain limit on the number of orders placed in the ETF,
+
+Speaker 1  1:25:38  
+right? So this was fine. Now what happened was that, compared to oil futures, the positions in energy ETF were filled less often. Since it is less liquid than oil futures, there was one person who said, Why not flip? Why not use energy ETF to price Crude Oil Futures trade the spread and take a profit. What they did not take into account was that while crude oil futures are liquid, the fair value does not jump that much, right? But then, with energy ETF, the beta spread is higher, essentially, if one gets filled, the next possible one is on a higher end. So if they were to come up with the fair value, the fair value might come in over here, and that is a big jump from the earlier fair value. So based on this, the fair value kept jumping on a more higher scale than earlier. And based on this, the futures positions were taken and they got filled instantly, because Crude Oil Futures was more liquid, and one futures contract was in terms of balance. So when it comes to 4612 trades, it means that one contract is in tons of barrels, so the volume and the impact was very high. So it took just 4612 trades on crude oil futures in only 24 seconds. That is a higher scale than was earlier. Based on this, they faced a loss of $850,000 by the CME, which overlooks the fNo positions. And you might think that, okay, there was an RMS system, but that RMS was designed on the basis of ETF prices. As I mentioned, it wasn't looking at how many positions they are taking in crude oil futures. So that is why this kept on going, until someone stepped in and they said, Okay, something has gone
+
+Speaker 2  1:28:08  
+right now. The next part is for Deutsche Bank. This is a very intriguing example. So I Deutsche Bank had two trading this, one in one in Tokyo and one in Hong Kong,
+
+Speaker 1  1:28:35  
+and both were trading the Nikki index, right? So I think Hong Kong one opens earlier. So what they used to do was they used to take the Hong Kong trading desk, or rather, the price of the Nikki in Hong Kong. And this is a very oversimplified formula, but they used to apply certain offset calculating, and they used to add that up to the price in the Hong Kong price, and they used to come up with the Tokyo price for this one. Similarly for bid, they used to minus this offset, and accordingly, they used to trade. But what happened was, one fine day the connection was broken, so there was no updated price given to the Tokyo desk, which led to an error price. And that error price, plus an offset, got into the Tokyo price, and they started trading on this error price as well. You might think that this will be very minute in terms of scale, but this led to 1.2 4 million Nikki 225, futures and 4.8 2 million mini futures in just the first. Minutes, this was more than 10 times the normal volume. So because of this, the market dropped 1% on the orders. Now the reasons, the same thing as we mentioned, the error was recognized immediately. 99.7% orders were canceled, but still, it led to a very high impact on the exchange, and they were forced to close the algo desk in Tokyo.
+
+Speaker 2  1:30:26  
+I'll just take a short pause, and let's see if there are Any questions or anything like that.
+
+Unknown Speaker  1:31:01  
+So there is one question,
+
+Speaker 1  1:31:06  
+would you do the same similar example for how do I set one or two risk metrics to measure the risk in my equities book? That is an interesting one. We are not going to do that in this session, but as we move forward with other sessions in the same module of PRM, you will find out how you can have a risk management in practice when it comes to your own portfolio and how you are going to work on
+
+Speaker 2  1:31:43  
+and shorts. How does it work? Risk wise, I'm using my balance sheet, and I need to account for carry risk. How do I calculate this? Again? This will be covered in forthcoming sessions. So
+
+Speaker 2  1:32:07  
+the typical risk management hierarchy used by high frequency desk like I reach, for example. Difference between checks at the strategy versus order gateway? Yeah, we will look at in a few minutes later on, on how you can look at various types of risk management procedures. Alright, I believe we are halfway through the session now. So let's do one thing, let's take a pause of five minutes, and when we come back, we will continue with the session. So over here, the time is 533, Let's meet back in five minutes. So
+
+Speaker 2  1:33:26  
+in the meanwhile, you can, like, take a short stroll, have water, coffee or tea and yeah, let's come back refreshed and energized for the next part of the session. You.
+
+Unknown Speaker  1:39:14  
+All right, we are back. I think it has been five minutes now. So yeah,
+
+Speaker 2  1:39:32  
+let me just make sure that you guys are back. Just type in Yes, you are if you're back and you can hear me or not.
+
+Speaker 2  1:39:52  
+All right, there are a few people who have said yes, and I hope I am audible to you guys as well. Yeah. Oh, thank you. All right, that's great. So let's continue with looking at major algorithmic trading incidents globally, because when we shouldn't do all of them ourselves,
+
+Speaker 1  1:40:20  
+the next one is of night capital. This was a bizarre incident, and why it happened
+
+Speaker 2  1:40:30  
+is something which is the reason why we have a risk related point for operations as well. So night capital had different servers, right? So let's they had a total of eight, for example. Let me just do this and
+
+Speaker 2  1:41:07  
+if you guys like symmetry, well, you won't like this diagram of mine, but yeah, so in each server, there were different programs. Let's take a and b and they had to install two programs, program a, Program B and A dependent on Program B for its successful execution. Now the first few servers, everything was fine. Everything got installed perfectly. But in one final server, it was not the case. In one out of eight new code was not installed by a technician, and instead, an eight year old program got installed. Let's call it b1
+
+Unknown Speaker  1:42:09  
+because of this
+
+Speaker 1  1:42:14  
+night capital traded 154 stocks at bizarre prices, like some of them were being like, bought and sold at one cent, for example. And they were total 4 million trades because, well, they were in the higher end, or rather, in the HFT space, if you can call it that. So yeah, in 45 minutes, there were 4 million trades for 390, 7 million shares, and they were alternately bought at higher prices and sold at lower prices. Obviously, it led to a loss of four, 16 million. And to add salt to the injury, they got a fine of 12 million. And finally, they not because of this. There are other incidents as well, but they had to be rescued by get go, which, together became one of the top three funds in the US as well. So yeah, this is the reason why you should make sure that the software we are installing is correct. Now, there are different ways to make sure that this doesn't happen. A few of them are, let's say, obviously.
+
+Speaker 2  1:43:31  
+One thing is you should look at the size of the file which you are installing. Another thing if you are going to make sure that it
+
+Speaker 1  1:43:43  
+it is the same version and not modified. See the last date of modification.
+
+Speaker 2  1:43:53  
+And finally, there is something called as MD five some check. So what it does is, for each file, it actually checks the whole bits and bytes of the file and gives you a certain thread. You can see a mix of alphanumeric characters. And for each file, this is sort of like a thumbprint. You can see if it is modified, then the MD file subject will become different for that so in that way, you can check whether the file is the same, and if you're installing the same file, then all the parts of the system will you want to install. Yeah, that is one thing which you can think about. The next one was Goldman Sachs. So there are certain points where you can actually, instead of posting in actual orders, you can post an indication of interest as well. So. So, but then with Goldman Sachs, it became opposite. The indication of interest were actually sent as actual orders to the exchange, which led to a trading loss of 100 million dollars. So yeah, that is a lot
+
+Speaker 1  1:45:17  
+for Tel Aviv Stock Exchange. This is interesting. This is not exactly a algo trading related incident, but this could happen as well. So shares of one of the top companies in the Tel Aviv Stock Exchange were actually name, or was actually changed to some other form, and that is why the
+
+Unknown Speaker  1:45:48  
+price went from 160 7200 to only 210
+
+Speaker 1  1:45:55  
+Israeli shekels, which is the currency. But in that case, all the trades were canceled. So there was not exactly a loss as such. Now, so far, we were looking at incidents which led to a loss for the company. In case of ever bright it actually happened the opposite. So there was an algorithm, and it kept buying the stocks, which resulted in a sort of a bubble, and the index actually moved up 6% due to this. And well, rather than informing the regulators these when they found out that there is this rogue algorithm. They quietly shorted the artificial bubble, hoping that they would keep the profits from for themselves. Well, truth has a way of being found out, and this did not help them when it was found out. And finally, they were banned from prop trading forever, as it was a case of insider trading. So yeah, faulty algorithm, and the result was they got banned from prop trading
+
+Speaker 2  1:47:12  
+with handmax securities. You might think this was, again, a common sense thing, so let's try to understand what happened over here. So as we see option. So this is just a option chain example, which I'm taking for, let's say, okay, so this is nifty for
+
+Unknown Speaker  1:47:45  
+nifty option. The underlying is at 25,006
+
+Speaker 2  1:47:49  
+94 All right, so you will find that the strike price around 25,700
+
+Speaker 1  1:48:00  
+because the underlying was at 26 694,
+
+Speaker 2  1:48:06  
+the call options which are less with a strike price less than the underlying, they are in the money, right? The put options which are more than the underlying,
+
+Speaker 1  1:48:19  
+are in the money, right? This much is simple enough, and you know that the options which are in the money are priced higher than the ones which are priced out of the money. So for example, if you go for 25,400
+
+Unknown Speaker  1:48:36  
+you will find that the options bid is three, 333
+
+Speaker 1  1:48:41  
+if you add that up to the strike, it roughly comes to the same underlying price, or the Yeah, it comes to the same underlying price. And this is how it works, right? So in case of handmax securities, what happened was they were reading the call options as the put options. So instead of classifying these as call options, they looked on the right side, and they thought these were the call options. So they saw, let's say they see this strike of 25,400, and they see the option price is at 15.9 bid, right? And these, they feel that, okay, this option is in the money, and still it is priced so so low in the market, right? So they start buying it up similarly for put options, they go on the right side and they see that it is priced at a lower rate for in the money options, right? So for 26,000 they just see 18.05 so they see that, okay, this. Is very less. If it was comparatively, you can see that it should be 290 so right? This was what happened with hanmax securities. They were identifying put as call and call as put options. Based on that, they took 36,000 100 trades in a few minutes, and this resulted in a loss of 57 billion Korean won. Well, in this case, there were certain firms which were, let's just say they were good enough that they returned the profits. So October returned 600k training profits back to the company, but yes, it also led to a loss, which was 57 billion. So yeah, that happens as well.
+
+Speaker 2  1:50:56  
+Now we are moving towards what we can see sentiment analysis and social media analysis. So this incident to give you a brief in 2001
+
+Speaker 1  1:51:12  
+there was the twin tower collapse in the US right September. 2001 after that, there was widespread fear among the American citizens for going by plane, right? And this led to eventual decline in ticket sales for flights. And that is why, in 2002 there was news that United Airlines, one of the companies in the US, would be filing for bankruptcy. This was just a rumored thing, and this was in 2002 eventually nothing happened. United Airlines went on continuing operations and all that. Now, why I gave you all this brief is because in 2008 Google's news boards actually picked up this old story of 2002 and they posted it as if it was a recent thing that United Airlines will be having, or rather possibly filing for bankruptcy. And there, at that point of time, there were a few algo trading bots and news analytics based automated traders as well, they reacted to it, and there was a sharp downward spike. But eventually, within a few let's just say, within two hours,
+
+Speaker 2  1:52:35  
+the operations and the price went back to the normal price. As it was found out that it was just an old story. But yes, this happened as well.
+
+Speaker 1  1:52:46  
+Now we know that you can actually look at certain
+
+Speaker 2  1:52:54  
+profiles of, let's just say, influence influencers, and based on their opinions, based on their posts, you can take a call, or rather, you can take a trading decision, right? So with that being said, there is a really good answer, or rather a Good example call I can billion.
+
+Speaker 1  1:53:38  
+So apparently in 2013 Carl I can who is a major investor, he had sent out a tweet just like he is hopeful on Apple right, and within a few minutes, Apple's market cap increased by 17 billion. That happened for like, car, like, just one tweet. He doesn't, he didn't tweet before, not that much. But yes, he just did that, and that is what happened. So he just said, we currently have a large position in Apple, and it is undervalued. That's it. Because of that, it led to 17 billion addition of two apples market cap within a hour. So yeah, even in 2013
+
+Unknown Speaker  1:54:34  
+there was an impact of social media,
+
+Speaker 1  1:54:39  
+and people understood that you can follow certain Twitter accounts to get the news, and based on that, they can take trades. The downside of it was that a certain Twitter account of a news publisher, I believe it was Associated Press or AFP, associated foreign press, they. Which sort of takes or rather collates news from all over the world and disseminates to other publications as well, right so? But then their Twitter account themselves got hacked, and there was a false news that of a White House explosion reacting to this, the market dropped point 8% very fast, like within a minute, it went down. But then it was found out that, obviously this is a fake news, and it bounced back again. But then, yes, there was a drastic downward spike because of this as well. There was also a downtick when Osama bin Laden's death was announced. Now, Osama bin Laden was, as you know, he was behind the Twin Tower of collapse, and he was considered the most wanted terrorist. Now, when it comes to news based analytics, what happened at that point of time is that they were trained on words. So Osama bin Laden had a negative sentiment, and death had also negative sentiment. But then when it came together Osama bin Laden's death, it actually had a higher negative score, which led to the market dropping because of these news analytics based automated trading. So yes, that happens as well. Now these were all the case studies we had with respect to algo trading incidents. I hope you got major insights into what can happen, what can go wrong when it comes to algorithmic trading, right? And with that being said, you should understand one thing now that we are at a point where we are designing systems. We are designing algo trading systems. We are creating our automated trading systems which can process information and place trades faster than even the human eye can react right? So that is one point which we have to consider, because earlier it was manual trading, and even if you place one wrong trade, if you found out there were chances of, you know, mitigating the loss. But here, by the time we understand that, okay, something wrong has happened, as we have seen in the previous examples, quite a lot of trades are already sent. So now we are we have to rely on technology itself for risk management, and we have to be sure of designing a risk management system which can react at a fast pace as well.
+
+Speaker 2  1:58:19  
+So that is where the concern is. We have to do a real time monitoring of positions, exposures and regulation checks, because the human can only respond at a certain speed as well.
+
+Speaker 1  1:58:35  
+So with that being said, we have tried to classify these risks specific to automated reading in these categories. So it can be access, it can be consistency, quality, algorithm, technology, scalability. Now, earlier, when we are looking at the risk management system, that was more of when it comes to trades, right when you are designing a system how to set a limit on the trade, this was something which we had done earlier. Now we are looking at risk which have to be handled before it is sent to the Exchange, or rather, it should be within the application and before the order is generated in the order management system. So even if you think that okay, you have created a ml based algorithm, you should know how it is working and how it is going to generate the trade, so that you can have certain measures in place to make sure that it doesn't take any wrong trade, right? So that is something which you have to look at.
+
+Speaker 2  1:59:56  
+Now let's look at the first type of risk over here. So. The first risk is access related risk. Now, before we go through this, let's just do a brief refresher on the algo trading system. Now, you know there are a few components, as can see,
+
+Unknown Speaker  2:00:23  
+let's say this is 123, right, and then there's the exchange, right?
+
+Speaker 2  2:00:35  
+So this will be your Exchange, and this will be your Order Manager, or rather the algorithmic trading system. So this is the market data adapter. This is the CEP, which is, which you can think of as linked to your trading strategy, and whatever your portfolio strategies as well. And then there is the order management system, right on normal days of operation, you know that from the exchange you will get data. It can be the OHLC, and whatever you want to call it
+
+Speaker 1  2:01:22  
+based on this data. You go it goes to the CEP, where it uses the trading strategy. It does a few analysis here and there, finally generates the trading signals, and you have your order management system, which sends the order to the exchange, right? This is how
+
+Speaker 2  2:01:48  
+it works, correct? So let's pause over here, and before we move on to the risk incidents, let's see if there are any questions or anything which you have asked.
+
+Unknown Speaker  2:02:16  
+All right, there are no questions so far.
+
+Speaker 2  2:02:33  
+Alright, the first type of algo trading related risk is obviously access, whether you have access to data, or whether you have connectivity to the exchange itself, right? This is a major point.
+
+Unknown Speaker  2:02:56  
+So usually there are,
+
+Speaker 1  2:03:04  
+you can have a connection. If you have a normal algo trading system, it will be an NTP Network Time Protocol. If you have access to, let's say, advanced hardware trading desk or a trading firm, you might have precision Time Protocol. Basically what the connection or the protocol gives you is a certain speed, so it could be in the order of milliseconds you will be getting the data right. So that is there the usual one TCPIP is, I believe it is in the order of seconds. So even though you are not sending orders like in the matter of milliseconds or seconds. So it will take some time before you realize that, okay, the maybe the network is down and you're not getting fresh data right. So that is one reason why you should know that whether the connectivity is there or not. And how do you check whether the connectivity is there or not?
+
+Speaker 2  2:04:27  
+You use a concept called as well heartbeats,
+
+Speaker 1  2:04:34  
+as the name suggests. It's like a heartbeat you you want to know you're alive. You know that your heart is beating right? So you might just check your pulse and see that, okay, you are alive, right? I don't believe there is a single person over here who is alive, but his heart is not beating. So, yeah, that is it. So, in a similar manner, what you can do is. You can send a message to the exchange, like, knock, knock, are you there? This is like a heartbeat, like a synchronization thing, and the exchange also sends you a response that, yes, I am there. I am able to send you data. So this can be done from MDA. This can be done from before the order is generated, but this is how you can mitigate, or rather make sure that this is not true. This risk is not there at all. So this can be the connectivity to the exchange going down, or the exchange disconnecting you, you can send a heartbeat, and you can make sure that this is not true. Another reason could be that there is a network issue. It could be your hardware, or it could be your operating system as well, right? So, like I mentioned, you also have to make sure that internally, your connection to the exchange is proper. Your operating system is actually sending these messages to the exchange as well, right? That is where you have to have the hardware and operating system checks, like we mentioned in operational risk. You need to evaluate your system from time to time and understanding that everything is working properly or not right. Now, this was with respect to access. Now we are moving to consistency. Now, consistency, what type of risk you will get. It could be that market data is stale. For example, you are at
+
+Speaker 2  2:06:55  
+10am right? Or if you are looking at
+
+Speaker 1  2:07:01  
+10am 10am and one second, right? So you are at 10 and one second, you might just get data which is, which is of 955, right. So that means this data is actually stale date five minutes have elapsed and you are going to work on the same date. Obviously the risk is high in five minutes, lot of things might be changing, right? So how do you make sure that this is countered? Well, there is something called as timestamp. So actually, when you have a connection with the exchange or with the broker, however, it is the exchange sends you the data, which is the OHLC, and it also sends you a timestamp, right? So there will be the OHLC data, and then there will be the timestamp as well, whatever the time it is. So whenever you get the data, you check, along with the internal system, you check the timestamp and make sure that the data is not still. Obviously, here you will have to
+
+Speaker 2  2:08:31  
+set a threshold. You will have to say that this timestamp
+
+Unknown Speaker  2:08:41  
+should not be
+
+Speaker 2  2:08:46  
+more than, let's say, if you are okay with one minute, then one minute or not, be more than one second of the internal clock.
+
+Speaker 1  2:09:00  
+If it is then there is a issue. Then you again, try to evaluate why the stale data is coming and make sure that this is not happening as well. This is one reason with respect to consistency, which is the exchange is sending you the stale data, right?
+
+Unknown Speaker  2:09:22  
+Another point is that
+
+Speaker 1  2:09:27  
+while the exchange is sending you the correct data, it sends you data at 10:10am, and one second, there is a lot of processing time taken by your strategy. So by the time it reaches the order management system, this is actually 10, 01, so over here, also you need to have a check whether, this time you can check when the. Right? And when the data is actually or rather the order is being sent, is the time taken between the two higher than your threshold limit? If you're okay with let's say one minute of one minute of data is fine for processing, then you can send the order. Otherwise, you will, Let just say, discard the order and try to find out a better way to process it. That is one reason you can also look at the order management adapter is responding in real time. So this also can be taken with the help of timestamp.
+
+Unknown Speaker  2:10:48  
+Now quality.
+
+Speaker 1  2:10:51  
+I believe someone had asked, How are we going to are we going to look at examples on how risk management can be done in real time, right? So this is one way that we are looking at these risk management methods. So market data is garbage. So for this, I'll just take an example. It has been seen that more I
+
+Speaker 2  2:11:26  
+let me just go to this point, yep, so
+
+Speaker 1  2:11:36  
+on a normal day, right? If you look at a order book, you will have like, let's just say level one. You have like,
+
+Unknown Speaker  2:11:48  
+five hours and five bids, right? This is a normal order book. Now we have seen with certain data providers
+
+Speaker 1  2:12:04  
+might be in the effect space. What happens is they have different levels of pricing for data provider. And if you are individual or an institution which is paying a heavy premium, you will get the order book as it is, but if you are not paying as much premium, what they might do is they might not show you the latest one or the the first level, the lowest ask and the highest bid in that manner of speaking, they might not show it, and they will just show this part, right? So this has happened in the past. Why we are talking about this is they have certain internal, what we say, processes to remove this in certain cases, they might also put an offset, like the last one will be offset by a certain price, and then it will be given to the subscribers. Sometimes, what had happened was this code was wrong, like it was not managed properly, and the ask price was actually lower than the bid price, right? So you might think that it is weird, right? Having a bid of, let's say, 150 and having a ask of 149 it never happens. So that is one example of market data being garbled. So in that sense, you have common risk management system rules, like, if the market data is not making sense, you can discard it right. And sometimes you can also have loss of liquidity during high volatility. So this happens in, let's say, effects. You could have something like a news report like, let's say the US farm payroll data, or any economic report coming in before any economic report, the beta spread actually
+
+Unknown Speaker  2:14:30  
+becomes very high. So you might find it at
+
+Speaker 1  2:14:35  
+95 and 100 for that matter, and just the when the economic release is done for a few seconds, it persists, and then it again comes back to a tight spread of like, let's say 99.95 and 100 for that matter. Right? So the volatility is. Or the liquidity actually comes back. So in that, in these type of events, or in these type of incidents, what you can do is put a pause on your trading operations so that you don't get adversely affected. So this is how you can mitigate the risk. Now you're coming to algorithmic related risk. So as we have seen before, right? Let's say, let's say you have your margin breach. You can put a certain code, or you can say that if this threshold is breached, you have to pause your trading operations. No new order should be sent in a similar manner, the exposure limit set by exchange is done. You have this or if the risk limits is exceeded, you have to check for acknowledgements before sending order. Now this is interesting, this risk limit exceeded.
+
+Speaker 2  2:16:05  
+So let's take a simple example over here.
+
+Speaker 2  2:16:20  
+Now, let's say you are having a strategy where you are looking at price of a and placing order for B.
+
+Speaker 2  2:16:57  
+Right? So to further simplify, let's put an if else thing, if price of a is whatever 100, then place order.
+
+Unknown Speaker  2:17:23  
+For 10 shares of B right now, here's a question, if we were looking at, let's say, daily snapshot data,
+
+Unknown Speaker  2:17:44  
+it might work, right?
+
+Speaker 2  2:17:48  
+If we were looking at maybe seconds snapshot data, it might work. So, okay, now the question is, what if we were looking at tick by tick data?
+
+Speaker 1  2:18:09  
+Will this sort of code or rather strategy program work or not? You can just type in yes on
+
+Speaker 2  2:18:37  
+one person has said, No, all right, I believe there are more people over here, so yeah, you can just type in yes or no and yeah, let's move forward. All right. We got one person saying yes, one person saying yes. All right. See the point over here is that we are looking at only one part of placing the order
+
+Speaker 1  2:19:14  
+right, but then, as you have seen, we should have a limit for the number of orders sent right. So that is why we should not just look at placing the order as the condition. We actually move beyond that. We go if price of a is 100,
+
+Unknown Speaker  2:19:42  
+then we also check
+
+Unknown Speaker  2:19:52  
+current orders placed of B. A plus number of orders
+
+Speaker 2  2:20:10  
+which are on the way, because tick by tick data is very fast, right? So we can't there might be a chance that you got one
+
+Speaker 1  2:20:26  
+pick of A. We got the price of a replace the order of b. We haven't got the confirmation that this order was placed or not before we got the confirmation. You already got the next tick. That price of a is this. So we can't just look at the price of a and place orders. We have to look at price of a, then the current orders which are placed, and also we have keep a track of number of orders which are on the way,
+
+Unknown Speaker  2:21:02  
+and this is less than the number of orders threshold.
+
+Speaker 2  2:21:18  
+If this is done, then we can place order of 10 shares of B.
+
+Speaker 1  2:21:28  
+So, yeah, this is something which you have to take into account when you are looking at the risk limits and how much orders you can send for the asset. If we are looking at tick by tick data, but it also helps when you're looking at second snapshot, or even daily for that matter, in daily you will already have a confirmation of how many orders were sent, because it's a daily snapshot data. But yeah, it makes sense to look at the number of orders already placed and which are on the way as well. So yeah, that is how you have to look at acknowledgements also before sending the order. And also have a look at how many orders have been sent as well.
+
+Speaker 2  2:22:23  
+The next type of risk is incorrect strategy setting leading to continual mistreats. Now here you look at PNL fluctuation check.
+
+Speaker 1  2:22:35  
+Now remember one thing the markets, irrespective of which side of the debate you're on, when it comes to the efficient market hypothesis, some say that it is efficient. Everything is priced in. There's no inefficiency. Other parts is that, if it is in, if it is efficient, how are some people able to gain revenue or gain alpha, right? But irrespective of which side of this debate you're on, you should know that
+
+Speaker 2  2:23:14  
+either profit or loss or a sudden changes are something you have to look for. Rather, you have to look at
+
+Speaker 1  2:23:36  
+a sudden 10% profit in your portfolio means that there's something going on, and you have to make sure that this is related to strategy, or with respect to your system or anything else. Same thing goes. If it is sudden, 10% loss, it means that something is wrong somewhere.
+
+Speaker 2  2:23:59  
+Just have to make sure that is it wrong in your system, or is it wrong for everyone? So yeah, that is why you should take a look at the PnL fluctuation check as well. So this was an interesting thing, which I learned recently. So just this as well, right? So what happened was, let me just hide this rule,
+
+Speaker 1  2:24:36  
+for some reason, you have a strategy and you came up with a fair price for an asset, or a spread at for an asset, let's say at 1000 and you saw that the current price is 100, so you feel that, okay, this is much less than the actual fair price. So you'll buy it anyways. So you just take one. Share, and you buy it, you get a certain average buy price, which is that 100 only. Then you again check the fair price is still 1000 the current price moves up. It goes to 101 you still buy it. So total are two. The average buy price is 100.5 the P and L is one for
+
+Speaker 2  2:25:23  
+the time being, right? Similarly, you keep on checking this, you keep on buying one share, one share, your average buy price increases, right? This is, I am just doing it
+
+Speaker 1  2:25:40  
+randomly, one $1 or one one unit. Suddenly it went up to 180 for example, you still bought it because you still feel that it is at 1000 and you are still at 14. You have bought 14 shares. The average by price says that 111 even though it was higher, even though it is higher than where you are started at, you still believe that the fair price is way high, and so you're still at a profit, right? So you think that, okay, there is still a profit for you. But what happened was there was some issue in your calculations, and the actual price is only 100. So this is the reason why we say that you should always check whether it is too good to be true, even though you have been buying for so long and you still feel that there is a profit. But in fact, there was some coding mistake, and you're you're actually at a loss. So yeah, this is something which you can look at, not just on the side of loss, because as humans, we are more sensitive to losses than actual profits. So it is like they say this was actually a study done. You would rather feel $100 loss more than you would feel $100 profit as a happens. So, yeah, the pain and pleasure is different. You feel pain more for a similar quantum or a similar quantity than you would feel the pleasure for a profit. So yeah, that is why you have to check for the P and L fluctuation as well. Again, you can also look at if it is like there is a high profit, or you suddenly your orders are higher. Your trades are not exactly as per your strategies. You can do a order throttle rate. You can also do a fat finger settings check. So this is more in the parameters of the strategy, and it can also be in the order placement. Ideally, when you think of fat fingers, you will get that example of a trader. Instead of like buying 99 shares by mistake, they bought 99 999 shares. But it can be happening in setting the parameters as well. Let's say your strategy is looking at 10 different parameters with 10 different values, and in one parameter value, there was a change. Instead of 99.9 it became 9.99 so that could also be a problem. So, yeah, you can look at that as well. You can look at the maximum value traded to so that you are not going way above and beyond your current portfolios capital. And if the incorrect order is generated, then you can do a price range check it always is a good thing that most of the time, you can think of it as if a price is at 100, the order should not be more than 5% because, on average, an asset might not move that much. Obviously, if I see a number, you're going to come back to me with examples. Even Tesla actually goes above 5% on on just one day. So yeah, depending on the asset which you are analyzing, you would know that what type of volatility that asset has, and accordingly, you can put a threshold as well. And also there is the order throttle, which can be the exchange reject limit as right. So, yeah, even the exchanges have a certain floor and ceiling for a certain price of an asset. So you can keep that. Act as well.
+
+Speaker 2  2:30:06  
+Of course, then there's a technology risk and hard disk gets full. This might seem very inconsequential right now, but this actually happened to different companies. In fact, there have been occasions. So earlier exchanges actually, these are exchanges, and then these are like, let's just say traders, exchange. It. So earlier exchanges worked on different latencies, right? So for a while, they were on seconds. Every second the traders would get the data,
+
+Speaker 1  2:31:01  
+of course, then they moved to millisecond, nanosecond, and finally
+
+Unknown Speaker  2:31:07  
+it became on tick by tick, which is the closest one ever.
+
+Speaker 2  2:31:22  
+Now you can understand that in one second the OHLC price goes but when they switch to T by tick by tick, the quantum of data which was sent became so high that there were a few times. There were a few exchanges when they switched from second base to tick by tick. There was a bottleneck in the data pipeline. So it happened that you are standing here at 10am and the exchange sent the data of 930 because of the huge bottleneck and well Ill preparedness, we can say. But, yeah, this happened to few exchanges. Obviously, this was rectified and this was taken care of this was from the exchange point of view as a firm, even when you move from second to tick by tick, if you haven't prepared. And there are a few examples that
+
+Speaker 1  2:32:35  
+there have been occasions that what they thought that okay in one day they would need a certain capacity. So let's just say you have five HDDs, and you have all the data
+
+Unknown Speaker  2:32:54  
+which you get from the exchange.
+
+Speaker 1  2:32:58  
+Suddenly when you move to a tick by tick data system, and obviously you want to show all the information, it was actually there were different firms reporting that within a day, within or rather within a few hours, the entire capacity of the storage capacity of the firm got exhausted. So, yeah, that happened as well. So you should have an independent check on how much capacity you have and how much data storage you can handle. Obviously, virus and Trojan is something which you have all grown up and you know how important it is to save your systems from it, you should also have make sure that a system crash does not happen and application crash also does not happen and there is no protocol mismatch. Now these things are actually important to you if you are trading on different exchanges. So and you are rather employing certain arbitrage trading strategies, which means that you should you are rather you need data from different exchanges to for your strategy to work. So in that way, you should know that all applications are working and your data is on point or it is recent. So yeah, this is how you can make sure that these risks are contained. In a manner of speaking, these were certain risk, which we looked at from a overall bird's eye point of view. Right. Moving further, you can think of risk management from the strategy point of view as well. So as you have seen, that PNL fluctuation check can be IR. Perspective of any strategy, but certain thing like parameters check whether your strategy is working correctly, that can be handled within the strategy as well, right? You don't want to use data of like the past five years, when only the past five days data is needed for your strategy to work. So yeah, these are some things which you can look at when it comes to risk related to algo trading.
+
+Speaker 2  2:35:36  
+Now the next thing is scalability. Why do you think this should be talked about number of applications and portfolios that can handle So humans are
+
+Speaker 1  2:35:53  
+by default. They test their limits, right?
+
+Speaker 2  2:35:59  
+For example, maybe you have created a strategy, right? You have this lines of code, what we call, if you are, if you know something about computer programs, there is something called as theory of computation,
+
+Speaker 2  2:36:27  
+right? And it's not. We are not going to go into a theory lecture on this one. What you have to understand that is, let's say you created a strategy which looks at one asset, right?
+
+Speaker 1  2:36:43  
+So the complexity, or you can think of it as time complexity, time to run will be order of one, right? Simple enough, it just one asset. So you look at order of one, for this matter. Now suddenly you feel that, okay, your strategy can work on different assets. So you change this to, let's say, n assets. So now your complexity has become order of n.
+
+Speaker 2  2:37:17  
+That was simple, and some reason you have a for loop in here. So you will say for i equal to one, i less than n. And then you have i plus plus right? So this was order of n,
+
+Speaker 1  2:37:46  
+for some reason you moved beyond it. You want to place another for loop inside it, for anything. Now maybe this might be the underlying now you want to check
+
+Speaker 2  2:37:59  
+the derivative of it. So again, for equal to this will be j equal to 1j less than n and j plus plus.
+
+Speaker 1  2:38:14  
+Please do not be put off by my writing skills. But yeah. So what happened is for each asset, for each asset, from one to n, you have now moved from a cycle just one for loop, you have gone inside it. For Each Loop, you have another loop. So now the complexity became n squared,
+
+Speaker 2  2:38:42  
+and you get the drift now you want more of it like so let's say you want another for loop over here. Then it becomes an N q. So when you had the strategy for just one asset, it was moving at one second. Even for n, it was moving at one second. Let's see it became 100 seconds when it became n cube for instance, right? Or if you want the direct one for N assets, it can be 10 and nq will become 1000 seconds for you,
+
+Speaker 1  2:39:31  
+it sounds okay to you, that okay, it's still 1000 seconds. But then, when you are placing orders that if that time taken from getting the data and sending the order, if this 1000 seconds is before or below your threshold, it's fine, but if it's not, then it means there is a risk to the number of. Portfolio or the number of assets which your strategy can handle. So that is why you say that after every addition or after every change in your strategy, you should actually have a holistic analysis done to make sure that none of the other things are getting impacted. So in a similar manner, the number of exchanges that can be connected should be looked at. You don't want a bottleneck on your system if you feel in theory, your strategy works with three exchanges, but in practice, your data is getting well stale by the time all three exchanges are giving you the data, similarly, the number of symbols, as you have seen, and the order of complexity of computations as we have just seen over here. So yeah, this is how we can look at risk when it comes to scalability. Finally, we are at the risk management for Indian exchanges. So this is just an addendum, and for people who are joining us who are not going to trade on Indian exchanges, this might not be relevant for you, but you can look at them, and you can think of them and understand how and why these regulations are there and if they exist in your geography as well. You can also take a look at your geographies regulations and see whether you can create a system which are within these regulations. Now, these were the regulations of few time periods back there have been a few changes, like manual trading is now not exactly disabled, but it needs to be looked at carefully, and each order sent by manual has to have a trading ID. And these are certain things which are there for other exchanges as well, like a trade price protection limit, the order should be within a certain percentage of last price. I mean this, we don't need a regulation to understand that it should be there in your strategy as and for each instrument and order size freeze limit is set as well. So obviously, if you are an individual trader, you would not like to go all eggs in one basket, right? So for each instrument, you will need to have a certain limit on how many orders you can sign. Price range check, as we have seen before, it should not go higher than the circuit limit, or rather, the daily price range of an instrument. And now FIS can trade in almost all the stocks, but there is a greater monitoring for them when it comes to certain stocks. And then there is a cannot trade derivatives to increase open interest beyond a threshold. So this is interesting. When it comes to the market, wide protection limit, we have certain examples, which I will go into detail in a few minutes. But yes, and then there's shares available for selling overnight.
+
+Speaker 2  2:43:42  
+Mostly, we have a limit when it comes to the shares, and also automated trading is now enabled for almost all the instruments. Sorry about that. So let's look at the derivatives part and why it is there for Major geographies. So I'll just clear this. Give me one.
+
+Unknown Speaker  2:44:25  
+Alright, you can see my screen, right, all right, so there was
+
+Speaker 2  2:44:37  
+before Tesla. There was an automotive company which had the highest market cap, around 2008
+
+Speaker 1  2:44:54  
+let's see. So can you guys tell me, like which auto. Company was there which had the highest market cap.
+
+Speaker 2  2:45:05  
+So yeah, you can type in the answer in the Q and A box. Let's see if someone can Ford. No, not really. General Motors, no. Maruti, Suzuki, not exactly, yeah, Volkswagen, yeah, that is the right answer at one point, Volkswagen or VW was like having the highest
+
+Speaker 1  2:45:42  
+market and to understand why it happened, it's a really good case study and an example as well on what happens when one company tries to take over the other. So for this one, so actually there are two
+
+Speaker 2  2:46:03  
+companies which we will talk about, this Porsche and then this Volkswagen. Now, interestingly, Porsche and Volkswagen are sort of headed by the same family, and you can say they are like cousins. At one point, they were cousins who are heading both companies. And it is said that
+
+Speaker 1  2:46:34  
+Porsha had a for a very long time. They wanted to control Volkswagen like they wanted to own Volkswagen. And to give you a brief Porsche is more into as you know, high end luxury. Volkswagen is affordable cars,
+
+Unknown Speaker  2:46:56  
+you can see affordable, and this is luxury.
+
+Speaker 2  2:47:11  
+Interestingly, Porsche has actually at one point of time when this was this was around 2007
+
+Speaker 1  2:47:22  
+to 2010 we are talking about at that point of time. And even now, I believe Porsche was more into designing and they're sort of outsourced the manufacturing to the company Volkswagen, so they had quite a few interconnectedness between them, but Porsche actually wanted to own Volkswagen. So from 2000 onwards, what they had done was that Porsche was
+
+Speaker 2  2:47:57  
+buying up shares of Volkswagen for some time, right?
+
+Unknown Speaker  2:48:02  
+And I think it was around 250 when Volkswagen was priced at 250
+
+Unknown Speaker  2:48:13  
+No, rather, I believe it was 120
+
+Speaker 1  2:48:19  
+around that point of time, Porsche said that they have put a majority part.
+
+Speaker 2  2:48:31  
+Or rather, they said they want to acquire Volkswagen, and they set the price at 250 right?
+
+Speaker 1  2:48:40  
+So this 120 numbers, I'm not sure, but yes, they said that it will be priced at around 250 and obviously, whenever a company says that they want to acquire they have to acquire it at a higher price. So the price went up for Volkswagen, it went up to 250, to 40 at one point of time. It never reaches the final amount, because there are a lot of, let's just say, regulations, and then there's a competition commission. So there will be a few people who will say that this takeover won't happen. So it never reached 250 at one point. But something interesting happened. OSHA said that they have certain stocks, right? And then they had also built up
+
+Speaker 2  2:49:45  
+call options. They had bought call options as well, all right now in parallel, the. There were a few institutions which believe that this is a very high price and the price will go down right.
+
+Speaker 1  2:50:09  
+So these institutions had shorted
+
+Speaker 2  2:50:14  
+the Volkswagen stock now, then Porsche came up with this news that they had stocks and then they had call options. And if they exercised all the call options together, they will have 74%
+
+Speaker 2  2:50:39  
+of the entire sheds. This center shockwave to these people, these institutions, who had shorted the stock. And I believe there is a
+
+Speaker 1  2:50:55  
+there was a clause in that geography, and around 20%
+
+Unknown Speaker  2:51:03  
+was owned by a municipal institution. So in fact, the total
+
+Speaker 2  2:51:18  
+90% plus was actually not there in the free float market, as you can call it. And suddenly these people, they felt despair. They realized that we don't have much shares in the open market. And when these guys exercise their options, they would have to figure out how to deliver the shares. So they started buying the stocks. This is called as I guess this is a short screen, so Volkswagen's price went up to 858,
+
+Speaker 1  2:52:05  
+at one point it actually was. It went around 1100 and at that point of time, push, Volkswagen was having the highest market cap. It eventually went down, and that happened. The rest of the news is, well, it is rather interesting, but I won't mention that you can check it out on your own. But yeah, why this example was done is because ideally,
+
+Speaker 2  2:52:41  
+you believe that the underlying shares or the underlying asset influences the options price, but here it was going the other way round, Just because there was a large concentration with few people. So that is why you cannot. There's a reason why it is said that you cannot create derivatives to increase the open interest beyond the threshold and also maximum position that a client can be have in a particular stock. So, yeah, that is one reason why we have these. And interestingly, Porsche, I think, in 2008 or something, they posted a revenue of, I believe, 15 billion, out of which only 1 billion was from the sale of cars, their bread and butter, so to speak, and 14 billion was from the financial transactions. So yeah, and some say that at that point of time, Porsche was like a hedge fund to say the
+
+Unknown Speaker  2:54:10  
+least, right, and it had a
+
+Speaker 2  2:54:13  
+revenue figures which could rival majority of the top hedge funds At that point of time. So that happened. And interestingly, all this financing, actually, they had to finance these conversions right there to exercise the options. So they had borrowed and all of that. And what happened was, in a turnaround, Volkswagen actually bailed them out because Porsche was on the verge of bankruptcy due to this financing. So now Volkswagen actually owns Porsche. So yeah, that is one thing, and there's another example, I believe. There is a there was a hedge fund. It sort of did a similar thing.
+
+Speaker 1  2:55:08  
+What it did was it had a lot of stocks in a certain
+
+Speaker 2  2:55:14  
+company, and it also had bought the call options, so they effectively owned majority of the company,
+
+Speaker 1  2:55:29  
+and they started exercising it, so which led to a short squeeze, and well, that company profited, but yes, after that, there was, like, there were regulations in certain geographies that you cannot have a
+
+Speaker 2  2:55:47  
+more than certain limit positions in the derivatives. So, yeah, this is the reason why we have all of these regulations. And also you should also consider these when you are creating your own risk management system and your trading strategy as so I guess this is it. From my end. I'll just check if there are any questions which we can answer.
+
+Speaker 2  2:56:29  
+I hope you guys enjoyed this session. If you have questions, please do ask at this point of time we have we still have a few minutes left. So yeah, if you have any questions to ask, and I'll try my best to answer them.
+
+Speaker 2  2:56:59  
+So one question is, how do these risk management hierarchies adapt for MFT, Lfd strategies where the primary risk speed but rather holding logic so Okay, one thing is that, let's take an example of HFT. HFT will be more focused towards the price action, right? They would be more on the tick by tick data, and any change in that, they will try to
+
+Speaker 1  2:57:55  
+maximize their gain from it. So that is how they would work. A simple example of HFT would be that, let's say if, if a certain asset, the highest bid is at 100 and the lowest ask is at 101 right? So you see that spread is one over here. So they'll try to keep it just one above the highest bid and just one below the lowest task, so that any of it gets filled. They would move up and they would get that much revenue from it. So that is how they would work on their logic. Now, over here, the risk management would come in whether they're identifying the correct price. So that is how they would work when it comes to MFT, lft strategies. These can be more elaborate. You can see you are looking at different factors. So over here, the risk management would be more of whether the right parameter is being fed into it, whether the logic is correct, whether you should have this same trade profit level for one asset and a different one for a different asset in a different asset class. So that is how it differs. Your thinking will differ when you're creating an MFT or an lft strategy compared to an HFT strategy. I hope that helps, and if you have a follow up, yeah, do like ask again. In the meantime, I'll just go to the next one.
+
+Speaker 2  2:59:52  
+There's a theory that markets will become efficient when AGI comes. How will hedge funds are? Make profits then? Well, this feels more like a philosophical question rather than
+
+Speaker 1  3:00:08  
+question for this session, but I'll try to answer this as well. Think of it in terms of, Okay, let's try to confine it. What are we usually doing when it comes to creating a trading strategy? You take a certain data, you apply a certain logic, and it will be like, Okay, if these these conditions are met, or if these features are there, the final point will be, you are either buying, selling or, well, taking no position, right? That is how it works. Efficient means that everything is incorporated, right? The market prices in everything now, it sounds great, but you have to understand that even if it is incorporating anything, there will be a lag between the minute new information is released to the minute, or rather the second the new information is processed and action is taken, right.
+
+Speaker 2  3:01:28  
+So there, therein lies the issue,
+
+Speaker 1  3:01:33  
+the speed of becoming efficient, or the speed of the information being processed will become very fast, but there will still be some
+
+Speaker 2  3:01:46  
+point where in there will be a first come, first serve, first profit.
+
+Speaker 1  3:01:55  
+So yeah, that is how I believe they will still make profit, but it will become highly concentrated, and it will become very difficult to make profits over there. Hope that helps. How do we check that our angle is functioning in a right way when we deploy our angle live? Do we need to check it manually for at least a month that is working with First of all, checking manually is a sort of misnomer right now, because you will not be able to check in Real Time on a manual level, as mentioned, you should have a snapshot ready. You should have a centralized system, and you have an understanding that, okay, you have already done a back test of the system. You have got a certain X number of returns, certain X number of sharp certain X number of maybe the drawdown, and you can think of it try to divide it not just month. You can look at it at different periods of time in the day and see whether it is functioning as per the expectations or not. Ideally. You can also do paper trading to make sure that this algo is actually performing as well as you are expecting. Hope that helps, and we learned many parameters related to risk management today as a retail trader, what are the important parameters that needs to be taken into account has as a retail trade, I would say, like all of them, are important. Any parameter missed and which will lead to a loss is something which was really important and should have been looked at, I think at this point of time when you're designing a strategy, it is easier considering the resources you have at your disposal. I I mean in terms of like these llms, even agent tech systems, which are now there, it is easier to incorporate everything and make sure that everything is working properly. It just needs focus and concentration and making sure that you are confident in the strategy. So, yeah, hope that helps.
+
+Speaker 2  3:04:40  
+Are there any RMS providers out there who build or provide systems for funds curious to see what features they offer? I believe there are. I have not personally gone and researched this, but there will be,
+
+Speaker 1  3:04:59  
+like I said. People, Google Search might give you a few of them, a few of the RMS providers, but just try to have a Objective Mind when it comes to analyzing if you are actually going to outsource it to these RMS providers. So making sure that certain minimum levels of requirements are met, and ideally, if you design it yourself, you have an understanding what is going in and what is going out, so you will know when the market goes against your position. It is because your strategy is not working, or it is because your system has an error. So yeah, it helps if you're doing it yourself, but obviously you can do your due diligence and make sure that everything is
+
+Speaker 2  3:05:59  
+we have covered the theoretical aspects of risk management. Some of these ideas will be implemented later on in the sessions as well. Alright, I think I have more or less answered your questions. There is one which was sent quite some time ago. Sometime it also happens that tick rates are so so high on certain days. Firm platform itself can't handle ticks across all venues and internal order placing mechanism peaks out,
+
+Speaker 1  3:06:41  
+show down some forms, shut down some of strategies, right? Yeah, this happens when the volatility is really high, and at these point of times, the platforms have to take certain measures. These are their risk management measures, so they might close some assets for trading, or they would try to move to different systems.
+
+Speaker 1  3:07:15  
+All right, I think we have reached the end of the time limit. Thank you once again for being here with me, and I hope this session was informational and educational as well for you, and you've got some ideas which can be applied to when you're creating your own trading strategies, or when you are if you are working in a form, you can apply them as well and try to identify if these are applied as well in your forms or not. So yeah, thank you once again for this session, you'll have a survey form after this session, you can fill it out, and you can mention to us how you found the session, and you can also help give pointers on how we can improve the session further. It would help us a lot in future, and also it will help me understand how you found the session. So yeah, thanks. Once again, it was great having the session with you guys. And yeah, good evening, good night, depending on which part of the geography you have joined us in. And yeah, have a lovely day ahead. Thanks everyone. Bye. You.
+
