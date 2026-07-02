@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 7-2 · DMP-01 Strategy Back-Testing — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:42px 30px;
+       color:#1c1410;line-height:1.72;font-size:17px;background:#fffcf8}
+  h1{font-size:31px;color:#9a3412;margin-bottom:4px;line-height:1.18}
+  .sub{color:#ea580c;font-style:italic;margin-bottom:30px;font-size:17px}
+  h2{font-size:23px;color:#c2410c;border-bottom:2px solid #fed7aa;padding-bottom:5px;margin-top:38px}
+  h3{font-size:19px;color:#b45309;margin-top:26px}
+  code{background:#ffedd5;color:#9a3412;padding:1px 5px;border-radius:3px;font-family:Consolas,monospace;font-size:15px}
+  pre{background:#1c1410;color:#fed7aa;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.5}
+  pre code{background:none;color:inherit;padding:0}
+  .callout{background:#fff7ed;border-left:5px solid #ea580c;padding:13px 18px;margin:20px 0;border-radius:0 7px 7px 0}
+  .warn{background:#fef2f2;border-left:5px solid #dc2626;padding:13px 18px;margin:20px 0;border-radius:0 7px 7px 0}
+  .tip{background:#fefce8;border-left:5px solid #ca8a04;padding:13px 18px;margin:20px 0;border-radius:0 7px 7px 0}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px}
+  th,td{border:1px solid #fed7aa;padding:7px 11px;text-align:left}
+  th{background:#ffedd5;color:#9a3412}
+  .mono{font-family:Consolas,monospace}
+</style>
+</head>
+<body>
+
+<h1>Your First Back-Test</h1>
+<div class="sub">Week 7-2 · DMP-01 — turning a trading idea into numbers you can trust</div>
+
+<p>This is the lecture where coding finally meets trading. Up to now you have learned Python and you have learned a little about markets; here the two come together in the single most important skill an algo trader has: <strong>back-testing</strong> — taking a trading rule, running it over historical data, and asking the only question that matters, <em>would this actually have made money?</em> The instructor, Vivek Krishnamurthy, spends the first half on four small ideas that show up in every back-test you will ever write, and only then builds a strategy. We will follow the same path, using a real shipped NSE daily file (962 bars, 2017 to 2020) in place of the live download.</p>
+
+<h2>The shape of the work: seven steps</h2>
+<p>Before a single line of code, it helps to see the whole arc. A strategy is built in seven steps: you <strong>(1) have an idea</strong> — from forums, news, blogs, academic papers, or plain gut instinct; you <strong>(2) download the data</strong> — daily is easy, intraday usually comes from your broker; you <strong>(3) build the algorithm</strong> — calculate indicators, write entry and exit rules, and compute returns and profit in actual money, not just percentages. Then four habits keep you sane: <strong>(4)</strong> program step-wise and test each piece as you go, because debugging a whole script at once is misery; <strong>(5)</strong> comment your code so future-you understands it; <strong>(6)</strong> fragment it into functions — make the data download a function so you don't re-run it every time; and <strong>(7)</strong> build contingency plans — the simplest being to save your downloaded data to a CSV so a failed download never stops you.</p>
+
+<h2>Idea one: simple returns versus log returns</h2>
+<p>There are two ways to measure how much a price moved. A <strong>simple return</strong> is the one you learned in school: today's price minus yesterday's, divided by yesterday's. In pandas that is one call, <code>px.pct_change()</code>. A <strong>log return</strong> takes the natural logarithm of the price ratio, <code>np.log(px / px.shift(1))</code>. Run both on the same data and you'll see they are <em>almost</em> identical — on our NSE file the largest gap between them was about <span class="mono">0.009</span> — but they are not the same, and the gap widens as returns get larger.</p>
+
+<div class="callout">The instructor's analogy is perfect: it's like measuring weight in kilograms versus pounds. The person doesn't change; only the unit does. A 70-kg person isn't 70 pounds. Likewise the <em>price move</em> is real and fixed; simple and log returns are just two units for describing it. (One difference from kg/lb: there the ratio is constant, whereas here the gap between the two grows as the move grows — and log returns always understate the simple return slightly.)</div>
+
+<p>So why have two units at all? Because each is convenient in a different situation. Simple returns are intuitive when you want to talk in plain percentages. Log returns have a magical property — they are <strong>additive over time</strong> — and they behave nicely in statistical models. That additivity is the heart of the next idea.</p>
+
+<h2>Idea two: cumsum, cumprod, and the addition trap</h2>
+<p>Here is the trap that catches everyone once. Take the price path the lecture uses: <strong>100 → 105 → 108 → 103 → 106</strong>. The honest answer to "what did I make?" is obvious: I went from 100 to 106, so I made <strong>6%</strong>. Now compute the four daily simple returns — +5.000%, +2.857%, −4.630%, +2.913% — and naively add them up. You get <strong>6.14%</strong>. Wrong. Close, but wrong, and on a longer series the error compounds badly.</p>
+
+<table>
+<tr><th>Day</th><th>Price</th><th>Simple return</th><th>1 + r</th></tr>
+<tr><td>1</td><td>100</td><td>—</td><td>—</td></tr>
+<tr><td>2</td><td>105</td><td class="mono">+5.000%</td><td>1.05000</td></tr>
+<tr><td>3</td><td>108</td><td class="mono">+2.857%</td><td>1.02857</td></tr>
+<tr><td>4</td><td>103</td><td class="mono">−4.630%</td><td>0.95370</td></tr>
+<tr><td>5</td><td>106</td><td class="mono">+2.913%</td><td>1.02913</td></tr>
+</table>
+
+<p>The fix is to <strong>multiply</strong>, not add. You compound the <code>(1 + r)</code> factors together and subtract one at the end: <code>(1 + r).cumprod() - 1</code>. Multiply those four factors and you land exactly on 6%. This is what <code>cumprod</code> (cumulative product) does — at each row it multiplies in the new factor, tracing the growth of your money.</p>
+
+<p>Log returns escape the trap entirely, because of a fact from school maths: <code>ln(a) + ln(b) + ln(c) = ln(a·b·c)</code>. Add the four log returns and the inner prices cancel telescopically, leaving exactly <code>ln(106/100)</code> = <span class="mono">0.05827</span>. So with log returns you simply <strong>add</strong> them — <code>cumsum</code> — and convert back at the end if you want a percentage.</p>
+
+<div class="tip"><strong>The rule to memorise:</strong> simple returns go with <code>cumprod</code> (the product rule); log returns go with <code>cumsum</code> (the sum rule). You cannot mix them. Pick a unit and stay in it — measuring half your class in kilos and half in pounds makes the whole roster nonsense.</div>
+
+<h2>Idea three: the <code>.shift()</code> operator and look-ahead bias</h2>
+<p>This little operator does something simple and protects you from something serious. <code>series.shift(1)</code> moves every value <em>down</em> one row, so yesterday's price sits on today's row; <code>shift(-1)</code> pulls tomorrow's value up. That's all it does mechanically. Its purpose is to prevent <strong>look-ahead bias</strong> — the cardinal sin of back-testing, where your strategy uses information it could not possibly have known at the time.</p>
+
+<div class="warn"><strong>Why it bites.</strong> When you compute a signal from a bar's close and then "trade" on that same bar, you are pretending you knew the close before the bar finished. Your back-test prints glorious, completely fake profits. Shifting the position vector down by one forces the trade onto the <em>next</em> bar — the first moment you could actually have acted. Most blown-up back-tests trace back to a missing or wrong shift.</div>
+
+<h2>Idea four: vectorized versus event-driven</h2>
+<p>There are two philosophies of back-testing. <strong>Vectorized</strong> — what this lecture uses — lays the whole dataset out as a matrix (rows are timestamps, columns are close, returns, indicators) and does all the calculations at once with NumPy's linear algebra. It is blisteringly fast. Its weakness is realism: it quietly assumes every order fills instantly at the price you wanted, with no slippage and no order-book friction. <strong>Event-driven</strong> walks through the data one candle at a time, like a <code>for</code> loop, re-running the rules at each "event" (each new candle). It can model unfilled and partially-filled orders, slippage, and the real dynamics of the book — but it is slow and far more work to write.</p>
+
+<div class="callout"><strong>Use both, in order.</strong> Finding a profitable strategy is like finding a needle in a (smallish) haystack — you might start with 15 ideas and end with 2 worth trading. Don't spend expensive event-driven effort on all 15. Use fast vectorized back-tests to <em>winnow</em> 15 down to a few promising survivors, then apply the realistic event-driven treatment to those. (Quantra's free <code>Blueshift</code> is one event-driven engine that also does live trading.)</div>
+
+<h2>Putting it together: a vectorized SMA strategy</h2>
+<p>Now the payoff. The idea is deliberately simple: <strong>go long when the price is above its 12-period simple moving average, exit when it falls below.</strong> Watch how cleanly the four building blocks slot in.</p>
+
+<pre><code>df["cc"]  = df["Close"].pct_change()           # 1. returns (simple)
+df["SMA"] = df["Close"].rolling(12).mean()     # 2. the indicator
+df["pos"] = np.where(df["Close"] > df["SMA"], 1, 0)   # 3. the rule: 1=long, 0=flat
+df["pos"] = df["pos"].shift(1)                 # 4. shift -> no look-ahead
+df["strat"] = df["pos"] * df["cc"]             # strategy return per bar
+equity = (1 + df["strat"]).cumprod()           # compound it (simple returns!)
+total  = equity.iloc[-1] - 1                   # final return</code></pre>
+
+<p>Read it line by line. <code>rolling(12).mean()</code> is the moving average — the Python equivalent of dragging an AVERAGE formula down a spreadsheet. <code>np.where</code> turns the rule into a column of 1s and 0s: a 1 means "be invested," a 0 means "stay out." A run of consecutive 1s simply means you hold; the instant it flips to 0 you sell. Then the crucial <code>shift(1)</code>: because <code>pct_change</code> measures the return <em>into</em> each bar, the position must be lagged one step so that a buy signal earns the <em>following</em> bar's return, not the current one. Finally, multiplying position by returns zeroes out every bar you were flat, leaving only the returns you actually earned — and because these are simple returns, we compound them with <code>cumprod</code>.</p>
+
+<h3>The honest result</h3>
+<p>On the NSE data, after the 12-day warm-up we have 951 rows; the raw signal is long on 606 bars and flat on 345, and after the shift it's 605 long, 345 flat — invested roughly two-thirds of the time. The verdict:</p>
+
+<table>
+<tr><th>Result</th><th>Total return</th></tr>
+<tr><td>Buy &amp; Hold</td><td class="mono">54.43%</td></tr>
+<tr><td>SMA-12 strategy</td><td class="mono">54.46%</td></tr>
+</table>
+
+<p>A dead heat. The strategy did about the same as simply holding the index — no real edge, despite all that activity. In the lecture's own live Nvidia run the SMA strategy actually <em>trailed</em> buy-and-hold (16% versus 29%). Either way the lesson is the same, and it is the whole reason back-testing exists: <strong>most simple ideas do not beat the benchmark.</strong> The point of a back-test is not to admire a strategy but to let the numbers tell you the unflattering truth <em>before</em> you risk real money.</p>
+
+<div class="callout"><strong>The one-paragraph version.</strong> Measure moves in simple returns (<code>pct_change</code>) or log returns (<code>np.log(P/P.shift(1))</code>) — and combine them correctly: simple with <code>cumprod</code>, log with <code>cumsum</code>, never mixed. Always <code>shift</code> your signal by one bar to avoid look-ahead bias. Screen many ideas fast with vectorized back-tests, then validate the survivors with realistic event-driven ones. And when you finally run your clean little strategy and it merely ties the benchmark — that isn't failure, that's the back-test doing its job.</div>
+
+</body>
+</html>

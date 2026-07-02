@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 10-1 · ASQ-01 Statistical Analysis of Market Data — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:48px 28px;
+       color:#3b0a2a;line-height:1.7;font-size:17px;background:#fffafc;}
+  h1{font-size:30px;color:#9d174d;line-height:1.25;margin-bottom:4px;}
+  h2{font-size:23px;color:#db2777;margin-top:40px;border-bottom:2px solid #fbcfe8;padding-bottom:5px;}
+  h3{font-size:19px;color:#be185d;margin-top:28px;}
+  .sub{color:#a21caf;font-style:italic;margin-top:0;}
+  code{font-family:ui-monospace,Consolas,monospace;background:#fce7f3;padding:1px 5px;border-radius:4px;font-size:15px;}
+  pre{background:#3b0a2a;color:#fbcfe8;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.5;}
+  pre code{background:none;color:inherit;padding:0;}
+  .callout{background:#fdf2f8;border-left:4px solid #db2777;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  .warn{background:#fef2f2;border-left:4px solid #dc2626;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  .tip{background:#fffbeb;border-left:4px solid #d97706;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px;}
+  th,td{border:1px solid #fbcfe8;padding:7px 10px;text-align:left;}
+  th{background:#fce7f3;color:#9d174d;}
+  .closer{background:#fdf2f8;border:1px solid #fbcfe8;border-radius:10px;padding:18px 22px;margin-top:36px;}
+</style>
+</head>
+<body>
+
+<h1>When Simple Rules Stop Working</h1>
+<p class="sub">Week 10-1 · Advanced Statistics for Quant Strategies · ASQ-01 (Part 1)</p>
+
+<p>This lesson is a doorway into <strong>time-series modelling</strong> — a subject universities spread across a
+whole semester, compressed here into the part that actually matters for trading. The goal isn't to memorise the
+mathematics (we happily trust the statisticians who built the foundations); it's to <em>grip the key ideas</em>:
+why simple rules fail, what an autoregressive model really says, why we obsess over "stationarity", and how the
+ARIMA family ties it all together.</p>
+
+<h2>1. The motivation: a moving-average rule that disappoints</h2>
+
+<p>Moving-average crossovers are a lovely place to start trading. They're simple, intuitive, and often make
+decent money. But every few years markets go through a <strong>crazy period</strong> — a crash, a pandemic, a war,
+a rate-hike cycle — and that's exactly when these rules fall apart. The instructor calls these turning points
+<strong>regime shifts</strong>: something fundamental changes how the whole market behaves, and a rule tuned to
+yesterday's world suddenly bleeds money.</p>
+
+<p>To feel it, we run a 10-day / 30-day crossover on a liquid index spanning the COVID crash. Go long when the
+short average is above the long one, short otherwise. The result is humbling: the crossover returned about
+<strong>+26%</strong> while simply buying and holding returned about <strong>+47%</strong>. If you're going to
+the trouble of building a strategy, you'd like it to <em>beat</em> doing nothing — and here it didn't.</p>
+
+<div class="callout"><strong>Look at the returns, not just the price.</strong> Prices trend upward over time, but
+the daily <em>returns</em> hover around zero — with a twist. The wiggles <em>cluster</em>: stormy stretches of
+big swings, then calm stretches of small ones. That volatility clustering is the first clue that markets aren't
+purely random, which is precisely why a smarter, more adaptive model might have an edge.</div>
+
+<h2>2. The autoregressive idea</h2>
+
+<p>Many traders start with a hunch: <em>if it went up, it'll probably keep going up.</em> An
+<strong>autoregressive (AR)</strong> model turns that hunch into something you can measure. Ordinary regression
+predicts <code>y</code> from other variables <code>x1, x2, x3</code>. Autoregression is the same machinery
+pointed at <em>the variable's own past</em>:</p>
+
+<pre><code>r_t = α + β · r_(t-1) + ε_t        # AR(1): today's return from yesterday's</code></pre>
+
+<p>Here <code>α</code> is the baseline return when there's no momentum, and <code>β</code> measures how strongly
+yesterday carries into today. The sign of <code>β</code> tells a story: between 0 and 1 the series is
+<strong>trending</strong> (up tends to follow up); between 0 and −1 it's <strong>mean-reverting</strong> (up
+tends to follow down); near 0, yesterday tells you nothing at all. An <strong>AR(2)</strong> adds the day before
+that, <strong>AR(p)</strong> the last <em>p</em> days — same idea, more memory.</p>
+
+<h2>3. Stationarity: the quiet assumption behind everything</h2>
+
+<p>Before we trust any of this, we must ask whether the series is <strong>stationary</strong>. Strip away the
+formal definitions and stationarity just means <em>stability</em>: the mean stays roughly the same through the
+years, and so does the standard deviation. Compute the average return in 2018 and again in 2024 and they'll look
+alike — that's stationary. Do the same for <em>prices</em> and they're wildly different, because prices trend.</p>
+
+<p>This is the punchline: <strong>prices are non-stationary, returns are (almost always) stationary.</strong>
+That's why every model in this lecture is built on returns — or, equivalently, on <em>differenced</em> prices
+(today's price minus yesterday's). The statistics we lean on only behave when the process underneath is stable.</p>
+
+<div class="tip"><strong>Confirming it with a test.</strong> The <strong>Augmented Dickey-Fuller (ADF)</strong> test
+exists for the part of us that wants a number, not just a chart. Its null hypothesis is "non-stationary", so you
+read the <em>p-value</em>: below 0.05 means stationary. On our weekly data the prices came back at
+<strong>p = 0.099</strong> (non-stationary, as expected) and the returns at <strong>p = 0.0001</strong>
+(emphatically stationary). Textbook.</div>
+
+<h2>4. ACF and PACF: which lags actually matter</h2>
+
+<p>If returns depend on their past, <em>which</em> past — yesterday, last week, last month? Two diagnostic plots
+answer this. The <strong>autocorrelation function (ACF)</strong> measures how today's return correlates with the
+return <em>k</em> steps ago, capturing both the <strong>direct</strong> link and all the <strong>indirect</strong>
+ones that travel through the days in between. The <strong>partial autocorrelation function (PACF)</strong> isolates
+the <strong>direct</strong> relationship only, stripping out the chain.</p>
+
+<p>Both plots come with a shaded blue band — the <strong>significance shadow</strong>, roughly
+<code>±1.96/√N</code>. Bars that poke <em>outside</em> the band signal genuine autocorrelation worth modelling;
+bars inside are just noise. As a rule of thumb, the PACF suggests how many AR terms (<em>p</em>) you need and the
+ACF suggests how many MA terms (<em>q</em>). For a nearly-efficient return series, most bars sit demurely inside
+the band — a reminder that easy edges are rare.</p>
+
+<h2>5. A rolling AR(1) strategy — and an honest scorecard</h2>
+
+<p>Real systematic trading is <strong>dynamic</strong>. Rather than fitting one model once, we slide a window
+(here 100 weeks), re-fit an AR(1) at every step, and forecast just <strong>one week ahead</strong>: long if the
+forecast is positive, short if negative. Then we step forward and do it again. This is a <strong>rolling
+forecast</strong>, and it mirrors how professionals actually operate — always re-estimating, never assuming a
+model fitted years ago still holds.</p>
+
+<table>
+<tr><th>Metric</th><th>Rolling AR(1)</th><th>Buy &amp; hold</th></tr>
+<tr><td>Total return</td><td>−18.5%</td><td>+21.3%</td></tr>
+<tr><td>Sharpe (annual)</td><td>−0.36</td><td>0.55</td></tr>
+<tr><td>Max drawdown</td><td>−33.3%</td><td>−34.6%</td></tr>
+<tr><td>Win rate</td><td>54.4%</td><td>—</td></tr>
+</table>
+
+<div class="warn"><strong>The trap in one line: right 54% of the time, yet it still lost money.</strong> How? The
+losing weeks were simply bigger than the winning ones — <em>asymmetric payoffs</em>. Worse, the instructor noted
+the very same model <em>outperformed</em> buy-and-hold on one data pull and <em>underperformed</em> on another:
+the result is <strong>unstable</strong>. The logic is sound and the engine is genuinely professional, but
+<strong>a single lag is too simple for production</strong>. AR(1) quietly assumes next week will behave like the
+last hundred — and that assumption shatters at every regime shift.</div>
+
+<h2>6. ARIMA: adding the missing pieces</h2>
+
+<p>The fix is to enrich the model, and that's what <strong>ARIMA(p, d, q)</strong> does. The acronym is three
+ideas bolted together:</p>
+
+<table>
+<tr><th>Part</th><th>Name</th><th>What it contributes</th></tr>
+<tr><td><strong>AR(p)</strong></td><td>AutoRegressive</td><td>uses the last <em>p</em> values of the series</td></tr>
+<tr><td><strong>I(d)</strong></td><td>Integrated</td><td>differences the series <em>d</em> times to force stationarity</td></tr>
+<tr><td><strong>MA(q)</strong></td><td>Moving-average of errors</td><td>models the last <em>q</em> forecast <em>errors</em> to self-correct</td></tr>
+</table>
+
+<div class="warn"><strong>Don't confuse the two "moving averages".</strong> The MA in ARIMA has nothing to do with
+the SMA/LMA price averages from the crossover. Here, "moving average" means the moving average of the model's
+<em>errors</em> — the gap between what it predicted and what actually happened.</div>
+
+<p>Why would past errors help? Picture a class of students predicting their own exam scores each week. One
+student <em>consistently</em> guesses two marks low; another <em>consistently</em> guesses high. Once you spot
+that recurring bias, you can correct their next prediction by it. ARIMA's MA term does exactly this for returns:
+it watches the pattern in past mistakes and folds the correction into the next forecast. The <strong>I</strong>
+term, meanwhile, handles non-stationary inputs by differencing — turning stubborn prices into well-behaved
+changes. Choosing the order <strong>(p, d, q)</strong> — with ADF guiding <em>d</em>, the PACF guiding <em>p</em>,
+and the ACF guiding <em>q</em> — is the craft we build on in Part 2.</p>
+
+<div class="closer">
+<h3 style="margin-top:0">The one-paragraph version</h3>
+<p>Simple moving-average rules underperform because they can't adapt to <strong>regime shifts</strong>, so we move
+to statistical models. An <strong>AR(1)</strong> makes the "momentum hunch" measurable —
+<code>r_t = α + β·r_(t-1) + ε_t</code> — but only works on <strong>stationary</strong> data, which is why we model
+<em>returns</em> (ADF p &lt; 0.05), not prices. The <strong>ACF/PACF</strong> plots reveal which lags carry real
+signal. A <strong>rolling AR(1)</strong> that re-fits each week and forecasts one step ahead is the professional
+pattern, yet on our data it was right 54% of the time and <em>still lost money</em> — a single lag is too simple
+and the result is unstable. The remedy is <strong>ARIMA(p, d, q)</strong>: autoregression on past values,
+<strong>I</strong>ntegration (differencing) for stationarity, and a <strong>moving average of past errors</strong>
+to self-correct — the foundation for the order-selection work that follows.</p>
+</div>
+
+<p style="text-align:center;color:#f9a8d4;margin-top:36px;font-size:14px;">EPAT · Week 10-1 ASQ-01 · Statistical Analysis of Financial Market Data (Part 1)</p>
+
+</body>
+</html>

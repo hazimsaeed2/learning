@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 25-1 · QuantiP — Study Guide</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; line-height: 1.7; color: #1f2937; background: #fdfcf9; margin: 0; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 48px 28px 80px; }
+  h1 { font-size: 2rem; color: #92400e; margin-bottom: 0.2em; }
+  .sub { color: #6b7280; font-style: italic; margin-bottom: 2em; }
+  h2 { font-size: 1.3rem; color: #b45309; margin-top: 2em; border-bottom: 2px solid #fde68a; padding-bottom: 0.25em; }
+  h3 { font-size: 1.05rem; color: #92400e; margin-top: 1.5em; }
+  p { margin: 0.9em 0; }
+  .num { background: #fffbeb; border-left: 4px solid #d97706; padding: 2px 8px; font-family: 'Consolas',monospace; font-size: 0.92em; }
+  blockquote { background: #fffbeb; border-left: 4px solid #f59e0b; margin: 1.2em 0; padding: 0.8em 1.2em; color: #78350f; font-style: italic; }
+  code { background: #f5f3ee; padding: 1px 5px; border-radius: 3px; font-family: 'Consolas',monospace; font-size: 0.9em; }
+  .lead { font-size: 1.08rem; color: #374151; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>QuantiP — Building a Quant Strategy in Python</h1>
+<div class="sub">EPAT · Week 25-1 · DMP-05 — how a professional goes from idea to a tested strategy, and how to trade a real academic anomaly</div>
+
+<p class="lead">Most people learning to trade with code start in the middle: they grab a notebook, write a moving-average rule, and run a backtest. Ishan — a quant researcher who has worked at Barclays and Merrill Lynch — wants you to zoom out. A professional follows a <em>fixed set of steps</em>, in order, and most of the value is in the steps beginners skip. This session walks through that workflow, then uses it to implement a famous strategy from a real research paper.</p>
+
+<h2>Why a workflow at all?</h2>
+
+<p>Whether you join a hedge fund, set up a prop desk, or just trade your own money, the discipline is the same: don't randomly start coding. There is a sequence — <strong>data, screening, alpha, backtest, performance analysis</strong> — and skipping a step is where strategies quietly die. At a big fund each step is a separate team; at a startup one person wears all the hats. Either way, the order matters.</p>
+
+<p>Keep one sobering fact in mind: roughly <strong>90 % of active fund managers underperform their benchmark</strong>. If your strategy can't beat a cheap index ETF, there is no reason for it to exist. That is the bar.</p>
+
+<h2>Step 1 — Data, and the one programming idea that matters</h2>
+
+<p>Alpha is built from data, and there are four families of it. <strong>Price data</strong> (open, high, low, close, volume) is where everyone starts. <strong>Fundamental data</strong> — revenue, profit, cash flow, and crucially the <em>timing</em> of earnings announcements — adds a second dimension. <strong>Sentiment data</strong> comes in three levels: the company itself (con-calls, management interviews), third parties (research houses, news agencies), and the public (social media — remember how Reddit drove GameStop). And <strong>legal, regulatory and economic data</strong> — wars, Fed decisions, even counting ships through the Strait of Hormuz to predict crude — rounds it out. Not all data has predictive power; the skill is choosing what does.</p>
+
+<p>Now the programming lesson. When you fetch data, don't paste <code>yf.download(...)</code> into every notebook. Wrap it in a <strong>module</strong> — a function like <code>get_stock_data(name, start, end)</code> living in its own file. Textbooks say modular code "reduces lines" — but here the line count is identical. The <em>real</em> reason is <strong>code maintenance</strong>. Imagine you've used the data call in a hundred notebooks and Yahoo Finance suddenly stops providing data. With inline code you must edit a hundred files. With a module, you change <em>one</em> function and every notebook quietly switches to the new source. That is the genuine payoff of modular programming.</p>
+
+<blockquote>One aside worth remembering: <code>auto_adjust=True</code> does <em>not</em> average prices or smooth anything — it adjusts for splits, bonuses and other corporate actions, so a 1-for-1 split doesn't look like a 50 % crash.</blockquote>
+
+<h2>Step 2 — Screening, and the step everyone forgets</h2>
+
+<p>Once you have data on many stocks, throw away the ones that don't fit. Drop <strong>penny stocks</strong> — they have a mind of their own, lock in circuits, and attract price-chasing beginners who think a ₹2 stock becoming ₹10 is easy money. Drop <strong>high-volatility</strong> names if your mandate forbids them (a pension fund cannot gamble retirees' money). Drop stocks in recent <strong>mergers</strong>, because the merged entity behaves nothing like the historical data you'd backtest on.</p>
+
+<p>But the screen that <strong>ninety percent of people forget is liquidity.</strong> Here is the rule of thumb: you can realistically buy only about <strong>1 % of a stock's daily dollar volume</strong> in a day without moving the price against yourself. Work the lecture's example. A stock trades 1.18 million shares a day at about ₹12.6, so its daily dollar volume is roughly <span class="num">$14,868,000</span>. One percent of that is about <span class="num">$148,680</span> — and if you're a $100 million manager wanting to put <span class="num">$10 million</span> into a single name, you simply cannot. It would take far too long and the slippage would be brutal. Verdict: <strong>avoid</strong>. People who ignore this get trapped in small-cap positions they cannot exit when the market turns.</p>
+
+<h2>Step 3 — Alpha, the hard part</h2>
+
+<p>Alpha is any edge that earns more than the market. Where do ideas come from? Four wells: your <strong>own experience</strong> (you've seen RSI or a moving average work), <strong>others' experience</strong> (a trader who can't code teaming with a developer who can), your <strong>network</strong> (EPAT seniors, juniors, faculty), and <strong>academic research</strong> (sites like SSRN are full of documented anomalies). Don't be intimidated by PhDs at big funds — they often over-engineer, reaching for neural networks where a moving-average crossover would do. Process and effort beat pedigree.</p>
+
+<p>Whatever the idea, you must turn it into a <strong>testable hypothesis</strong>. "If the market rises two days it keeps rising" means nothing to a computer. Translate it: <em>buy when the 2-day EMA is above the 7-day EMA</em>. One alpha is rarely enough, so add a second — an <strong>ADX above 20</strong> to confirm the trend has strength — and <strong>combine</strong> them. The simplest combination is "AND": multiply the two 0/1 signals so you only buy when both agree. With more alphas you'd switch to <strong>majority voting</strong>, or <strong>weighted voting</strong> where each alpha's weight reflects its own Sharpe or return. In our run on real data the raw EMA(2/7) crossover was long about 54 % of the time but flipped signal <strong>507 times</strong> — it badly over-trades, which is exactly why a trend filter (and, next, diversification) matters.</p>
+
+<h2>Steps 4 and 5 — Backtest honestly, then judge from many angles</h2>
+
+<p>Backtesting is going back in time to ask "would this have worked?" Two disciplines matter. First, <strong>shift your signal by one bar</strong> — you trade tomorrow on a signal you see today, never on the same bar, or you've peeked at the future. Second, <strong>include transaction cost.</strong> In our single-stock run on RELIANCE the raw crossover returned <span class="num">+251 %</span> gross — but simply <em>buying and holding</em> the stock made <span class="num">+673 %</span>, so this fast rule actually <em>trailed</em> doing nothing. Charge the lecture's cost (0.03 % brokerage + 0.02 % tax = <span class="num">0.05 % per side</span>) and the trade log's net falls from 660 to <span class="num">526</span> points — a 20 % drag. Costs routinely eat ten percent or more of gross, and they collapse marginal strategies entirely.</p>
+
+<p>Then judge wisely. A single number — total return — lies. Look at the <strong>Sharpe ratio</strong> (only 0.64 for the crossover), the <strong>number of trades</strong> (507 signal changes, punishing after costs), and the volatility. Only the full picture tells you whether the strategy is worth your time and money.</p>
+
+<h2>The most powerful lever in momentum: diversification</h2>
+
+<p>Here is the punchline of Part 1. Beginners on day one suggest a dozen fixes for a weak strategy — stop-losses, position sizing, new indicators, parameter sweeps. All reasonable. But the simplest, most effective move is to <strong>diversify</strong>. Take the <em>exact same</em> strategy and run it across a basket of loosely-correlated stocks instead of one. Some names work in one period, others in another; they cover for each other, portfolio volatility falls sharply, and the Sharpe ratio jumps.</p>
+
+<p>In our notebook the average single-stock Sharpe was about <span class="num">0.51</span>; the equally-weighted <strong>47-stock</strong> portfolio's Sharpe was <span class="num">1.28</span> — roughly two-and-a-half times higher, on a cumulative return of <span class="num">+272 %</span> — and because volatility fell so much, you could even add a little leverage. Diversification works best across genuinely different assets: Nifty-50 names move together, but commodities like crude, gold and lean hogs barely correlate at all, so the benefit there is enormous.</p>
+
+<h2>Part 2 — Betting Against Beta</h2>
+
+<p>Now we use the workflow to implement a real paper: <em>Betting Against Beta</em> by Frazzini and Pedersen of AQR. First, two kinds of risk. <strong>Idiosyncratic (unsystematic) risk</strong> is firm-specific — a strike at one Maruti plant hurts Maruti, not Hyundai. You can diversify it away, so the market <em>won't pay you</em> for it. <strong>Systematic risk</strong> is market-wide — COVID, war, 2008, a Fed decision — and it hits everything at once. You can't diversify it, only hedge it, so it <em>is</em> compensated.</p>
+
+<p>We measure systematic risk with <strong>beta</strong>: regress a stock's returns on the market's, and the slope is beta. A defensive name has a beta well below one — the shipped Beta notebook gets Nestle around <span class="num">0.52</span>, and on our own Nifty matrix <strong>TCS</strong> lands at exactly <span class="num">0.52</span>: when the market falls 14 %, it falls only about 7 %. Across the 48 names beta runs from <span class="num">0.46</span> (Wipro) to <span class="num">1.76</span> (Yes Bank). Beta above one means more volatile than the market; below one, less.</p>
+
+<h3>The anomaly</h3>
+
+<p>The Capital Asset Pricing Model says expected return equals the risk-free rate plus beta times the market's excess return. Set the risk-free rate to zero and it collapses to <em>expected return ≈ beta × market return</em> — so a higher beta promises a higher return. Everyone therefore piles into high-beta stocks to juice their performance. Why? Because they are <strong>leverage-constrained</strong>: a retail trader can't walk into a bank and borrow to triple their stock exposure, and mutual funds have mandates. Unable to use leverage, they reach for beta instead. That crowding makes <strong>high-beta stocks overvalued and low-beta stocks underpriced</strong> — nobody wants to buy boring Nestle in a bull market.</p>
+
+<blockquote>So the contrarian bet is: go <strong>long low-beta</strong> and <strong>short high-beta</strong>. You're buying exactly what the leverage-constrained crowd has abandoned.</blockquote>
+
+<p>When we built this on the real Nifty-50 data, the low-beta portfolio (the <strong>12 names with beta below 0.7</strong>, held from 2018) returned <span class="num">+237 %</span> — beating the Nifty's <span class="num">+134 %</span> — and did it with a higher Sharpe (<span class="num">1.10</span> vs <span class="num">0.76</span>) and a shallower drawdown (<span class="num">−28 %</span> vs <span class="num">−38 %</span>). Sorting the universe by beta, the five lowest-beta names earned <span class="num">+241 %</span> at Sharpe 0.89 while the five highest-beta names earned only <span class="num">+185 %</span> at Sharpe 0.63 — a betting-against-beta spread of about <span class="num">+56 points</span>, with the low-beta side taking far less risk. That is the anomaly in one line: <em>lower beta, higher risk-adjusted return</em>, the opposite of what CAPM predicts. The paper finds the same pattern in international equities, treasuries, credit, commodities and currencies.</p>
+
+<p>Why does low beta win, especially in crises? Partly the arithmetic of recovery. A stock that falls 10 % needs an 11 % gain to get back to even; one that falls 50 % needs a full <strong>100 %</strong>. Low-beta names fall less in a crash, so they climb back faster. A colleague's tweak — keeping only the low-beta names that are also high-quality, with <strong>return-on-equity above 18</strong> (this leaves just five: HCL Tech, Hindustan Unilever, Infosys, TCS and Tech Mahindra) — lifted the return to about <span class="num">+269 %</span>, the “quality-minus-junk” idea in miniature.</p>
+
+<h2>The two biases that quietly ruin this</h2>
+
+<p>This strategy is a perfect place to learn the two most common — and most dangerous — backtesting errors. <strong>Survivorship bias</strong> creeps in if you build the universe from <em>today's</em> index members. Those are the survivors; the companies that went bankrupt or were dropped for underperformance have vanished from your data, so your backtest looks far rosier than reality. The fix is to use the index's <em>historical</em> constituents at each point in time — Nifty 50 is reconstituted every six months, and the changes are in NSE press releases.</p>
+
+<p><strong>Look-ahead bias</strong> creeps in if you compute beta on the <em>full</em> data set and then trade. You're using information — the stock's whole-sample behaviour — that you would not have had on the day you placed the trade. The fix is to estimate beta on a <em>training window only</em> (say, data up to 2017) and trade from 2018 onward, recomputing periodically. In live trading you'd wrap this in a simple date-driven loop: at the start of each month, recalculate beta on data available so far and rebalance.</p>
+
+<h2>Putting it together</h2>
+
+<p>The lesson of QuantiP is that a quant strategy is a <em>process</em>, not a clever indicator. Collect data and wrap it in a module so a vendor change is painless. Screen ruthlessly — and never forget liquidity. Turn ideas into testable hypotheses and combine several alphas. Backtest with costs and without peeking at the future, then judge on Sharpe and drawdown, not just return. Lean on diversification, the quietest and strongest lever. And when you implement a real anomaly like Betting Against Beta, guard against survivorship and look-ahead bias as carefully as you guard the alpha itself — because in this game, the way you avoid fooling yourself <em>is</em> the edge.</p>
+
+<p style="margin-top:2.5em; color:#6b7280; font-style:italic; font-size:0.95em;">Read alongside the cheat sheet (worked tables and the five-number chart) and the practice notebook, where every figure above is computed step by step.</p>
+
+</div>
+</body>
+</html>

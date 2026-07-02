@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 19-1 MLT-02 — Machine Learning-II — Study Guide</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; background:#fffdf6; color:#2c2922; line-height:1.7; margin:0; }
+  .wrap { max-width:820px; margin:0 auto; padding:54px 30px 90px; }
+  h1 { font-size:2.05rem; line-height:1.25; margin:0 0 6px; color:#92400e; }
+  .sub { color:#766a55; font-style:italic; margin-bottom:34px; font-size:1.02rem; }
+  h2 { font-size:1.42rem; color:#92400e; margin:42px 0 10px; border-bottom:2px solid #fde68a; padding-bottom:6px; }
+  h3 { font-size:1.12rem; color:#b45309; margin:26px 0 6px; }
+  p { margin:12px 0; }
+  .lead { font-size:1.08rem; color:#3a362c; }
+  code { background:#fef3c7; padding:1px 6px; border-radius:4px; font-family:'Consolas',monospace; font-size:0.9em; color:#92400e; }
+  .box { background:#fef6e3; border-left:4px solid #f59e0b; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  .insight { background:#ecfdf5; border-left:4px solid #059669; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  .warn { background:#fbecec; border-left:4px solid #c0504d; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  ul { margin:12px 0; padding-left:24px; }
+  li { margin:6px 0; }
+  .tag { display:inline-block; background:#92400e; color:#fff; font-size:0.72rem; letter-spacing:2px; padding:4px 12px; border-radius:20px; font-family:Arial,sans-serif; margin-bottom:16px; }
+  table { border-collapse:collapse; width:100%; margin:18px 0; font-size:0.95rem; }
+  th,td { border:1px solid #fde68a; padding:7px 11px; text-align:left; }
+  th { background:#fef6e3; color:#92400e; }
+  .end { text-align:center; color:#b3a584; margin-top:50px; font-size:0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="tag">WEEK 19-1 · MLT-02 · STUDY GUIDE</div>
+  <h1>Machine Learning-II: Evaluating Models, Support Vector Machines &amp; Clustering</h1>
+  <div class="sub">A plain-English walk through Jay's second ML session — how to tell a good model from one that's only pretending, the confusion matrix and the metrics that survive imbalanced data, the maximum-margin idea behind Support Vector Machines, unsupervised grouping with K-means, and a single change of target that quietly lifts the edge from a coin toss to ~80%.</div>
+
+  <p class="lead">Lecture 1 built a model; lecture 2 asks the harder question — <em>is it any good?</em> Along the way it introduces two new algorithms — a supervised one (the <strong>Support Vector Machine</strong>) and an unsupervised one (<strong>K-means clustering</strong>) — but the real lesson is a way of thinking: most of the time the algorithm is not your problem, your <em>data and target</em> are. The session is structured to make you feel that conclusion rather than just hear it.</p>
+
+  <h2>1. Why training is called <code>.fit</code></h2>
+  <p>Training a model means making it <strong>fit</strong> — represent — the shape of the data. The instructor shows a wiggling cloud of points and a line that tries to pass through it. Tune the model and three things can happen. An <strong>under-fitted</strong> model is too simple to capture the shape (a straight line through a curve). A <strong>well-fitted</strong> model tracks the true pattern and generalises. An <strong>over-fitted</strong> model wiggles even more than the data, chasing every noisy point — it has <em>memorised</em> the training set and will stumble on anything new. We always aim for the middle one.</p>
+
+  <h2>2. The two sources of error: bias and variance</h2>
+  <p>Why do models drift toward under- or over-fitting? Two errors creep in.</p>
+  <p><strong>Bias</strong> is the model's <em>inability to learn</em> the association between features and target — train it as many times as you like and it still can't. It produces under-fitting. The cause might be too simple an algorithm, too little data, or features with no predictive power. <strong>Variance</strong> is the opposite: an <em>over-reliance on the training data</em>. Change the training set and the model falls apart, because it memorised rather than learned. It produces over-fitting.</p>
+  <div class="box"><strong>How to quantify them (for classification).</strong> A model with <strong>training accuracy below 50%</strong> is <em>biased</em> — it does worse than a coin toss. A model whose <strong>train-minus-test accuracy gap exceeds about 8–10%</strong> has high <em>variance</em>. The instructor's bullseye image: a biased thrower lands systematically off-centre; a high-variance thrower scatters all over the moment the dartboard changes. We want <strong>low bias and low variance</strong>.</div>
+
+  <h2>3. The confusion matrix and the metrics that matter</h2>
+  <p>To evaluate a classifier we tabulate its predictions against reality. By convention <strong>class 1 is the positive</strong> class (in trading, "take a long") and <strong>class 0 is negative</strong> ("no position"). Every prediction lands in one of four cells:</p>
+  <table>
+    <tr><th></th><th>predicted 0</th><th>predicted 1</th></tr>
+    <tr><th>actual 0</th><td>True Negative (TN)</td><td>False Positive (FP)</td></tr>
+    <tr><th>actual 1</th><td>False Negative (FN)</td><td>True Positive (TP)</td></tr>
+  </table>
+  <p>We apply this to the SVM's <strong>real test set</strong> — 372 days, of which 175 were truly class 0 (131 TN, 44 FP) and 197 truly class 1 (29 FN, 168 TP). From these four numbers everything follows:</p>
+  <ul>
+    <li><strong>Accuracy</strong> = (TP + TN) / total = 299/372 = <strong>0.804</strong>. Fraction predicted correctly, regardless of class.</li>
+    <li><strong>Precision</strong> = TP / (TP + FP) = 168/212 = <strong>0.792</strong>. Of every "up" the model called, how many actually rose.</li>
+    <li><strong>Recall</strong> = TP / (TP + FN) = 168/197 = <strong>0.853</strong>. Of every real up-day, how many the model caught.</li>
+    <li><strong>F1-score</strong> = the harmonic mean of precision and recall = <strong>0.822</strong>. One number for when you care about both.</li>
+  </ul>
+
+  <h3>Why accuracy lies</h3>
+  <div class="warn"><strong>Imbalanced data wrecks accuracy.</strong> If only 70 of 1000 records are positive, a lazy model that <em>always predicts 0</em> scores 93% accuracy — while never identifying a single positive (recall 0.00). This is exactly what a "next day up <strong>5%</strong>" target produces: a handful of positive days in 1500, so a do-nothing model looks 90%+ accurate yet never trades. Since in trading we only <em>act</em> on the positive class, we lean on <strong>precision and recall</strong>, both centred on the TP cell. The instructor prefers these over artificially rebalancing the data.</div>
+
+  <h2>4. Support Vector Machines</h2>
+  <p>The first new algorithm is the <strong>Support Vector Machine (SVM)</strong>, a supervised classifier with an elegant idea. Between two classes you can usually draw <em>many</em> boundaries; the SVM insists on the single boundary — the <strong>separating hyperplane</strong> — that sits as far as possible from both classes. The width of that no-man's-land is the <strong>margin</strong>, and the handful of points that touch its edges are the <strong>support vectors</strong>. They alone define the boundary; move any other point and nothing changes.</p>
+  <p>A little vocabulary from the slides. A <strong>supporting hyperplane</strong> has the entire dataset on one side with at least one point resting on it. A <strong>separating hyperplane</strong> divides the two classes — and because infinitely many separate the same data, the SVM chooses the <strong>maximum-margin</strong> one. In equation form a hyperplane is <code>a₁x₁ + a₂x₂ + … + b = 0</code>; the distance from a point to it follows the usual point-to-line formula; and the margin between the two supporting planes works out to <strong>2 / ‖w‖</strong>. Making the margin as wide as possible is therefore the same as making <code>½·wᵀw</code> as small as possible, subject to every point being on its correct side (<code>yᵢ(wᵀxᵢ + b) ≥ 1</code>). That is the entire optimisation.</p>
+  <h3>Kernels — bending a straight boundary</h3>
+  <p>Real data is rarely separable by a straight line. The <strong>kernel trick</strong> quietly projects the data into a higher-dimensional space where a straight boundary <em>does</em> exist, without ever computing those coordinates explicitly. The common kernels are <strong>linear</strong> (<code>w·x</code>), <strong>polynomial</strong> (<code>(w·x+1)ᵖ</code>) and <strong>Gaussian / RBF</strong> (<code>exp(−‖w−x‖²/2σ²)</code>). Like logistic regression, an SVM needs its features <strong>scaled</strong>.</p>
+  <div class="box"><strong>Soft margin vs hard margin.</strong> A <strong>hard-margin</strong> SVM permits no misclassifications at all — which sounds ideal but forces the boundary to contort around every awkward point, i.e. it over-fits. A <strong>soft-margin</strong> SVM adds a penalty term, <code>½wᵀw + C·Σeᵢ</code>, that lets a few points sit inside the margin. The constant <strong>C</strong> is the dial: a <em>large</em> C punishes errors heavily and pushes toward a hard margin (more variance); a <em>small</em> C is more forgiving (more bias). It is the bias–variance trade-off from section 2, now a single knob.</div>
+  <p>The shipped notebook runs an <code>SVC(kernel='poly')</code> on Tesla data. Comparing the three kernels on the very same split makes the trade-off visible:</p>
+  <table>
+    <tr><th>kernel</th><th>train accuracy</th><th>test accuracy</th><th>gap (train − test)</th></tr>
+    <tr><td>linear</td><td>0.858</td><td><strong>0.823</strong></td><td>+0.035</td></tr>
+    <tr><td>polynomial (shipped)</td><td>0.865</td><td>0.804</td><td>+0.061</td></tr>
+    <tr><td>RBF</td><td>0.876</td><td>0.790</td><td>+0.086</td></tr>
+  </table>
+  <p>Read down the table: the more flexible the kernel, the higher its <em>training</em> accuracy but the <em>wider</em> the gap to test accuracy — exactly the variance we warned about, so on this target the simple linear kernel generalises best. But notice the headline number — every kernel clears <strong>~80% on the test set</strong>. That is startling after MLT-01, where every algorithm hovered near a coin toss. The reason is the next section.</p>
+
+  <h2>5. The one change that lifts the edge — the target variable</h2>
+  <p>In MLT-01 the target was "will tomorrow's <em>close</em> be higher than today's?", and no algorithm could beat ~50%. Here the shipped SVM asks a subtly different question: "will tomorrow's <strong>open</strong> be higher than today's <strong>open</strong>?" — and it also <strong>lags the volume</strong> so only yesterday's volume feeds the model. Same feature toolkit, same split, but the accuracy leaps to about <strong>86.5% train / 80.4% test</strong>.</p>
+  <div class="insight"><strong>Why the leap?</strong> Not the algorithm — the target. Every feature is built from the <strong>close</strong>, so the model is meant to be <em>run at the close</em> (16:00), by which point the entire trading day is known. That closing information largely anchors <em>tomorrow's open</em> — the overnight gap is small — whereas tomorrow's <em>close</em> is a whole fresh day of randomness away. The open-to-open question is simply more answerable. The implied trade is <strong>buy at today's close, sell at tomorrow's open</strong> (a "buy today, sell tomorrow", BTST). Crucially there is <strong>no look-ahead bias</strong>: everything the model needs is known the moment it runs, and lagging the volume keeps same-day information from leaking in.</div>
+  <p>This is the lecture's real punch-line, and it is a habit more than a result: when a model suddenly performs well, <em>find out why before you trust it</em>. Here the entire gain came from a smarter, more logical target — proof that thoughtful target and feature design beats algorithm-hopping every time.</p>
+
+  <h2>6. K-Means Clustering — learning with no answer key</h2>
+  <p>Everything so far has been <strong>supervised</strong>: we had a target column and asked the model to predict it. <strong>Clustering is unsupervised</strong> — there is no target at all. We simply ask the machine to group objects that resemble one another, and the most common method is <strong>K-means</strong>. Its loop is almost embarrassingly simple:</p>
+  <ul>
+    <li>choose the number of groups, <strong>k</strong>, and scatter <strong>k random centroids</strong>;</li>
+    <li>assign every point to its <strong>nearest</strong> centroid;</li>
+    <li>move each centroid to the <strong>mean</strong> of the points now assigned to it;</li>
+    <li>repeat the last two steps until the centroids <strong>stop moving</strong>.</li>
+  </ul>
+  <p>"Nearest" depends on a distance measure: the straight-line <strong>Euclidean</strong> distance is standard, but <strong>Manhattan</strong> (summed absolute differences, as if walking city blocks) and <strong>Mahalanobis</strong> (which accounts for how the features co-vary) also appear. Because it is distance-based, K-means <strong>must have scaled features</strong> — otherwise a large-magnitude column silently dominates. K-means is not the only way to cluster: <strong>hierarchical</strong> methods build a tree of groups, either bottom-up by repeatedly merging the closest pair (<strong>agglomerative</strong>, "AGNES") or top-down by splitting one big cluster (<strong>divisive</strong>, "DIANA").</p>
+  <p>The slides warm up with ten customers plotted on two attributes. Run K-means with k=2 and the points fall cleanly into two segments (labels <code>0,0,0,0,0</code> and <code>1,1,1,1,1</code>) around centroids at roughly <strong>(3.2, 6.0)</strong> and <strong>(7.2, 3.4)</strong> — two natural marketing groups discovered with no labels. The shipped notebook then does the real thing: it clusters <strong>368 companies</strong> described by six fundamental ratios (forward P/E, price-to-book, forward EPS, beta, quick ratio, debt-to-equity) into k=3 groups of sizes <strong>132, 213 and 23</strong>.</p>
+  <h3>Choosing k — the elbow method</h3>
+  <p>How many clusters is right? K-means can't tell you, so we use the <strong>elbow method</strong>. For each k we compute the <strong>inertia</strong> — the total squared distance from every point to its centroid — and plot it:</p>
+  <table>
+    <tr><th>k</th><th>inertia (within-cluster sum of squares)</th></tr>
+    <tr><td>1</td><td>2,842,700</td></tr>
+    <tr><td>2</td><td>1,157,859</td></tr>
+    <tr><td><strong>3 — the elbow</strong></td><td><strong>513,270</strong></td></tr>
+    <tr><td>4</td><td>308,299</td></tr>
+    <tr><td>5</td><td>225,639</td></tr>
+    <tr><td>6</td><td>180,951</td></tr>
+  </table>
+  <p>Inertia always falls as k rises (with one cluster per point it would reach zero), so we don't want the lowest value — we want the <strong>bend</strong>, where each extra cluster stops buying much. Here the curve elbows at <strong>k=3</strong>. In trading, clustering a universe like this drives <strong>portfolio construction</strong>, groups open positions by shared risk, and surfaces candidate <strong>pairs</strong> for statistical arbitrage — all without a single label.</p>
+
+  <h2>7. The takeaways</h2>
+  <ul>
+    <li><code>.fit</code> = represent the data's shape; avoid under-fit (bias) and over-fit (variance).</li>
+    <li>Bias = train accuracy &lt; 50%; variance = train−test gap &gt; ~8–10%. Want both low.</li>
+    <li>Confusion matrix → accuracy, precision = TP/(TP+FP), recall = TP/(TP+FN), F1 = their harmonic mean. Accuracy lies on imbalanced data — the real SVM scored 0.804 accuracy, 0.792 precision, 0.853 recall.</li>
+    <li><strong>SVM</strong> draws the maximum-margin hyperplane; kernels (linear/poly/RBF) bend it; a soft margin's <code>C</code> trades bias for variance. A more flexible kernel widened the train−test gap.</li>
+    <li>The real edge came from a smarter <strong>target</strong> — open-to-open, run at the close, volume lagged — lifting the SVM to ~80% test.</li>
+    <li><strong>K-means</strong> is unsupervised (no target); it groups by similarity, and the <strong>elbow</strong> of the inertia curve picks k (here k=3 for 368 firms).</li>
+  </ul>
+  <p>The next session goes deeper on clustering and introduces neural networks, and back-tests several of these models as strategies.</p>
+
+  <div class="end">— End of Week 19-1 MLT-02 study guide · pair this with the dashboard cheat sheet and the executed practice notebook —</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 3-2 · SFM-03 Basic Statistics — Study Guide</title>
+<style>
+  :root{ --ink:#1f2933; --soft:#52606d; --line:#e4e7eb; --accent:#7c3aed; --bg:#fbfbf9; }
+  *{box-sizing:border-box;}
+  body{ background:var(--bg); color:var(--ink); margin:0;
+        font-family:Georgia,'Times New Roman',serif; line-height:1.72; }
+  .page{ max-width:800px; margin:0 auto; padding:64px 40px 96px; }
+  h1{ font-size:30px; line-height:1.25; margin:0 0 6px; }
+  .sub{ color:var(--soft); font-size:16px; font-style:italic; margin-bottom:34px; }
+  h2{ font-size:22px; margin:46px 0 10px; padding-top:18px; border-top:1px solid var(--line); }
+  h3{ font-size:17px; margin:28px 0 6px; color:#111; }
+  p{ margin:12px 0; font-size:17px; }
+  ul,ol{ margin:12px 0 12px 4px; padding-left:24px; }
+  li{ margin:7px 0; }
+  strong{ color:#111; }
+  .lead{ font-size:18.5px; }
+  .callout{ background:#f5f3ff; border-left:4px solid var(--accent); padding:14px 18px;
+            margin:22px 0; border-radius:0 8px 8px 0; }
+  .callout .t{ font-variant:small-caps; letter-spacing:.5px; font-weight:bold; color:var(--accent);
+               font-family:Arial,sans-serif; font-size:13px; }
+  .warn{ background:#fef2f2; border-left:4px solid #dc2626; padding:14px 18px; margin:22px 0;
+         border-radius:0 8px 8px 0; }
+  .warn .t{ font-variant:small-caps; letter-spacing:.5px; font-weight:bold; color:#dc2626;
+            font-family:Arial,sans-serif; font-size:13px; }
+  table{ border-collapse:collapse; width:100%; margin:18px 0; font-family:Arial,sans-serif; font-size:14px; }
+  th,td{ border:1px solid var(--line); padding:7px 10px; text-align:left; }
+  th{ background:#f0f2f5; }
+  .num{ text-align:right; font-variant-numeric:tabular-nums; }
+  code{ background:#eef0f2; padding:1px 5px; border-radius:4px; font-size:14px; font-family:'Courier New',monospace; }
+  .answer{ color:#6d28d9; font-weight:bold; }
+  figure{ margin:24px 0; text-align:center; }
+  figure img{ max-width:100%; border:1px solid var(--line); border-radius:8px; }
+  figcaption{ color:var(--soft); font-size:14px; font-style:italic; margin-top:6px; }
+  .foot{ margin-top:60px; padding-top:18px; border-top:1px solid var(--line); color:var(--soft); font-size:14.5px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>Basic Statistics for Trading — From Excel Formulas to a Price Model</h1>
+<div class="sub">Week 3-2 · SFM-03 · Statistics for Financial Markets — a plain-English study guide</div>
+
+<p class="lead">This lecture answers a deceptively simple question: when you type
+<code>=STDEV.S()</code> or <code>=COVARIANCE()</code> in Excel, <strong>what is actually
+happening?</strong> Once you understand the machinery, you can build something useful with it: a
+diversified portfolio, a model that predicts a price <em>range</em>, and the risk numbers
+(Value-at-Risk, expected shortfall) that professional desks live by. We work the lecturer's exact
+data the whole way through — two Indian bank stocks and ten years of NIFTY.</p>
+
+<h2>1. Returns first — and why we take the logarithm</h2>
+<p>A price on its own tells you nothing; what matters is the <strong>return</strong> from one day to
+the next. The lecturer uses the <strong>natural-log return</strong>:</p>
+<p style="text-align:center"><code>r = ln( today's price ÷ yesterday's price )</code></p>
+<p>Why the log? Because money in markets compounds <em>continuously</em>, not once a year. If you
+compound a rate <code>r</code> over <code>n</code> sub-periods, the growth factor is
+<code>(1 + r/n)<sup>nt</sup></code>, and as <code>n → ∞</code> this becomes <code>e<sup>rt</sup></code>.
+Invert that and the per-period return is the natural log of the price ratio. There's a second, very
+practical payoff: <strong>log returns add up</strong>. The two-day return is just day-1 plus day-2.
+That additivity makes everything later — annualizing, multi-day forecasts — clean. (Simple percentage
+returns do <em>not</em> add; more on that trap in §6.)</p>
+
+<h2>2. Standard deviation by hand — and the mystery of "n − 1"</h2>
+<p>Volatility is the heartbeat of risk, and it <em>is</em> the standard deviation of returns. Here is
+exactly what Excel does behind <code>STDEV.S</code>, step by step:</p>
+<ol>
+  <li>Compute the mean <code>x̄</code> of the returns.</li>
+  <li>For each day, take the deviation <code>x<sub>i</sub> − x̄</code> and <strong>square</strong> it
+  (squaring makes negatives count and punishes big misses).</li>
+  <li>Sum the squares, divide by <strong>n − 1</strong>, then take the square root.</li>
+</ol>
+<p>On the lecturer's SBIN data (59 daily returns) this gives a sample standard deviation of
+<span class="answer">0.016094</span> (1.61% per day) — identical to <code>STDEV.S</code>.</p>
+
+<div class="callout">
+  <div class="t">Why divide by n − 1 and not n? (degrees of freedom)</div>
+  <p style="margin:8px 0 0;">When you centre data on the <em>sample</em> mean, the deviations are
+  forced to sum to zero. So if you know the first n − 1 deviations, the last one is already
+  determined — it carries <strong>no new information</strong>. You "spent" one degree of freedom
+  estimating the mean, leaving only n − 1 independent pieces. Dividing by n would make the variance
+  systematically <strong>too small</strong>. Correcting it to n − 1 is <strong>Bessel's
+  correction</strong>, and it's why finance always uses <code>STDEV.S</code> (sample), never
+  <code>STDEV.P</code> (population) — we never have the whole population of a stock's returns, only a
+  sample.</p>
+</div>
+
+<p>A tiny five-number example makes it concrete:</p>
+<table>
+  <tr><th>x</th><th class="num">x − x̄</th><th class="num">(x − x̄)²</th></tr>
+  <tr><td>2051</td><td class="num">0</td><td class="num">0</td></tr>
+  <tr><td>2049</td><td class="num">−2</td><td class="num">4</td></tr>
+  <tr><td>2053</td><td class="num">2</td><td class="num">4</td></tr>
+  <tr><td>2052</td><td class="num">1</td><td class="num">1</td></tr>
+  <tr><td>2050</td><td class="num">−1</td><td class="num">1</td></tr>
+  <tr><td colspan="2"><strong>Sum of squares</strong></td><td class="num">10</td></tr>
+  <tr><td colspan="2">÷ n (population) = 10 ÷ 5</td><td class="num">2.00</td></tr>
+  <tr><td colspan="2">÷ n−1 (sample, unbiased)</td><td class="num answer">2.50</td></tr>
+</table>
+
+<h2>3. Combining two stocks — covariance and the efficient frontier</h2>
+<p>Diversification only helps if you know how two stocks <strong>move together</strong>. That's
+<strong>covariance</strong>: the average product of their paired deviations. For SBIN and ICICI it
+comes to <span class="answer">6.86 × 10⁻⁵</span> (matching the lecture exactly). The portfolio's
+variance for a weight <code>w</code> in SBIN and <code>1 − w</code> in ICICI is:</p>
+<p style="text-align:center"><code>σ²<sub>p</sub> = w²σ²<sub>SBI</sub> + (1−w)²σ²<sub>ICI</sub> + 2·w(1−w)·Cov</code></p>
+<p>Notice it is <strong>not</strong> just a weighted average of the two variances — the covariance
+term is what lets a blend be <em>less</em> risky than either stock alone. The lecturer builds
+<strong>101 portfolios</strong> (weights 0% to 100% in 1% steps), computes each one's risk and return,
+and plots them. The result is the classic curved frontier:</p>
+
+<figure>
+  <img src="Week 3-2 SFM-03 code/chart_1_frontier.png" alt="Efficient frontier of SBIN/ICICI portfolios">
+  <figcaption>Each blue point is a portfolio. The orange dot is the minimum-variance blend; the upper
+  arm is the "efficient" set.</figcaption>
+</figure>
+
+<p>The lowest-risk mix is about <span class="answer">18% SBIN / 82% ICICI</span>, with a daily
+volatility of <strong>1.01%</strong> — <em>below</em> both SBIN (1.61%) and ICICI (1.05%) on their
+own. That is diversification doing its job. The teaching point of the chart: you only ever want
+portfolios on the <strong>upper arm</strong>, because for any given level of risk there is a portfolio
+there with a higher return than its mirror image below.</p>
+
+<h2>4. The random walk — predicting a price <em>range</em></h2>
+<p>The simplest model of a stock: <strong>tomorrow's price = today's price × a random return</strong>,
+where daily returns are assumed <strong>normally distributed and independent</strong>. That single
+assumption is powerful, because the normal distribution has fixed probabilities:</p>
+<ul>
+  <li>about <strong>68%</strong> of returns land within <strong>±1 standard deviation</strong> of the mean,</li>
+  <li>about <strong>95%</strong> within <strong>±2 standard deviations</strong>.</li>
+</ul>
+<p>So from just the historical mean and standard deviation of NIFTY's returns, we can state a range for
+where it will likely be. With NIFTY at <strong>18,065</strong>, the model gives a next-day 95% range of
+roughly <strong>17,684 – 18,471</strong>.</p>
+<p>Why model <em>returns</em> rather than <em>prices</em> directly? Because a price is chained to
+yesterday — a ₹102 stock cannot be ₹1,000 tomorrow — so prices are not independent. Returns have no
+such leash: whether a stock is ₹10 or ₹10,000, a 5% move is equally plausible. That independence is
+what lets us treat returns as well-behaved normal draws.</p>
+
+<h2>5. Annualizing volatility — the √T rule</h2>
+<p>Here is a trap: returns add across days, but <strong>standard deviation does not</strong>. What
+adds is <strong>variance</strong> (because for independent returns the covariance terms vanish). So
+for T days:</p>
+<p style="text-align:center"><code>σ²<sub>T</sub> = T · σ²<sub>1</sub></code> &nbsp;⟹&nbsp; <code>σ<sub>T</sub> = σ<sub>1</sub> · √T</code></p>
+<p>A stock with 1% daily volatility is <strong>not</strong> 252% volatile per year — it's
+<code>1% × √252 ≈ 16%</code>. On the real NIFTY data, the daily 1.089% annualizes to
+<span class="answer">17.3%</span>. The same rule, run backwards, lets you compare a "10% annual" strategy
+against a "20% over 10 years" strategy: scale both to the same horizon first.</p>
+
+<h2>6. Simple vs log returns — the drift correction</h2>
+<p>If you take the <strong>simple average</strong> of yearly percentage returns, you will
+<strong>overstate</strong> what an investor actually earned. The lecturer's fund example — yearly
+returns of 15, 23, 26, −11, −5% — makes it vivid:</p>
+<table>
+  <tr><th>Method (start with 100)</th><th class="num">5-year result</th></tr>
+  <tr><td>Simple average = 9.60%, then 100 × (1.096)⁵</td><td class="num">158.14 &nbsp;← overstated</td></tr>
+  <tr><td><strong>Actual</strong> compounding 100 × Π(1 + r)</td><td class="num answer">150.69</td></tr>
+  <tr><td>Fix A — average the <strong>log</strong> returns, then 100·e^(5·avg)</td><td class="num">150.69 ✓</td></tr>
+  <tr><td>Fix B — subtract <strong>drift</strong> μ − σ²/2 from the simple mean</td><td class="num">≈148–151</td></tr>
+</table>
+<div class="warn">
+  <div class="t">The rule</div>
+  <p style="margin:8px 0 0;">Either work in <strong>log returns</strong> (and the problem disappears),
+  or, if you insist on simple returns, subtract the <strong>drift</strong> term
+  <code>μ − σ²/2</code> (this comes from Itô's lemma). Some regulators actually <em>ban</em> funds from
+  advertising the naive simple average because it flatters performance.</p>
+</div>
+
+<h2>7. Monte Carlo — simulate instead of solve</h2>
+<p>Rather than trusting one formula, we can <strong>simulate thousands of possible futures</strong>.
+Each day we draw a random normal return — in Excel that's <code>=NORMINV(RAND(), mean, std)</code> —
+and roll the price forward with <code>next = previous × e^return</code>. Do that for 20 days, 5,000
+times, and you get a whole cloud of outcomes:</p>
+
+<figure>
+  <img src="Week 3-2 SFM-03 code/chart_2_montecarlo.png" alt="Monte Carlo simulated NIFTY paths and distribution">
+  <figcaption>Left: simulated NIFTY paths. Right: the distribution of the day-20 price, with the 5%
+  VaR floor (red) and expected shortfall (dashed).</figcaption>
+</figure>
+
+<p>The simulation's 95% range for NIFTY in 20 days, <strong>16,544 – 20,012</strong>, agrees with the
+closed-form answer (<strong>16,538 – 20,096</strong>) — three different methods, one answer. The real
+power of simulation is the questions a formula can't easily answer:</p>
+<ul>
+  <li><strong>Value-at-Risk (the 5% floor):</strong> the 5th-percentile price is about
+  <span class="answer">16,796</span> — we're 95% confident NIFTY stays above it over 20 days.</li>
+  <li><strong>Expected shortfall (CVaR):</strong> <em>if</em> the floor breaks, the average of the
+  worst 5% of outcomes is about <span class="answer">16,456</span>. It answers "how bad is bad?" — two
+  stocks can share the same 5% probability of falling, but one may fall to 98 and the other to 50.</li>
+</ul>
+
+<h2>8. Bollinger Bands — a tradable mean-reversion rule</h2>
+<p>Take a <strong>20-day moving average</strong> and draw bands <strong>±2 standard deviations</strong>
+around it. If prices were perfectly normal, ~95% of closes would sit inside, so a simple strategy
+falls out: <strong>buy when price closes below the lower band, sell/exit when it closes above the
+upper band</strong> — betting it reverts to the mean.</p>
+
+<figure>
+  <img src="Week 3-2 SFM-03 code/chart_3_bollinger.png" alt="Bollinger Bands on NIFTY">
+  <figcaption>NIFTY with its 20-day average and ±2σ bands. The shaded zone is the "normal" range.</figcaption>
+</figure>
+
+<div class="warn">
+  <div class="t">Reality check — fat tails</div>
+  <p style="margin:8px 0 0;">On the real ten-year NIFTY, about <strong>9%</strong> of closes fall
+  outside the ±2σ bands, not the ~5% the normal model predicts. Markets have <strong>fat tails</strong>
+  — extreme moves happen more often than a bell curve says (1929, 2020 fell well beyond 3σ). That's why
+  practitioners sometimes model out to 4 or 5 standard deviations. The normal assumption is a useful
+  <em>approximation</em>, never the literal truth.</p>
+</div>
+
+<div class="callout">
+  <div class="t">The thread tying it all together</div>
+  <p style="margin:8px 0 0;">Every tool here — portfolio risk, price ranges, VaR, Bollinger Bands —
+  rests on two ideas: <strong>returns are roughly normal</strong>, and <strong>standard deviation
+  measures risk</strong>. Master the mean, the variance (with its n−1), and the covariance, and the
+  rest is just applying them.</p>
+</div>
+
+<div class="foot">
+  Week 3-2 · SFM-03 Basic Statistics using Excel — companion to the dense one-page cheat sheet and the
+  executed practice notebook (<code>Week 3-2 SFM-03 code/</code>). All numbers reproduced from the
+  lecture's own SBIN/ICICI and NIFTY datasets.
+</div>
+
+</div>
+</body>
+</html>

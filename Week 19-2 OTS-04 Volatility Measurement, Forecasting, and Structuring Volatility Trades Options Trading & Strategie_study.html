@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 19-2 OTS-04 — Volatility Trading — Study Guide</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; background:#f8fafc; color:#1f2733; line-height:1.7; margin:0; }
+  .wrap { max-width:820px; margin:0 auto; padding:54px 30px 90px; }
+  h1 { font-size:2.05rem; line-height:1.25; margin:0 0 6px; color:#1e40af; }
+  .sub { color:#5a6678; font-style:italic; margin-bottom:34px; font-size:1.02rem; }
+  h2 { font-size:1.42rem; color:#1e40af; margin:42px 0 10px; border-bottom:2px solid #bfdbfe; padding-bottom:6px; }
+  h3 { font-size:1.12rem; color:#2563eb; margin:26px 0 6px; }
+  p { margin:12px 0; }
+  .lead { font-size:1.08rem; color:#2a3340; }
+  code { background:#e0edff; padding:1px 6px; border-radius:4px; font-family:'Consolas',monospace; font-size:0.9em; color:#1e40af; }
+  .box { background:#eef5ff; border-left:4px solid #3b82f6; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  .insight { background:#ecfdf5; border-left:4px solid #059669; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  .warn { background:#fef2f2; border-left:4px solid #dc2626; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  ul { margin:12px 0; padding-left:24px; }
+  li { margin:6px 0; }
+  .tag { display:inline-block; background:#1e40af; color:#fff; font-size:0.72rem; letter-spacing:2px; padding:4px 12px; border-radius:20px; font-family:Arial,sans-serif; margin-bottom:16px; }
+  table { border-collapse:collapse; width:100%; margin:18px 0; font-size:0.95rem; }
+  th,td { border:1px solid #bfdbfe; padding:7px 11px; text-align:left; }
+  th { background:#eef5ff; color:#1e40af; }
+  .end { text-align:center; color:#94a3b8; margin-top:50px; font-size:0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="tag">WEEK 19-2 · OTS-04 · STUDY GUIDE</div>
+  <h1>Volatility: Measuring It, Forecasting It, and Trading It</h1>
+  <div class="sub">A plain-English walk through the fourth options session — why there is no "true" volatility, only estimators; how to forecast it without the rolling-window trap; and how every volatility trade, from a humble covered call to a weekend straddle, reduces to one tidy equation.</div>
+
+  <p class="lead">The previous options lectures priced options and met the Greeks. This one is about a single Greek — <strong>Vega</strong> — and the quantity it responds to: <strong>volatility</strong>. The session moves in three acts: <em>measure</em> volatility, <em>forecast</em> it, and then <em>structure trades</em> around it. The recurring lesson is that a volatility number is meaningless until you put it in context, and that the profit from any vol trade can be written as <code>Vega × (IV − RV)</code>.</p>
+
+  <h2>1. Measuring volatility — a number with no true value</h2>
+  <p>The natural first question is "how many data points, at what frequency?" The honest answer: it doesn't pin down a true value, because <strong>volatility cannot be measured exactly — it can only be estimated</strong>. If the true volatility were 0.30, repeated measurements scatter around 0.30; with more data points the scatter shrinks, but no single number is "right".</p>
+  <p>The finance default is the <strong>standard deviation of log returns</strong> using closing prices. It has a subtle but real flaw: the statistical formula assumes you hold the entire <em>population</em>, yet stock prices are forever just a <em>sample</em> — tomorrow's price could exceed any high you've ever seen. So close-to-close systematically misrepresents the truth. That motivates a family of <strong>estimators</strong>.</p>
+
+  <h3>The Parkinson estimator and its low bias</h3>
+  <p>The <strong>Parkinson estimator</strong> uses three inputs — the number of observations <em>N</em>, and each day's <strong>high</strong> and <strong>low</strong>. Because it squeezes two prices out of every day instead of one, its error is smaller and its precision higher than close-to-close. But it has a blind spot: high and low only describe the market-<em>open</em> session, so it <strong>ignores the overnight gap</strong> between yesterday's close and today's open — where geopolitics, currency moves and macro releases land. As a result Parkinson is <strong>biased low</strong>: with ten days of data it reads only about <strong>0.81</strong> of true volatility (on <strong>real Apple 2023</strong> the ratio is about <strong>0.90</strong>: Parkinson 1.122% against close-to-close 1.252% daily, or 17.8% versus 19.9% annualised).</p>
+  <div class="box"><strong>Capturing the night.</strong> You can split total variance into an <em>overnight</em> piece (previous close → today's open) and an <em>intraday</em> piece (the high-low range), then blend them by the hours the market is closed versus open: <code>σ²_total = (t_c/D)·σ²_overnight + (t_o/D)·σ²_intraday</code>, with a 24-hour day, roughly 6.5 open hours and 17.5 closed. Other estimators go further — <strong>Garman-Klass</strong> uses all four of open/high/low/close, <strong>Rogers-Satchell</strong> adds a drift term, and <strong>Yang-Zhang</strong> adds jumps.</div>
+  <p>The punchline is liberating: since no method is "true", stop chasing accuracy and instead <strong>contextualise</strong>. It is like measuring temperature — the thermometer matters less than what you do with the reading. Pick <em>one</em> estimator (the course uses Parkinson) and use that same method everywhere — measurement, forecast and trade — then compare today's number against its own history to decide whether the market is in a high- or low-volatility regime. And don't be seduced by tick data: over tiny intervals most "volatility" is just a big bid or ask, not real risk, and it still misses the overnight move.</p>
+
+  <h2>2. Forecasting volatility</h2>
+  <p>Measurement tells you where volatility <em>is</em>; trading needs where it <em>will be</em> at expiry. The naive tool is a <strong>30-day rolling window</strong>, and it breaks badly. A single violent day — <strong>Netflix's +17.4% earnings jump on 18 October 2016</strong> — makes the rolling volatility <strong>spike, sit elevated for thirty days, then crash on day 31</strong> when the big return drops out of the window. In the notebook the 30-day rolling vol leaps from <strong>31% to 59%</strong>, holds near 57% for a month, then <strong>collapses to 27%</strong> around day 35. Positions built on that would whipsaw you in and out — untradeable.</p>
+  <div class="box"><strong>EWMA — let the shock fade gently.</strong> An exponentially weighted moving average, <code>σ²ₜ = (1−λ)·r²ₜ₋₁ + λ·σ²ₜ₋₁</code> with λ between 0.90 and 0.99, gives more weight to recent data. After the same Netflix shock the EWMA reading glides down smoothly (<strong>72% → 50% → 39% → 38%</strong>) instead of cliff-crashing — far more tradable, and exactly the intuition GARCH formalises.</div>
+
+  <h3>GARCH(1,1) and the three faces of volatility</h3>
+  <p>The workhorse forecast is <strong>GARCH(1,1)</strong>: <code>σ²ₜ = γ·V + α·r²ₜ₋₁ + β·σ²ₜ₋₁</code>, where the three coefficients sum to one. You don't need to memorise it if you see that each term encodes one empirical <em>characteristic</em> of volatility:</p>
+  <table>
+    <tr><th>characteristic</th><th>what it means</th><th>GARCH term</th></tr>
+    <tr><td><strong>Clusters</strong></td><td>high vol is followed by high vol; regimes persist (the VIX sits at 15-20 in calm phases, 20-30 in stress)</td><td><code>β·σ²ₜ₋₁</code></td></tr>
+    <tr><td><strong>Depends on recent returns</strong></td><td>the latest moves shape current conditions</td><td><code>α·r²ₜ₋₁</code></td></tr>
+    <tr><td><strong>Mean-reverts</strong></td><td>any value you see today was already reached in the past; vol drifts back to a long-run level</td><td><code>γ·V</code></td></tr>
+  </table>
+  <p>Notice volatility is unlike price: prices <em>trend</em> for years, but volatility just oscillates around its mean and clusters. In theory you find α, β, γ by maximum likelihood; in practice traders simply <strong>assume</strong> α between 0.01 and 0.1 and β between 0.9 and 1, then set γ = 1 − α − β. Across four US indices these assumed parameters still forecast the trend correctly — proof that exact parameters matter less than the structure.</p>
+  <div class="insight"><strong>Contextualise the forecast too.</strong> A vol number alone is like saying "I scored 14" without naming the sport. Rank your forecast against history over several windows (20/40/60/80/100 days). If a 22% forecast sits at the 89th percentile of the last 100 days, you are forecasting a high-volatility regime; if it sits at the 25th percentile, a calm one.</div>
+
+  <h2>3. Three kinds of volatility</h2>
+  <p>Before trading, distinguish three labels:</p>
+  <ul>
+    <li><strong>Historical (HV)</strong> — the past. Definite, known, undisputed.</li>
+    <li><strong>Implied (IV)</strong> — the future. It isn't forecast directly; it is <em>backed out</em> of an option's traded premium by inverting Black-Scholes. When someone bids a premium, they are implying how volatile they expect the underlying to be.</li>
+    <li><strong>Realized (RV)</strong> — the volatility actually realized over a contract's life. It is a <em>range/time-period</em> concept, not "present" volatility; books often use it interchangeably with historical, but strictly it lives inside the context of a specific contract.</li>
+  </ul>
+
+  <h2>4. The variance premium and the one equation</h2>
+  <p>Here is why volatility trading makes money: <strong>implied volatility exceeds realized volatility most of the time</strong> (about 77% of months in the simulation). People overpay for insurance against the unknown. So you <strong>sell the option rich</strong> at the implied volatility and let it settle on the cheaper realized volatility — pocketing the gap, the <strong>variance premium</strong>.</p>
+  <p>A volatility trade's profit is premium(IV) minus premium(RV). A Taylor expansion collapses that messy difference into the equation you will see again and again:</p>
+  <div class="box" style="text-align:center;font-size:1.15rem;"><code>PnL = Vega × (IV − RV)</code></div>
+  <p>Vega is the Greek measuring how premium responds to a change in volatility, so the formula simply says: your average profit equals your position's Vega times the gap between implied and realized volatility. In the practice notebook, for a one-year ATM call the Vega is 0.394 per vol point, so a six-point gap (IV 30% vs RV 24%) predicts a profit of <strong>2.37</strong> — and the exact premium difference is <strong>2.37</strong> too, confirming the approximation.</p>
+
+  <h3>From hedging to a pure vol trade</h3>
+  <p>How does an option become a "volatility" position? Through <strong>delta hedging</strong>. Take a one-year 100-strike call on a $100 stock at 30% volatility: it is worth <strong>$11.92</strong> with a delta of <strong>0.56</strong>, so you sell 0.56 shares to neutralise price. When the stock jumps to 110, the call becomes <strong>$18.14</strong> with delta <strong>0.68</strong>, and you re-hedge the extra 0.12. Keep replicating and the price exposure cancels out, leaving a position whose profit is driven purely by volatility. In practice continuous re-hedging is costly — slippage and brokerage — which is why later lectures look for optimal hedging schedules.</p>
+
+  <h2>5. Structuring the trades</h2>
+
+  <h3>Covered call — the retail staple</h3>
+  <p>Hold the underlying and <strong>sell a call</strong> against it (buy the stock at 100, sell the 100-call for $3). Your upside is capped above the strike, but you keep the premium as passive income, and half your edge comes from the option, half from the stock. The <strong>BXM</strong> ETF runs this on the S&P 500: from 1993 to 2022 it returned about <strong>7.1%</strong> versus the index's <strong>9.4%</strong> — lower, but with less volatility and a better Sharpe ratio and drawdown.</p>
+
+  <div class="warn"><strong>"Vega wounds, gamma kills."</strong> A wrong <em>directional</em> (gamma) short can run to infinity — short at 241 and watch it spike to 500 or beyond. A wrong <em>volatility</em> (Vega) short merely <em>wounds</em>: because volatility mean-reverts, an adverse spike tends to reverse, and your loss heals. That is comforting, not a licence to short forever — you still must close by the contract's expiry.</div>
+
+  <h3>Harvesting the weekend premium — four iterations</h3>
+  <p>The session models how a real strategy is built and refined. The idea: IV exceeds RV, so sell an at-the-money straddle; weekends concentrate the premium because traders fear weekend news on Friday and relax on Monday.</p>
+  <table>
+    <tr><th>iteration</th><th>outcome</th></tr>
+    <tr><td>1 · sell weekend SPY straddle Friday, close Monday</td><td>worked until COVID, then crashed; data only exists from 2018</td></tr>
+    <tr><td>2 · sell weekly SPY (expiring Friday), close Monday</td><td>history back to 2011; lost money at the 2016 election and COVID</td></tr>
+    <tr><td>3 · same, but only when VIX &lt; 98th percentile</td><td>the first healthy equity curve — skip trading when the market is extremely volatile</td></tr>
+    <tr><td>4 · hold to next Friday instead of closing Monday</td><td>decays — anything can happen over a full week</td></tr>
+  </table>
+  <p>The winner is iteration 3: roughly 29% return, 27% volatility, and a <strong>71% win rate</strong>. The lesson is the <em>process</em> — start from a theoretically sound idea, then back-test variations across market conditions to learn when to switch the strategy on and off.</p>
+
+  <h3>Trading earnings — the implied jump</h3>
+  <p>Implied volatility <strong>rises into an earnings date</strong> (opinion splits on a good or bad number) and <strong>crashes the moment the result is out</strong>. Two ways to play it: buy a straddle about ten days before and close the day before earnings (a modest 43% win rate, but winners about 1.7× losers); or capture the IV jump itself using a front-week contract (expiring just after earnings) against a second-week contract.</p>
+  <div class="box"><strong>The implied-jump formula.</strong> Total variance equals normal variance plus event variance, and the expected event move is <code>√(2/π)·σ_E</code>. With a one-day implied vol of 50% and a one-week implied vol of 20%, the implied jump works out to about <strong>2.5-2.6%</strong>. You then compare it to history: if the average past jump is ~3% and you're forecasting 2.6% (near the top of the range), the options are rich and worth selling.</div>
+
+  <h3>Choosing the strike scientifically</h3>
+  <p>Don't just "buy the cheap option" or "sell the expensive one" — both are wrong. For each candidate strike, compute the premium at its <em>implied</em> volatility (its live market price) and the premium at the <em>realized</em> volatility (Black-Scholes at, say, 30%), and <strong>sell the strike with the largest gap</strong> — that is where the variance premium is biggest. In the worked grid the 105 strike's gap of 1.295 beat all others. One execution caveat: the last traded price isn't the price you can actually trade, and settlement can flip an at-the-money option from in- to out-of-the-money, so don't blindly hold to expiry.</p>
+
+  <h2>6. The closing caution: zero only on average</h2>
+  <p>To drive home that <code>PnL = Vega × (IV − RV)</code> is an <em>expectation</em>, the lecture simulates a straddle when IV = RV = 30%, where there should be no edge. The Monte-Carlo mean P&L is indeed ≈ 0 — yet individual trades swing from −54 to +8. <strong>Never judge a single volatility trade</strong>; the equation only holds when you average over many.</p>
+
+  <h2>7. The takeaways</h2>
+  <ul>
+    <li>There is <strong>no true volatility</strong> — only estimators. Pick one (Parkinson) and contextualise it against history.</li>
+    <li>Parkinson is more precise than close-to-close but <strong>biased low</strong> (~0.81) because it misses overnight gaps; Garman-Klass/Rogers-Satchell/Yang-Zhang add more inputs.</li>
+    <li>Forecast with care: 30-day rolling jumps-and-crashes; <strong>EWMA</strong> smooths it; <strong>GARCH(1,1)</strong> encodes clustering (β), recent returns (α) and mean-reversion (γ), with α+β+γ = 1.</li>
+    <li>HV / IV / RV are distinct; the <strong>variance premium</strong> (IV &gt; RV) is the edge, harvested via <code>PnL = Vega × (IV − RV)</code>.</li>
+    <li>Delta-hedging turns options into pure vol trades; covered calls give retail passive income; "Vega wounds, gamma kills".</li>
+    <li>Structure trades where premium concentrates — <strong>weekends</strong> (sell only when VIX is below the 98th percentile) and <strong>earnings</strong> (the implied jump) — and select strikes by the largest IV-vs-RV gap.</li>
+  </ul>
+  <p>The next session takes these structures live: optimal delta-hedging, worked P&L on real trade examples, and the practical frictions of putting it all into production.</p>
+
+  <div class="end">— End of Week 19-2 OTS-04 study guide · pair this with the dashboard cheat sheet and the executed practice notebook —</div>
+
+</div>
+</body>
+</html>

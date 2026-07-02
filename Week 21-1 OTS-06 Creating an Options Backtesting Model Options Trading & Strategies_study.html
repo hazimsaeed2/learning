@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OTS-06 · Creating an Options Backtesting Model — Study Guide</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; max-width: 820px; margin: 0 auto;
+         padding: 40px 28px; color: #292524; line-height: 1.75; background: #fefdfb; }
+  h1 { font-size: 2rem; color: #3f6212; border-bottom: 3px solid #84cc16; padding-bottom: 10px; }
+  h2 { font-size: 1.4rem; color: #4d7c0f; margin-top: 2.2rem; border-left: 5px solid #84cc16; padding-left: 12px; }
+  h3 { font-size: 1.1rem; color: #57534e; margin-top: 1.6rem; }
+  p { margin: 0.9rem 0; }
+  code { font-family: Consolas, monospace; background: #f1f5e9; padding: 1px 5px; border-radius: 4px; font-size: 0.92em; }
+  blockquote { border-left: 4px solid #a3e635; background: #f7fee7; margin: 1.2rem 0; padding: 0.8rem 1.2rem; color: #3f6212; font-style: italic; }
+  .lead { font-size: 1.08rem; color: #44403c; }
+  ul, ol { margin: 0.8rem 0; }
+  li { margin: 0.4rem 0; }
+  .box { background: #f7fee7; border: 1px solid #d9f99d; border-radius: 10px; padding: 16px 20px; margin: 1.4rem 0; }
+  hr { border: none; border-top: 1px solid #e7e5e4; margin: 2.5rem 0; }
+</style>
+</head>
+<body>
+
+<h1>Creating an Options Backtesting Model</h1>
+<p class="lead">Week 21-1 · OTS-06 — Options Trading &amp; Strategies. This session is almost all practice. Instead of new theory, we walk through the thought process of building an options backtester from scratch: how to get raw data, how to clean it until it is trustworthy, and how to write an engine that simulates trading one day at a time. The lesson behind the lesson is simple — <em>garbage in, garbage out</em>. A backtester is only as honest as the data feeding it.</p>
+
+<h2>What a backtest is actually for</h2>
+<p>Almost everyone thinks of a backtest as a way to learn how much profit a strategy would have made on historical data. That is part of it, but it is the smaller part. The real value is in understanding <strong>behaviour</strong> — the patterns in how a strategy acts. When does it make money? When does it sit flat? How badly does it bleed in a bad month, and for how long? A good backtest answers those questions, and it does so by trying to <strong>simulate real-world decisions</strong>: we want the algorithm to take the very same steps a trader would take on that very day.</p>
+<p>There is a wrong way to do this, and it is seductive. Beginners often start with a moving-average crossover — say a 50-day crossing a 200-day — and then sweep the parameters, trying 90/10, then 80/40, hunting for the combination that maximised past returns. That is curve-fitting. There is no guarantee the future market resembles the historical one, so an "optimal" parameter set tuned to the past is often worthless going forward. Backtesting is about understanding a strategy, not about decorating it with the luckiest numbers.</p>
+
+<blockquote>Options are one of the most complicated assets to backtest. If you can structure a clean backtester for a single-leg long call, you can extend it to a straddle, a strangle, a butterfly — anything.</blockquote>
+
+<h2>Step one: collect the data — and not just the options</h2>
+<p>The first thing any backtest needs is data. For options, that means two things: the <strong>options chain</strong> and the <strong>underlying</strong>. People sometimes forget the second. But consider a long call on Apple: with only the options data, you cannot say whether your contract is in-, at-, or out-of-the-money, and you cannot compute your profit and loss, because both depend on where the underlying price sits. So we always collect both.</p>
+<p>The scale is worth feeling in your bones. For the underlying on a given day you have one row and five columns — open, high, low, close, volume. For options on the <em>same</em> day, you might have seven and a half thousand rows across nearly thirty columns, because every strike, every expiry, and the call/put split multiply together. One year of end-of-day options data ran to about <strong>two million rows</strong>. In class the data came from OptionsDX, a free end-of-day source that hands you compressed <code>.7z</code> files — the four quarters of 2023. Here we run the <strong>real shipped SPX near-month slice — about 51,527 rows across 175 trading days</strong>, with the underlying moving from 3853 to 4755 — through the whole pipeline end to end.</p>
+
+<h2>Step two: structure and clean</h2>
+<p>Raw options data is rarely tidy, especially from a free provider. The column headers arrive looking like <code>[ QUOTE_DATE]</code> — wrapped in brackets, carrying leading spaces, shouting in capitals. Working with names like that is miserable, so the first cleaning job is the headers: strip the brackets and quotes, replace spaces with underscores and then trim them, and lowercase everything. <code>[ QUOTE_DATE]</code> becomes a friendly <code>quote_date</code>.</p>
+<p>Next come the data types, which matter enormously in Python. A date must be a datetime, not text; a price must be a float, not a string. The classic trap appears here: implied volatility arriving as a <strong>string with a leading space</strong>, like <code>' 0.1670'</code>. Left alone, you cannot do arithmetic with it. We strip the space and coerce it with <code>pd.to_numeric</code>, and it becomes the float <code>0.167</code> we can actually use. We do the same family-wide: every <code>c_</code> and <code>p_</code> Greek, IV, and volume becomes numeric; the date columns become datetimes. Some columns are simply odd — for instance a <code>c_size</code> field holding text like <code>"7x7"</code> to encode seven bids against seven asks. That one we leave as text; it is information about liquidity, not a number to compute with.</p>
+<p>While we are here, we also drop columns we will never use (the exact moment the feed was sourced, a redundant expiry timestamp) and, if useful, add one — a <code>symbol</code> column, helpful when a provider mixes several underlyings in one file.</p>
+
+<h2>Step three: classify by expiry</h2>
+<p>Even clean, the data is confusing, because a single day's file contains contracts for many different expiries all jumbled together — daily, weekly, monthly, and long-dated leaps. A date alone will not tell you which is which. So we compute <strong>days-to-expiry ourselves</strong> — <code>dte = expire_date − quote_date</code> — rather than trusting the feed to provide it (most do not). With DTE in hand we tag each row: anything beyond 365 days is a <em>leap</em>; a contract expiring on the current month's third Friday is <em>near-month</em>; the following third Friday is <em>next-month</em>; and so on through weekly and end-of-month buckets.</p>
+<p>Our working file is the near-month slice — about 51,527 rows for 2023. This tagging is slow on the full two-million-row feed, but it is a <strong>one-time job</strong>. You run it once, save the labelled data to CSV, and from then on you simply reload the slice you care about.</p>
+
+<h2>Step four: filter for liquidity and relevance</h2>
+<p>Now we trim. There is no point backtesting a contract nobody trades — it will look fine on paper and be impossible to fill in real life. So we drop contracts with a zero last price, which quietly removes the deep out-of-the-money strikes nobody opens. We keep strikes near the money, but expressed as a <strong>percentage</strong> band rather than a fixed count of strikes — say within five percent — because "ten strikes above and below" means very different things for an index than for a cheap stock; a percentage normalises across price levels. We also drop rows with missing IV.</p>
+<p>One subtlety worth remembering: we filter to <em>pick</em> our entries, but we keep all the strikes available so that a contract we already <em>hold</em> still has a quote when we come to exit, even after the underlying has drifted. Across the full pipeline, two million rows typically collapse toward seven hundred thousand. Most of the data is simply irrelevant to any one strategy.</p>
+
+<h2>Step five: simulate trade execution — the heart of it</h2>
+<p>This is where a backtester earns its name, and the design choice here matters. We build an <strong>event-based</strong> engine rather than a vectorised one. A vectorised backtest computes everything at once and only tells you what happened in the past; you cannot add a stop-loss to it, and you cannot take it live. An event-based engine instead walks forward <strong>one day at a time</strong>, checking for events and acting only when one fires — exactly what a human trader does. The reward is that the very same code, with a few lines changed, can be deployed to trade live.</p>
+<p>Every event-based engine has three parts. There is an <strong>event trigger</strong> that decides when the strategy switches on; an <strong>execution logic</strong> that decides when you enter and exit; and a <strong>time sensitivity</strong> that re-checks the world each day. For our example the trigger is the calendar: enter an at-the-money call on the <em>first trading day of the month</em>, and exit the <em>day before expiry</em>.</p>
+
+<h3>The reusable pieces</h3>
+<p>Before the loop we write a few small helpers, because a backtester repeats the same chores constantly. The most-used is a function that, given a strike and an expiry, returns the option's premium — that is how we record both the entry price and the exit price. Another finds the at-the-money strike by picking the contract with the smallest distance to the underlying. A third sets up the strategy itself, and this is the elegant part: it is a single swappable function. Call <code>setup_long_call</code> and the engine backtests a long call; replace it with <code>setup_long_strangle</code> and the identical engine now backtests a strangle. A <code>direction</code> argument flips long to short. Finally there is a mark-to-market helper that reports the open position's profit on any given day.</p>
+
+<h3>The loop</h3>
+<p>The engine keeps three growing tables — a round-trip log of every entry and exit, a detailed trades table (dates, premiums, P&amp;L, the reason for each exit), and a daily mark-to-market record. Then it walks the calendar. On each day it asks a simple question: do I have a position? If not, and the day is the first trading day, it sets up the trade and records the entry. If it does hold a position, it marks it to market and checks whether today is the day before expiry; if so, it closes the trade and writes the round-trip. Over a year of monthly options this produces exactly twelve trades.</p>
+
+<div class="box">
+<h3 style="margin-top:0">A single trade, followed through (April)</h3>
+<p>Take the year's best trade, November. On the first trading day, the underlying sat at <strong>4237.60</strong>, so the at-the-money strike was <strong>4235</strong> and the call cost a premium of <strong>47.10</strong> — at a lot size of 50 that is <strong>$2,355</strong> of capital. We held it until the day before the November expiry, the sixteenth, by which point the underlying had rallied to <strong>4508.52</strong> and the call — now deep in the money — was worth <strong>265.13</strong>. The gross profit was <strong>(265.13 − 47.10) × 50 = +$10,901.50</strong>. From that we subtract a trading cost equal to one percent of the turnover (about $156), leaving a net of <strong>+$10,745</strong>. That single month more than paid for the eight small losers around it — the long-call profile in one picture.</p>
+</div>
+
+<p>That cost step is not optional. In reality you never fill exactly at the printed price; the gap is <strong>slippage</strong>, and together with fees it must be subtracted from every trade. P&amp;L is therefore never simply exit minus entry. A trade that looks mildly green before costs can turn red after them — and a good backtester shows you that honestly.</p>
+
+<h2>Step six: analyse the shape, not just the total</h2>
+<p>With the twelve trades logged, we judge the strategy on more than one number. The blind "buy an at-the-money call every month" strategy, on real SPX 2023, netted about <strong>+$5,463</strong> after costs but won only <strong>a third</strong> of the time — an average win near <strong>$5,800</strong> against an average loss near <strong>$2,100</strong>, held together by a <strong>profit factor of 1.36</strong> (gross profit over gross loss). Swapping in the strangle setup, through the very same engine, <em>lost</em> about <strong>−$7,700</strong>: it won half its trades, but 2023 ground steadily higher instead of making the big two-sided move a strangle needs, so its losers outweighed its winners. None of this is a durable edge; it is a demonstration of structure.</p>
+<p>The more important diagnostics are about risk and behaviour. We measure the <strong>maximum drawdown</strong> — how far the equity curve falls below its prior peak — which for the long call's trade equity was about <strong>−9.83 percent</strong>. Here a caveat from the shipped notebook is worth repeating: if instead you divide each day's P&amp;L by a tiny <em>margin</em> figure to make a daily return, the annualised numbers scream <strong>−67% CAGR, a −3.3 Sharpe and a −99.9% drawdown</strong> even though the trades made money — an artifact of margin-normalised returns, not a real wipe-out. With a long option you can lose the entire premium, so judge it by P&amp;L and profit factor, not a single Sharpe. We plot four things: the underlying with entry and exit markers overlaid, so patterns jump out; the cumulative equity curve; the per-trade P&amp;L, to see how few big winners carry many small losers; and a comparison of the strategies through the same engine.</p>
+
+<h2>Extending the engine</h2>
+<p>Because the engine is modular, you grow it by changing one thing at a time. To change <strong>when you enter</strong>, you add a column and gate on it — for example, only trade when implied volatility sits comfortably above realized volatility, the variance-risk-premium idea, written as something like <code>iv ≥ 1.1 × realized_vol</code>. To change <strong>how you exit</strong>, you add stop-loss and take-profit checks alongside the expiry check, so a trade can close for any of several reasons. In our notebook a −30%/+50% rule produced seven stop-loss exits and five take-profit exits.</p>
+<p>Finally, a word on <strong>position sizing</strong>, because it is where real risk management lives. You never stake everything on one trade. And when you spread capital across strategies, the instinct to pour money into whatever made the most profit is usually wrong — every strategy wins in some regimes and loses in others. The better guide is <strong>predictability</strong>: give the <em>least</em> capital to the strategy whose daily returns are the most volatile. Think of it like managing a hundred traders; you back the one whose results you can count on month after month, not merely the one with the biggest single year.</p>
+
+<hr>
+
+<h2>The whole pipeline, in one breath</h2>
+<ol>
+  <li><strong>Collect</strong> options and underlying data — you need the underlying to mark moneyness and P&amp;L.</li>
+  <li><strong>Structure</strong> — clean the column names, then fix every data type (dates to datetimes, prices to floats, strip stray spaces).</li>
+  <li><strong>Classify</strong> by expiry using a self-computed DTE; do it once, save to CSV, reload the slice you trade.</li>
+  <li><strong>Filter</strong> to liquid, near-the-money, non-missing contracts — and keep held contracts quoted.</li>
+  <li><strong>Simulate</strong> with an event-based loop: trigger, execution logic, daily check; reusable helpers; one swappable setup function.</li>
+  <li><strong>Analyse</strong> the shape — win rate, equity curve, maximum drawdown, monthly pattern — and always subtract costs.</li>
+</ol>
+
+<p class="lead">The structure is the whole point. Once you can build a clean, honest, event-based backtester for a single long call, every other options strategy is just a different setup function plugged into the same machine.</p>
+
+<p style="text-align:center; color:#a8a29e; font-size:0.85rem; margin-top:3rem;">EPAT · Week 21-1 · OTS-06 — Creating an Options Backtesting Model · study guide</p>
+
+</body>
+</html>

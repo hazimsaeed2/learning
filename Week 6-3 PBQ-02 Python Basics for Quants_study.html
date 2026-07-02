@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 6-3 · PBQ-02 Python Basics for Quants — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:40px 28px;
+       color:#1f2937;line-height:1.7;font-size:17px;background:#fbfbfd}
+  h1{font-size:30px;color:#3f6212;border-bottom:3px solid #65a30d;padding-bottom:10px;margin-bottom:4px}
+  h2{font-size:22px;color:#4d7c0f;margin-top:34px;border-left:5px solid #65a30d;padding-left:12px}
+  h3{font-size:18px;color:#3f6212;margin-top:22px}
+  code{background:#f7fee7;color:#3f6212;padding:1px 6px;border-radius:4px;font-family:Consolas,monospace;font-size:15px}
+  .lead{font-size:18px;color:#475569;font-style:italic}
+  .callout{background:#f7fee7;border-left:5px solid #65a30d;padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0}
+  .warn{background:#fef2f2;border-left:5px solid #ef4444;padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0}
+  .tip{background:#fffbeb;border-left:5px solid #f59e0b;padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0}
+  table{border-collapse:collapse;width:100%;margin:16px 0;font-size:15px}
+  th,td{border:1px solid #cbd5e1;padding:7px 10px;text-align:left}
+  th{background:#f7fee7;color:#3f6212}
+  tr:nth-child(even){background:#f8fafc}
+</style>
+</head>
+<body>
+
+<h1>Python Basics for Quants</h1>
+<p class="lead">Week 6-3 · PBQ-02 — your second Python lecture, read as a continuous lesson. From data structures and loops to the two libraries every back-test rests on: NumPy and pandas.</p>
+
+<p>The first half of this lecture consolidates the Python you already met — data types, loops, functions —
+because these are the grammar of everything that follows. The second half introduces the real reason
+quants use Python: <strong>NumPy</strong> for fast numerical computing and <strong>pandas</strong> for working with tabular
+market data. By the end you can read a CSV of stock prices into a table, add a column, summarise it, and see
+the story the numbers tell. Throughout we use the actual <code>TCS.NS.csv</code> daily file that ships with
+the class.</p>
+
+<h2>1. Data types and structures — and why syntax matters</h2>
+<p>Python reads your intent from syntax alone. <code>2</code> is an integer, <code>2.0</code> a float, <code>"TCS"</code>
+a string, and a comparison like <code>3 &gt; 2</code> a boolean. Those four hold single values. For collections you
+have four structures, each with a distinct job:</p>
+<table>
+<tr><th>Structure</th><th>Syntax</th><th>Defining trait</th></tr>
+<tr><td>list</td><td><code>[ ]</code></td><td>ordered, <strong>mutable</strong>, can mix types</td></tr>
+<tr><td>tuple</td><td><code>( )</code></td><td>ordered, <strong>immutable</strong> (can't be changed)</td></tr>
+<tr><td>dictionary</td><td><code>{key: value}</code></td><td>key→value pairs, gives <strong>context</strong></td></tr>
+<tr><td>set</td><td><code>{ }</code></td><td>only <strong>unique</strong> values, order irrelevant</td></tr>
+</table>
+<p>Suppose you want to store a quote: symbol "TCS", price 1175.72, volume 1520352. A list or tuple works,
+but a newcomer reading the code has no idea what each value means. A dictionary —
+<code>{"symbol":"TCS", "last_price":1175.72, "volume":1520352}</code> — is self-documenting; you fetch the price
+with <code>quote["last_price"]</code>. The set's two quirks are worth fixing in memory: it discards duplicates
+(<code>{"a","u","a"}</code> becomes <code>{"a","u"}</code>) and ignores order, so <code>{"a","u"} == {"u","a"}</code>
+is <strong>True</strong> whereas the same comparison on lists is <strong>False</strong>.</p>
+
+<h2>2. Methods versus attributes</h2>
+<p>Every structure carries its own <strong>methods</strong> (actions you call) and <strong>attributes</strong> (values you
+read). A list has <code>.append()</code> — a method, so it needs parentheses — but a tuple does not, because a
+tuple is immutable. Try <code>("a","b").append("c")</code> and Python replies <em>"'tuple' object has no attribute
+append."</em></p>
+<div class="tip"><strong>Two ways to get help fast:</strong> type a name followed by a dot and press <strong>Tab</strong> to see
+every method and attribute available; or put a <code>?</code> after a function (<code>range?</code>) to read its
+<em>docstring</em> — the built-in description of what it does.</div>
+
+<h2>3. Control flow: loops and branching</h2>
+<p>Logic flows through loops and conditionals. The workhorse is the <strong>for loop</strong> paired with
+<strong>if/elif/else</strong>. Imagine a simple rule: buy the market when quarterly GDP growth exceeds 7%, hold at
+exactly 7%, sell below. Iterating over <code>[7.2, 7, 8, 6.6]</code> produces buy, hold, buy, sell — and you
+collect the decisions by <code>.append()</code>-ing each into a list.</p>
+<table>
+<tr><th>GDP %</th><th>Condition</th><th>Signal</th></tr>
+<tr><td>7.2</td><td>&gt; 7</td><td>buy</td></tr>
+<tr><td>7.0</td><td>= 7 (the else)</td><td>hold</td></tr>
+<tr><td>8.0</td><td>&gt; 7</td><td>buy</td></tr>
+<tr><td>6.6</td><td>&lt; 7</td><td>sell</td></tr>
+</table>
+<p>Three things make the loop work: the <strong>colon</strong> after each condition is mandatory syntax, and
+<strong>indentation</strong> is meaningful — the indented block belongs to the loop or branch above it; mis-indent and
+you get an <em>IndentationError</em>. The same decision can be written as a <strong>one-line if</strong> (a ternary):
+<code>"buy" if g &gt; 7 else ("sell" if g &lt; 7 else "hold")</code> — shorter, though not faster.</p>
+
+<h3>List comprehensions</h3>
+<p>A list comprehension compresses a whole loop into one line: <code>[expression for item in list]</code>. The
+squares of <code>[2,3,4,5]</code> are <code>[i*i for i in [2,3,4,5]]</code>, and the entire GDP-signal loop collapses
+to a single comprehension. They are also handy for transforming prices — <code>[np.log(p) for p in prices]</code>
+gives log prices in one line.</p>
+
+<h3>While loops, break and continue</h3>
+<p>A <strong>while loop</strong> runs as long as its condition stays true; you must update the counter inside the loop
+or it never ends (an infinite loop that hangs the kernel). The instructor's analogy is a trading session: while
+the clock is between 9:15 and 3:30 keep looking for signals, and set the session flag to false at 3:15 to stop
+taking new trades. Two keywords steer any loop: <strong>break</strong> exits the loop entirely, while <strong>continue</strong>
+skips only the current iteration and moves to the next value.</p>
+
+<h2>4. Functions</h2>
+<p>A function is a reusable machine: ingredients go in, a result comes out. You have already used built-in
+ones (<code>len</code>, <code>max</code>), methods (<code>.append</code>), and library functions (<code>np.log</code>). Your own are
+defined with <code>def</code>, take inputs, and hand back a value with <code>return</code>:</p>
+<pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-size:14px"><code style="background:none;color:#e2e8f0">def f(x, y, z):
+    k = x**2 + y**2 - z
+    return k          # f(2,3,1) -> 12</code></pre>
+<div class="warn"><strong>Printing is not returning.</strong> <code>print</code> only displays a value on screen; <code>return</code>
+sends it out of the function so you can store it and keep working with it. In the bread-factory analogy,
+printing hands you a <em>photo</em> of the bread; returning hands you the actual loaf.</div>
+<p>For very simple logic there is the <strong>lambda</strong> — an anonymous one-line function,
+e.g. <code>lambda x: "negative" if x &lt; 0 else "non negative"</code>. It isn't faster, but it isn't saved to a named
+variable, which saves a little memory. Beginners can safely ignore it; the standard <code>def</code> handles
+every case.</p>
+
+<h2>5. Libraries, modules and packages</h2>
+<p>Decades of code for every field has been bundled into <strong>libraries</strong> and shared open-source. Quants lean
+on a handful: <strong>NumPy</strong> for numbers, <strong>SciPy</strong> for scientific computing, <strong>matplotlib</strong>/<strong>seaborn</strong>
+for visualisation, <strong>scikit-learn</strong> for machine learning. Some libraries ship built-in (like <code>os</code>);
+others you install with <code>pip install</code> first. The <code>os</code> library manages the operating system —
+<code>os.getcwd()</code> shows your current working directory (where files are read and saved from),
+<code>os.chdir()</code> changes it, and <code>dir(os)</code> lists everything inside.</p>
+
+<h2>6. NumPy — the numeric workhorse</h2>
+<p>Plain Python lists are not built for maths. Add two lists with <code>+</code> and Python <em>concatenates</em> them
+(<code>[1,2]+[6,7]</code> → <code>[1,2,6,7]</code>), not what you want. Convert them to NumPy arrays with
+<code>np.array()</code> and <code>+</code> becomes true element-wise addition (<code>[7,9]</code>) — a <strong>vectorized</strong>
+operation. The same applies to multiplication, division, powers and more, all done in a single batch.</p>
+<div class="callout"><strong>Why it's fast:</strong> NumPy runs its operations in C, a low-level compiled language.
+You write easy Python but execute at C speed. Timing <code>max()</code> over a thousand numbers, a list takes
+roughly 7.5 microseconds versus about 1.5 for an array — around five times faster. On HFT-scale data that
+gap compounds enormously.</div>
+<p>There are several ways to build arrays: <code>np.array</code> from a list; <code>np.linspace(1,10,5)</code> for five
+equally spaced values including the endpoint (1, 3.25, 5.5, 7.75, 10); <code>np.arange(0,4,0.5)</code> for a stepped
+range with the endpoint excluded; and <code>np.zeros(5)</code> / <code>np.ones(5)</code> for pre-filled arrays. Every
+array carries three key attributes: <code>.ndim</code> (number of dimensions), <code>.shape</code> (rows, columns),
+and <code>.dtype</code> (int64, float64, …).</p>
+
+<h3>Random samples and the seed</h3>
+<p>Monte-Carlo methods — for value-at-risk, derivative pricing — need random draws, and NumPy's
+<code>np.random</code> sub-library samples from many distributions (normal, uniform, integers). Draw 10,000 from a
+standard normal and the sample mean sits near 0 and the standard deviation near 1, as expected. But these are
+<strong>pseudo-random</strong>: an algorithm produces them from a starting value called the <strong>seed</strong>. Fix the seed
+with <code>np.random.seed(17)</code> and you get the exact same "random" numbers every run.</p>
+<div class="tip"><strong>Why seeding matters:</strong> you build an analysis on random draws, present it the next day,
+re-run the code — and without a seed your numbers have changed and your story falls apart. The seed makes
+results reproducible. The number 17 isn't special; any fixed value works.</div>
+<p>One more essential is <strong>np.where</strong>, which behaves like Excel's IF: <code>np.where(x &lt; 6, "buy", "sell")</code>
+returns "buy" where the condition holds and "sell" elsewhere. Given only a condition, it instead returns the
+<em>locations</em> (indices) where the condition is true.</p>
+
+<h2>7. pandas — Series and DataFrame</h2>
+<p>pandas (from "panel data") is built on top of NumPy and is what quants actually use day to day. It offers
+two structures: a <strong>Series</strong> (one-dimensional, like a single labelled column) and a <strong>DataFrame</strong>
+(two-dimensional, a spreadsheet with rows and columns). A Series improves on a bare array by adding an
+<strong>index</strong> — store weekly returns indexed by Mon–Fri and you can ask <code>returns["Thu"]</code> directly, much
+like a dictionary. A DataFrame has three parts: an index, columns, and the values (stored internally as a
+NumPy array — which is why pandas and NumPy interoperate so smoothly).</p>
+
+<h3>Reading the real TCS data</h3>
+<p>You read a CSV with <code>pd.read_csv</code>. For time-series data three arguments matter: <code>index_col="Date"</code>
+makes the date the row label (so you can slice by time), <code>parse_dates=True</code> tells pandas the column is a
+date rather than text, and <code>dayfirst=True</code> resolves the dd/mm/yyyy format (so 24/11 is the 24th, not an
+impossible month). The TCS file loads as 1233 daily rows with Open, High, Low, Close, Adj Close, Volume and a
+Direction column.</p>
+<p>From here the everyday moves: <code>df.head()</code>/<code>df.tail()</code> peek at the ends; <code>df["High"]</code>
+returns a one-dimensional <strong>Series</strong> while <code>df[["High","Low"]]</code> (note the list inside) returns a
+two-dimensional <strong>DataFrame</strong>; and you create a new column with simple vectorized maths.</p>
+<table>
+<tr><th>Operation</th><th>Result on the TCS data</th></tr>
+<tr><td><code>df.shape</code></td><td>(1233, 7) after Date becomes the index</td></tr>
+<tr><td><code>df["Range"] = df["High"] - df["Low"]</code></td><td>a daily volatility proxy</td></tr>
+<tr><td><code>df["Close"].mean() / .std()</code></td><td>₹1680.17 / ₹449.20</td></tr>
+<tr><td><code>df["Range"].max()</code></td><td>₹313.95 on 13 March 2020</td></tr>
+</table>
+<p>Plotting <code>df["Close"]</code> and <code>df["Range"]</code> (pandas uses matplotlib behind the scenes) tells the
+story instantly: a huge spike in the daily range in March 2020 — the COVID crash — and a generally higher
+volatility regime afterwards. Finally, <code>df.drop(["Adj Close"], axis=1)</code> removes a column, but returns a
+<em>copy</em>; to change the original you reassign it or pass <code>inplace=True</code>. And <code>df.describe()</code>
+prints count, mean, standard deviation, min, max and quartiles for every numeric column at once.</p>
+
+<h2>Key takeaways</h2>
+<ul>
+<li><strong>Syntax sets the type</strong> and chooses the structure: list (mutable), tuple (immutable), dict (context), set (unique, unordered).</li>
+<li><strong>Method vs attribute:</strong> <code>.append()</code> is a called method; tuples lack it. Use <code>.</code>+Tab and <code>?</code> for help.</li>
+<li><strong>Control flow:</strong> for/while loops with if/elif/else (mind the colon and indentation); <code>break</code> exits, <code>continue</code> skips; list comprehensions compress loops into one line.</li>
+<li><strong>Functions</strong> return (not print) reusable results; <code>lambda</code> is the one-line anonymous form.</li>
+<li><strong>NumPy</strong> gives fast, vectorized arrays (<code>array</code>, <code>linspace</code>, <code>arange</code>, <code>zeros/ones</code>), reproducible randoms via a <strong>seed</strong>, the <code>ndim/shape/dtype</code> attributes, and <code>np.where</code> (Excel-style IF).</li>
+<li><strong>pandas</strong> (Series, DataFrame) builds on NumPy: <code>read_csv</code> with <code>index_col</code>/<code>parse_dates</code>/<code>dayfirst</code>, column selection, new columns, <code>describe</code>, and <code>drop</code> — and on real TCS data the daily range screams "COVID" in March 2020.</li>
+</ul>
+
+<p style="margin-top:30px;color:#94a3b8;font-size:14px;text-align:center;border-top:1px solid #e2e8f0;padding-top:14px">
+Week 6-3 · PBQ-02 Python Basics for Quants — prose study guide. Pair with the cheat sheet (dashboard) and the practice notebook (every example runnable on the real TCS data). Next: DMP-01.</p>
+
+</body>
+</html>

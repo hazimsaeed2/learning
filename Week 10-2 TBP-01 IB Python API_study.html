@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 10-2 · TBP-01 IB Python API — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:48px 28px;
+       color:#3a2e08;line-height:1.7;font-size:17px;background:#fffdf5;}
+  h1{font-size:30px;color:#854d0e;line-height:1.25;margin-bottom:4px;}
+  h2{font-size:23px;color:#ca8a04;margin-top:40px;border-bottom:2px solid #fef08a;padding-bottom:5px;}
+  h3{font-size:19px;color:#a16207;margin-top:28px;}
+  .sub{color:#b45309;font-style:italic;margin-top:0;}
+  code{font-family:ui-monospace,Consolas,monospace;background:#fef9c3;padding:1px 5px;border-radius:4px;font-size:15px;}
+  pre{background:#3a2e08;color:#fef08a;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.5;}
+  pre code{background:none;color:inherit;padding:0;}
+  .callout{background:#fefce8;border-left:4px solid #ca8a04;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  .warn{background:#fef2f2;border-left:4px solid #dc2626;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  .tip{background:#fffbeb;border-left:4px solid #d97706;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px;}
+  th,td{border:1px solid #fde047;padding:7px 10px;text-align:left;}
+  th{background:#fef9c3;color:#854d0e;}
+  .closer{background:#fefce8;border:1px solid #fde047;border-radius:10px;padding:18px 22px;margin-top:36px;}
+</style>
+</head>
+<body>
+
+<h1>Teaching Your Strategy to Trade by Itself</h1>
+<p class="sub">Week 10-2 · Trading &amp; Backtesting Platforms · TBP-01 (with Jay)</p>
+
+<p>Everything so far has been preparation. You learned to dream up a strategy, to quantify it, and to validate it
+against history with vectorized and event-driven backtests. This lesson crosses the bridge from <em>research</em>
+to <em>action</em>: how to take a validated idea and <strong>plug it into a real broker</strong> so that a Python
+program — not your clicking finger — fetches data, places orders, and manages positions. The vehicle is the
+<strong>Interactive Brokers Python API</strong>.</p>
+
+<h2>1. The shape of the journey</h2>
+
+<p>It helps to see where automation sits: <strong>idea → quantify → validate → automate → connect to broker →
+go live.</strong> "Automation" sounds grand, but concretely it just means a list of ordinary
+<strong>trading operations</strong> performed by code: connecting to the broker, fetching historical data, placing
+and modifying and cancelling orders, checking order status and positions, and streaming live quotes. Which of
+these you can automate depends entirely on what your broker's API exposes.</p>
+
+<div class="callout"><strong>Do it by hand first.</strong> The instructor is emphatic: before you automate an
+operation, perform it <em>manually</em> in the broker's terminal. Once you've placed an order by hand and watched
+it appear in the activity pane, you understand exactly what your code is asking the broker to do — and you'll
+debug far faster.</div>
+
+<h2>2. Meeting the terminal: TWS</h2>
+
+<p><strong>Interactive Brokers (IB)</strong> is a broker serving around 35 countries, which is why students from
+everywhere can follow along. Its desktop application is <strong>TWS — the Trader Workstation</strong> — a
+cross-platform, point-and-click terminal you install and log into. Two login modes matter:
+<strong>live</strong> trading and <strong>paper</strong> trading. Paper trading is simulated, and it's the perfect
+sandbox: you receive the <em>same live market data</em> as a funded account, but the <em>fills are simulated</em>,
+so you can rehearse a strategy with zero risk.</p>
+
+<p>Inside, the window is a mosaic of panes — a monitor/watchlist, news, an order-entry box, a chart, an info pane,
+and an activity pane that logs your orders and trades. IB calls each tradable instrument a
+<strong>contract</strong>. A neat detail: a <strong>continuous future</strong> automatically rolls to the next
+contract at expiry, so your watchlist never silently goes stale. Place a buy order on a weekend and it simply
+<em>sits at the broker</em> until the exchange opens — which also means you can still cancel it, because it never
+reached the market.</p>
+
+<h2>3. What an API really is</h2>
+
+<p>Strip away the mystique and an <strong>API (Application Programming Interface)</strong> is just a piece of
+software that sits between two parties and lets them talk in a <strong>structured, programmatic</strong> way. One
+party is the <strong>client</strong>, who makes requests; the other is the <strong>server</strong>, who responds.
+The class offered lovely analogies — a <strong>waiter</strong> carrying your order to the kitchen and food back,
+or simply a <strong>connector</strong> between two applications.</p>
+
+<p>For us the roles are fixed: the <strong>client is our Python program</strong>, and the <strong>server is the
+broker</strong> (TWS). IB's API arrives as a <strong>Python package called <code>ibapi</code></strong>. (It's
+worth knowing other shapes exist: some APIs are sets of <strong>URLs</strong> you call over HTTP — the subject of
+the next class — and <strong>FIX</strong> is the heavyweight standard that financial institutions use to talk to
+each other.)</p>
+
+<h2>4. Two ways to converse: synchronous and asynchronous</h2>
+
+<p>Communication can be <strong>synchronous</strong> — the client sends one request and then <em>sits idle</em>
+until the answer comes back, handling one thing at a time — or <strong>asynchronous</strong>, where the client
+fires off many independent requests and receives the answers <em>whenever they're ready</em>, possibly out of
+order or in pieces, all while doing other work. Streaming live prices is impossible without the asynchronous
+style.</p>
+
+<div class="warn"><strong>The fact that shapes everything: the IB API is asynchronous only.</strong> You don't get
+to choose — the API is built that way, and that single design decision is the reason a background listener and
+threads show up in every IB program. In the notebook a quick simulation made the difference tangible: three
+requests handled synchronously took about 0.15 seconds of idle waiting, while the asynchronous version overlapped
+them and finished in about 0.06 seconds.</div>
+
+<h2>5. The heart of <code>ibapi</code>: EClient and EWrapper</h2>
+
+<p>A Python package is just a bundle of classes, and in <code>ibapi</code> two of them carry the whole story. The
+<strong><code>EClient</code></strong> class holds the methods you call to <strong>make requests</strong> — connect,
+fetch data, place orders. The <strong><code>EWrapper</code></strong> class holds the <strong>callback</strong>
+methods through which the server's <strong>responses</strong> arrive. Two helper classes round things out:
+<code>Contract</code> (a financial instrument) and <code>Order</code> (an order to place).</p>
+
+<p>They come in matched pairs. Every request method has one or more callbacks that deliver its answer:</p>
+
+<table>
+<tr><th>You call (EClient request)</th><th>The server calls back (EWrapper)</th></tr>
+<tr><td><code>reqCurrentTime()</code></td><td><code>currentTime(time)</code></td></tr>
+<tr><td><code>reqContractDetails()</code></td><td><code>contractDetails(...)</code></td></tr>
+<tr><td><code>reqHistoricalData()</code></td><td><code>historicalData(...)</code></td></tr>
+</table>
+
+<p>The pattern you'll write a hundred times is to fuse both sides through <strong>multiple inheritance</strong>
+into a single custom class, conventionally called <code>Strategy</code>, then create one object named
+<code>app</code>:</p>
+
+<pre><code>class Strategy(EClient, EWrapper):
+    def __init__(self):
+        EClient.__init__(self, self)   # the 'double self' initialises both parents
+    def currentTime(self, t):          # a callback — the SERVER calls this, not you
+        print(datetime.fromtimestamp(t))
+
+app = Strategy()
+app.connect("127.0.0.1", 7496, clientId=1)
+app.reqCurrentTime()                   # request out -> currentTime() fires</code></pre>
+
+<p>That curious <code>EClient.__init__(self, self)</code> — passing <em>self twice</em> — is the one line you
+simply copy: it wires the wrapper into the client so both parents initialise together. The three arguments to
+<code>connect</code> are worth memorising: <strong>host</strong> is the IP address of the machine running TWS
+(<code>127.0.0.1</code>/localhost if it's the same computer), <strong>port</strong> is the number you set in the IB
+API settings (commonly <code>7496</code>), and <strong>clientId</strong> is any integer you like — you can connect
+up to <strong>32 clients</strong> to one TWS, and the id simply tells them apart.</p>
+
+<h2>6. Why threads appear: the listener loop</h2>
+
+<p>Here is the subtle part. The API will deliver <em>nothing</em> until you call <strong><code>app.run()</code></strong>,
+which starts an <strong>infinite loop</strong> that listens for incoming messages and dispatches each to the right
+callback. But an infinite loop blocks every line of code beneath it. The resolution is to run
+<code>app.run()</code> on a <strong>separate daemon thread</strong>, leaving your main thread free to keep firing
+requests. That is the entire reason threading enters an IB program — not cleverness, just the need to listen and
+talk at the same time.</p>
+
+<div class="warn"><strong>Define the callback or lose the answer.</strong> If you forget to define
+<code>currentTime()</code>, the request still goes out and the server still replies — but your program has no
+method to catch the response, so nothing prints. The request and its callback are two halves of one whole; you
+always need both.</div>
+
+<div class="tip"><strong>Two small but real gotchas.</strong> First, the flurry of messages TWS prints on startup
+are <em>not errors</em> — they're data-farm <strong>connection notices</strong>; ignore them. Second, do your live
+trading in <strong>Spyder or VS Code, not Jupyter</strong>: Jupyter is a research tool and isn't designed for the
+asynchronous, infinite-loop machinery that live streaming needs. (This study notebook only <em>mocks</em> that
+loop, so it runs safely.)</div>
+
+<div class="closer">
+<h3 style="margin-top:0">The one-paragraph version</h3>
+<p>To automate a validated strategy you connect a <strong>Python client</strong> to the broker's
+<strong>server</strong> (IB's <strong>TWS</strong>) through an <strong>API</strong> — here the <code>ibapi</code>
+package. Learn the operations <strong>manually</strong> first (TWS, paper trading). The API is
+<strong>asynchronous only</strong>, so you talk through two classes: <strong><code>EClient</code></strong> to send
+requests and <strong><code>EWrapper</code></strong> to receive responses via <strong>callbacks</strong>, paired
+one-to-(one-or-more). You combine them with multiple inheritance into a <code>Strategy(EClient, EWrapper)</code>
+class, create <code>app</code>, <code>connect(host, port, clientId)</code>, and run the infinite
+<strong><code>app.run()</code></strong> listener on a <strong>daemon thread</strong> so the main thread can keep
+sending. Define every callback or the response vanishes; ignore the startup connection notices; and use
+Spyder/VS Code rather than Jupyter for the real thing.</p>
+</div>
+
+<p style="text-align:center;color:#fde047;margin-top:36px;font-size:14px;">EPAT · Week 10-2 TBP-01 · Strategy Automation with the Interactive Brokers Python API</p>
+
+</body>
+</html>

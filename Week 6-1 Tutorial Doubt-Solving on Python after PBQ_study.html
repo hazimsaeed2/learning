@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 6-1 Tutorial · Python Doubt-Solving (after PBQ) — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:40px 28px;
+       color:#1f2937;line-height:1.7;font-size:17px;background:#fbfbfd}
+  h1{font-size:30px;color:#065f46;border-bottom:3px solid #059669;padding-bottom:10px;margin-bottom:4px}
+  h2{font-size:22px;color:#047857;margin-top:34px;border-left:5px solid #059669;padding-left:12px}
+  h3{font-size:18px;color:#065f46;margin-top:22px}
+  code{background:#ecfdf5;color:#065f46;padding:1px 6px;border-radius:4px;font-family:Consolas,monospace;font-size:15px}
+  .lead{font-size:18px;color:#475569;font-style:italic}
+  .callout{background:#ecfdf5;border-left:5px solid #059669;padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0}
+  .warn{background:#fef2f2;border-left:5px solid #ef4444;padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0}
+  .tip{background:#fffbeb;border-left:5px solid #f59e0b;padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0}
+  table{border-collapse:collapse;width:100%;margin:16px 0;font-size:15px}
+  th,td{border:1px solid #cbd5e1;padding:7px 10px;text-align:left}
+  th{background:#ecfdf5;color:#065f46}
+  tr:nth-child(even){background:#f8fafc}
+</style>
+</head>
+<body>
+
+<h1>Python Doubt-Solving — the Mechanics</h1>
+<p class="lead">Week 6-1 · Tutorial Session (instructor Mahavir) — a practical follow-up to PBQ-01, written as a lesson you can read end to end.</p>
+
+<p>The first Python lecture taught you the building blocks; this tutorial clears up the small mechanical
+things that quietly trip up every beginner: how importing actually works, what a working directory is, why
+one method needs parentheses and another doesn't, and which of the three brackets to reach for. None of it is
+hard once you see the logic — and the logic is what this guide gives you.</p>
+
+<h2>1. What a library really is</h2>
+<p>A <strong>library</strong> is pre-assembled code bundled for a specific job. The instructor's analogy is a set of
+labelled toolboxes at home: one box for home repairs (hammer, spanner, bolts), one for grooming (razor, nail
+clipper), one for electronics (cables, drives). You don't groom with a hammer, and you don't analyse data
+with a plotting library. Each Python library has its lane:</p>
+<table>
+<tr><th>Library</th><th>Name origin</th><th>Job</th></tr>
+<tr><td><code>pandas</code></td><td>panel data</td><td>read, clean, manipulate and analyse tabular data</td></tr>
+<tr><td><code>numpy</code></td><td>numerical Python</td><td>fast numeric and matrix mathematics</td></tr>
+<tr><td><code>matplotlib</code></td><td>math plotting library</td><td>charts and figures</td></tr>
+</table>
+<p>There are roughly <strong>137,000</strong> libraries published on PyPI — for astronomy, chemistry, machine
+learning, anything — but in quant finance you'll lean on maybe 15–20, and use 10–12 daily. Don't be
+overwhelmed by the size of the ecosystem; you only ever load the handful you need.</p>
+
+<h3>Built-in vs third-party</h3>
+<p>Some libraries ship <em>with</em> Python and need no installation — <code>os</code>, <code>urllib</code>,
+<code>math</code>. These are <strong>built-in</strong>, like the apps pre-loaded on a new phone. Others —
+<code>numpy</code>, <code>pandas</code>, <code>sklearn</code> — are <strong>third-party</strong>: maintained by an outside
+community, hosted on a server, and you must install them once before you can use them (like downloading Uber
+or a food-delivery app yourself).</p>
+
+<h3>Install once, import every session</h3>
+<p>These two words confuse beginners constantly. <strong>Installing</strong> downloads the library from its server to
+your hard drive — you do this <em>once</em>. <strong>Importing</strong> loads it into memory so your current program can
+use it — you do this <em>every time</em> you start Python or restart the kernel.</p>
+<div class="callout"><strong>The cupboard analogy:</strong> you buy a toolkit once and store it in a cupboard
+(install). Each time you need it you fetch it out, use it, and put it back (import). Buy once; fetch on every
+use.</div>
+
+<h2>2. The working directory</h2>
+<p>When you write <code>pd.read_csv("data.csv")</code>, Python looks for that file in your <strong>current working
+directory</strong> (CWD). If the file lives elsewhere — say, in Downloads — you get a <em>FileNotFoundError</em>. The
+<code>os</code> library is the fix:</p>
+<table>
+<tr><th>Command</th><th>What it does</th></tr>
+<tr><td><code>os.getcwd()</code></td><td>shows the directory you're currently in</td></tr>
+<tr><td><code>os.chdir(path)</code></td><td>moves you to a new directory</td></tr>
+<tr><td><code>os.listdir()</code></td><td>lists the files there</td></tr>
+<tr><td><code>dir(library)</code></td><td>lists everything inside a library (handy when you forget a method name)</td></tr>
+</table>
+<p>So you have two ways to read a file outside your CWD: copy the file into the working directory, or change
+the working directory to where the file is. (On Windows, remember paths in code need double backslashes,
+<code>C:\\\\Users\\\\...</code>, or the single backslash gets read as an escape character.)</p>
+
+<h2>3. The five ways to import — and the order trap</h2>
+<p>There's more than one way to bring a library in, each with a use case:</p>
+<table>
+<tr><th>Form</th><th>When to use it</th></tr>
+<tr><td><code>import math</code></td><td>plain and simple</td></tr>
+<tr><td><code>import numpy as np</code></td><td><strong>preferred</strong> — the alias saves you typing the full name repeatedly</td></tr>
+<tr><td><code>from math import *</code></td><td><strong>discouraged</strong> — pulls in <em>everything</em> and floods the namespace</td></tr>
+<tr><td><code>from math import sqrt</code></td><td>grab one function — good for heavy libraries like sklearn or pytorch</td></tr>
+<tr><td><code>from math import sqrt as root</code></td><td>one function, renamed</td></tr>
+</table>
+<p>A common beginner slip is the word order. It is <code>from B import A</code>, never <code>import A from B</code>.
+The reasoning is intuitive: the <em>library</em> (B) is the thing stored on disk, so Python looks it up first and
+then pulls the function (A) out of it.</p>
+
+<h2>4. Namespace overriding — why <code>import *</code> is risky</h2>
+<p>Here's the concrete danger of star-imports. Suppose two libraries both define <code>sin</code>:</p>
+<table>
+<tr><th>Step</th><th>Code</th><th>Effect</th></tr>
+<tr><td>1</td><td><code>from math import sin</code></td><td>real-valued sine loaded</td></tr>
+<tr><td>2</td><td><code>from cmath import sin</code></td><td>complex-valued sine <strong>overrides</strong> the first</td></tr>
+<tr><td>result</td><td><code>sin(1.0)</code></td><td>returns <code>(0.841+0j)</code> — the cmath version won</td></tr>
+</table>
+<p>Whatever you import <em>later</em> wins. In a small script that's a curiosity; in a large project with many
+files and variables, it becomes impossible to trace where a function came from. The cure is to keep names
+explicit — write <code>math.sin(1.0)</code> — so any reader knows exactly which library each call belongs to.</p>
+
+<h2>5. Attribute vs method: the parentheses puzzle</h2>
+<p>This was the tutorial's headline question, raised by a student who couldn't see why <code>df.shape</code> works
+but <code>df.shape()</code> errors. The distinction is simple once named:</p>
+<ul>
+<li>An <strong>attribute</strong> is a stored value you just <em>read</em> — <code>df.shape</code> returns a tuple like
+<code>(2460, 7)</code>. No parentheses.</li>
+<li>A <strong>method</strong> is an action you <em>call</em> — <code>df.describe()</code> computes statistics. It needs
+parentheses, because the parentheses are where arguments go.</li>
+</ul>
+<p>Call an attribute as if it were a method and Python complains <em>"'tuple' object is not callable."</em> The
+general syntax to remember is <code>library.method(arguments)</code> — if there are no arguments to pass and
+you're simply reading a fact, you're looking at an attribute, and the parentheses disappear.</p>
+<div class="tip"><strong>A useful tell:</strong> in Jupyter, type the name and check its <code>type</code>.
+<code>type(df.shape)</code> is <em>tuple</em> (a value); <code>type(df.describe)</code> is <em>method</em> (a
+callable).</div>
+
+<h2>6. Which bracket goes where?</h2>
+<p>Three brackets, three jobs. This is worth committing to memory because mixing them up is the single most
+common syntax error for newcomers.</p>
+<table>
+<tr><th>Bracket</th><th>Used for</th><th>Example</th></tr>
+<tr><td><strong>round</strong> <code>( )</code></td><td>call functions/methods, pass arguments, define <strong>tuples</strong>, group arithmetic</td><td><code>def f(a,b): return (a+b, a*b)</code></td></tr>
+<tr><td><strong>square</strong> <code>[ ]</code></td><td>define <strong>lists</strong>, index and slice</td><td><code>lst[0]</code>, <code>lst[0:3]</code></td></tr>
+<tr><td><strong>curly</strong> <code>{ }</code></td><td>define <strong>sets</strong> and <strong>dictionaries</strong>, hold variables in <strong>f-strings</strong></td><td><code>{"MSFT":300}</code>, <code>f"{price}"</code></td></tr>
+</table>
+<p>Recall the key behavioural differences too: a <strong>list</strong> (square brackets) is mutable — you can
+<code>.append</code> to it — while a <strong>tuple</strong> (round brackets) is immutable, so it has no
+<code>.append</code> at all. A <strong>set</strong> (curly brackets) keeps only unique elements and is unordered; a
+<strong>dictionary</strong> (also curly) stores key–value pairs. Two small punctuation marks round this out: the
+<strong>comma</strong> separates items and arguments just like in English, and the <strong>underscore</strong> makes long
+variable names readable (<code>my_first_python_variable</code>).</p>
+
+<h2>7. f-strings: cleaner output</h2>
+<p>You met f-strings in PBQ-01; the tutorial reinforced <em>why</em> they matter. In real code you often print
+status messages built from several variables and conditions — "since condition X was met, we chose strategy
+A." An f-string (prefixed with <code>f</code>, variables wrapped in curly braces) makes those messages readable
+without clumsy string concatenation. Readable output is not a luxury; in a live trading algorithm it is how
+you know what your code just decided.</p>
+
+<h2>8. Magic commands and the lesson of <code>%timeit</code></h2>
+<p>Magic commands are Jupyter shortcuts that begin with <code>%</code>. The everyday ones:</p>
+<table>
+<tr><th>Command</th><th>What it shows</th></tr>
+<tr><td><code>%who</code></td><td>a bare list of your defined variables</td></tr>
+<tr><td><code>%whos</code></td><td>variables with their types and values (more organised)</td></tr>
+<tr><td><code>%pwd</code></td><td>the current working directory</td></tr>
+<tr><td><code>%history</code></td><td>every command run since the kernel started</td></tr>
+<tr><td><code>%timeit</code></td><td>benchmarks a line by running it many times, reporting mean ± std-dev</td></tr>
+</table>
+<p>The deepest point came from <code>%timeit</code>. Benchmarking <code>sum(range(n))</code> for growing
+<code>n</code> shows that <strong>work does not scale linearly</strong>: summing 10 numbers took ~139 ns, summing 20
+took ~184 ns (not double — fixed call overhead dominates at small sizes), and summing 1,000 took ~10 µs.
+Looking at the <em>ratio</em> of timings as the input grows is how you gauge a routine's <strong>time
+complexity</strong> and choose the more scalable of two approaches.</p>
+<div class="warn"><strong>On using AI to write code:</strong> the instructor encourages it — but with a caveat. If
+an LLM hands you a strategy using <code>rolling</code>, <code>np.where</code>, <code>shift</code> and
+<code>pct_change</code> and you can't read those, the code is a black box you can't trust. Learn the basics
+first; then let the AI accelerate you, with you as the verifier.</div>
+
+<h2>Key takeaways</h2>
+<ul>
+<li>A <strong>library</strong> is a labelled toolbox; <strong>built-in</strong> ones (<code>os</code>, <code>math</code>) need no install, <strong>third-party</strong> ones (<code>numpy</code>, <code>pandas</code>) install once and import every session.</li>
+<li><strong>Working directory:</strong> <code>os.getcwd()</code> / <code>os.chdir()</code>; <code>read_csv</code> only finds files in the CWD; <code>dir(lib)</code> lists contents.</li>
+<li><strong>Five imports;</strong> alias form is preferred, <code>import *</code> discouraged, and the library name always comes first (<code>from B import A</code>).</li>
+<li><strong>Namespace overriding:</strong> the later import wins — stay explicit (<code>math.sin</code>) for traceable code.</li>
+<li><strong>Attribute vs method:</strong> <code>df.shape</code> (value, no parens) vs <code>df.describe()</code> (action, parens).</li>
+<li><strong>Brackets:</strong> round = call/tuple/args, square = list/index/slice, curly = set/dict/f-string.</li>
+<li><strong>Magic commands:</strong> <code>%who</code>, <code>%whos</code>, <code>%pwd</code>, <code>%history</code>, and <code>%timeit</code> — and remember work rarely scales linearly.</li>
+</ul>
+
+<p style="margin-top:30px;color:#94a3b8;font-size:14px;text-align:center;border-top:1px solid #e2e8f0;padding-top:14px">
+Week 6-1 · Tutorial — Python Doubt-Solving (after PBQ) — prose study guide. Pair with the cheat sheet (dashboard) and the practice notebook (every example runnable). Next: the PBQ-02 tutorial.</p>
+
+</body>
+</html>

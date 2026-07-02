@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 12-2 · TBP-02 REST API for Algorithmic Trading — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:48px 28px;
+       color:#27272a;line-height:1.7;font-size:17px;background:#fafafa;}
+  h1{font-size:30px;color:#18181b;line-height:1.25;margin-bottom:4px;}
+  h2{font-size:23px;color:#3f3f46;margin-top:40px;border-bottom:2px solid #cffafe;padding-bottom:5px;}
+  h3{font-size:19px;color:#0e7490;margin-top:28px;}
+  .sub{color:#0891b2;font-style:italic;margin-top:0;}
+  code{font-family:ui-monospace,Consolas,monospace;background:#cffafe;padding:1px 5px;border-radius:4px;font-size:15px;}
+  pre{background:#18181b;color:#cffafe;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.5;}
+  pre code{background:none;color:inherit;padding:0;}
+  .callout{background:#ecfeff;border-left:4px solid #0891b2;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  .warn{background:#fef2f2;border-left:4px solid #dc2626;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  .tip{background:#fffbeb;border-left:4px solid #d97706;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px;}
+  th,td{border:1px solid #d4d4d8;padding:7px 10px;text-align:left;}
+  th{background:#e4e4e7;color:#18181b;}
+  .closer{background:#ecfeff;border:1px solid #a5f3fc;border-radius:10px;padding:18px 22px;margin-top:36px;}
+</style>
+</head>
+<body>
+
+<h1>One Skill, Any Broker: Automating Trades with a REST API</h1>
+<p class="sub">Week 12-2 · Trading &amp; Backtesting Platforms · TBP-02</p>
+
+<p>In the previous session we automated trading through Interactive Brokers' TWS API — a custom
+Python library with its <code>EClient</code> and <code>EWrapper</code> classes. It works
+beautifully, but it only talks to IB. This session teaches a second, more universal route: the
+<strong>REST API</strong>. The trading operations we want — place an order, fetch positions,
+stream a price — stay exactly the same; only the <em>technology</em> for talking to the broker
+changes.</p>
+
+<p>Why learn a second way at all? Two reasons. First, when you can accomplish a thing several
+ways, you make better engineering decisions about which is faster or simpler for a given job.
+Second — and this is the big one — REST has become the <strong>de-facto standard</strong>. The IT
+industry has run on REST for a decade, and since COVID almost every broker that offers algorithmic
+trading exposes a REST API: Indian, international, crypto, and FX brokers alike. Learn it once and
+you can connect to <em>virtually any</em> broker, even build a platform that fetches data from one
+broker and routes orders to another, or fails over to a backup when your primary disconnects.</p>
+
+<div class="warn"><strong>What REST is not.</strong> It is <strong>not for high-frequency
+trading</strong> — it runs over the internet, where latency is measured in seconds, so it suits
+<strong>low- and medium-frequency</strong> trading (down to about one second). HFT firms use
+<strong>FIX</strong> and specialised <strong>FPGA</strong> hardware instead. REST is also
+<strong>not uniform</strong> (each broker exposes a different menu of operations — always read
+the docs) and <strong>not a replacement</strong> for your web or desktop terminal, which you keep
+for monitoring while REST runs the automation underneath.</div>
+
+<h2>1. From "API" to "REST API"</h2>
+
+<p>An <strong>API</strong> (Application Programming Interface) is simply a programmable bridge that
+lets a <strong>client</strong> talk to a <strong>server</strong> in a structured way.
+<strong>REST</strong> stands for <strong>Representational State Transfer</strong>, and here is the
+subtlety: REST is not a piece of software but a <em>set of design principles</em> — uniform
+interface, statelessness, cacheability, a client–server split. Any API built to honour those
+principles is called "a REST API." As the <em>end user</em> you needn't memorise the principles;
+what matters is that, unlike the IB library, a REST API arrives as plain <strong>HTTP URLs</strong>.</p>
+
+<p>The name describes the flow exactly. Data lives on the server. The client <strong>requests</strong>
+the current <strong>state</strong> of some variable — your PnL, your positions, the last price — and
+the server reads that state and <strong>transfers a representation</strong> of it back. Hence
+<em>Representational State Transfer</em>. And it is <strong>synchronous</strong>: the client fires a
+request, waits, receives the response, acts, and only then sends the next one.</p>
+
+<h2>2. The five pieces of a request</h2>
+
+<p>Every REST request to a broker is assembled from <strong>five</strong> ingredients; omit one
+and the request fails:</p>
+
+<table>
+<tr><th>#</th><th>Piece</th><th>What it carries</th></tr>
+<tr><td>1</td><td><strong>Base URL</strong></td><td>the broker server's address (on page one of the docs), e.g. <code>https://localhost:5000/v1/api</code></td></tr>
+<tr><td>2</td><td><strong>Endpoint</strong></td><td>the "department" for one operation, e.g. <code>/pnl</code>, <code>/positions</code>, <code>/place_order</code></td></tr>
+<tr><td>3</td><td><strong>HTTP method</strong></td><td>your <em>intention</em>: <strong>GET</strong> to fetch, <strong>POST</strong> to send — the docs tell you which</td></tr>
+<tr><td>4</td><td><strong>Headers</strong></td><td>information about the <em>client</em> (auth token, content type) — a Python dict</td></tr>
+<tr><td>5</td><td><strong>Payload / body</strong></td><td>information about the <em>request itself</em> (symbol, quantity, price) — sent as JSON</td></tr>
+</table>
+
+<p>The full URL is just <strong>base URL + endpoint</strong>: <code>.../v1/api/place_order</code>.
+Think of the server as a bank — to talk about a loan you go to the loans desk, to deposit cash you
+go to the teller. Each endpoint is a desk that only handles its own kind of request.</p>
+
+<h2>3. The code pattern, on a mock broker</h2>
+
+<p>Because the rest of this lesson needs a live broker account, we stood up a tiny
+<strong>mock broker</strong> that behaves like IB's Client-Portal Web API — real status codes, real
+JSON — and fed it genuine NIFTY bars. The code reads exactly as it would against a real broker:</p>
+
+<pre><code>import requests, json
+BASE = "https://localhost:5000/v1/api"
+
+url = BASE + "/iserver/auth/status"     # pieces 1 + 2
+headers, payload = {}, {}               # pieces 4 + 5 (none needed here)
+r = requests.post(url, headers=headers, # piece 3: POST
+                  json=payload, verify=False)
+print(r.status_code)                    # response part 1
+print(json.loads(r.content))            # response part 2</code></pre>
+
+<div class="tip"><strong>A real-world quirk.</strong> The very first time we check auth status it
+reports <em>not</em> authenticated — we haven't logged in. And IB <strong>drops idle
+sessions</strong>: in the live class the instructor logged in, spent a few minutes explaining the
+code, re-ran it, and found himself disconnected. That's a feature, not a bug. (Also,
+<code>verify=False</code> is IB-specific — its <em>local</em> gateway has no SSL certificate;
+other brokers use a hosted URL with proper SSL.)</div>
+
+<h2>4. Reading the response: status code first, then content</h2>
+
+<p>The response has two parts, and you always check them in order. First the <strong>status
+code</strong>, whose <em>first digit</em> tells you everything:</p>
+
+<table>
+<tr><th>Starts with</th><th>Meaning</th><th>Whose fault</th></tr>
+<tr><td><strong>2xx</strong></td><td>success — the server understood and processed your request</td><td>—</td></tr>
+<tr><td><strong>4xx</strong></td><td><strong>client</strong> error — a bad URL, endpoint, method, header or payload (the famous <strong>404</strong> = page not found)</td><td><strong>you</strong></td></tr>
+<tr><td><strong>5xx</strong></td><td><strong>server</strong> error — your request was fine but the server can't cope right now</td><td>the broker</td></tr>
+</table>
+
+<p>Only once the status code is in the 2xx range do you bother reading the second part, the
+<strong>content</strong>. These codes aren't broker inventions — they're an HTTP-consortium
+standard, identical across the entire web.</p>
+
+<h2>5. GET, POST, and placing an order</h2>
+
+<p><strong>GET</strong> means "get me information" — fetching PnL or positions. <strong>POST</strong>
+means "here is new information to act on" — placing an order. A POST is where all five pieces earn
+their keep: the <strong>headers</strong> identify the client, and the <strong>payload</strong>
+carries the order details:</p>
+
+<pre><code>headers = {"Content-Type": "application/json"}            # about the client
+payload = {"symbol": "NIFTY", "side": "BUY", "quantity": 75}  # about the request
+r = requests.post(BASE + "/place_order",
+                  headers=headers, json=payload, verify=False)
+# -> status 200, {"order_id": 1001, "status": "Submitted"}</code></pre>
+
+<h2>6. Why JSON is the common tongue</h2>
+
+<p>Your headers and payloads are Python <strong>dictionaries</strong>, but the server might be
+written in C++, which has no notion of a "dict." The neutral meeting ground is <strong>JSON</strong>
+— JavaScript Object Notation, which despite the name has nothing to do with JavaScript; it's just a
+text format every language can read and write. The <code>json</code> library bridges the two
+worlds: <code>json.dumps(dict)</code> turns a dict into JSON text to send, and
+<code>json.loads(text)</code> turns the server's JSON reply back into a dict. Send a dict, receive a
+dict, and JSON quietly handles the translation in between.</p>
+
+<h2>7. A modular library, and staying connected</h2>
+
+<p>The instructor's tidy design pattern: write <strong>one function per endpoint</strong> in a file
+like <code>cp_web_api_functions.py</code> — effectively your own little broker library — then
+<code>import</code> those functions into an <code>entry_point.py</code> where your
+<strong>strategy</strong> lives. That way your strategy code never has to know anything about base
+URLs or headers; it just calls <code>fetch_historical()</code> or <code>place_order()</code>. We
+mirrored exactly that.</p>
+
+<div class="callout"><strong>The heartbeat.</strong> Since IB disconnects an idle session, you keep
+it alive either by calling the <code>/reauthenticate</code> endpoint or by running a
+<strong>continuous tickle</strong> — a small loop that pings a <code>validate</code>/<code>tickle</code>
+endpoint roughly every 55 seconds on a <strong>separate thread</strong>, just like the listener
+thread from TBP-01. One thing you may <em>not</em> automate is the initial <strong>login</strong>:
+regulations require a human to log in, so brokers deliberately don't expose that.</div>
+
+<div class="closer">
+<h3 style="margin-top:0">The one-paragraph version</h3>
+<p>A <strong>REST API</strong> is the broker-agnostic, de-facto-standard way to automate trading over
+HTTP — ideal for LFT/MFT, never for HFT (which uses FIX and FPGA). REST means <em>Representational
+State Transfer</em>: a <strong>synchronous</strong> client request for the <strong>state</strong> of
+some variable, returned as a representation. Build each request from <strong>five pieces</strong> —
+base URL, endpoint, <strong>HTTP method</strong> (GET to fetch, POST to send), <strong>headers</strong>
+(about the client) and <strong>payload</strong> (about the request, as JSON). Read the response in two
+parts: the <strong>status code</strong> (first digit — 2xx success, 4xx your error, 5xx server error)
+then the <strong>content</strong>. Use <strong>JSON</strong> (<code>dumps</code>/<code>loads</code>)
+as the common language with any server, keep the session alive with a <strong>tickle</strong> thread
+(you can't auto-login), and wrap one function per endpoint into your own library so your strategy code
+stays clean — exactly what we did against a mock broker fed with real NIFTY bars.</p>
+</div>
+
+<p style="text-align:center;color:#a1a1aa;margin-top:36px;font-size:14px;">EPAT · Week 12-2 TBP-02 · REST API for Algorithmic Trading</p>
+
+</body>
+</html>

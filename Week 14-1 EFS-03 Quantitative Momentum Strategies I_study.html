@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 14-1 EFS-03 — Quantitative Momentum I · Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:48px 32px;
+       color:#1f2937;line-height:1.7;font-size:17px;background:#fdfdfb}
+  h1{font-size:30px;color:#065f46;margin-bottom:4px;line-height:1.2}
+  .sub{color:#6b7280;font-style:italic;margin-bottom:28px;font-size:17px}
+  h2{font-size:23px;color:#047857;margin-top:38px;border-bottom:2px solid #a7f3d0;padding-bottom:5px}
+  h3{font-size:19px;color:#059669;margin-top:26px}
+  p{margin:14px 0}
+  .callout{background:#ecfdf5;border-left:4px solid #059669;padding:12px 18px;margin:20px 0;border-radius:4px}
+  .warn{background:#fef2f2;border-left:4px solid #ef4444;padding:12px 18px;margin:20px 0;border-radius:4px}
+  .tip{background:#fffbeb;border-left:4px solid #f59e0b;padding:12px 18px;margin:20px 0;border-radius:4px}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px}
+  th,td{border:1px solid #a7f3d0;padding:7px 11px;text-align:left}
+  th{background:#ecfdf5;color:#065f46}
+  code{background:#d1fae5;color:#065f46;padding:1px 5px;border-radius:3px;font-size:15px}
+  .closer{background:#064e3b;color:#d1fae5;padding:20px 24px;border-radius:8px;margin-top:34px;font-size:16px}
+  em{color:#047857}
+</style>
+</head>
+<body>
+
+<h1>Quantitative Momentum I — Futures and Roll Returns</h1>
+<div class="sub">Week 14-1 · EFS-03 — the first half of Ernie Chan's momentum workshop, where momentum is taught the way it is best understood: through the futures market and the idea of the roll return.</div>
+
+<p>There are many ways to build a trading strategy. Some people trade by gut. Others throw a hundred and fifty indicators at a machine-learning model and hope something predictive falls out. Ernie Chan takes a third path, the one most quantitative traders actually use: the <em>causal</em> approach. It works like physics. You don't just notice that prices trend; you propose a model of <em>why</em> they trend, and a good model then predicts things you haven't even observed yet. Newton didn't just watch apples fall — his theory of gravity also told him the moon would orbit and the earth would circle the sun. This lesson builds exactly that kind of causal model for momentum, and it turns out the cleanest place to find it is the futures market.</p>
+
+<h2>The honest caveat: finance is mostly noise</h2>
+
+<p>Before any of the mechanics, Ernie insists on a reality check. In physics the signal dwarfs the noise — the sun comes up ten days out of ten, not nine. In finance the opposite is true: the signal-to-noise ratio is tiny. So even a genuinely <em>correct</em> causal model is right only about <strong>50 to 60 percent</strong> of the time. That sounds disappointing until you realize it is plenty. A portfolio manager at Renaissance once said their edge was measured in the decimal places above fifty percent — they simply trade often enough for a sliver of edge to compound into a high Sharpe ratio. If you can predict direction with 55% accuracy, you are in business.</p>
+
+<p>This caveat also explains why Ernie distrusts pure data mining. With so much noise, a machine-learning model with no causal story is liable to learn <em>noise</em> dressed up as a pattern — a backtest that looks brilliant and then evaporates. The causal model is your defence against fooling yourself.</p>
+
+<h2>Three engines of momentum</h2>
+
+<p>Momentum doesn't come from one place. Ernie names three distinct causes, and this workshop tackles the first.</p>
+
+<table>
+<tr><th>Cause</th><th>Market</th><th>Covered</th></tr>
+<tr><td>Persistence of <strong>roll returns</strong></td><td>Futures</td><td>Today (Part I)</td></tr>
+<tr><td>Persistence of <strong>factor returns</strong></td><td>Stocks</td><td>Part II</td></tr>
+<tr><td><strong>Institutional forced trading</strong> — index funds, mutual funds, hedge funds, levered ETFs</td><td>Everything, via contagion</td><td>Later</td></tr>
+</table>
+
+<p>That third cause is worth a moment: even if you are doing nothing but passively holding the S&amp;P 500, the fact that other big funds are sometimes <em>forced</em> to buy and sell — to rebalance, to meet redemptions, to maintain leverage — spills over and moves your holding. Momentum is partly other people's obligations. But today we focus on the futures engine: the roll return.</p>
+
+<h2>Total return = spot return + roll return</h2>
+
+<p>Every futures return splits cleanly into two pieces. There is the <em>spot return</em> — how the underlying index or commodity itself moved — and there is the <em>roll return</em>, the extra piece that belongs to the futures contract. Momentum traders care about the roll, because it is persistent and, in some cases, computable exactly.</p>
+
+<p>The cleanest case is the E-mini S&amp;P 500 future, and the tool to crack it is an <em>arbitrage argument</em>. Imagine two ways to get S&amp;P exposure with a million dollars. You could buy the SPY ETF, whose total return is the index return plus its dividend yield. Or you could put up a million dollars of notional in E-mini futures. Because these two portfolios deliver identical exposure, they must deliver identical total return — otherwise everyone would pile into the cheaper one. Now here is the subtlety: when you buy SPY your cash is <em>spent</em>, but when you trade futures your cash merely sits as <strong>margin collateral</strong> and keeps earning interest. So the futures portfolio's total return is the index return <em>plus</em> the roll return <em>plus</em> the interest on your idle cash. Set the two portfolios equal, cancel the common index return, and you are left with a beautifully simple result:</p>
+
+<div class="callout"><strong>Roll return of the E-mini = dividend yield − interest rate.</strong> With a 1.8% dividend yield and a 4.5% short rate, the roll is −2.7% per year — a <em>contango</em>. You lose 2.7% annually just from holding the future, before the index moves at all.</div>
+
+<p>The same arbitrage logic answers Ernie's homework about the Mexican peso future on the CME. There the roll return turns out to be the <strong>interest-rate differential</strong> between the two currencies — not, as one student guessed, anything to do with GDP growth. With an 11% Mexican rate against a 4.5% US rate, the peso future carries a +6.5% roll. This is precisely the FX <em>carry</em> trade: a high-interest currency's future carries a positive roll. For futures like oil or corn, though, no such tidy formula exists — there you must <em>estimate</em> the roll from data, which is most of what the rest of the lesson is about.</p>
+
+<h2>Backwardation, contango, and Keynes's wheat farmers</h2>
+
+<p>The sign of the roll return has traditional names. A <em>positive</em> roll is called <strong>normal backwardation</strong>; a <em>negative</em> roll is <strong>contango</strong>. The mnemonic is "backwardation is normal," and there is a lovely story behind it, courtesy of John Maynard Keynes — who, besides being an economist and Chancellor's adviser, ran a hedge fund trading agricultural futures.</p>
+
+<p>Think about a wheat farmer. He is already <em>long</em> physical wheat sitting in his fields, so the last thing he wants is more wheat risk. To lock in a price he <em>shorts</em> wheat futures — he is the natural seller. But every short needs a buyer, and the buyer is a speculator who knows far less about wheat than the farmer does. Why would the speculator take that informationally disadvantaged bet? Only if he is paid to. So the future must carry a built-in <strong>positive expected roll return</strong> to entice him onto the long side. Hence backwardation is "normal" in commodities. Ernie is careful to add that this is just a memorable story, not a law — wheat and corn both swing into contango at times.</p>
+
+<h2>Why everything is in log returns</h2>
+
+<p>Ernie pauses to quiz the class on a habit that runs through all of quantitative finance: using <em>log</em> returns rather than simple net returns. There are two reasons.</p>
+
+<p>First, <strong>log returns add up across time</strong>. A 1% log return followed by a 2% log return is exactly 3%, whereas net returns compound to slightly more. Additivity makes the algebra of multi-period returns trivial. Second — and more subtly — <strong>only log returns can be normally distributed</strong>. A net return is bounded below by −1, because a price can fall to zero but never go negative, so its distribution can never truly be the bell curve that stretches to negative infinity. A log return has no such floor: as a price approaches zero its log heads to −∞, leaving room for a genuine normal distribution. Taking logs is not about taming outliers; it is about giving the distribution somewhere to go.</p>
+
+<h2>Reading the roll off the forward curve</h2>
+
+<p>Now the centrepiece. Ernie models a futures price as <em>linear in log-time</em>: in logs, <code>ln F = α·t − γ·T</code>, where <code>α</code> is the spot return and <code>γ</code> is the roll return we are hunting. There are two ways to picture it. Watch a single contract over its life and its log price moves with slope α+γ (if the spot return α is zero, the slope <em>is</em> the roll). Or take a <em>snapshot</em> across many contracts of different maturities — the <strong>forward curve</strong>, also called the term structure — plotting price against time-to-expiry. On that curve the slope is <em>−γ</em>. So the recipe is simple:</p>
+
+<div class="callout"><strong>Roll return = −(slope of the log forward curve).</strong></div>
+
+<p>Ernie hands the class real corn data and asks them to do exactly this on the snapshot of 14 March 2012. Reproducing his on-screen numbers, the front contract trades near 669 cents and the far contract near 564 — a clearly <em>downward</em>-sloping curve, which means backwardation. Fitting a line to the log prices against time-to-expiry gives a slope of about −0.207 per year, so the roll return is <strong>+20.7% annualized</strong>. A quick two-point check (front versus far) lands at +20.6%, confirming it. This corn future is solidly backwardated — exactly the "normal" state Keynes's story predicts for an agricultural commodity.</p>
+
+<div class="warn"><strong>The data has teeth.</strong> Corn doesn't list every month — only the codes H, K, N, U and Z (March, May, July, September, December), spaced unevenly around the harvest cycle, so your time-to-expiry axis is irregular. Most cells in the raw matrix are NaN, because each contract only exists between its creation and expiry. And the prices are <em>settlement</em> prices — the volume-weighted average of the last few minutes of trading (or the bid-ask midpoint when there are no late trades), <em>not</em> the last transaction. In a market where one E-mini tick is worth fifty dollars, the noisy last trade would be a poor input; the settlement price is what you backtest on.</p>
+
+<h2>The payoff: harvesting persistence</h2>
+
+<p>Why does any of this make money? Because the roll return <em>persists</em>. A future in backwardation tends to stay in backwardation for a while, so the sign of today's roll is a decent forecast of the next period's roll contribution. That persistence is the causal engine of CTA-style futures momentum. The beautiful part is what you <em>don't</em> have to do: you never forecast the noisy spot price of corn or crude. In a one-year simulation where the spot return is pure noise and the corn roll is steadily positive, the spot piece wanders to +8% by luck while the harvested roll contributes a dependable +23% — and you collected the roll without any view on where corn was headed.</p>
+
+<div class="closer">
+<strong>The one-paragraph version.</strong> Momentum is best understood in <em>futures</em>, and its engine is the <em>roll return</em> — what's left of a future's total return after the spot move (<em>total = spot + roll</em>). For the E-mini you can derive it exactly by arbitrage against SPY: <em>roll = dividend yield − interest rate</em> (for an FX future like the peso it's the <em>interest-rate differential</em> — pure carry). A positive roll is <em>normal backwardation</em> (downward forward curve), a negative roll is <em>contango</em>; Keynes explained backwardation as the premium paid to speculators for taking the long side from hedging farmers. Model futures prices as linear in log-time, <code>ln F = α·t − γ·T</code>, so the <em>roll return γ = −(slope of the log forward curve)</em> — and on the corn snapshot that slope yields a backwardated <em>+20.7%</em>. We use log returns because they're additive and can be normal (net returns are floored at −1). The causal payoff: roll returns persist, so you harvest a predictable edge <em>without</em> ever forecasting the noisy spot price — which is exactly why CTAs trade momentum in futures.
+</div>
+
+</body>
+</html>

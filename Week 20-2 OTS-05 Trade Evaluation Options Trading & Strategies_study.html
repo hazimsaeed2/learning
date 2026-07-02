@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 20-2 OTS-05 — Trade Evaluation & Hedging — Study Guide</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; background:#f6f7fb; color:#23262e; line-height:1.7; margin:0; }
+  .wrap { max-width:820px; margin:0 auto; padding:54px 30px 90px; }
+  h1 { font-size:2.05rem; line-height:1.25; margin:0 0 6px; color:#3730a3; }
+  .sub { color:#555f6e; font-style:italic; margin-bottom:34px; font-size:1.02rem; }
+  h2 { font-size:1.42rem; color:#3730a3; margin:42px 0 10px; border-bottom:2px solid #c7d2fe; padding-bottom:6px; }
+  h3 { font-size:1.12rem; color:#4338ca; margin:26px 0 6px; }
+  p { margin:12px 0; }
+  .lead { font-size:1.08rem; color:#2c2f38; }
+  code { background:#e0e7ff; padding:1px 6px; border-radius:4px; font-family:'Consolas',monospace; font-size:0.9em; color:#3730a3; }
+  .box { background:#eef2ff; border-left:4px solid #4f46e5; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  .insight { background:#f0fdfa; border-left:4px solid #0d9488; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  .warn { background:#fef2f2; border-left:4px solid #dc2626; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  ul,ol { margin:12px 0; padding-left:24px; }
+  li { margin:6px 0; }
+  .tag { display:inline-block; background:#3730a3; color:#fff; font-size:0.72rem; letter-spacing:2px; padding:4px 12px; border-radius:20px; font-family:Arial,sans-serif; margin-bottom:16px; }
+  table { border-collapse:collapse; width:100%; margin:18px 0; font-size:0.95rem; }
+  th,td { border:1px solid #c7d2fe; padding:7px 11px; text-align:left; }
+  th { background:#eef2ff; color:#3730a3; }
+  .end { text-align:center; color:#9aa3b5; margin-top:50px; font-size:0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="tag">WEEK 20-2 · OTS-05 · STUDY GUIDE</div>
+  <h1>Trade Evaluation &amp; Hedging: Turning a Volatility Idea into a Disciplined Trade</h1>
+  <div class="sub">This session moves from the theory of volatility into the messy practice of running the trade — how to hedge without bleeding to death on costs, which volatility to feed your model, how to close on expiry, how to judge whether a strategy is actually good, and finally a complete SPY case study from plan to post-mortem.</div>
+
+  <p class="lead">Everything here serves one purpose: a volatility trade should earn its money from <em>volatility</em>, not from where the price happened to go. The average P&amp;L of such a trade is <code>Vega × (implied vol − realized vol)</code> — notice there is <strong>no price term</strong>. To make reality match that clean equation, you must continuously cancel the price sensitivity (delta) so that the only thing left moving your premium is volatility. That cancelling is <strong>hedging</strong>, and almost the whole lecture is about doing it intelligently.</p>
+
+  <p>The lecture's downloadable exercise is a small <strong>Greeks calculator</strong> built on the <code>mibian</code> library. Feed it a 30-day 105 option on a \$100 stock at 30% volatility and it returns the call (price <strong>\$1.566</strong>, delta 0.30, gamma 0.04, theta −0.05) and the put (price <strong>\$6.566</strong>, delta −0.70, gamma 0.04). Those numbers are the raw material of everything that follows: <strong>delta</strong> and <strong>gamma</strong> tell you how much and how often to hedge, while <strong>theta</strong> is the time-decay you are trying to collect. Once you can compute the Greeks, you can hedge them — and only then can you evaluate whether the hedged trade was any good.</p>
+
+  <h2>Dynamic delta hedging — the core idea</h2>
+  <p>Take a one-year at-the-money call: stock \$100, strike 100, volatility 30%. Its premium is about <strong>\$11.92</strong> and its <strong>delta is 0.56</strong>. Delta says: for every \$1 the stock moves, the option's value moves \$0.56. To neutralise that, you <strong>short 0.56 shares</strong> — now your book has zero delta and is, for the moment, immune to small price moves.</p>
+  <p>But delta is not constant. If the stock rallies to \$110, the call is now worth about <strong>\$18.14</strong> and its delta has risen to <strong>0.68</strong>. You are no longer hedged — there is a fresh +0.12 of delta — so you <strong>short another 0.12 shares</strong>. Repeating this re-balancing as the price wanders is exactly what <strong>dynamic (delta) hedging</strong> means.</p>
+  <div class="box">A gentler first version of the same instinct: hold a \$100 stock and <em>sell a call</em> above it, collecting premium. If the stock falls you keep the premium as a cushion; if it rises the short call caps your gain. With \$10 of premium collected, your breakeven sits at \$110. It "feels" like free money — until you remember that every time the price crosses the strike you are buying and selling shares, and those transactions are not free.</div>
+
+  <h2>The problem with hedging continuously</h2>
+  <p>If you re-hedge on every tick, two things happen: your transaction costs approach infinity, and you spend all day <em>fighting the market</em> — buying as it rises, selling as it falls. Simulate a delta-hedged short call with <strong>no volatility edge</strong> (implied equals realized) and the result is sobering: the average P&amp;L is dragged slightly <strong>negative</strong> by costs, and about <strong>half the trades lose money</strong>. Hedging is non-negotiable for a vol trade, but doing it constantly destroys the very edge you were trying to capture. The rest of the lecture is the search for the <em>optimal</em> amount of hedging.</p>
+
+  <h3>Idea 1 — hedge on a schedule</h3>
+  <p>Instead of every tick, hedge once a day, or every two days, or once a week. Cheaper, but now the underlying is not fully masked between hedges, so some price risk leaks into your P&amp;L.</p>
+
+  <h3>Idea 2 — hedge on a price move</h3>
+  <p>Hedge every \$10 the stock moves. But a \$10 move means nothing for a \$1,000 stock and everything for a \$1 stock, so generalise it: hedge every <strong>two standard deviations</strong> of price.</p>
+
+  <h3>Idea 3 — hedge on delta itself (delta bands)</h3>
+  <p>Most fundamental of all: since the thing we are hedging <em>is</em> delta, set a <strong>threshold on delta</strong>. Rather than always aiming for delta = 0, accept a <strong>band</strong> — say, "I'm comfortable as long as my delta is between these two values" — and only hedge when it escapes the band.</p>
+
+  <h2>Whalley–Wilmott delta bands</h2>
+  <p>This is the utility-based method that makes "idea 3" rigorous. The philosophy comes from behavioural finance and econometrics: you can never perfectly eliminate risk, only <em>mitigate</em> it — just as a motorcyclist <em>could</em> hit 200 mph but chooses a speed where the thrill stops being worth the danger. The method returns two delta levels (a band), and the half-width is approximated by:</p>
+  <div class="box" style="text-align:center;font-family:monospace;">Δ<sub>band</sub> = ( 3 · e<sup>−r(T−t)</sup> · λ · S · Γ² / 2κ )<sup>1/3</sup></div>
+  <p>Read the equation by asking what each term is doing:</p>
+  <ul>
+    <li><code>e^(−r(T−t))</code> — a discount factor over the <strong>time left to expiry</strong>; as theta accelerates near expiry, the band responds.</li>
+    <li><strong>λ (lambda)</strong> — your <strong>proportional transaction cost</strong>. Trading Apple at \$130 with a \$1 cost gives λ = 1/130; an index at \$100 with a \$0.05 cost gives λ = 0.0005. Higher costs → wider bands (hedge less).</li>
+    <li><strong>S</strong> — the underlying price.</li>
+    <li><strong>Γ² (gamma squared)</strong> — the <strong>dominant</strong> term. Gamma measures how fast delta itself changes; high gamma means delta runs away quickly, so the band must be wider. As you gain experience you will feel your bands mostly through gamma.</li>
+    <li><strong>κ (kappa)</strong> — your <strong>risk-aversion</strong>, the personality term. A risky trader and a cautious trader cannot use the same numbers and call it the same trade.</li>
+  </ul>
+  <div class="insight">Lambda and kappa are the only two awkward inputs (everything else you can read off the screen). Lambda you compute from your broker's costs. Kappa you <em>calibrate from your own behaviour</em>: decide the delta you are happy to let drift before you bother hedging — say 0.2 — substitute it into the equation, solve for kappa (the lecture's ballpark is ~0.24), and then reuse that same kappa on every new contract you ever trade.</div>
+  <p><strong>Narrow bands</strong> mean you hedge often: tighter risk control but higher cost — the choice of a risk-averse trader. <strong>Wide bands</strong> mean you hedge rarely: cheaper, but you carry more residual risk — the choice of someone comfortable with risk. Short positions are usually given narrower bands because they are riskier.</p>
+
+  <h2>How often to hedge — dispersion and the elbow</h2>
+  <p>There is a second dimension beyond <em>where</em> to hedge: <em>how many times</em>. The accuracy of your realised P&amp;L versus the theoretical Vega·(IV−RV) is governed by a simple relation:</p>
+  <div class="box" style="text-align:center;font-family:monospace;">dispersion ≈ 1 / √(number of hedges)</div>
+  <p>More hedges → tighter, more accurate P&amp;L — but more cost. Plot dispersion against the hedge count and you get an <strong>elbow</strong>: from 0 to about 50 hedges the accuracy improves sharply; beyond that you are paying real money for almost no benefit. Find the elbow and cap your hedging there.</p>
+  <div class="warn">Why does any single trade still lose even after all this care? <strong>Path dependency.</strong> A back-test runs the premium down <em>one</em> price path; nudge the price, vol, or rate even slightly and the premium would have travelled a completely different route, turning in-the-money into out-of-the-money. So a single back-test is one sample, not the truth. The honest approach is a <strong>Monte-Carlo</strong> of many simulated paths, then average the outcome — and accept that on average you capture the vol edge, while individual trades scatter.</div>
+
+  <h2>Which volatility do you hedge with?</h2>
+  <p>You <em>enter</em> on implied volatility (the premium reflects the market's implied view) and you <em>settle at expiry</em> on realized volatility. So which σ should feed your delta and gamma calculations? There is no single right answer — it depends on what you are trying to see:</p>
+  <table>
+    <tr><th>hedge using…</th><th>day-to-day mark-to-market</th><th>final P&amp;L</th></tr>
+    <tr><td><strong>implied vol</strong></td><td><strong>smooth</strong> (low MTM variance)</td><td>uncertain — wide final spread</td></tr>
+    <tr><td><strong>realized vol</strong></td><td>noisy</td><td><strong>tight, accurate</strong> final number</td></tr>
+  </table>
+  <p>The lecture's simulation makes it concrete: a one-year option sold at 40 vol with realized 30. Hedge at implied and the day-to-day MTM is calm but the final P&amp;L is all over the place; hedge at realized and the daily marks jump around but the <em>final</em> outcome clusters tightly. If you care about your daily statement, hedge at implied. If you care about where the trade ultimately lands, hedge at <strong>realized</strong> — which means you must <strong>forecast</strong> it (with GARCH, or simply VIX).</p>
+
+  <h2>Drift — the trend Black–Scholes forgets</h2>
+  <p>Black–Scholes prices off the current price only; it has no opinion about a <em>trend</em>. In a strongly trending market that is a real flaw. The practical fix, when you are <strong>short gamma in a trending market</strong>, is to <strong>bias your hedging volatility low</strong> — concretely, don't short proactively at the model's price; wait and place a limit order higher. If the model says short at 282.92 but the tape is grinding up, sell at 300 instead. You don't need to re-solve the Black–Scholes differential equation with a drift term; a deliberate bias gets you to the same place.</p>
+
+  <h2>Closing positions on expiry</h2>
+  <h3>Exercise early or hold?</h3>
+  <p>Holding to expiry ties up capital that could be earning the risk-free rate, so weigh that interest against the option's remaining <strong>time (extrinsic) value</strong> and any <strong>dividend</strong>. The clean example: an 80-strike call on a \$100 stock is worth <strong>20.10</strong> — \$20 of intrinsic value plus \$0.10 of time value. News arrives of a <strong>\$1 dividend</strong>, which will drop the stock to \$99 on the ex-date. Exercise early and you bank 19 intrinsic + \$1 dividend = <strong>\$20</strong>; hold and your option simply tracks the lower stock to <strong>19.10</strong>. Because the <strong>dividend (\$1) exceeds the extrinsic value (\$0.10)</strong>, early exercise wins. The rule generalises: <em>exercise early when the dividend you would capture is bigger than the time value you would throw away</em>.</p>
+  <div class="insight"><strong>Pinning &amp; pin risk:</strong> on expiry the underlying tends to settle <em>near the at-the-money strike</em> more often than chance would suggest. That is dangerous — a position that looks in-the-money at 3:15pm (your last trade) can settle out-of-the-money after the exchange computes the settlement price. Knowing pinning lets you decide whether to close an hour early or let the exchange settle.</div>
+  <h3>Cash vs physical settlement</h3>
+  <p><strong>Cash settlement</strong> simply credits the \$ difference. <strong>Physical settlement</strong> delivers the underlying — a stock into your demat, or, for commodities, the actual goods, with <strong>shipping or warehouse-storage charges</strong> that have caught out traders who saw a paper profit turn into a ledger loss the next day. Note too that <strong>European</strong> options can only be nullified (buy back the contract) or held to expiry — you cannot take early delivery — whereas <strong>American</strong> options can be exercised early.</p>
+  <p>One last reminder: on expiry day the Greeks look strange — in-the-money deltas snap toward 1 and out-of-the-money options become worthless. That is normal expiry behaviour, not a bug in your code.</p>
+
+  <h2>Evaluating a trade or strategy</h2>
+  <p>Distinguish an <strong>idea</strong> (a hypothesis), a <strong>trade</strong> (the idea backed by some analysis), and a <strong>strategy</strong> (entries, exits, and what to do when the pattern breaks). A "good trade" is not simply one that made money — it is one that, repeated 100 times, produces a <strong>consistent equity curve</strong>.</p>
+  <div class="warn">The classic mistake is judging a strategy by <strong>cumulative return or CAGR</strong> alone. A lucky first few trades can flatter the whole curve. Instead look at its <em>shape</em>: how long did it spend below zero, how deep were the <strong>drawdowns</strong>, what is the <strong>maximum drawdown</strong> (how far it can fall from a peak), and is the win/loss <em>asymmetry</em> favourable? You want at least ~100 trades to say anything statistically, so keep a <strong>journal</strong>; and remember live results lag back-tests because of <strong>slippage</strong> and because a crowded strategy loses its alpha.</div>
+  <p>Risk-adjusted ratios put reward over a definition of risk:</p>
+  <table>
+    <tr><th>ratio</th><th>risk in the denominator</th></tr>
+    <tr><td><strong>Sharpe</strong></td><td>standard deviation of returns — but it penalises big <em>upside</em> moves as harshly as downside, which is its flaw</td></tr>
+    <tr><td><strong>Sortino</strong></td><td>standard deviation of <em>losses</em> only</td></tr>
+    <tr><td><strong>Calmar</strong></td><td>maximum drawdown</td></tr>
+    <tr><td><strong>Sterling</strong></td><td>the average of the last few (or largest) drawdowns</td></tr>
+  </table>
+  <p>The discipline that matters most: <strong>match the metric to the edge</strong>. Grading a volatility trade with a Sharpe ratio makes no sense — measure instead how much alpha you earn per unit of volatility increase. And test the strategy <em>separately</em> across bull, bear and range-bound regimes, because "a great 10-year win-rate" hides the fact that those ten years were many different markets.</p>
+
+  <h2>The SPY case study — plan, hedge, attribute</h2>
+  <p>Putting it all together on 3 June 2019, the goal is to sell SPY options to harvest the variance premium (implied usually exceeds realized).</p>
+  <ol>
+    <li><strong>Expiration.</strong> The 1-, 3- and 6-month contracts all show an at-the-money implied vol of about <strong>18.8%</strong>. Choose the <strong>one-month</strong> — shorter-dated options carry higher vol, and a one-month horizon validates the idea quickly.</li>
+    <li><strong>Structure.</strong> A <strong>short strangle</strong> rather than a straddle: with the ATM at 275, sell the <strong>262 put</strong> and the <strong>286 call</strong>. The out-of-the-money strikes give more room than an at-the-money straddle.</li>
+    <li><strong>Risk profile &amp; tail hedge.</strong> Mapping P&amp;L across price scenarios shows losses everywhere and a roughly half-million-dollar loss in a 30% crash, so <strong>buy 100 of the 232 puts (2-delta)</strong> to cap the tail. The risk profile visibly improves.</li>
+    <li><strong>Hedging volatility.</strong> Because we want an accurate <em>final</em> number, we hedge on <strong>forecast realized vol</strong>: VIX gives <strong>14.1%</strong>, a GARCH model <strong>13.7%</strong>, so we use the average, <strong>13.9%</strong> — using the Whalley–Wilmott bands with κ ≈ 0.24.</li>
+    <li><strong>Expected P&amp;L as a range.</strong> The Monte-Carlo expectation is <strong>\$16,900 with a standard deviation of \$8,200</strong> — a one-sigma range of roughly <strong>\$8,700 to \$25,100</strong>. Never quote a single number.</li>
+  </ol>
+  <p><strong>Post-trade.</strong> The trade actually made <strong>\$24,218</strong> — inside the band, but near the top. Why? Realized vol didn't just fall to the forecast 13.9%, it <strong>crashed to 10.6%</strong>. Had we known that, the expectation would have been ~\$28,700. And SPY <strong>rallied from 275 to 293</strong> after entry; had we built in the upward <strong>drift</strong> (shorting a touch higher), the expectation would have been ~<strong>\$21,700</strong>, closer to the real outcome. The lesson is not to celebrate the number: the profit was partly luck, and the value lies in the <strong>attribution</strong> — understanding <em>why</em> the result landed where it did, so the next trade is better-planned.</p>
+
+  <h2>The OTS-05 process in one breath</h2>
+  <ol>
+    <li>Hedge the price out so the P&amp;L is pure volatility — but not continuously.</li>
+    <li>Use <strong>Whalley–Wilmott delta bands</strong> to decide how loosely to hedge (λ, κ, and above all gamma).</li>
+    <li>Cap the number of hedges at the <strong>elbow</strong> of the dispersion curve.</li>
+    <li>Pick the <strong>hedging vol</strong> by purpose — implied for smooth marks, realized for an accurate final number.</li>
+    <li><strong>Bias for drift</strong> when short gamma in a trend.</li>
+    <li>Close by weighing interest, time value and dividends; respect pinning and settlement type.</li>
+    <li>Judge the strategy on the <strong>shape</strong> of its equity curve and a metric that <strong>matches the edge</strong>.</li>
+    <li><strong>Plan as a range, then attribute</strong> the outcome.</li>
+  </ol>
+  <p>The next session builds an options back-tester from scratch in Python — because, as the instructor notes, there is no reliable off-the-shelf options back-tester to lean on.</p>
+
+  <div class="end">— End of Week 20-2 OTS-05 study guide · pair this with the dashboard cheat sheet and the executed practice notebook —</div>
+
+</div>
+</body>
+</html>

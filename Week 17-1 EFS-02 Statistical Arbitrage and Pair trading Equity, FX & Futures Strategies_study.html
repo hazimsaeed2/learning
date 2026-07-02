@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 17-1 EFS-02 — Statistical Arbitrage &amp; Pairs Trading — Study Guide</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; background:#faf8f5; color:#2b2b2b;
+         line-height:1.7; margin:0; }
+  .wrap { max-width:820px; margin:0 auto; padding:54px 30px 90px; }
+  h1 { font-size:2.05rem; line-height:1.25; margin:0 0 6px; color:#14524a; }
+  .sub { color:#6b7a77; font-style:italic; margin-bottom:34px; font-size:1.02rem; }
+  h2 { font-size:1.42rem; color:#14524a; margin:42px 0 10px; border-bottom:2px solid #cfe6e1; padding-bottom:6px; }
+  h3 { font-size:1.12rem; color:#1f6b60; margin:26px 0 6px; }
+  p { margin:12px 0; }
+  .lead { font-size:1.08rem; color:#3a3a3a; }
+  code { background:#eef4f2; padding:1px 6px; border-radius:4px; font-family:'Consolas',monospace; font-size:0.9em; color:#0f5c52; }
+  .box { background:#f1f7f5; border-left:4px solid #2f9e8f; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  .num { background:#fbf3e8; border-left:4px solid #d9952f; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  .warn { background:#fbecec; border-left:4px solid #c0504d; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  ul { margin:12px 0; padding-left:24px; }
+  li { margin:6px 0; }
+  .tag { display:inline-block; background:#14524a; color:#fff; font-size:0.72rem; letter-spacing:2px;
+         padding:4px 12px; border-radius:20px; font-family:Arial,sans-serif; margin-bottom:16px; }
+  table { border-collapse:collapse; width:100%; margin:18px 0; font-size:0.95rem; }
+  th,td { border:1px solid #d6e3df; padding:7px 11px; text-align:left; }
+  th { background:#e8f2ef; color:#14524a; }
+  .end { text-align:center; color:#9aa7a3; margin-top:50px; font-size:0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="tag">WEEK 17-1 · EFS-02 · STUDY GUIDE</div>
+  <h1>Statistical Arbitrage &amp; Pairs Trading</h1>
+  <div class="sub">A plain-English walk-through of Ishan Shah's workshop — from "what makes a price mean-revert?" to building a synthetic stationary asset out of two trending ETFs, and the discipline that keeps you solvent.</div>
+
+  <p class="lead">Most trading you have met so far is <strong>directional</strong>: you look at one price — corn, Apple, the Nifty — and bet on where it is headed. Statistical arbitrage takes a different stance. Instead of asking "will this go up?", it asks "has this drifted unusually far from its normal level, and will it snap back?" The whole session is about finding things that <em>reliably snap back</em> — first in a single asset, then, more powerfully, in a manufactured combination of two assets.</p>
+
+  <div class="box"><strong>Two very different “arbitrages.”</strong> <em>Normal</em> arbitrage trades the <strong>same</strong> asset on two venues — if TCS is ₹X on the NSE and ₹X+1 on the BSE, you go long the cheap one and short the dear one to lock a riskless ₹1. <em>Statistical</em> arbitrage trades <strong>different</strong> assets linked only by a statistical relationship (the EWC/EWA spread). It is <em>not</em> riskless — the relationship can break — which is exactly why so much of this session is about measuring and managing that risk.</div>
+
+  <h2>1. Stationarity — the foundation</h2>
+  <p>A price series is <strong>stationary</strong> if it keeps returning to a fixed average. Ishan opens with a lovely analogy from Daniel Kahneman: the "Sports Illustrated jinx". An athlete plays brilliantly, earns the magazine cover — and then promptly returns to average form. The brilliance was an outlier; performance reverts to the mean. A stationary price behaves the same way: it wanders up and down but always gravitates back to its centre.</p>
+  <p>By contrast, a <strong>trend</strong> never comes back. Apple climbed from $50 to $250 and stayed there; Nike fell and kept falling. Both are <em>non-stationary</em>. And — this trips people up — a <strong>random walk</strong> (<code>P_t = P_{t-1} + noise</code>) is also non-stationary; it has no anchor pulling it home.</p>
+  <div class="box"><strong>Why does this matter?</strong> If, and only if, a series is stationary, the simplest strategy in the world works: <em>buy when it is below the mean, sell when it is above</em>. Buy low, sell high, and let mean-reversion pay you. The entire job, then, is reliably identifying which series are stationary.</div>
+  <p>Eyeballing a chart will not do — show the same plot to ten people and you will get ten opinions, because each person looks at a different stretch of history. We need an <strong>objective</strong>, statistical test.</p>
+
+  <h2>2. The ADF test — measuring mean-reversion</h2>
+  <p>The Augmented Dickey-Fuller (ADF) test rewrites the price in one compact equation:</p>
+  <div class="num" style="text-align:center"><code>ΔP_t = λ · P_{t-1} + ε_t</code></div>
+  <p>Read it as: "today's <em>change</em> in price depends on yesterday's <em>level</em>, plus noise." Everything hinges on the sign of λ:</p>
+  <ul>
+    <li><strong>λ = 0</strong> — the change is pure noise, so the price is a random walk. <strong>Not stationary.</strong> This is the <em>null hypothesis</em> — what we assume until proven otherwise.</li>
+    <li><strong>λ &lt; 0</strong> — there is an <em>inverse</em> relationship: when the price is high, the next move tends downward, and vice-versa. That is exactly mean-reversion. <strong>Stationary.</strong></li>
+  </ul>
+  <p>Where does λ come from? It is simply the <strong>slope</strong> of a regression of ΔP on P<sub>t-1</sub> — draw the best-fit line through the cloud of points and read its gradient. A negative slope means stationary. From λ we form a test statistic, <code>t = λ / standard&nbsp;error</code>, where the standard error is the standard deviation divided by √n.</p>
+  <h3>Reading the verdict</h3>
+  <p>The <strong>t-statistic</strong> is compared against a <strong>critical value</strong> (tabulated from thousands of simulations). The rule is wonderfully simple but easy to get backwards:</p>
+  <div class="box"><strong>If the t-stat is <em>more negative</em> than the critical value, the series is stationary.</strong> Think of it as a sufficiently strong exam score: a student scoring 70 against a 60 pass-mark is "good"; a t-stat of −3.05 against a −2.87 bar is "stationary".</div>
+  <table>
+    <tr><th>t-stat</th><th>95% critical</th><th>Comparison</th><th>Verdict</th></tr>
+    <tr><td>−3.05</td><td>−2.87</td><td>−3.05 &lt; −2.87</td><td>Stationary ✓</td></tr>
+    <tr><td>−2.40</td><td>−2.87</td><td>−2.40 &gt; −2.87</td><td>Not stationary ✗</td></tr>
+  </table>
+  <p>One natural objection: "why not just back-test the buy-low-sell-high rule and see if it makes money?" Because a back-test might fire only a handful of trades — judging stationarity from seven signals out of a hundred days is reckless. The ADF test, by contrast, evaluates <em>every single data point</em>, and returns a clean yes/no in under a second.</p>
+
+  <h2>3. A worked example — AUD/CAD</h2>
+  <p>Australia and Canada are both commodity-and-energy-driven economies, so their currencies tend not to drift apart for long. Running the ADF test on 3,208 days of AUD/CAD (2011–2024, the lecture's own CSV) gives a t-stat of <strong>−2.57</strong> against a 90%-confidence critical value of <strong>−2.567</strong>. Since −2.57 is, by a hair, the more negative of the two, AUD/CAD is judged <strong>stationary at 90% confidence</strong> — but it falls short of the 95% bar (−2.862). That borderline result is typical: genuinely stationary prices are rare, and the ones you find usually only just scrape past.</p>
+  <div class="num"><strong>Why 90% and not 99%?</strong> Confidence level is like a hiring bar. Demand a 99% statistical certainty and you behave like a recruiter insisting on IIT + a US master's + 15 years' experience — you end up with almost no candidates, and no diversification. Relax to 90% and you get a workable pool of tradable assets. In practice, 90% is the sweet spot.</div>
+
+  <h2>4. The mean-reversion strategy (Bollinger bands)</h2>
+  <p>Once a series passes the ADF test, we trade it with <strong>Bollinger bands</strong> — a moving average with a volatility envelope:</p>
+  <table>
+    <tr><th>Quantity</th><th>Definition</th></tr>
+    <tr><td>Moving average (MA)</td><td><code>close.rolling(5).mean()</code></td></tr>
+    <tr><td>Moving std (SD)</td><td><code>close.rolling(5).std()</code></td></tr>
+    <tr><td>Upper band</td><td><code>MA + 0.5 · SD</code></td></tr>
+    <tr><td>Lower band</td><td><code>MA − 0.5 · SD</code></td></tr>
+  </table>
+  <p>The trading logic: go <strong>long</strong> when the price touches the lower band, and exit when it returns to the middle (the MA). Go <strong>short</strong> when it touches the upper band, and exit back at the MA. In code, you mark the entry/exit conditions as booleans, set the position to +1 / −1 / 0, then <code>ffill()</code> to carry the position forward until the exit fires. The strategy P&amp;L is <code>position × return</code>, accumulated.</p>
+  <div class="box"><strong>Two knobs.</strong> The <em>band width</em> (here 0.5σ) controls how many trades you get — a wide 2σ band suits volatile names like Bitcoin and gives few signals; a narrow band suits calm FX pairs. The <em>look-back window</em> can be chosen by train/test grid-search, or set to a multiple of the <strong>half-life</strong> of mean-reversion (<code>−ln2 / slope of ΔS on S</code>).</p></div>
+  <div class="num">On the real AUD/CAD data the strategy returns about <strong>+70.6%</strong> in total (Sharpe 0.64) with a maximum drawdown of <strong>−11.29%</strong>. Profitable — but a bumpy ride. A single asset gives you no second leg to hedge market-wide moves, which is precisely the motivation for pairs trading.</div>
+
+  <h2>5. When one asset is not enough — cointegration</h2>
+  <p>Here is the catch: genuinely stationary single series are <em>rare</em>. You cannot run a serious book on two or three FX pairs. The breakthrough — pioneered by Nunzio Tartaglia's quant group at Morgan Stanley in the mid-1980s, and later by D.E. Shaw — was to <strong>manufacture</strong> a stationary series by combining two trending ones. When such a combination exists, the two assets are said to be <strong>cointegrated</strong>.</p>
+  <p>The lecture uses two iShares ETFs: <strong>EWA</strong> (Australian equities) and <strong>EWC</strong> (Canadian equities). Individually, both simply trend — neither is stationary on its own. But the right <em>difference</em> between them oscillates around a flat mean.</p>
+
+  <h3>Finding the right blend — the hedge ratio</h3>
+  <p>You cannot just subtract one from the other. If you naively compute <code>EWC − EWA</code>, the more volatile asset dominates the spread. You must weight them by their relative volatility — and that weight is the <strong>hedge ratio</strong>, obtained by regressing EWC on EWA:</p>
+  <ul>
+    <li>Regress <code>EWC = h · EWA</code> — the slope <strong>h</strong> is the hedge ratio. Here <strong>h ≈ 1.48</strong>.</li>
+    <li>Use only the <strong>first 90 days</strong> of data. Why? To prevent <strong>look-ahead bias</strong> — the hedge ratio must not be computed from data you will later back-test on, any more than you could trade Friday on tomorrow's budget announcement.</li>
+    <li>Fit the line <strong>through the origin</strong> (no constant). Logically: if gold miners (GDX) go to zero, gold (GLD) should too. Mathematically: estimating one parameter instead of two reduces overfitting.</li>
+  </ul>
+
+  <h3>Confirming it is stationary</h3>
+  <p>Now build the spread, <code>spread = EWC − 1.48 · EWA</code>, and feed it to the very same ADF test. The spread scores a t-stat of <strong>−2.90</strong> against a 5% critical value of <strong>−2.863</strong> — it just clears the bar, so the pair is <strong>cointegrated at 95% confidence</strong> (real pairs usually are, by a whisker). The contrast is the point: EWA and EWC <em>individually</em> score only −1.26 and −0.75 — nowhere near stationary — yet their weighted difference is. This two-step recipe — find the hedge ratio, then ADF the residual — is exactly the famous <strong>Engle-Granger</strong> method.</p>
+
+  <h3>Which pairs even to test</h3>
+  <p>You do not feed random pairs to the ADF test — there are millions of combinations and cointegration is fragile. Narrow the field with <strong>economic logic first</strong>, then confirm statistically. For ETFs and currencies, look for <strong>common economic factors</strong> (EWA and EWC are both commodity economies). For stocks, demand the <strong>same sector</strong>, similar <strong>market capitalisation</strong>, and similar financial <strong>ratios</strong>. The textbook example is the two Indian cement makers <strong>ACC</strong> and <strong>Ambuja</strong>: same sector, comparable size (₹32,805 Cr vs ₹53,235 Cr) and return on equity (9.88% vs 8.74%). Why does qualitative matching help? A cointegrated pair is mean-reverting, so once the spread diverges the probability of reversal rises — and for two firms exposed to the same forces, an extreme, lasting divergence is rare. The caveat: <strong>stock pairs are unstable</strong> — they lose cointegration easily — so ETFs and currency pairs remain the more dependable hunting ground.</p>
+  <div class="num"><strong>Three practical notes from the Q&amp;A.</strong> (1) If an asset is non-stationary, you can still work with its <em>returns</em>, build a <em>spread</em> from two or more assets, or take a <em>log</em> transform. (2) When trading FX pairs, budget for the <strong>overnight interest</strong> (carry) alongside commissions and slippage for a close-to-real back-test. (3) For a <em>triplet</em>, find each leg's hedge ratio by regressing <strong>each</strong> instrument against the target stock.</div>
+
+  <h2>6. Trading the spread</h2>
+  <p>The spread is a fabrication — no broker will take an order for "the EWC/EWA spread". You place each leg yourself. The coefficients tell you the quantities, and the trade direction flips their signs:</p>
+  <ul>
+    <li><strong>Long the spread:</strong> buy 1 share of EWC, sell <em>h</em> shares of EWA.</li>
+    <li><strong>Short the spread:</strong> sell 1 share of EWC, buy <em>h</em> shares of EWA.</li>
+  </ul>
+  <div class="num"><strong>Quiz.</strong> Spread = <code>GLD − 3·GDX + 0.5·USO</code>, signal says <em>short</em>. Flip every sign, then multiply by 2 to clear the half-share: <strong>short 2 GLD, long 6 GDX, short 1 USO</strong>. Notice you have just done triplet trading for free.</div>
+
+  <h3>Computing the return correctly</h3>
+  <p>A subtle but vital point: the return on a spread trade is <em>not</em> the change in the spread divided by the spread. It is the change divided by the <strong>capital deployed</strong> — the cash to buy one leg plus the margin to short the other:</p>
+  <div class="box" style="text-align:center"><code>return = ΔSpread / (1·EWC + h·EWA)</code></div>
+  <p>Worked example: if the spread moves from 5 to 3, that is a −2 P&amp;L. Dividing by 3 would be nonsense; divide instead by the 15 + 10 = 25 of capital, giving <strong>−8%</strong>. Backtesting the real EWA/EWC pair this way (30-day window, 2σ bands) yields <strong>+49.93% cumulative, a Sharpe of 1.01, and a maximum drawdown of only −4.41%</strong> — less than half the single-asset drawdown of −11.29%. That is the payoff of pairs: the same Bollinger logic, but hedging the second leg strips out market-wide moves, so a market-neutral book bruises gently.</p>
+
+  <h2>7. Cointegration is not correlation</h2>
+  <p>People use these words interchangeably; they are not the same.</p>
+  <table>
+    <tr><th></th><th>Correlation</th><th>Cointegration</th></tr>
+    <tr><td>Asks</td><td>Do they move the same direction?</td><td>Is the spread stationary?</td></tr>
+    <tr><td>Horizon</td><td>Short or long term</td><td>Long term only</td></tr>
+    <tr><td>For pairs trading</td><td>Helpful filter</td><td>Necessary condition</td></tr>
+  </table>
+  <p>Two random walks that both drift upward will show a high correlation (say +0.95), yet their spread keeps widening — ADF on it gives −2.22, so they are <strong>not</strong> cointegrated. Trading on correlation alone is how Ishan lost money early in his career. Cointegration is the requirement; correlation is an optional confidence-booster on top.</p>
+
+  <h2>8. Risk management &amp; the LTCM lesson</h2>
+  <p>The word "arbitrage" lulls people into thinking this is risk-free. It is <strong>statistical</strong> arbitrage, not pure arbitrage. Instead of converging, a spread can diverge — a pharma company in your pair gets an FDA warning, or one leg posts a blowout earnings number — and you bleed.</p>
+  <p>Defences: a strict stop-loss (fixed dollar, percentage, standard-deviation, or ATR-based); diversification across many pairs and across strategy styles; and the practitioner's rule — <em>retire a pair the moment it breaches a level never seen in back-test and paper-trade</em>, and send it back to research.</p>
+  <div class="warn"><strong>Long-Term Capital Management.</strong> Founded in 1994 by John Meriwether with Nobel laureates Myron Scholes and Robert Merton, LTCM ran exactly these convergence (spread) trades on bonds. After-fee returns were dazzling: +21%, +43%, +41%. Then in 1998, amid the Asian and Russian crises, it lost about <strong>$4.6 billion in under four months</strong> and collapsed. The strategy was sound; the killer was <strong>leverage</strong> with no capital buffer. Had they been able to stay solvent a little longer, the spreads would have converged. The lesson: keep buffers, control leverage, and never over-trust a back-test.</div>
+
+  <h2>9. The takeaways</h2>
+  <ul>
+    <li>Stationarity and cointegration are the bedrock of profitable mean-reversion.</li>
+    <li>The ADF test is your objective gatekeeper — a single number for "does this revert?".</li>
+    <li>Single stationary assets are scarce; <strong>build</strong> one by cointegrating a pair (or a triplet).</li>
+    <li>The hedge ratio (from a 90-day, no-constant regression) sets the volatility-fair blend — and avoids look-ahead bias.</li>
+    <li>ETFs and currency pairs are fertile ground; raw stock pairs break cointegration easily, so trade them as portfolios.</li>
+    <li>Survival beats brilliance: capital buffers and leverage discipline are what kept everyone <em>except</em> LTCM in business.</li>
+  </ul>
+  <p>Further reading the lecture points to: index arbitrage, the <strong>Johansen test</strong> (a multivariate alternative to ADF for cointegration), common back-testing pitfalls, and the half-life of mean-reversion.</p>
+
+  <div class="end">— End of Week 17-1 EFS-02 study guide · pair this with the dashboard cheat sheet and the executed practice notebook —</div>
+
+</div>
+</body>
+</html>

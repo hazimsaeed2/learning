@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 24-1 · Quantitative Portfolio Management — Study Guide</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; line-height: 1.7; color: #1f2937; background: #f8faf9; margin: 0; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 48px 28px 80px; }
+  h1 { font-size: 2rem; color: #065f46; margin-bottom: 0.2em; }
+  .sub { color: #6b7280; font-style: italic; margin-bottom: 2em; }
+  h2 { font-size: 1.3rem; color: #047857; margin-top: 2em; border-bottom: 2px solid #d1fae5; padding-bottom: 0.25em; }
+  h3 { font-size: 1.05rem; color: #065f46; margin-top: 1.5em; }
+  p { margin: 0.9em 0; }
+  .num { background: #ecfdf5; border-left: 4px solid #059669; padding: 2px 8px; font-family: 'Consolas',monospace; font-size: 0.92em; }
+  blockquote { background: #ecfdf5; border-left: 4px solid #10b981; margin: 1.2em 0; padding: 0.8em 1.2em; color: #064e3b; font-style: italic; }
+  code { background: #f1f5f4; padding: 1px 5px; border-radius: 3px; font-family: 'Consolas',monospace; font-size: 0.9em; }
+  .lead { font-size: 1.08rem; color: #374151; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Quantitative Portfolio Management</h1>
+<div class="sub">EPAT · Week 24-1 · PRM-02 — a plain-language walk through building a portfolio from data</div>
+
+<p class="lead">Imagine you have been handed a pool of capital and told to build a portfolio. Where do you even begin? This lecture answers that question the way a quant does — not from intuition or stock tips, but from what the data tells you about returns, risk, and the way assets move together. By the end you will have built a portfolio from scratch, understood why diversification works (and where it stops working), and learned how to choose the weights that matter most.</p>
+
+<h2>The question behind every portfolio</h2>
+
+<p>Ask a room full of traders what makes a portfolio "the best," and most will say something like <em>minimum risk and maximum return</em>. It is a fine instinct, but it hides an important truth: there is no single best portfolio. The right portfolio depends entirely on what you are trying to achieve.</p>
+
+<p>A pension fund or a university endowment exists to <strong>preserve capital</strong>. If they lose the money they are holding, they cannot pay pensions or fund scholarships — so they lean toward low-risk assets like bonds. A hedge fund or a mutual fund, by contrast, is hired to <strong>grow capital</strong> and generate alpha; they reach for equities and accept more risk. The very first decision a portfolio manager makes is not about stocks at all — it is about <em>purpose</em>. That purpose then dictates the universe of assets you draw from.</p>
+
+<p>For this class we adopt the popular goal anyway — minimum risk and maximum return — and chase it honestly. Three questions follow from it, and the whole lecture is really an extended answer to them: <strong>which universe of assets do we use, how many constituents do we hold, and in what proportion do we weight them?</strong></p>
+
+<h2>Looking at one stock from two angles</h2>
+
+<p>Whenever you study any instrument, you look at it from two perspectives: <strong>returns</strong> and <strong>risk</strong>. Start with an IT giant — call it TCS — and five-odd years of daily prices.</p>
+
+<p>On the returns side there are four numbers worth knowing. The <em>single-period return</em> is just one day's percentage change. The <em>holding-period (cumulative) return</em> chains all those daily returns together — <code>(1+r₁)(1+r₂)…−1</code> — and tells you where the stock <em>ended up</em>; for our TCS that was about <span class="num">106%</span>. But "where it ended" hides the typical experience along the way, so we compute averages. The <em>arithmetic mean return</em> (about <span class="num">16.2%</span> annualised) is the typical year and is what we use for analysis because it is simple and additive. The <em>geometric mean</em>, or CAGR (about <span class="num">13.9%</span>), accounts for compounding and is the number funds publish in their brochures. Whichever you use, be consistent with your trading-day count — 252 throughout.</p>
+
+<p>Returns alone, though, hide the <em>path</em>. A stock can reach +106% smoothly or by lurching wildly, and those are very different experiences for an investor. That is where risk comes in. <strong>Variance</strong> measures how far daily returns spread from their mean. It is awkward to interpret on its own because its units are "percent-squared," but it has two superpowers: it is <em>additive</em> and it is <em>comparable</em> across instruments, which is exactly what we need for analysis. Take its square root and you get <strong>standard deviation</strong>, or volatility — a human-readable number. For TCS the annualised volatility came out to about <span class="num">24.96%</span>.</p>
+
+<blockquote>To earn roughly 16% you have to stomach roughly 25% volatility. A single stock is risky — and that mismatch is what drives us toward building a portfolio.</blockquote>
+
+<h2>Two stocks are better than one</h2>
+
+<p>Suppose we add a second stock — an auto name like Maruti — that earns more (about 19%) but swings harder (about 30% volatility). On its own it does not solve our problem. But what happens if we hold <em>both</em>, half in each?</p>
+
+<p>The return is easy: a portfolio's return is simply the <strong>weighted sum</strong> of its parts. Half of 16.2% plus half of 19.4% gives about <span class="num">17.8%</span>. The risk is where the magic — and the Nobel Prize — lives.</p>
+
+<p>Your first guess might be that portfolio variance is just the weighted sum of the individual variances. People believed exactly that until the 1950s. Then <strong>Harry Markowitz</strong>, in his 1952 paper on Modern Portfolio Theory, pointed out what was missing: stocks <em>move together</em>, and that co-movement changes the combined risk. If one stock tends to fall while another rises, holding both smooths the ride. To capture this you must add a <strong>covariance</strong> term:</p>
+
+<p style="text-align:center;" class="num">σ²ₚ = wₐ²σₐ² + w_b²σ_b² + 2·wₐ·w_b·cov(A,B)</p>
+
+<p>Plug in our numbers — TCS variance 0.0623, Maruti variance 0.0921, covariance 0.0189, equal weights — and the portfolio variance is 0.04805, so the volatility is <span class="num">21.9%</span>. Notice what just happened: 21.9% sits <em>below</em> both 24.96% and 30.35%. We combined two risky stocks and ended up with something less risky than either. That is diversification, and it is as close to a free lunch as finance offers.</p>
+
+<p>For more than two stocks the longhand formula becomes a nightmare, so we switch to matrix form: <code>σ²ₚ = w · Σ · wᵀ</code>, where Σ is the variance–covariance matrix. This scales to any number of assets without growing messier — you just make the matrix bigger.</p>
+
+<h2>The secret ingredient is low correlation</h2>
+
+<p>Covariance is unbounded and hard to read, so we standardise it into <strong>correlation</strong>, which always lives between −1 and +1. The correlation between TCS and Maruti was about 0.25. The portfolio variance formula tells us that the lower the correlation, the lower the combined risk — so the natural move is to hunt for a stock that is <em>less</em> correlated with what we already hold.</p>
+
+<p>Swap Maruti for an FMCG name like Marico, whose correlation with TCS is only about 0.12 — less than half. Build the 50/50 portfolio again and the volatility drops further, to about <span class="num">19.2%</span>, while the return barely suffers. The lesson is clean and worth memorising:</p>
+
+<blockquote>A good portfolio holds uncorrelated securities. The less your holdings move in lockstep, the more risk cancels out.</blockquote>
+
+<h2>How far can diversification take us?</h2>
+
+<p>If adding one uncorrelated stock helps, why not add ten, or fifty? To find out, take a 50-stock universe and build equal-weight portfolios of growing size — one stock, then two, then three, all the way to fifty — and watch the volatility.</p>
+
+<p>It falls quickly at first: one stock about 36%, two about 25%, three about 25%, five about 24%. Then the gains shrink. By ten stocks you are near 21%; by twenty stocks about 19%; and even at forty-nine stocks you are still around <span class="num">18%</span>. Three lessons fall out of this curve. Diversification helps enormously at the start. After a point — the first handful of names does most of the work — adding more stocks barely moves the needle. And no matter how many you add, <strong>volatility never reaches zero</strong>.</p>
+
+<p>Why the floor? Because there are two kinds of risk. <strong>Unsystematic risk</strong> is company-specific — a fraud, a bankruptcy, a bad quarter — and it is exactly what diversification cancels away. <strong>Systematic risk</strong> is market-wide — recessions, interest-rate moves, pandemics — and it hits everything at once, so spreading your bets cannot remove it. The flat tail of the curve <em>is</em> that systematic floor. You cannot diversify it away; you can only hedge it. Since most of the benefit is captured by the first handful of names, the lecture picks <strong>six</strong> for the frontier that follows.</p>
+
+<h2>Choosing the weights: the efficient frontier</h2>
+
+<p>Equal weights got us this far, but they are rarely optimal. With our universe chosen (equities, because our objective is growth) and six low-correlation names selected — CIPLA, EICHERMOT, COALINDIA, HINDUNILVR, NESTLEIND and ONGC — the last question is the proportions.</p>
+
+<p>The trick is to simulate. Generate <strong>3,500 random portfolios</strong>, each a different set of six weights that sum to one (drawn from a Dirichlet distribution, all positive because Indian markets do not allow overnight shorting). Compute each portfolio's expected return and volatility, then plot them. The cloud of points has a distinctive upper-left edge — the <strong>efficient frontier</strong> — beyond which no portfolio offers more return for the same risk.</p>
+
+<p>How you pick a point on it depends, once again, on your objective. A conservative investor takes the <strong>minimum-volatility</strong> portfolio (here about 16.9% volatility for a 13.2% return). A balanced investor takes the <strong>maximum-Sharpe</strong> portfolio — the one with the highest return per unit of risk, a ratio of about <span class="num">1.05</span> in our run (18.9% volatility, 19.9% return). An aggressive investor takes the <strong>maximum-return</strong> portfolio (about 21.0%, at the cost of 21.4% volatility). The frontier does not tell you which to choose; it tells you which choices are <em>efficient</em>.</p>
+
+<h2>Does it hold up out of sample?</h2>
+
+<p>A backtest on the data you optimised on always looks good. The honest test is fresh data. Take the six chosen names into a later, unseen window — the held-out final 30% of the sample, which runs straight through the 2020 COVID crash — and compare the equal-weight portfolio against the optimised max-Sharpe weights.</p>
+
+<p>In our run the equal-weight portfolio returned about <span class="num">8.9%</span> and the optimised one about <span class="num">28.1%</span>. The optimised weights led this time, but notice the caution the lecture insists on: a Sharpe ratio of 1.05 in the training period is <em>no promise</em> of an out-of-sample win. Optimised weights are never a guaranteed winner, because markets change regime. The practitioner's answer is to <strong>rebalance</strong> — re-fit the weights periodically (quarterly, half-yearly) so the live portfolio stays close to its backtested behaviour as conditions shift.</p>
+
+<h2>Judging performance: the risk-adjusted ratios</h2>
+
+<p>A raw return tells you almost nothing on its own, because it hides the risk taken to earn it. The final part of the lecture is a family of <strong>risk-adjusted ratios</strong>, each of which divides excess return by a <em>different</em> measure of risk. Computed for TCS against the Nifty 50 (with the risk-free rate set to zero), they read like a panel of second opinions. The <strong>Sharpe ratio</strong> divides by total volatility and came out at about <span class="num">0.65</span> \u2014 the all-purpose reward-to-risk number. The <strong>Sortino ratio</strong> divides only by <em>downside</em> deviation, on the logic that upside volatility is not something to be punished; TCS scores a friendlier <span class="num">0.93</span>. The <strong>Treynor ratio</strong> divides by beta \u2014 the stock's sensitivity to the market, here about 0.63 \u2014 measuring return per unit of <em>systematic</em> risk. The <strong>Calmar ratio</strong> divides the annualised return by the worst peak-to-trough <em>drawdown</em> (\u221227% for TCS), giving about <span class="num">0.51</span>. And the <strong>Information ratio</strong> divides the excess return over the benchmark by its tracking error, gauging how reliably a manager beats the index; TCS's <span class="num">0.36</span> sits just shy of the 0.4\u20130.6 band considered good.</p>
+
+<p>Two more tools from the summary round out the risk picture. <strong>Value at Risk (VaR)</strong> answers \u201chow bad is a bad day?\u201d \u2014 for TCS, the daily 95% VaR is about \u22122.4%, meaning on the worst one day in twenty you lose at least that much. Its sharper cousin, <strong>Expected Shortfall</strong> or <strong>CVaR</strong>, averages the losses <em>beyond</em> that threshold (about \u22123.5%), so unlike VaR it also tells you the <em>size</em> of the tail. Finally, position sizing gets its own formula in the <strong>Kelly criterion</strong>, <code>f = (\u03bc \u2212 r)/\u03c3\u00b2</code>, which gives the growth-optimal fraction of capital to bet. It can exceed one (implying leverage), and because it ignores drawdowns entirely, most practitioners deliberately bet a <em>fraction</em> of what Kelly suggests.</p>
+
+<h2>Putting it all together</h2>
+
+<p>The portfolio manager's process is a chain of decisions, each one unlocking the next. Define the objective, because it sets the universe. Analyse every instrument from both angles — returns and risk. Accept that a single stock is too risky, and build a portfolio whose return is a weighted sum and whose variance, thanks to Markowitz, depends on covariance. Hunt for uncorrelated securities to drive risk down, but respect the diversification limit and the systematic floor beneath it. Optimise the weights on the efficient frontier according to your objective. Then test out of sample and rebalance as the world moves.</p>
+
+<p>The mathematics is identical whether your universe is fifty Indian equities, a basket of ETFs, a mix of commodities and crypto, or even a stable of trading strategies competing for capital. These ideas are <em>instrument-agnostic</em>. The real edge — the thing that distinguishes one manager's portfolio from another's built on the same data — lives in the choice of universe and the constraints layered on top, where quantitative analysis meets fundamental judgement.</p>
+
+<p style="margin-top:2.5em; color:#6b7280; font-style:italic; font-size:0.95em;">Read alongside the cheat sheet (formulas, step-by-step tables, and the four-panel chart) and the practice notebook, where every number above is computed from end to end.</p>
+
+</div>
+</body>
+</html>

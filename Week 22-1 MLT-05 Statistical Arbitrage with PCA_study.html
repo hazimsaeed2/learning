@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 22-1 · MLT-05 — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:3rem 1.5rem;
+       background:#f6fdfd;color:#1f3a3d;line-height:1.75;font-size:18px;}
+  h1{font-size:2rem;color:#0e7490;line-height:1.25;margin-bottom:.25rem;}
+  .sub{color:#0891b2;font-style:italic;margin-bottom:2rem;}
+  h2{font-size:1.45rem;color:#0e7490;margin-top:2.5rem;border-bottom:1px solid #a5f3fc;padding-bottom:.3rem;}
+  h3{font-size:1.15rem;color:#0891b2;margin-top:1.6rem;}
+  p{margin:.9rem 0;}
+  em{color:#0e7490;}
+  blockquote{border-left:4px solid #22d3ee;background:#ecfeff;margin:1.5rem 0;padding:.8rem 1.2rem;
+             font-style:italic;color:#155e75;}
+  code{font-family:Consolas,monospace;background:#cffafe;color:#155e75;padding:1px 5px;border-radius:3px;font-size:.9em;}
+  .key{background:#ecfeff;border:1px solid #a5f3fc;border-radius:8px;padding:1rem 1.3rem;margin:1.5rem 0;}
+  .key b{color:#0e7490;}
+  footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #a5f3fc;color:#5b9aa3;font-size:.85rem;text-align:center;}
+</style>
+</head>
+<body>
+
+<h1>Statistical Arbitrage with PCA</h1>
+<div class="sub">Week 22-1 · MLT-05 — a plain-language tour of the quant's Swiss-army knife and the strategies it unlocks</div>
+
+<p>Of all the mathematical tools a quant carries around, principal component analysis is the one our instructor — Tom Starke, who has spent two decades building systematic strategies for a multi-billion-dollar fund — calls the Swiss-army knife. It shows up everywhere: measuring how diversified a portfolio really is, grouping thousands of stocks into families, building hedge ratios that don't depend on which asset you list first, and constructing entirely new tradable products out of thin air. In this lesson we will build PCA from scratch, see what it tells us, and then marry it to a trading style called statistical arbitrage to produce a strategy that real hedge funds run with serious money: index arbitrage.</p>
+
+<p>None of this requires you to be a mathematical genius. PCA is three short steps of linear algebra, and the trading ideas rest on one simple, almost philosophical observation: you usually can't predict where a price is going, but you can often predict the <em>gap</em> between two prices that belong together.</p>
+
+<h2>First, a word about returns versus prices</h2>
+
+<p>Before any analysis, professional traders almost always convert prices into <em>returns</em> — the day-to-day percentage changes. There are two reasons. The first is statistical: price series drift and trend, which makes them <em>non-stationary</em> and awkward to model, whereas return series are roughly <em>stationary</em>, hovering around a stable average. The second is honesty. If you rebuild a price curve from returns by compounding them — adding one and taking the cumulative product — profits get reinvested and the curve bends upward exponentially, which flatters performance. Tom and many of his colleagues instead simply <em>sum</em> the returns, which keeps the stake constant and produces a more linear, less flattering picture. In our notebook the same QQQ series shows a compounding gain of +2091% but a summed gain of +359%: the exponential view inflates the story dramatically.</p>
+
+<h2>PCA in three steps</h2>
+
+<p>Here is the whole recipe. <em>Step one</em>: demean the returns, subtracting each series' average so it is centred on zero — this strips out the drift and lets us focus purely on how things vary. <em>Step two</em>: build the covariance matrix, a little grid whose diagonal holds each asset's variance and whose off-diagonal entries (symmetric, the same above and below) tell you how the assets move together. <em>Step three</em>: compute the eigenvalues and eigenvectors of that matrix. That's it — you've done a PCA.</p>
+
+<p>The payoff is in what those eigenvectors mean. Each eigenvector is a <em>principal component</em>, a direction in the data. The first one points along the direction of <em>largest variance</em> — for two index ETFs, that's essentially "the market went up or down today". The second is <em>orthogonal</em> to the first, which in quant language means <em>uncorrelated</em>. The eigenvalues measure how much variance lives along each direction. In our SPY/QQQ example the first eigenvalue is about twenty-four times the second, telling us a single direction explains almost everything these two ETFs do.</p>
+
+<blockquote>Think of eigenvectors geometrically: a matrix usually rotates a vector, but an eigenvector is the special vector that a given transformation leaves pointing the same way. PCA finds those special, stable directions inside your data.</blockquote>
+
+<h3>Why PCA beats ordinary regression for hedge ratios</h3>
+
+<p>This subtlety bites people in statistical arbitrage, so it's worth dwelling on. Ordinary least-squares regression fits a line by minimising the <em>vertical</em> distance from the points to the line. A consequence is that it is <em>not invertible</em>: regress QQQ on SPY and you get a slope of 1.05, but regress SPY on QQQ and you get 0.81 — whose reciprocal is 1.24, nowhere near 1.05. So if you build a pairs trade and happen to list your two assets in the other order, you get a different hedge ratio and a different result. PCA avoids this entirely, because it minimises the <em>perpendicular</em> distance to the line; its first-component slope (1.15 in our example) is the same whichever asset you put first. For sizing a spread, that orientation-independence is exactly what you want.</p>
+
+<h2>What PCA reveals — diversification and clusters</h2>
+
+<p>The first practical use is the <em>explained variance</em> curve. Normalise the eigenvalues so they add to one, sort them, and add them up cumulatively; you now know how many components it takes to explain, say, 90% of the variance in your basket. With our six stocks drawn from three sectors, the first three components explain about 90% — and that's no accident, because there really are three underlying groups. The shape of this curve is a diversification meter: if one component explains nearly everything, your portfolio is barely diversified; if the curve is closer to a straight line, you have lots of independent sources of risk, which is what you want. This connects to the golden rule of active management, <code>IR = IC · √breadth</code>: your Sharpe ratio equals your skill multiplied by the square root of the number of <em>uncorrelated</em> bets. More breadth, higher Sharpe. Some traders even watch this curve steepen as an early warning of a market crash, when correlations rush toward one.</p>
+
+<p>The second use is clustering. Plot each instrument by its loading on the first two components and the asset classes separate themselves into neat groups — energy in one corner, tech in another, banks in a third. With five thousand stocks you can't eyeball the structure, but PCA hands it to you as numbers, an instant unsupervised way to find families of similar assets to build portfolios from.</p>
+
+<h2>Statistical arbitrage — trading the gap</h2>
+
+<p>Now the trading. The mental picture Tom uses is the <em>drunk and her dog</em>. Both wander randomly through a park, so neither path is predictable on its own — but the <em>distance</em> between them stays bounded and keeps snapping back. That distance is mean-reverting, and mean-reverting means predictable, and predictable means tradable. Two assets whose gap behaves this way are called <em>cointegrated</em>, and it is crucial to understand that cointegration is <em>not</em> correlation. Correlation is about returns moving together day to day; cointegration is about the <em>spread</em> between two prices being stationary over the long run. You can have one without the other.</p>
+
+<p>To trade a cointegrated pair like crude oil and gasoline, we first <em>z-score</em> each leg — subtract its mean and divide by its standard deviation. That division by sigma quietly sets the position sizes (it is the hedge ratio), and it lines the two series up so their difference oscillates around zero. In our notebook that spread has a mean of zero and a standard deviation of 0.32, swinging up and down in exactly the way we can exploit. The Engle-Granger test confirms the pair is cointegrated (a t-statistic of −4.93, comfortably past the 1% threshold), and a second test called Granger causality (from <code>statsmodels</code>) reveals the direction of the link: crude oil strongly leads gasoline, with a tiny p-value of about 0.00003, while the reverse direction is weak.</p>
+
+<p>The backtest itself is simple: when the spread climbs above a threshold of +1, short it expecting it to fall back; when it drops below −1, go long; exit when it crosses zero; and bail out with a stop-loss if it runs all the way to ±3. Running this on our pair produced 46 round-trip trades, about +11.9 in z-score units, and a stair-stepping equity curve.</p>
+
+<div class="key">
+<b>The uncomfortable truth about pairs trading.</b> These strategies sit in a drawdown most of the time. The moment you enter, the spread usually keeps moving against you before it reverts — your threshold has no power to stop it. That is why professionals rarely trade one pair; they run tens or hundreds in parallel, netting the overlapping legs, so that while some are underwater others are paying out. Breadth, again, is the answer.
+</div>
+
+<h2>Bringing them together — index arbitrage</h2>
+
+<p>Here is where PCA and statistical arbitrage finally meet, in the strategy real institutions lean on. Take the biggest names in an index, run PCA on them, and use the <em>first eigenvector as your portfolio weights</em> — a so-called eigen-portfolio or correlation-weighted portfolio. In our example those weights are all positive but far from equal — the biggest tech names like NVIDIA load around 0.28 while defensive names like Verizon sit near 0.08 — and the resulting portfolio tracks the index almost perfectly, with a correlation of +0.99. Then regress the index on this eigen-portfolio, form the spread, and trade it with the very same pairs logic. Because the index and its top constituents are extraordinarily liquid, this strategy can absorb hundreds of millions of dollars without disturbing the market — which is the whole point when you manage real money.</p>
+
+<p>Two warnings come with it. The first is <em>survivorship bias</em>: if you build your basket from today's index members, you have unfairly chosen the winners that earned their place, and your backtest will look far better than reality; use the historical constituents instead. The second is about the cointegration test. There is a formal Engle-Granger test, and in our run it actually <em>fails</em> (a t-statistic around −0.4, nowhere near significance). Tom is openly skeptical of it — in his long experience the test does a poor job of predicting whether a pair will <em>stay</em> cointegrated. He would rather rely on solid economic reasoning about <em>why</em> two things should move together, watch their historical behaviour, and re-fit the parameters periodically. Indeed, his own index-arb strategy performed well out of sample for about a year after he first taught the course, then fell off a cliff when interest rates rose in 2023 and the market regime shifted — a reminder that no strategy is set-and-forget.</p>
+
+<h3>One more trick — PCA for trend-following</h3>
+
+<p>The components beyond the first are useful too. The <em>second</em> principal component builds a portfolio that is orthogonal to the index — in our notebook its returns have essentially zero correlation with the index. Commodity trading advisors love this. They have only around 130 futures contracts to work with, far fewer than the thousands of stocks an equity quant enjoys, so they manufacture fresh, uncorrelated synthetic products out of higher principal components and run their trend-following models on those. PCA, in other words, lets them create breadth where the market refuses to provide it.</p>
+
+<h2>The habits to carry forward</h2>
+
+<p>Work in demeaned returns. Remember that PCA is just demean, covariance, eigen-decompose — and that the first component is the biggest-variance direction while the rest are orthogonal. Reach for PCA rather than OLS when you need an order-independent hedge ratio. Read the explained-variance curve as a diversification meter, and use the first two components to cluster a universe. Above all, internalise that cointegration is not correlation: trade the stationary spread, brace for long drawdowns, and spread your risk across many pairs. When you scale up, use eigen-portfolios for index arbitrage and higher components for trend-following — but never forget survivorship bias, never trust the cointegration test on its own, and always re-fit as the market changes beneath you.</p>
+
+<footer>EPAT · Week 22-1 · MLT-05 — Statistical Arbitrage with PCA · study guide</footer>
+
+</body>
+</html>

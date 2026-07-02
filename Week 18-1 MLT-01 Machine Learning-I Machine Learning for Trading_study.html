@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 18-1 MLT-01 — Machine Learning-I — Study Guide</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; background:#f5fbf7; color:#243027; line-height:1.7; margin:0; }
+  .wrap { max-width:820px; margin:0 auto; padding:54px 30px 90px; }
+  h1 { font-size:2.05rem; line-height:1.25; margin:0 0 6px; color:#065f46; }
+  .sub { color:#5f7068; font-style:italic; margin-bottom:34px; font-size:1.02rem; }
+  h2 { font-size:1.42rem; color:#065f46; margin:42px 0 10px; border-bottom:2px solid #c7ecd6; padding-bottom:6px; }
+  h3 { font-size:1.12rem; color:#047857; margin:26px 0 6px; }
+  p { margin:12px 0; }
+  .lead { font-size:1.08rem; color:#33403a; }
+  code { background:#dcfce7; padding:1px 6px; border-radius:4px; font-family:'Consolas',monospace; font-size:0.9em; color:#065f46; }
+  .box { background:#e7f6ee; border-left:4px solid #059669; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  .num { background:#fbf3e8; border-left:4px solid #d9952f; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  .warn { background:#fbecec; border-left:4px solid #c0504d; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  ul { margin:12px 0; padding-left:24px; }
+  li { margin:6px 0; }
+  .tag { display:inline-block; background:#065f46; color:#fff; font-size:0.72rem; letter-spacing:2px; padding:4px 12px; border-radius:20px; font-family:Arial,sans-serif; margin-bottom:16px; }
+  table { border-collapse:collapse; width:100%; margin:18px 0; font-size:0.95rem; }
+  th,td { border:1px solid #c7ecd6; padding:7px 11px; text-align:left; }
+  th { background:#e7f6ee; color:#065f46; }
+  .end { text-align:center; color:#94ada0; margin-top:50px; font-size:0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="tag">WEEK 18-1 · MLT-01 · STUDY GUIDE</div>
+  <h1>Machine Learning-I: Foundations, Trees &amp; the Logistic Classifier</h1>
+  <div class="sub">A plain-English walk through Jay's first ML session — what AI, ML and DL actually mean, the three jobs machine learning does, how decision trees split data by purity and grow into random forests, how a logistic regression turns a straight line into a probability, and how to build a complete trading classifier on real Tesla data without quietly cheating.</div>
+
+  <p class="lead">This is the opening of the machine-learning module, and the instructor is deliberate about it: the field has grown from a topic into an entire discipline, so rather than derive every equation, these first sessions build <em>intuition</em> for what the tools are and how they're used in trading. The promise is that once the foundation is solid, later lectures slot real strategies on top of it.</p>
+
+  <h2>1. AI, ML and DL — three nested ideas</h2>
+  <p>The instructor's favourite illustration is a doctor in a remote town. She sees familiar cases easily, but when an outsider arrives with unfamiliar symptoms she sends them to the city for tests, then files the report with a <em>label</em> — "this person had X". Collect thousands of such labelled reports from many such doctors, feed them to a machine, and you get a system that can read a new report and suggest a diagnosis. That system is <strong>artificial intelligence</strong>: it makes a decision a human would make, because it was built from <em>human</em> (natural) intelligence captured as labelled history.</p>
+  <p>Inside AI sit two families of algorithms. <strong>Machine learning</strong> is the set of algorithms that learn the association between inputs and outputs from data. <strong>Deep learning</strong> is a <em>subset</em> of ML inspired by how the brain decides (neural networks), covered later in the module. So the nesting is simply: <code>AI ⊃ ML ⊃ DL</code>. And a reassurance the instructor offers: AI is here to make us more productive and help us decide better — not to replace the natural intelligence that built it.</p>
+
+  <h2>2. The three jobs machine learning does</h2>
+  <p>Everything in this module reduces to one of three tasks:</p>
+  <table>
+    <tr><th>Task</th><th>What it predicts</th><th>Has labels?</th><th>Family</th></tr>
+    <tr><td><strong>Regression</strong></td><td>a number (price, volatility, return)</td><td>yes</td><td>Supervised</td></tr>
+    <tr><td><strong>Classification</strong></td><td>a class (up/down, cancer/not)</td><td>yes</td><td>Supervised</td></tr>
+    <tr><td><strong>Clustering</strong></td><td>a group id (similar items together)</td><td>no</td><td>Unsupervised</td></tr>
+  </table>
+  <p>Two of these — regression and classification — are about <strong>forecasting</strong>, and because we supply the right answers (labels) to learn from, they are <strong>supervised</strong>. Clustering is about <strong>analysis</strong>: we have no labels, we just want to discover structure, so it is <strong>unsupervised</strong> (as is dimensionality reduction, which compresses many columns into a few without losing much information). A third style, <em>reinforcement learning</em>, gets its own dedicated class later.</p>
+
+  <h2>3. Classification, told as training a child</h2>
+  <p>Imagine teaching a toddler to tell apples from oranges. The child instinctively explores each fruit's <strong>features</strong> — weight, colour, taste, shape — while <em>you</em>, the supervisor, supply the <strong>label</strong>: "this is an apple". After enough examples the child forms an internal association between the features and the label, and can name a new fruit unaided.</p>
+  <p>A dataset works exactly the same way. Each <strong>row</strong> is an observation, each <strong>column</strong> is a feature, and one special column is the <strong>target</strong> (the label). In trading the features are technical or statistical properties derived from OHLC data, and the target is something like up(1)/down(0), or buy/sell/hold. Crucially, <em>we</em> design the target — and how we define it (any positive return? only a 5% move?) decides what the model learns. That act of supervising the target is precisely why these are called supervised methods.</p>
+
+  <h2>4. Logistic regression: bending a line into a probability</h2>
+  <p>Start with ordinary linear regression. With a numeric target — say predicting price from RSI — we fit the <strong>line of best fit</strong> <code>z = α·RSI + β</code>, the line that minimises the squared distances to the points. It captures the data's shape nicely.</p>
+  <p>Now change the target to a <strong>binary</strong> 0/1 (did the stock go up?). The cloud of points splits into two horizontal bands, and no straight line can represent it — the errors are huge no matter how you tilt the line. The fix is elegant: take that same linear score <code>z</code> and pass it through the <strong>sigmoid</strong> (a.k.a. logit) function:</p>
+  <div class="box" style="text-align:center"><code>σ(z) = 1 / (1 + e<sup>−z</sup>)</code></div>
+  <p>This squashes any number into the range (0,1) and bends the line into a smooth <strong>S-curve</strong>. The output is now read as a <strong>probability</strong>. A handful of values make the shape obvious: <code>σ(0)=0.50</code> (dead centre), <code>σ(2)=0.88</code>, <code>σ(−2)=0.12</code>, saturating toward 1 and 0 at the extremes. We then apply a <strong>threshold</strong> — 0.5 by default, though we are free to raise it — so that a probability above the threshold means class 1, below it class 0.</p>
+  <div class="box"><strong>The naming trap.</strong> Despite "regression" in its name, <strong>logistic regression is a classification algorithm</strong>. For more than two classes there are extensions (multinomial / softmax), but the workhorse version classifies into two.</div>
+
+  <h2>5. Decision trees, purity, and the forest</h2>
+  <p>The other classifier this lecture builds is the <strong>decision tree</strong> — a flowchart of yes/no questions. At each node the tree picks <em>one feature and one threshold</em> that best separates the classes, and keeps splitting until the branches are "pure enough". The instructor illustrates it with a 30-person dataset recording each person's calorie intake, exercise duration and age, labelled <em>Fit</em> (yes/no). A first split on <code>Age &lt; 27</code> already carves out a very clean branch.</p>
+  <p>How does the tree know a split is good? It measures <strong>impurity</strong> before and after. The lecture's workhorse is the <strong>Gini impurity</strong>, <code>Gini = 1 − Σ p<sub>j</sub><sup>2</sup></code>, where <code>p<sub>j</sub></code> is the fraction of class <em>j</em> at a node. A node with only one class scores 0 (perfectly pure); a 50/50 node scores 0.5 (maximally impure).</p>
+  <div class="num"><strong>The worked example.</strong> The full 30 people are 20 Fit / 10 Unfit, so the parent Gini is <code>1 − (20/30)² − (10/30)² = 0.4444</code> (the slide rounds this to 0.4422). Split on <code>Age &lt; 27</code>: the <em>younger</em> branch holds 7 people (6 Fit, 1 Unfit) with Gini <code>1 − (6/7)² − (1/7)² = 0.2449</code>; the <em>older</em> branch holds 23 people (14 Fit, 9 Unfit) with Gini <code>0.4764</code>. Weighting each branch by its size gives <code>0.2449·(7/30) + 0.4764·(23/30) = 0.4224</code>. Impurity fell from <strong>0.4444 to 0.4224</strong>, so the split is worthwhile — and the tree greedily chooses whichever split reduces impurity most.</div>
+  <p>Gini is not the only ruler. <strong>Entropy</strong> (and the resulting <em>information gain</em>) powers the ID3 and C4.5 algorithms, and plain <strong>classification error</strong> <code>1 − max(p<sub>j</sub>)</code> is a third option; all three measure the same idea of impurity. A deep tree can memorise almost any training set, which is why <strong>Occam's razor</strong> guides us: between two models of similar accuracy, prefer the simpler (shallower) one. We enforce that with <strong>pruning</strong> — either <em>pre-pruning</em> (stop growing once the tree gets large) or <em>post-pruning</em> (grow fully, then trim weak nodes bottom-up).</p>
+  <p>A single tree is unstable and overfits, so we combine many into a <strong>random forest</strong>. Each tree is grown on a different <em>bootstrap sample</em> of the data and, at each node, is allowed to consider only a <em>random subset of the features</em>. The forest then <strong>votes</strong> — the majority class wins. Because the individual trees are de-correlated, their errors partly cancel, and the forest generalises noticeably better than any one tree.</p>
+
+  <h2>6. Building a real trading classifier — without cheating</h2>
+  <p>The lecture then builds an end-to-end model whose goal is stated carefully: predict whether the next day is an <strong>up-day or NOT</strong> (note: up vs not-up, not up vs down). The practice notebook reproduces every step on the real <strong>Tesla (TSLA)</strong> daily series shipped with the class — 1510 rows from the end of 2013 onward.</p>
+
+  <h3>Step 1 — Build the target with <code>shift(-1)</code></h3>
+  <p>Compute log returns, then label <code>1</code> when <em>tomorrow's</em> return is positive: <code>np.where(log_ret.shift(-1) &gt; 0, 1, 0)</code>. On the real Tesla data this gives 761 up-days versus 749 not-up — a base rate of about 50.4%, almost a coin toss. A natural worry: isn't peeking at tomorrow look-ahead bias? No — we are merely <em>constructing the dataset</em> the machine will later learn from. The look-ahead rule applies to <em>training and testing</em>, which haven't happened yet.</p>
+
+  <h3>Step 2 — Engineer features from OHLC</h3>
+  <p>Raw Open/High/Low/Close/Volume is the same data everyone has, so the edge comes from <strong>feature extraction</strong>: rolling volatility (standard deviation over windows of 5, 10 and 15 days), trend (rolling means over 10, 15, 20 and 25 days), momentum (summed percentage returns over 3, 6 and 9 days), a 4-day volume moving average, and the intraday move <code>Close − Open</code> — twelve features in all. Rolling windows leave NaNs at the start, which we drop, leaving 1485 usable rows. The instructor's emphasis: features <em>make or break</em> a model — start from a hypothesis about what should predict the target rather than throwing everything into a "kitchen sink".</p>
+
+  <h3>Step 3 — Split, but never shuffle</h3>
+  <p>We split into 75% training and 25% testing with <code>train_test_split(..., test_size=0.25, shuffle=False)</code>. The <code>shuffle=False</code> is essential: this is a <strong>time series</strong>, so the earliest 75% must train and the latest 25% must test. Shuffling would let the model train on the future to predict the past — the very definition of look-ahead bias.</p>
+
+  <h3>Step 4 — Scale, learning the rule only from training data</h3>
+  <p>The features live on wildly different scales — a volume average in the tens of millions next to a momentum figure near zero. Left raw, the model would lazily assume the big numbers matter most. The <strong>z-score</strong> <code>(x − μ)/σ</code> via <code>StandardScaler</code> rescales every feature to mean 0 and standard deviation 1, without changing its shape or distribution.</p>
+  <div class="warn"><strong>The cardinal mistake.</strong> Call <code>fit_transform</code> on the <em>training</em> set (which learns μ and σ from training data), then <code>transform</code> — never <code>fit</code> — the test set, reusing the training statistics. Fitting the scaler on the test set leaks future information and silently inflates your accuracy. This is the single most common way people fool themselves. (Trees, being scale-invariant, skip this step; logistic regression needs it.)</div>
+
+  <h3>Step 5 — Train three models, and stay honest about the score</h3>
+  <p>We fit all three classifiers on the same split, each with a fixed <code>random_state</code> for reproducibility. The <strong>decision tree</strong> (<code>max_depth=3</code>) scores about 56% on training but only <strong>49.7%</strong> on the unseen test set — a textbook case of a tree <em>overfitting</em>. The <strong>random forest</strong> (20 shallow trees, voting) lifts test accuracy to <strong>51.9%</strong>, and the <strong>logistic regression</strong> reaches <strong>53.0%</strong> — the best of the three, and still only a whisker above the 50.4% base rate. The tree's feature-importance scores reveal it leans hardest on the medium-term moving average <code>ma_15</code>. The <code>predict_proba</code> method shows the two class probabilities per row (they always sum to 1); whichever exceeds the threshold wins. Accuracy is just <em>one</em> metric — the next lecture is devoted to evaluating models properly.</p>
+
+  <h2>7. The other side: clustering</h2>
+  <p>To see the unsupervised half, picture 50 companies plotted by return and volatility, with <strong>no labels at all</strong>. We hand only the features to K-Means, tell it <em>how many</em> clusters to find (it cannot guess that for us), and it returns group assignments — in the notebook, roughly 17/16/17 across three clusters. The machine groups; <strong>we</strong> supply the meaning afterward (perhaps low-vol versus high-vol names). In trading, this drives portfolio construction and the grouping of open positions by risk exposure for real-time risk monitoring.</p>
+
+  <h2>8. The takeaways</h2>
+  <ul>
+    <li><code>AI ⊃ ML ⊃ DL</code>; ML learns the association between features and labels from data.</li>
+    <li>Three tasks: regression (number), classification (class), clustering (group, no labels).</li>
+    <li>Decision trees split on the feature that most reduces <strong>Gini impurity</strong> (<code>1 − Σ p<sub>j</sub><sup>2</sup></code>); the worked example fell 0.4444 → 0.4224. They overfit, so prune and prefer simpler trees (Occam's razor).</li>
+    <li>Random forests grow many de-correlated trees (bootstrap + random features) and <strong>vote</strong> — generalising better (test 51.9% vs the tree's 49.7%).</li>
+    <li>Logistic regression = linear score → sigmoid → probability → 0.5 threshold → class. It classifies, and it needs scaling.</li>
+    <li>Build the target with <code>shift(-1)</code> before training (not look-ahead); engineer features from OHLC.</li>
+    <li>Split time series with <code>shuffle=False</code>; scale by fitting on train only and transforming test.</li>
+    <li>~53% test accuracy is normal for next-day direction — features are the edge, and evaluation comes next.</li>
+  </ul>
+  <p>The next session opens with how to <em>evaluate</em> these models properly, then broadens into more algorithms.</p>
+
+  <div class="end">— End of Week 18-1 MLT-01 study guide · pair this with the dashboard cheat sheet and the executed practice notebook —</div>
+
+</div>
+</body>
+</html>

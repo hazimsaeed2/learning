@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 11-1 · TBP-04 Backtest & Live Trade — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:48px 28px;
+       color:#292524;line-height:1.7;font-size:17px;background:#fafaf9;}
+  h1{font-size:30px;color:#44403c;line-height:1.25;margin-bottom:4px;}
+  h2{font-size:23px;color:#57534e;margin-top:40px;border-bottom:2px solid #d6d3d1;padding-bottom:5px;}
+  h3{font-size:19px;color:#78716c;margin-top:28px;}
+  .sub{color:#0ea5e9;font-style:italic;margin-top:0;}
+  code{font-family:ui-monospace,Consolas,monospace;background:#e7e5e4;padding:1px 5px;border-radius:4px;font-size:15px;}
+  pre{background:#292524;color:#e7e5e4;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.5;}
+  pre code{background:none;color:inherit;padding:0;}
+  .callout{background:#f5f5f4;border-left:4px solid #57534e;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  .warn{background:#fef2f2;border-left:4px solid #dc2626;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  .tip{background:#f0f9ff;border-left:4px solid #0ea5e9;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px;}
+  th,td{border:1px solid #d6d3d1;padding:7px 10px;text-align:left;}
+  th{background:#e7e5e4;color:#44403c;}
+  .closer{background:#f5f5f4;border:1px solid #d6d3d1;border-radius:10px;padding:18px 22px;margin-top:36px;}
+</style>
+</head>
+<body>
+
+<h1>The Difference Between a Strategy and a Robot</h1>
+<p class="sub">Week 11-1 · Trading &amp; Backtesting Platforms · TBP-04 (with Dr. Hui Liu)</p>
+
+<p>It is tempting to think that a good idea is most of the battle. It isn't. A trading <em>strategy</em> is just
+the spark; a trading <em>robot</em> is the whole machine — data plumbing, execution, risk controls, monitoring,
+and a platform that lets you test and trade without rewriting a line. This lesson zooms out to that whole machine,
+then zooms back in to build and honestly judge one concrete model.</p>
+
+<h2>1. The road every robot travels</h2>
+
+<p>Keep this sequence in your head: <strong>idea → collect data → build a mathematical model to prove or disprove
+it → visualise → program it → backtest → forward test → live with a small portfolio → live with the full
+portfolio.</strong> Notice how much sits <em>between</em> the idea and real money. Skipping steps is how traders
+lose savings.</p>
+
+<h2>2. Why bother automating?</h2>
+
+<p>Here the instructor is refreshingly blunt: automation does <strong>not</strong> promise more profit. What it
+genuinely delivers is <strong>discipline</strong> — emotionless execution, <strong>fewer human errors</strong>,
+and far less stress. He describes professional traders glued to six or eight or ten screens from the open to the
+close; a robot frees you from that. Once you trust what you've deployed, you stop checking prices obsessively and
+spend your time where edge actually lives: <strong>research</strong>.</p>
+
+<div class="tip"><strong>On AI versus hiring a coder.</strong> Use AI freely, but never blindly — you must be
+knowledgeable enough to <em>verify</em> what it produces. If you can tell the AI exactly what you want and check
+that it did a good job, use it; if you're an experienced trader with little programming, a human coder is often
+easier to direct.</div>
+
+<h2>3. If you want to run money</h2>
+
+<p>Many EPAT students dream of their own fund, so the lecture sketches the path: research strategies, decide your
+<em>style</em> (the instructor favours blending <strong>fundamental</strong> and <strong>quantitative</strong>,
+since a Fed rate decision moves everything), translate to Python, host it somewhere, summarise results often,
+improve, and build a track record. When clients arrive, you'll meet two account structures:</p>
+
+<table>
+<tr><th>Account</th><th>Who owns it</th><th>What you can do</th><th>Stage</th></tr>
+<tr><td><strong>Advisor</strong></td><td>the client</td><td><strong>trade only</strong> — you can't move their money</td><td>early; builds trust (IB drafts the contract)</td></tr>
+<tr><td><strong>Pooled</strong></td><td>you / your firm</td><td>full authority, like a mutual fund</td><td>senior; more regulation, needs client consent</td></tr>
+</table>
+
+<h2>4. Choosing your tools: five categories</h2>
+
+<p>Ask any AI for "Python algo trading tools" and you'll drown. The instructor's own taxonomy cuts through it,
+and every category has a sting in the tail:</p>
+
+<ul>
+<li><strong>Web-based platforms</strong> (Quantopian-style): nothing to install, vast data, instant backtests,
+gorgeous analytics — but <strong>no privacy</strong>. To go live you'd hand your broker login to a third party who
+can then see every keystroke of your strategy. A serious trader won't do that.</li>
+<li><strong>Low-level wrappers</strong> (<code>ibpy</code>, <code>ib_insync</code>): quick to live-trade, but
+<strong>no backtesting</strong>, pro-developer only, forum-only support.</li>
+<li><strong>Backtesting engines</strong> (<code>zipline</code>): great community and backtests, but <strong>not
+built for live trading</strong> — research only.</li>
+<li><strong>Brokers' native APIs</strong> (IB): you can live-trade with support, but <strong>no backtesting</strong>
+and a long road to a real robot.</li>
+<li><strong>Self-hosted solutions</strong> (the instructor's platform): <strong>privacy</strong> first, easy, and —
+crucially — <strong>backtest and live trade in one place with no code change</strong>; the cost is that it's just
+software (you supply data) and you install it yourself.</li>
+</ul>
+
+<div class="callout"><strong>The one requirement that matters most:</strong> a platform that runs your backtest
+<em>and</em> your live trading from the <strong>same code, unchanged</strong>. The moment you rewrite logic to move
+from research to production, you invite human error.</div>
+
+<h2>5. Backward, forward, and the privacy picture</h2>
+
+<p><strong>Backward testing</strong> runs the robot on <strong>historical</strong> data — essentially research.
+<strong>Forward testing</strong> runs it on a <strong>paper account</strong> going forward, treating simulated fills
+as if real. The warning is firm: paper performance is <em>not</em> the same as live performance, so even a flawless
+paper run must be proven <strong>live with a little money</strong> before you scale.</p>
+
+<p>As for privacy in a self-hosted setup: your computer talks to the broker through <strong>IB Gateway or
+TWS</strong>, and you type your trading id and password <em>into that official software</em>. Your strategy — just
+Python files sitting in a folder you control — never sees the credentials. That's the whole privacy argument, and
+it's the question to put to any other tool.</p>
+
+<h2>6. The platform's two heartbeats</h2>
+
+<p>Most self-hosted platforms expose the same minimal shape: an <code>initialize</code> function that runs
+<strong>once</strong> for setup, and a <code>handle_data</code> function that runs <strong>every second</strong>,
+receiving fresh market data and your account, where all your logic lives. Three <strong>cornerstone</strong>
+functions — get the real-time price, get historical data, and place an order — are enough to build surprisingly
+complex robots.</p>
+
+<pre><code>def initialize(context):       # runs once
+    context.security = "SPY"
+
+def handle_data(context):      # runs every second
+    px   = get_realtime_price(context.security)
+    hist = get_historical_data(context.security)
+    place_order(context.security, qty)</code></pre>
+
+<h2>7. Trend, swing, and a model to test them</h2>
+
+<p>Two mindsets underlie almost every idea. <strong>Trend</strong> (momentum): if it went up, you bet it keeps
+going up — and buy-and-hold is the ultimate trend bet. <strong>Swing</strong> (mean-reversion): if it rose too far,
+you bet it falls back. The instructor's friendship analogy is lovely — a long, warm relationship is a
+<em>trend</em> bet that the past predicts the future.</p>
+
+<p>The example strategy is pure swing: <em>if the price fell versus yesterday, buy; if it rose, short; trade
+daily</em> — buy low, sell high. To test whether the market actually behaves this way, we build a
+<strong>linear-regression</strong> model. The trick is <strong>feature engineering by shifting</strong>: because a
+model reads one row at a time, we line up, on the same row, today's move (the predictor) and tomorrow's move (the
+target):</p>
+
+<pre><code>close_yest = Close.shift(1)
+chg_y2t = (Close - close_yest) / close_yest   # predictor: yesterday -> today
+chg_t2m = chg_y2t.shift(-1)                    # target:    today -> tomorrow
+LinearRegression().fit(X = chg_y2t, y = chg_t2m)</code></pre>
+
+<h2>8. Reading the result — honestly</h2>
+
+<p>On our index the regression coefficient came out <strong>negative (about −0.08)</strong>. A negative slope means
+an up-day today tends to be followed by a down-day tomorrow — we live, as one student put it, in a
+<strong>"swing world."</strong> The quadrant scatter confirms it: the fit line tilts downward. So far, so
+encouraging for the mean-reversion idea.</p>
+
+<div class="warn"><strong>But look at the strength.</strong> The correlation is only about <strong>0.08</strong>.
+A statistician wouldn't call anything below 0.6–0.7 a real correlation, so this is <em>very weak</em>. And the
+backtest is sobering: the swing strategy <strong>lost about 3.4%</strong> while buy-and-hold made about
+<strong>58.3%</strong> over the same window, with a worse Sharpe (0.05 vs 0.73) and a sub-coin-flip win rate
+(47%). Test the same model across other timeframes and even the <em>sign</em> of the coefficient wobbles. The
+structure (a swing tendency) is genuinely there, but the edge is paper-thin — exactly why the instructor says
+don't put your life savings on it, and why you <strong>verify live, with small money, before scaling</strong>.</div>
+
+<div class="closer">
+<h3 style="margin-top:0">The one-paragraph version</h3>
+<p>A trading <strong>strategy</strong> is just the idea; a <strong>robot</strong> is the whole machine, built along
+the road map <strong>idea → data → model → visualise → program → backtest → forward test → live (small → full)</strong>.
+Automate for <strong>discipline</strong>, not magic. Choose a platform that gives you <strong>privacy</strong> and
+<strong>backtest + live trading from one unchanged codebase</strong>; web platforms cost privacy, wrappers and
+native APIs lack backtesting, engines lack live. Distinguish <strong>backward</strong> (historical) from
+<strong>forward</strong> (paper) testing, and remember paper ≠ live. The market mindset is <strong>trend vs
+swing</strong>; we tested swing with a linear regression built by <strong>shifting</strong> features, found a
+<strong>negative coefficient</strong> (a swing world) but a <strong>~0.08</strong> correlation — real structure,
+thin edge — and a backtest that lost to buy-and-hold. The lesson: structure is not the same as profit, so verify
+live before risking real capital.</p>
+</div>
+
+<p style="text-align:center;color:#a8a29e;margin-top:36px;font-size:14px;">EPAT · Week 11-1 TBP-04 · Backtest &amp; Live Trade Algorithmic Strategies (Part 1)</p>
+
+</body>
+</html>

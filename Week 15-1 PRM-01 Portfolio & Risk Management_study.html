@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 15-1 · PRM-01 — Portfolio &amp; Risk Management · Study Guide</title>
+<style>
+body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:48px 28px;
+  background:#fbfaf7;color:#1f2328;line-height:1.72;font-size:18px;}
+h1{font-size:2rem;line-height:1.2;margin-bottom:.2em;}
+h2{font-size:1.42rem;margin-top:1.9em;border-bottom:2px solid #d1ccc0;padding-bottom:.2em;color:#7f1d1d;}
+h3{font-size:1.14rem;margin-top:1.5em;color:#9a3412;}
+.lead{font-size:1.08rem;color:#52525b;font-style:italic;}
+code{background:#f1ede4;padding:.05em .35em;border-radius:.2em;font-size:.92em;}
+blockquote{border-left:4px solid #b91c1c;margin:1.2em 0;padding:.3em 1.1em;background:#f6f1ea;color:#3f3f46;font-style:italic;}
+table{border-collapse:collapse;width:100%;margin:1.1em 0;font-size:.92rem;}
+th,td{border:1px solid #d4cfc4;padding:.4rem .6rem;text-align:left;}
+th{background:#efe9df;}
+.box{background:#fff;border:1px solid #e4dfd4;border-radius:8px;padding:1em 1.2em;margin:1.2em 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.eq{text-align:center;font-style:italic;margin:.8em 0;color:#7f1d1d;}
+em.k{font-style:normal;font-weight:bold;color:#7f1d1d;}
+</style>
+</head>
+<body>
+
+<h1>Portfolio &amp; Risk Management for Algorithmic Trading</h1>
+<p class="lead">Week 15-1 · PRM-01 · A plain-language walk through Rishabh Patankar's first risk-management session — the five-phase process, the famous blow-ups, and the checks that would have stopped each one.</p>
+
+<p>Most trading education is about how to <em>win</em>. This session is about how not to <em>lose everything</em> — which, over a long enough career, matters more. The instructor's framing is humble and practical: people have already made nearly every expensive mistake there is to make, often spectacularly, so the cheapest way to learn risk management is to study their wreckage and build the controls that would have caught them. The whole lecture hangs on one sentence he keeps returning to: we don't have to make all the mistakes ourselves.</p>
+
+<p>Risk management, in his telling, is not a single formula but a <em class="k">five-phase process</em>. You set up a structure, you identify where risk comes from, you measure it, you put limits around it, and you design systems that enforce those limits in real time. Let's walk each phase, and then spend real time on the part that's unique to algorithmic trading: the failures that happen inside the software, in milliseconds, before a human can blink.</p>
+
+<h2>Phase 1 — Build a structure that can say "no"</h2>
+<p>The first phase is organizational, not mathematical. A serious firm has a <em class="k">dedicated risk department</em> that is deliberately walled off from the trading desk and given real autonomy — including the power to veto a trade or block a new product. The reason becomes obvious when you look at the two names that open the lecture.</p>
+
+<p><strong>Jérôme Kerviel</strong> cost Société Générale about €4.9 billion. He had come up through the bank's back office, so he knew exactly which internal checks existed and how to dress up unauthorized positions so they wouldn't trip them. <strong>Kweku Adoboli</strong> cost UBS about $2.2 billion on an ETF desk in a similar way. The lesson isn't "hire better people" — both were capable. The lesson is structural: if the people taking risk also control the systems that measure it, the measurement is worthless. Independence is the control.</p>
+
+<blockquote>If the people taking the risk also control the system that measures it, the measurement is theatre. Independence — and the power to veto — is the first real risk control.</blockquote>
+
+<h2>Phase 2 — Know where risk actually comes from</h2>
+<p>You can't manage what you haven't named. The lecture catalogs the sources: <em class="k">market risk</em> (prices move against you), <em class="k">credit / counterparty risk</em> (the other side doesn't pay), <em class="k">financial risk</em> (leverage and funding), <em class="k">operational risk</em> (systems break, people err, someone commits fraud), <em class="k">liquidity risk</em> (you can't exit at a fair price), and <em class="k">natural / political risk</em> (a disaster or a regulator changes the game overnight). Each later phase is really about one or more of these categories.</p>
+
+<h2>Phase 3 — Measure it</h2>
+<p>This is where the quantitative tools live, and the practice notebook reproduces all of them on a representative one-million-dollar portfolio.</p>
+
+<h3>Value at Risk — the single most-used number</h3>
+<p><em class="k">VaR</em> answers: "On a bad day, how bad?" Concretely, it's the loss at a chosen percentile — usually the 5th. A statement like "there's an 8% chance of a 2% decline over a month" is a VaR statement. There are three standard ways to compute it, and reassuringly they agree:</p>
+
+<table>
+<tr><th>Method</th><th>How</th><th>1-day 95% VaR ($1m)</th></tr>
+<tr><td>Historical</td><td>empirical 5th percentile of past returns</td><td>$24,957</td></tr>
+<tr><td>Parametric</td><td>assume normal, use z = −1.645</td><td>$25,252</td></tr>
+<tr><td>Monte Carlo</td><td>simulate 200,000 draws</td><td>$25,270</td></tr>
+</table>
+
+<p>The reading is: "with 95% confidence we won't lose more than about $25,000 in a day" — and, just as importantly, on roughly one day in twenty we might lose more.</p>
+
+<h3>CVaR — what happens once you're over the cliff</h3>
+<p>VaR tells you the <em>threshold</em> of the worst 5% of days. It says nothing about how bad those days get. <em class="k">CVaR</em> (conditional VaR, or expected shortfall) fills that gap: it's the <em>average</em> loss inside the tail. On our portfolio VaR is about $24,957 but CVaR is $31,612 — roughly <strong>1.27 times</strong> larger. That ratio is the fat tail made visible. A book can have an acceptable VaR and a frightening CVaR.</p>
+
+<h3>Stress tests — replay the disasters</h3>
+<p>VaR is built from recent, mostly calm data, so it systematically underestimates catastrophes. Stress testing fixes this by replaying actual historical shocks against today's book: a 20% GFC drop costs $200,000, a 30% COVID crash costs $300,000, and so on. These aren't statistical estimates — they're "if 2008 happened tomorrow, here's the bill."</p>
+
+<h3>Two exposures people forget</h3>
+<p><strong>Dividends.</strong> When a stock goes ex-dividend its price falls by roughly the dividend, but a shareholder is made whole by the cash. A <em>call-option holder</em> receives no dividend, so that same price drop can quietly push the option out of the money. <strong>Currency.</strong> An Indian investor holding Tesla can make or lose money purely from USD/INR moving — in the notebook, ten shares with the rupee going 84→90 produces about Rs 5,040 of P&amp;L while Tesla itself never moves.</p>
+
+<h3>The what-if grid and credit's master formula</h3>
+<p>A simple, powerful habit: tabulate portfolio value across a grid of <em>price change × implied-volatility change</em> so you can see at a glance where the soft spots are. And for counterparty risk, every quant should know the Basel building block:</p>
+<p class="eq">Expected Loss = PD × LGD × EAD</p>
+<p>probability of default, times loss given default, times exposure at default. Sum it across the book and you get the provision you must hold — in the notebook, $76,500 across four counterparties. Losses are then bucketed into <em>expected</em> (price it in), <em>unexpected</em> (hold capital against it), and <em>stress</em> (too rare to fully hedge). The cautionary tale here is <strong>LTCM</strong>: a fund run by Nobel laureates, earning 40% for a while on heavily leveraged bond arbitrage, undone by the 1998 Russian default — financial risk and liquidity risk arriving together — and ultimately needing a Fed-organized rescue.</p>
+
+<h2>Phase 4 — Put limits around everything</h2>
+<p>Measurement without limits is just a thermometer with no thermostat. Limits cap exposure by cash, by <em class="k">geography</em>, by sector, by asset class, and by counterparty. The geography point is timely: if company ABC earns half its revenue in the US and a 30% tariff lands, that's a 15% hit to total revenue — so you cap how concentrated you let any single region (and therefore any single regulator or tariff) become.</p>
+
+<div class="box">
+<h3 style="margin-top:0">The settlement trap that forces a profitable trade to close</h3>
+<p>One subtle limit deserves its own box. Imagine a hedged position: an option leg up $5,000 and a futures leg down $5,000. Net economic P&amp;L is zero — you're fine. Except futures are <em>marked to market daily</em>, so that $5,000 loss is <strong>real cash leaving your account tonight</strong>, while the option profit only materializes at expiry. If you don't have the cash, you get a margin call and may be <em>forced to unwind the winning option leg</em> just to fund the futures variation margin. This is why settlement-type and cash-flow limits exist, not just notional limits.</p>
+</div>
+
+<p>Other Phase-4 controls are organizational: counterparty limits by credit rating, caps on orders per day, and — echoing Phase 1 — <em>mandatory two-week leave</em>, team rotation, and centralized P&amp;L reconciliation, all designed so that no single person can hide a position indefinitely.</p>
+
+<h2>The blow-ups — and the one control each needed</h2>
+<p>The middle of the lecture is a gallery of algorithmic disasters. Read them as cause-and-cure pairs.</p>
+
+<table>
+<tr><th>Incident</th><th>What went wrong</th><th>The control</th></tr>
+<tr><td>Credit Suisse</td><td>removing an "OK" button made an arrow key re-fire and cancel orders endlessly</td><td>confirmation / order-throttle</td></tr>
+<tr><td>Infinium Capital</td><td>let a less-liquid ETF price the futures; fair value jumped → 4,612 trades in 24s</td><td>liquidity-aware fair value + order limits</td></tr>
+<tr><td>Deutsche Bank (Tokyo)</td><td>a broken Nikkei feed produced an error price → a flood of futures</td><td>stale-data timestamp + heartbeat</td></tr>
+<tr><td>Knight Capital</td><td>one of eight servers ran eight-year-old code → $460M in 45 minutes</td><td>MD5 checksum + version check</td></tr>
+<tr><td>Goldman Sachs</td><td>indications of interest were sent as real orders</td><td>order-type validation</td></tr>
+<tr><td>Hanmax (Korea)</td><td>the system read calls as puts → 36,100 trades, ₩57bn</td><td>call/put validation</td></tr>
+</table>
+
+<p>The Knight Capital fix is worth dwelling on because it's so cheap. They lost nearly half a billion dollars because a deployment missed one server. Three trivial checks catch it: compare each binary's <em>file size</em>, its <em>last-modified date</em>, and above all an <em class="k">MD5 checksum</em> — a fingerprint of every byte. If even one server's fingerprint differs from the golden one, halt the deploy. The notebook demonstrates exactly this: seven servers match, the eighth shows a different hash and is flagged.</p>
+
+<h2>Phase 5 — Controls inside the algo, before the gateway</h2>
+<p>This is the part unique to automated trading. The defenses live <em>inside your software</em>, between the market-data feed and the order gateway, and the lecture groups them into six categories.</p>
+
+<p><strong>Access.</strong> Is the exchange connection even alive? You send a <em class="k">heartbeat</em> — a "knock-knock, are you there?" — and if the reply is late, you halt and reconnect. <strong>Consistency.</strong> Is the data fresh? Every tick carries a timestamp; if it's older than your threshold, discard it rather than trade on stale prices. <strong>Quality.</strong> Is the data sane? A book where the ask is below the bid is garbage — discard it; and when liquidity evaporates around a news release, pause trading. <strong>Algorithm.</strong> Are the orders themselves reasonable? Here live the fat-finger and price-range bands (an order shouldn't be more than ~5% off the last price), the P&amp;L-fluctuation alert (a sudden ±10% means something is wrong somewhere), and the order gate below. <strong>Technology.</strong> Mundane but lethal — a full hard disk (tick data volumes can exhaust storage in hours), a crash, a virus, or a protocol mismatch across exchanges. <strong>Scalability.</strong> Can your system handle more?</p>
+
+<h3>The tick-by-tick order gate</h3>
+<p>The instructor's sharpest coding lesson: a rule like "if price of A is 100, send 10 of B" works fine on daily data but is dangerous on tick data, because ticks arrive faster than fills confirm. You'll fire order after order before learning the first one even filled. The fix is to gate not just on the price condition but on <strong>orders already placed plus orders still in flight</strong> against a hard limit. In the notebook the naive rule sends 8 orders against a limit of 5; the gated rule correctly stops at 5.</p>
+
+<h3>Scalability is a risk, not just an inconvenience</h3>
+<p>Every nested loop multiplies your runtime. One asset is O(1); scanning n assets is O(n); pairing each with its derivative is O(n²); add one more loop and it's O(n³). The notebook times this: at n=200, the O(n³) version takes about 3 seconds versus a few milliseconds for O(n). If that runtime exceeds your data-to-order latency budget, you'll be trading on stale signals — so re-profile after <em>every</em> strategy change.</p>
+
+<h2>A closing case — the Porsche / Volkswagen squeeze</h2>
+<p>To explain why exchanges forbid using derivatives to inflate open interest beyond a threshold, the lecture ends with 2008's most astonishing squeeze. Porsche quietly accumulated Volkswagen shares <em>and</em> call options totaling about 74% of the company; the state of Lower Saxony held another ~20%. That left almost no free float — around 6%. When short-sellers realized they had to buy back roughly 12% of shares that effectively didn't exist, the scramble sent VW from about €200 to over €1000, making it briefly the most valuable company in the world. (In a final twist, VW later rescued a debt-laden Porsche and now owns it.) The regulatory takeaway is concrete: cap derivative open interest against the free float, and set market-wide position limits, so a corner like this can't happen.</p>
+
+<h2>The one-paragraph version</h2>
+<p>Risk management is a five-phase process: build an <strong>independent risk department</strong> with veto power; <strong>identify</strong> every source of risk; <strong>quantify</strong> it with Greeks, what-if grids, <strong>VaR</strong> (the 5th-percentile loss, computed three agreeing ways), <strong>CVaR</strong> for the tail's average severity, <strong>stress tests</strong> that replay 2008 and COVID, and <strong>PD × LGD × EAD</strong> for credit; <strong>set limits</strong> on cash, geography, settlement, and orders per day; and <strong>design controls</strong> that enforce them in real time. The blow-ups are the syllabus — Kerviel and Adoboli demand independence and mandatory leave, LTCM shows financial and liquidity risk arriving together, and Knight Capital proves a $460M loss can be prevented by a cheap <strong>MD5 checksum</strong>. For algos specifically the controls sit inside the app before the gateway: heartbeats, stale-data and garbled-book rejection, fat-finger bands, the tick-by-tick order gate that counts placed <em>plus</em> in-flight orders, P&amp;L-fluctuation alerts, and scalability profiling because nested loops turn O(n) into O(n³). You don't have to make every mistake yourself — that's the entire point.</p>
+
+<p style="text-align:center;color:#a8a29e;margin-top:3em;">— end of Week 15-1 PRM-01 study guide —</p>
+
+</body>
+</html>

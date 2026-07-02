@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 5-2 MMT-03 · Overview of Electronic & Algorithmic Trading — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:40px 28px;
+       color:#1f2937;line-height:1.7;font-size:17px;background:#fbfbfd}
+  h1{font-size:30px;color:#155e75;border-bottom:3px solid #0891b2;padding-bottom:10px;margin-bottom:4px}
+  h2{font-size:22px;color:#0e7490;margin-top:34px;border-left:5px solid #0891b2;padding-left:12px}
+  h3{font-size:18px;color:#0c4a6e;margin-top:22px}
+  code{background:#ecfeff;color:#155e75;padding:1px 6px;border-radius:4px;font-family:Consolas,monospace;font-size:15px}
+  .lead{font-size:18px;color:#475569;font-style:italic}
+  .callout{background:#ecfeff;border-left:5px solid #0891b2;padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0}
+  .warn{background:#fef2f2;border-left:5px solid #ef4444;padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0}
+  .tip{background:#fffbeb;border-left:5px solid #f59e0b;padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0}
+  table{border-collapse:collapse;width:100%;margin:16px 0;font-size:15px}
+  th,td{border:1px solid #cbd5e1;padding:7px 10px;text-align:left}
+  th{background:#ecfeff;color:#155e75}
+  tr:nth-child(even){background:#f8fafc}
+</style>
+</head>
+<body>
+
+<h1>Overview of Electronic &amp; Algorithmic Trading</h1>
+<p class="lead">Week 5-2 · MMT-03 (instructor Rob Cassell) — the first of two sessions, written as a lesson you can read end to end.</p>
+
+<p>This lecture is the bridge from "what is a market" to "how do I actually trade in one." It is deliberately
+about <em>process and intuition</em> — the equations for market impact and timing risk arrive in the second
+session (MMT-04). The single thread running through everything is one hard trade-off, and once you see it,
+the rest of the lecture is a tour of the tools built to manage it.</p>
+
+<h2>1. Why algorithms exist: the price-impact problem</h2>
+<p>Electronic trading simply means sending orders over a computer network; <strong>algorithmic trading</strong> is the
+computerised execution of orders following pre-specified rules. Algorithms became essential because
+institutional orders are <em>large</em> — far more than the 100 shares a retail investor might buy. A large order
+moves the price: buying pressure pushes prices up, selling pressure pushes them down. This is
+<strong>market impact</strong>, and it is one of the costliest, most unavoidable components of trading.</p>
+<p>The defence is to <strong>slice</strong> the order — break a 100,000-share parent into, say, ten 10,000-share children
+and trade them over time so the market never sees the whole thing at once.</p>
+
+<h2>2. Market impact: temporary plus permanent</h2>
+<p>When you buy aggressively, the price rises while you trade and then <em>reverts</em> once you stop — but it does
+not return all the way. That gap is the heart of market-impact analysis.</p>
+<table>
+<tr><th>Stage</th><th>Price</th><th>Interpretation</th></tr>
+<tr><td>Undisturbed</td><td>$30.00</td><td>where the stock sat before you arrived</td></tr>
+<tr><td>Peak (while buying)</td><td>$30.25</td><td>total impact = 25¢ a share</td></tr>
+<tr><td>New equilibrium</td><td>$30.05</td><td><strong>permanent</strong> impact = 5¢ (information the market inferred)</td></tr>
+<tr><td>Revert amount</td><td>30.25 → 30.05</td><td><strong>temporary</strong> impact = 20¢ (the liquidity premium you paid)</td></tr>
+</table>
+<p><strong>Temporary</strong> impact is the premium you offered to attract sellers to trade with you right now;
+it evaporates after you finish. <strong>Permanent</strong> impact is the market's belief that your order carried
+information ("why is that party buying so much? maybe it's undervalued"), so the price settles higher than
+where it started. Sell orders behave as a mirror image.</p>
+
+<h2>3. The trader's dilemma</h2>
+<p>Now the central tension. <strong>Market impact falls the slower you trade</strong> — leaking the order out gently
+disturbs the price less. But <strong>timing risk rises the slower you trade</strong> — the longer you are exposed, the
+more the price can drift against you on news, volatility, or other traders catching on. Timing risk itself has
+three pieces: price volatility, liquidity risk, and parameter-estimation error in the impact model.</p>
+<div class="callout">Rob Cassell's one-line summary: <em>"Trade too fast and you move the market; trade too slow
+and the market moves you."</em> Your job is to balance the two.</div>
+<p>Formally you minimise a combined cost:</p>
+<p style="text-align:center"><code>Cost(t) = MarketImpact(t) + λ × TimingRisk(t)</code></p>
+<p>where <strong>λ (lambda) is your level of risk aversion</strong>. With impact falling like <code>1/√t</code> and risk rising
+like <code>√t</code>, the optimum has a clean closed form, <code>t* = a/(λ·b)</code>. Calibrated to the lecture:</p>
+<table>
+<tr><th>λ</th><th>Investor type</th><th>Optimal trade horizon</th></tr>
+<tr><td>0.25</td><td>risk-neutral (indifferent to risk)</td><td>3.40 days — trade slowly</td></tr>
+<tr><td><strong>1.0</strong></td><td>balanced (equal concern)</td><td><strong>0.85 day</strong> — the lecture's answer</td></tr>
+<tr><td>3.0</td><td>risk-averse (worried about risk)</td><td>0.28 day — trade quickly</td></tr>
+</table>
+<div class="tip"><strong>Why would you be risk-neutral?</strong> Because you might be trading 50 buys and 50 sells at
+once — if the market moves, your buys and sells offset, so you are naturally hedged and can afford to take
+your time. A single urgent order, by contrast, makes you risk-averse: get it done before the edge
+disappears.</div>
+
+<h2>4. Slicing schedules: VWAP, TWAP, POV</h2>
+<p>Having decided <em>how long</em> to trade, you choose <em>how many shares per interval</em>. Three classic schedules
+split our 100,000-share order across the day:</p>
+<ul>
+<li><strong>TWAP</strong> (time-weighted) — equal shares in every bucket, a flat uniform schedule (about 7,143 shares
+across 14 half-hour buckets).</li>
+<li><strong>VWAP</strong> (volume-weighted) — follow the day's intraday volume profile, a <strong>J-curve</strong> that is heavy
+at the open and heaviest into the close, light at midday. Trading in proportion to volume hides your order in
+the crowd.</li>
+<li><strong>POV</strong> (percentage of volume) — trade a fixed share of whatever prints, e.g. 10%. If you are 10% of
+volume and you have 100,000 shares, the day must print about 1,000,000 shares for you to finish.</li>
+</ul>
+<p>Orders can be sliced by <strong>time</strong>, by <strong>volume</strong> (POV), or by <strong>price</strong> (trade harder at favourable
+prices). And any algorithm is either <strong>static</strong> (parameters fixed unless you change them) or <strong>dynamic</strong>
+(it revises its own schedule in response to live market signals).</p>
+
+<h2>5. Agency vs principal bid — and why frequency decides</h2>
+<p>There are two ways a broker fills your order. An <strong>agency</strong> execution charges a commission and works the
+order on a best-efforts basis — you bear all the market risk and don't know the final price in advance. A
+<strong>principal bid</strong> (capital commitment) charges a fat premium but <em>guarantees</em> a price — the broker takes
+all the risk. Which is better? Work the numbers from the lecture:</p>
+<table>
+<tr><th>Step</th><th>Calculation</th><th>Value</th></tr>
+<tr><td>Current price</td><td>—</td><td>$30.00</td></tr>
+<tr><td>+ expected market impact</td><td>+0.10</td><td>$30.10</td></tr>
+<tr><td>+ commission</td><td>+0.02</td><td><strong>$30.12</strong> expected all-in</td></tr>
+<tr><td>Timing risk (std-dev)</td><td>±0.20</td><td>the uncertainty band</td></tr>
+<tr><td>Principal bid all-in</td><td>30.00 + 0.25</td><td>$30.25 guaranteed</td></tr>
+<tr><td>z-score</td><td>(30.25 − 30.12) / 0.20</td><td>0.65</td></tr>
+<tr><td>P(agency beats the bid)</td><td>Φ(0.65)</td><td><strong>≈ 74%</strong> (the lecture eyeballs "about 70%")</td></tr>
+</table>
+<p>On the surface a ~70% chance says "do the agency execution." But Rob Cassell's deeper point is that
+<strong>trading frequency changes the answer</strong>. If you trade <em>daily</em>, a 70% edge compounds in your favour and a
+bad day is quickly recovered. If you trade <em>once a year</em>, the 30% chance of a worse fill — with a twelve-month
+wait to make it back — may not be worth it. The right decision blends the probability with how often you get
+another shot.</p>
+
+<h2>6. Where trades happen: exchanges, ATSs, and dark pools</h2>
+<p>The modern market is not one exchange but dozens of <strong>trading venues</strong>:</p>
+<ul>
+<li><strong>Exchanges</strong> — displayed order books, and they must maintain a fair and orderly market (provide
+liquidity, run closing auctions, halt on extreme volatility).</li>
+<li><strong>ATSs / ECNs</strong> — also displayed, but with <em>no</em> obligation to provide liquidity; if there's no
+counterparty, your order simply doesn't fill.</li>
+<li><strong>Dark pools</strong> — the order book is <strong>hidden</strong>. You can place a large order without showing your hand,
+which limits immediate impact, but you can't see the queue and don't know why you're not filling. Dark pools
+do roughly 30–35% of US volume and match at the <strong>midpoint of the NBBO</strong>.</li>
+</ul>
+<p>Every displayed venue keeps an <strong>order book</strong>: bids sorted highest-to-lowest, asks lowest-to-highest,
+executed under <strong>price–time priority</strong> (best price first; ties broken by who arrived earliest). Across all
+venues, the <strong>NBBO</strong> (national best bid and offer) is the highest bid and lowest ask anywhere. Worked
+example over three venues:</p>
+<table>
+<tr><th>Venue</th><th>Best bid × size</th><th>Best ask × size</th></tr>
+<tr><td>A</td><td>30.00 × 800</td><td>30.10 × 300</td></tr>
+<tr><td>B</td><td><strong>30.02</strong> × 200</td><td>30.15 × 600</td></tr>
+<tr><td>C</td><td>29.90 × 1600</td><td><strong>30.06</strong> × 100</td></tr>
+</table>
+<p>The NBBO bid is <strong>30.02</strong> (venue B) and the NBBO ask is <strong>30.06</strong> (venue C), so a dark pool would print
+at the midpoint, <strong>(30.02 + 30.06) / 2 = $30.04</strong>. We know the price a dark trade <em>would</em> occur at, even
+though we can't see the hidden orders behind it.</p>
+
+<h2>7. Smart order routing: the longest queue can be fastest</h2>
+<p>Suppose you want to buy 100 shares at $30. Under price–time priority you wait behind everyone already
+queued at that price. The naïve move is to pick the <strong>shortest queue</strong> — but the smarter move weighs
+<strong>how fast each venue trades</strong>. Watch what happens when venue A trades ten times the volume of B and C:</p>
+<table>
+<tr><th>Venue</th><th>Shares ahead</th><th>Relative speed</th><th>Expected wait (queue ÷ speed)</th></tr>
+<tr><td><strong>A</strong></td><td>2600</td><td>10×</td><td><strong>260 — fastest</strong></td></tr>
+<tr><td>B</td><td>800</td><td>1×</td><td>800</td></tr>
+<tr><td>C</td><td>1400</td><td>1×</td><td>1400</td></tr>
+</table>
+<div class="callout"><strong>The grocery-store analogy:</strong> you don't just count the people in each line — you also
+look at how big their carts are and how fast the cashier is. The longest line can check out first if its
+cashier is ten times quicker. Smart order routers do exactly this calculation, in real time, across every
+venue.</div>
+
+<h2>8. How venues get paid: maker–taker economics</h2>
+<p>Finally, the plumbing. Venue fees are quoted in <strong>mills</strong> — one mill is 1/100 of a penny ($0.0001).
+There are three revenue models:</p>
+<table>
+<tr><th>Model</th><th>Who pays / who is rebated</th><th>Venue keeps</th></tr>
+<tr><td>Commission (typical dark pool)</td><td>both sides pay 10 mills</td><td>20 mills</td></tr>
+<tr><td>Maker–taker</td><td>taker (market order) pays 30; maker (limit order) gets 10 rebate</td><td>20 mills</td></tr>
+<tr><td>Inverted maker–taker</td><td>maker pays 30; taker gets 10 rebate</td><td>20 mills</td></tr>
+</table>
+<p>A <strong>maker</strong> <em>adds</em> liquidity by posting a limit order and is rewarded with a rebate; a <strong>taker</strong>
+<em>removes</em> liquidity with a market order and pays a fee. The inverted model flips this — it's a "pay to cut the
+line" arrangement, like buying a fast-pass at an amusement park to jump the queue instead of waiting for the
+orders behind you to clear. High-frequency firms build whole strategies around harvesting these rebates.</p>
+
+<h2>9. The decision-making process, in five steps</h2>
+<p>Pulling it together, executing an institutional order is a repeatable process: (1) <strong>select a broker</strong>;
+(2) <strong>select an algorithm and its parameters</strong> (the macro-level schedule); (3) <strong>transact</strong> using a Limit
+Order Model and Smart Order Router (the micro-level placement); (4) <strong>revise</strong> the strategy if conditions
+change; (5) <strong>measure cost and evaluate performance</strong>. The overarching goal is to minimise total
+transaction cost while keeping the trade consistent with the fund's investment objective.</p>
+<div class="warn"><strong>Cassell's parting warning:</strong> brokers keep their market-impact models secret partly so
+you <em>can't</em> grade their execution quality. Always verify what a broker tells you — the second session
+(MMT-04) is devoted to exactly that, with the math and the Python.</div>
+
+<h2>Key takeaways</h2>
+<ul>
+<li><strong>Market impact</strong> = temporary (liquidity premium, reverts) + permanent (information, stays): 25¢ = 20¢ + 5¢.</li>
+<li><strong>Trader's dilemma:</strong> minimise <code>MI(t) + λ·TR(t)</code>; impact falls and risk rises with time; balanced λ → 0.85 day.</li>
+<li><strong>Slicing:</strong> TWAP (uniform), VWAP (follow the J-curve), POV (fixed % of volume); static vs dynamic.</li>
+<li><strong>Agency vs principal:</strong> $30.12 ± 20¢ vs guaranteed $30.25 → ~70–74% chance agency wins, but frequency decides.</li>
+<li><strong>Venues:</strong> exchanges (must provide liquidity) and ATSs are displayed; dark pools hide their book and print at the NBBO midpoint ($30.04).</li>
+<li><strong>Smart order routing:</strong> balance queue depth and venue speed — the longest queue can fill fastest.</li>
+<li><strong>Maker–taker:</strong> makers earn rebates, takers pay fees, mills = $0.0001.</li>
+</ul>
+
+<p style="margin-top:30px;color:#94a3b8;font-size:14px;text-align:center;border-top:1px solid #e2e8f0;padding-top:14px">
+Week 5-2 · MMT-03 · Overview of Electronic &amp; Algorithmic Trading — prose study guide. Pair with the cheat sheet (dashboard) and the practice notebook (runnable simulations of every example). Session 2 = MMT-04.</p>
+
+</body>
+</html>

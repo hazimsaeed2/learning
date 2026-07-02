@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 14-2 EFS-04 — Quantitative Momentum II · Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:48px 32px;
+       color:#1f2937;line-height:1.7;font-size:17px;background:#fdfdfb}
+  h1{font-size:30px;color:#92400e;margin-bottom:4px;line-height:1.2}
+  .sub{color:#6b7280;font-style:italic;margin-bottom:28px;font-size:17px}
+  h2{font-size:23px;color:#b45309;margin-top:38px;border-bottom:2px solid #fcd34d;padding-bottom:5px}
+  h3{font-size:19px;color:#d97706;margin-top:26px}
+  p{margin:14px 0}
+  .callout{background:#fffbeb;border-left:4px solid #d97706;padding:12px 18px;margin:20px 0;border-radius:4px}
+  .warn{background:#fef2f2;border-left:4px solid #ef4444;padding:12px 18px;margin:20px 0;border-radius:4px}
+  .tip{background:#f0fdf4;border-left:4px solid #16a34a;padding:12px 18px;margin:20px 0;border-radius:4px}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px}
+  th,td{border:1px solid #fcd34d;padding:7px 11px;text-align:left}
+  th{background:#fffbeb;color:#92400e}
+  code{background:#fef3c7;color:#92400e;padding:1px 5px;border-radius:3px;font-size:15px}
+  .closer{background:#451a03;color:#fde68a;padding:20px 24px;border-radius:8px;margin-top:34px;font-size:16px}
+  em{color:#b45309}
+</style>
+</head>
+<body>
+
+<h1>Quantitative Momentum II — Putting the Roll Return to Work</h1>
+<div class="sub">Week 14-2 · EFS-04 — the second half of Ernie Chan's momentum workshop, where yesterday's theory becomes five tradeable strategies, a 120% crisis year, and a hard lesson about what happens afterward.</div>
+
+<p>Yesterday built the machinery: a future's return splits into a <em>spot</em> piece and a <em>roll</em> piece, and the roll is the persistent, sometimes-computable edge behind momentum. Today we spend that machinery. Ernie walks through five strategies, and each one is really a Trojan horse for one deep idea — about hedging, about crisis returns, about time decay, about the traps in data mining, and about leverage. Let's take them in order.</p>
+
+<h2>Lesson one: a perfect hedge earns nothing</h2>
+
+<p>The warm-up was yesterday's homework. Gold futures (GC) sit in <em>contango</em> almost always, so shorting them harvests a positive roll. To remove the price risk you hedge with the gold ETF, GLD. Short GC, long GLD — what Sharpe ratio do you get? Students expect something handsome. The answer is <strong>essentially zero</strong>, and that is the entire point.</p>
+
+<p>Watch the algebra. The GC future's return is the gold spot return plus its roll; GLD's return is just the spot. Short the future and add the ETF, and the <em>spot returns cancel exactly</em> — you are left holding only the roll, which for gold is about the cost of carry, which is about the risk-free rate. So this strategy has <strong>no risk at all</strong> — no market risk, no idiosyncratic risk, nothing. And in finance, "no risk" does not mean "free money." It means you earn the <em>risk-free rate</em> and nothing more. The Sharpe ratio measures <em>excess</em> return over the risk-free rate, and your excess is zero.</p>
+
+<div class="callout"><strong>No risk → no return.</strong> A flawless hedge is a money-market account with extra steps. Every strategy that follows deliberately keeps <em>some</em> real risk, because that risk is the only thing you get paid for.</div>
+
+<h2>Lesson two: the oil strategy — crisis alpha, then the crash</h2>
+
+<p>The fix is to choose an <em>imperfect</em> hedge that still earns. Instead of gold, trade <strong>crude oil</strong>. The cleanest implementation uses two ETFs: <strong>USO</strong> (which holds front- and back-month WTI futures at a constant ~1-month duration) as the oil leg, and <strong>XLE</strong> (energy equities) as the hedge. The rule needs only the <em>sign</em> of the oil roll: in <strong>contango</strong> (spot below the future) you short USO and go long XLE; in <strong>backwardation</strong> you flip. You read the sign just by comparing the spot to the future, or the front contract to the back — no regression required.</p>
+
+<div class="warn"><strong>Why USO instead of the crude future directly?</strong> XLE prints its closing price at <strong>4:00pm</strong> ET like every US stock. But the crude (CL) future settles at <strong>2:30pm</strong> ET — its settlement is the volume-weighted price of the last two minutes, 2:28 to 2:30. If you backtest a 2:30 future against a 4:00 ETF on daily data, you are silently comparing prices from <em>different moments of the day</em>, which biases everything. USO trades on the same exchange clock as XLE, so its 4:00 close lines up. And no, back-adjusting the CL contract does not save you — the price gap is gone but the prices are still struck at 2:30.</div>
+
+<p>Backtested, this strategy returns hundreds of percent with a Sharpe near 1.7. But the headline is what happened in <strong>2008</strong>: in the crisis window alone it made over <strong>+200%</strong>. Here is the twist Ernie loves — it was <em>long</em> the stock leg (XLE) the whole time, and stocks were crashing. It won anyway, because oil (USO) crashed even harder, so the short leg more than paid for the long leg. A hedge fund he knew in Toronto traded a similar momentum strategy in 2008, jumped from \$100m to \$1bn as investors declared them geniuses, and...</p>
+
+<h3>...then the momentum crash</h3>
+
+<p>Every momentum strategy follows the same arc. It makes outsized returns <em>during</em> a crisis, then suffers a long, painful drawdown afterward — a pattern Prof. Kent Daniel of Columbia named the <strong>momentum crash</strong>. In our backtest that drawdown was about −50%, dragged out over roughly two years. For Ernie's Toronto fund it was fatal: the +120% was earned on \$100m, but the post-crisis drawdown landed on the \$1bn that investors had piled in <em>after</em> the hero year. You can do the math — a 30% loss on a billion dwarfs a doubling of a hundred million. The firm no longer exists.</p>
+
+<div class="tip"><strong>Four ways to tame the momentum crash:</strong> (1) stop trading when volatility / VIX returns to normal; (2) drop the short leg and stay long-only once the crisis passes; (3) a stop-loss (Ernie thinks this one works poorly); (4) run a <em>mean-reversion</em> strategy alongside, because its return profile is the mirror image — it loses in the crisis and makes money in the recovery. We come back to (4) at the end.</div>
+
+<h2>Lesson three: the VIX strategy — a −50% roll that is really theta</h2>
+
+<p>The <strong>VIX</strong> is the weighted-average implied volatility of near-the-money, roughly one-month SPX options. Crucially, you <em>cannot trade the VIX index itself</em> — its constituent options reset every second as the market moves, so no buy-and-hold portfolio can replicate it. What you can trade is the <strong>VIX future</strong>, and the difference between its return and the index's return is, by definition, the <strong>roll return</strong>. That roll is staggering: about <strong>−50% per year</strong>, deep and persistent contango. (Every VIX ETF you've heard of — VXX, VIXM and friends — holds nothing but these futures, for the same reason: the index can't be replicated.)</p>
+
+<p>Where does a −50% roll come from? Ernie pushes the class to the answer: <strong>theta</strong>. If instead of the future you held the actual option portfolio underneath the VIX, you would bleed time value <em>every single day</em> — even if the SPX never moved and implied vol never changed. Options decay. That relentless decay <em>is</em> the future's negative roll. Buying VIX as crash insurance feels free until you notice you're paying ~50% a year in carry for it. Insurance is never free.</p>
+
+<p>So the strategy is to <strong>short the VIX future</strong> to harvest that roll, while hedging the spot (VIX index) move. The hedge is a beautiful old friend: the <strong>E-mini (ES)</strong>, which is <em>anti-correlated</em> with the VIX at a stunning <strong>−0.75</strong>. Because they move <em>opposite</em> each other, the hedge is counterintuitive: you <strong>sell both, or buy both</strong>. This is <em>not</em> the long-one/short-the-other pairs trade you know from equities (where the two assets are positively correlated) — here, anti-correlation means same-direction positions hedge.</p>
+
+<h3>Sizing the hedge — and the cardinal sin</h3>
+
+<p>How many E-minis per VIX future? That ratio is the <strong>hedge ratio</strong>, β, and you get it by regressing VIX on ES. But before you regress, Ernie demands the <strong>cardinal sin of data science</strong> never be committed: <em>never run a regression without looking at the scatter plot first</em>. Plot ES against VIX and the cloud splits cleanly into two blobs — a <strong>pre-2008</strong> regime and a <strong>post-2008</strong> regime. Fit one line through both and the slope is meaningless. You fit <em>only</em> the post-crisis cluster, because in finance — unlike consumer data — more history is not better; an old regime just poisons your estimate.</p>
+
+<table>
+<tr><th>Step</th><th>Value</th></tr>
+<tr><td>Slope through all the data</td><td>−0.006 (contaminated, useless)</td></tr>
+<tr><td>Slope through the post-crisis cluster</td><td>−0.025</td></tr>
+<tr><td>Convert to dollars: VX tick \$1000, ES tick \$50 → ratio ×20</td><td></td></tr>
+<tr><td><strong>Hedge ratio</strong></td><td><strong>≈ 0.49 E-minis per VIX future</strong></td></tr>
+</table>
+
+<p>That dollar conversion matters: futures prices are in arbitrary units, so you must turn both legs into dollars before the ratio means anything. Historically, when index levels were near 1400, the hedge was two or three E-minis per VIX; today you barely need one — maybe half a contract. The finished strategy earns a <strong>Sharpe around 1</strong> and about <strong>7% excess</strong> return. That 7% sounds modest, but it's <em>over</em> the risk-free rate, on margin you only half-fund, and you can lever it gently — Ernie says ~1.5×, no more.</p>
+
+<h2>Lesson four: which regime suits which strategy</h2>
+
+<p>That two-regime scatter plot has a second lesson buried in it. Post-crisis volatility is, on average, a touch <em>lower</em> for a given equity level — but its <em>range</em> is much wider. The market developed a higher <strong>volatility of volatility</strong> (there's even an index for it, the <strong>VVIX</strong>). And vol-of-vol decides which style works:</p>
+
+<table>
+<tr><th>Strategy</th><th>Wants</th><th>Favoured regime</th></tr>
+<tr><td>Mean reversion</td><td>high volatility but <em>steady</em> (low VVIX)</td><td>pre-crisis</td></tr>
+<tr><td>Momentum</td><td>volatility <em>expansion</em> (breakouts that run)</td><td>post-crisis</td></tr>
+</table>
+
+<p>Picture a sine wave in prices. Mean reversion — short the high, buy the low — makes more money the bigger the amplitude, <em>as long as the amplitude is steady</em>. But if the wave keeps <em>growing</em>, your "high" gets exceeded and your stop-loss fires; mean reversion bleeds. Momentum, which buys new highs, <em>loves</em> a growing wave. So a regime where volatility itself is volatile favours momentum; a calm, steady-swing regime favours mean reversion.</p>
+
+<h2>Lesson five: scanning for momentum, and the IID trap</h2>
+
+<p>The strategies so far began with a <em>causal model</em> — a reason the roll exists. The opposite approach is to <strong>data-mine</strong>: scan many futures for momentum by testing the <strong>serial autocorrelation</strong> of returns over a look-back period <code>L</code> and a holding period <code>H</code>. A classic momentum setting is <code>L=250</code> days (a year) and <code>H=25</code> days (a month). A correlation function hands you <em>two</em> numbers, and beginners forget the second: the <strong>coefficient</strong> and the <strong>p-value</strong> — the probability the correlation is really zero and you got lucky.</p>
+
+<div class="warn"><strong>The IID trap.</strong> Statistical tests assume the samples are <em>independent and identically distributed</em> — and the first "I", independence, is the one that bites. If you compute a fresh 250-day/25-day sample every single day, consecutive samples share 248 of their 250 days. They are almost identical — wildly <em>non</em>-independent. So the p-value the test reports is far too optimistic. In the notebook the overlapping version reports p ≈ 0.000 (gorgeous, and fake); sampling every 25 days instead gives an honest p ≈ 0.003.</div>
+
+<p>Ernie's poor-man fix: don't sample every day — sample every <code>min(L, H)</code> days, so at least one of the two windows never overlaps. Then keep only the pairs with p &lt; 0.05 and pick the highest correlation. On a 2-year Treasury note future, this yields a correlation around +0.27 to +0.31 with a believable p-value — genuine momentum. And once you've confirmed positive autocorrelation, the trading rule is almost insultingly simple: <strong>if the look-back return is positive, buy; if negative, short; hold for H days.</strong> No moving averages. That alone gives a Sharpe near 1. (Cliff Asness of AQR adds one refinement in his famous <em>Value and Momentum Everywhere</em>: skip the <em>most recent</em> month — use months 1 through 11 of the year — because the latest month tends to mean-revert, not trend.)</p>
+
+<h2>Bringing it home: kill the crash, spreads, and leverage</h2>
+
+<h3>Combining momentum with mean reversion</h3>
+
+<p>Back to the fourth crash-fix. Run a <em>slow</em> momentum signal and a <em>fast</em> mean-reversion signal together, and only take a position when they <strong>agree</strong> — for example, buy when the price is above its level 40 days ago (momentum) <em>and</em> below its level 30 days ago (mean reversion). The combined equity curve is <strong>flat through the crisis</strong> (no 120% hero year, sadly) but takes <em>no pain</em> and rides the recovery. In the notebook the pure-momentum drawdown of about −34% shrinks to about −19% combined; Ernie quotes a Sharpe near 1.1. If you don't lose money in the crisis, your clients think you're a genius — and you still participated in the upside.</p>
+
+<h3>Calendar spreads need curvature</h3>
+
+<p>A <strong>calendar spread</strong> — long one expiry, short another of the same future — hedges the spot return <em>perfectly</em>, leaving only the roll. But there's a catch: if the log term structure is a <em>straight line</em>, the roll is identical for every contract, so the spread earns exactly <strong>zero</strong>. You need <strong>curvature</strong>. And here lurks the sign trap: roll = <em>minus</em> the slope. On a convex curve where the front is steepest-downward, the front has the <em>most negative</em> slope and therefore the <em>most positive</em> roll-to-a-short — so you <strong>short the front and buy the back</strong>, the opposite of most people's instinct. The risk is that the curvature itself flips; trade calendar spreads only on futures whose curve shape is stable.</p>
+
+<h3>The leveraged-ETF momentum</h3>
+
+<p>Finally, a subtle one. A <strong>3× ETF</strong> like UPRO does <em>not</em> give you triple the <em>annual</em> return, because long-run growth is <code>g = μ − ½σ²</code>, and tripling exposure triples μ but multiplies the variance by <strong>nine</strong>. That <strong>volatility drag</strong> can drive a 3× fund <em>below</em> the unleveraged version — in the notebook, +3.5%/yr at 1× becomes −16.5%/yr at 3×. Do not be fooled by the "3×" label. But the drag has a tradeable side effect: to <em>maintain</em> 3× exposure, the fund must <strong>buy when the market rises and sell when it falls</strong>, all crammed into the last fifteen minutes of the day. A \$70m fund after a −2% day must sell roughly \$8m; across <em>all</em> the levered ETFs tied to an index that's billions, all in the same direction near the close — a <strong>gamma</strong> effect that creates real <strong>end-of-day momentum</strong> you can trade (a published strategy by Prof. Pauline Shum).</p>
+
+<div class="closer">
+<strong>The one-paragraph version.</strong> Part II turns the roll into trades. A <em>perfect</em> hedge (short GC, long GLD) earns a Sharpe of <em>zero</em> — no risk means no excess return. So you take an <em>imperfect</em> hedge: <em>short USO / long XLE</em> harvests the oil roll, makes <em>+200%+</em> in the 2008 crisis (momentum is crisis alpha, and it was <em>long</em> stocks while winning), then pays it partly back in the inevitable <em>momentum crash</em>. The <em>VIX future</em> carries a brutal <em>−50% roll</em> that is really option <em>theta</em>; short it and hedge the spot with the <em>anti-correlated E-mini</em> (sell <em>both</em>, since they move oppositely), sizing the hedge in <em>dollars</em> (VX \$1000 vs ES \$50) on the <em>post-crisis regime only</em> — and never regress without the scatter plot. To <em>find</em> momentum without a story, scan <em>serial autocorrelation</em> over a look-back/hold pair (≈250/25), but overlapping windows <em>break IID</em> and fake your p-value, so sample every <code>min(L,H)</code> days; the simplest rule (buy if the look-back is positive, hold H days) already gives Sharpe ~1, and <em>combining</em> it with a faster mean-reversion signal <em>removes the crash</em>. Finally, calendar spreads need <em>curvature</em> (roll = −slope, so short the front on a convex curve), and 3× ETFs both suffer <em>volatility drag</em> and create tradable end-of-day momentum through forced rebalancing. Every strategy here is a <em>starting point</em> — the profit is in the bells and whistles you add.
+</div>
+
+</body>
+</html>

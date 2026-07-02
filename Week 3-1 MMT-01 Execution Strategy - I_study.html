@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 3-1 · MMT-01 Execution Strategy I — Study Guide</title>
+<style>
+  :root{ --ink:#1f2933; --soft:#52606d; --line:#e4e7eb; --accent:#1d4ed8; --bg:#fbfbf9; }
+  *{box-sizing:border-box;}
+  body{ background:var(--bg); color:var(--ink); margin:0;
+        font-family:Georgia,'Times New Roman',serif; line-height:1.72; }
+  .page{ max-width:800px; margin:0 auto; padding:64px 40px 96px; }
+  h1{ font-size:30px; line-height:1.25; margin:0 0 6px; }
+  .sub{ color:var(--soft); font-size:16px; font-style:italic; margin-bottom:34px; }
+  h2{ font-size:22px; margin:46px 0 10px; padding-top:18px; border-top:1px solid var(--line); }
+  h3{ font-size:17px; margin:28px 0 6px; color:#111; }
+  p{ margin:12px 0; font-size:17px; }
+  ul,ol{ margin:12px 0 12px 4px; padding-left:24px; }
+  li{ margin:7px 0; }
+  em{ color:#0f172a; }
+  strong{ color:#111; }
+  .lead{ font-size:18.5px; }
+  .callout{ background:#eef4ff; border-left:4px solid var(--accent); padding:14px 18px;
+            margin:22px 0; border-radius:0 8px 8px 0; }
+  .callout .t{ font-variant:small-caps; letter-spacing:.5px; font-weight:bold; color:var(--accent);
+               font-family:Arial,sans-serif; font-size:13px; }
+  .money{ background:#f4f7ee; border-left:4px solid #4d7c0f; padding:14px 18px; margin:22px 0;
+          border-radius:0 8px 8px 0; }
+  .money .t{ font-variant:small-caps; letter-spacing:.5px; font-weight:bold; color:#4d7c0f;
+             font-family:Arial,sans-serif; font-size:13px; }
+  table{ border-collapse:collapse; width:100%; margin:18px 0; font-family:Arial,sans-serif;
+         font-size:14px; }
+  th,td{ border:1px solid var(--line); padding:7px 10px; text-align:left; }
+  th{ background:#f0f2f5; }
+  .num{ text-align:right; font-variant-numeric:tabular-nums; }
+  code{ background:#eef0f2; padding:1px 5px; border-radius:4px; font-size:14px;
+        font-family:'Courier New',monospace; }
+  .answer{ color:#4d7c0f; font-weight:bold; }
+  figure{ margin:24px 0; text-align:center; }
+  figure img{ max-width:100%; border:1px solid var(--line); border-radius:8px; }
+  figcaption{ color:var(--soft); font-size:14px; font-style:italic; margin-top:6px; }
+  .foot{ margin-top:60px; padding-top:18px; border-top:1px solid var(--line);
+         color:var(--soft); font-size:14.5px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>Execution Strategy I — How an Order Becomes a Trade</h1>
+<div class="sub">Week 3-1 · MMT-01 · Market Microstructure for Trading — a plain-English study guide</div>
+
+<p class="lead">Before you can build a strategy that <em>makes</em> money, you have to understand the
+plumbing that <em>spends</em> it: the moment you decide to buy or sell, your order travels through
+brokers and exchanges, lands in an <strong>order book</strong>, and gets filled at a price you only
+partly control. This lecture is about that plumbing — orders, order books, and the first ideas of
+<strong>execution</strong>: getting your trade done at a good price without moving the market against
+yourself.</p>
+
+<h2>1. Why trade with a computer at all?</h2>
+<p>A human trader is slow, emotional, and can only watch a handful of things at once. An algorithm
+fixes all three problems, and that is the whole reason this field exists:</p>
+<ul>
+  <li><strong>Speed.</strong> A program reacts to an opportunity in microseconds; you react in
+  seconds. In fast markets, that gap is the difference between a good fill and a bad one.</li>
+  <li><strong>No emotion, more discipline.</strong> The computer follows the rules exactly — it does
+  not panic, hesitate, or "hope". It removes the fear and greed that wreck human execution.</li>
+  <li><strong>Breadth.</strong> One program can watch many stocks, in many markets, at the same time,
+  and place orders across all of them simultaneously.</li>
+</ul>
+<p><strong>Algorithmic trading</strong> is simply: a computer program following a defined set of
+rules to decide the <em>time, price, and quantity</em> of every order.</p>
+
+<h2>2. The cast of characters (the market ecosystem)</h2>
+<p>Your order does not jump straight onto the exchange. It passes through a chain:</p>
+<ul>
+  <li><strong>Traders</strong> run strategies. Each strategy spits out buy/sell orders (also called
+  <em>bid</em> and <em>ask</em> orders), which can be <em>new</em>, <em>modified</em>, or
+  <em>cancelled</em>.</li>
+  <li><strong>Brokers</strong> receive your orders and <strong>route</strong> them to the exchange.
+  They sit between you and the market.</li>
+  <li><strong>Clearing houses</strong> guarantee the trade settles (the buyer pays, the seller
+  delivers).</li>
+  <li><strong>Exchanges</strong> match buyers with sellers and publish the order book.</li>
+</ul>
+
+<div class="money">
+  <div class="t">Why the broker matters — "broker alpha"</div>
+  <p style="margin:8px 0 0;">Imagine a hedge fund trading <strong>$200 million every week</strong>. A
+  broker whose technology saves just <strong>one basis point</strong> per trade — one cent on every
+  $100 — hands the fund free money. That is <em>broker alpha</em>: the same strategy, a faster
+  pipe, more profit. Walk the arithmetic:</p>
+  <table>
+    <tr><th>Step</th><th class="num">Value</th></tr>
+    <tr><td>Weekly notional traded</td><td class="num">$200,000,000</td></tr>
+    <tr><td>× 1 basis point (1 ÷ 10,000)</td><td class="num">0.0001</td></tr>
+    <tr><td>= saving per week</td><td class="num">$20,000</td></tr>
+    <tr><td>× 52 weeks</td><td class="num answer">$1,040,000 / year</td></tr>
+  </table>
+  <p style="margin:8px 0 0;">A single basis point, repeated at scale, is over a million dollars a
+  year. This is why execution quality — the subject of this lecture — is not a detail.</p>
+</div>
+
+<h2>3. Order routing — the microsecond journey</h2>
+<p>Inside the broker, two pieces do the work. The <strong>order router</strong> decides <em>which</em>
+exchange or venue gets the order (some stocks trade in several places at once). The
+<strong>market adapter</strong> translates your order into the exact language that venue speaks.
+Every step adds <strong>latency</strong> — delay measured in microseconds — and in fast markets,
+latency costs money. Minimising it is a competitive sport.</p>
+
+<h2>4. The order book — the heart of the market</h2>
+<p>An <strong>order book</strong> is just a list of every resting <strong>limit order</strong> for a
+stock, sorted by price. Two simple rules govern it:</p>
+<ul>
+  <li>The <strong>highest bid</strong> sits at the top of the buy side — the best price a buyer offers.</li>
+  <li>The <strong>lowest ask</strong> (or <em>offer</em>) sits at the top of the sell side — the best
+  price a seller accepts.</li>
+</ul>
+<p>The gap between them is the <strong>bid–ask spread</strong>, and it is the price of impatience: if
+you want to trade <em>right now</em>, you pay it. Here is a small book (we will reuse these exact
+numbers throughout):</p>
+<table>
+  <tr><th>Bid size</th><th>Bid price</th><th>Ask price</th><th>Ask size</th></tr>
+  <tr><td class="num">600</td><td class="num">49.90 ← best bid</td><td class="num">50.10 ← best ask</td><td class="num">100</td></tr>
+  <tr><td class="num">900</td><td class="num">49.85</td><td class="num">50.15</td><td class="num">700</td></tr>
+  <tr><td class="num">1200</td><td class="num">49.80</td><td class="num">50.20</td><td class="num">1000</td></tr>
+</table>
+<p>Best bid <code>49.90</code>, best ask <code>50.10</code>, so the spread is
+<code>50.10 − 49.90 = 0.20</code>. The <strong>mid-price</strong> is <code>50.00</code>, and the
+spread is <code>0.20 / 50.00 = 40</code> basis points. Notice the <strong>depth</strong> (queue
+sizes) is thinnest right at the inside and grows as you move away — orders near the touch fill
+quickly and leave.</p>
+
+<figure>
+  <img src="Week 3-1 MMT-01 code/chart_1_orderbook_depth.png" alt="Order-book depth chart">
+  <figcaption>The shape of the book: bid depth (green, left) vs ask depth (red, right), thin at the
+  inside.</figcaption>
+</figure>
+
+<h3>Price–time priority</h3>
+<p>When two orders compete, the exchange decides who trades first with a single rule:
+<strong>best price wins; if prices tie, the earliest order wins</strong>. So a more aggressive price
+jumps the queue, and among equal prices, whoever got there first is filled first. This is why being
+fast (and well-placed) matters.</p>
+
+<h2>5. The two fundamental orders — and the trade-off you can never escape</h2>
+<p>Every order type is built from two primitives, and they sit at opposite ends of a see-saw:</p>
+
+<h3>Market order — certain fill, uncertain price</h3>
+<p>A market order says "fill me <em>now</em>, whatever the price". It is fast and reliable, but you
+pay the spread and, for bigger sizes, you <strong>walk the book</strong>: you take the best price,
+then the next, then the next, until you are filled. Watch a <strong>buy 400</strong> eat the ask
+side above:</p>
+<table>
+  <tr><th>Level price</th><th class="num">Shares taken</th><th class="num">Cost here</th><th class="num">Running total</th></tr>
+  <tr><td>50.10 (best ask, only 100 there)</td><td class="num">100</td><td class="num">100 × 50.10 = 5,010</td><td class="num">100</td></tr>
+  <tr><td>50.15 (next level)</td><td class="num">300</td><td class="num">300 × 50.15 = 15,045</td><td class="num">400 ✓</td></tr>
+  <tr><td><strong>Average fill price</strong></td><td class="num">400</td><td class="num">20,055 ÷ 400</td><td class="num answer">50.1375</td></tr>
+</table>
+<p>You wanted 50.10 but paid <code>50.1375</code> on average — a <strong>slippage</strong> of
+<code>0.0375</code> per share, or <code>$15</code> on 400 shares. The bigger your order relative to
+the book, the worse this gets. That is <strong>market impact</strong>, and avoiding it is the entire
+point of execution strategy.</p>
+
+<h3>Limit order — certain price, uncertain fill</h3>
+<p>A limit order says "trade me only at <em>this price or better</em>". A buy-limit at 49.90 will
+<em>never</em> pay more than 49.90 — but it might never fill if the market walks away. While it
+waits, it sits in the book and <strong>provides liquidity</strong>; if a market sell hits it, you
+actually <em>earn</em> the spread instead of paying it.</p>
+
+<div class="callout">
+  <div class="t">The one trade-off to remember</div>
+  <p style="margin:8px 0 0;"><strong>Market order = control over time, none over price.</strong>
+  <strong>Limit order = control over price, none over time.</strong> Every other order type is a
+  clever attempt to get a little of both.</p>
+</div>
+
+<h2>6. The rest of the order zoo</h2>
+<ul>
+  <li><strong>Stop (stop-loss) order.</strong> Dormant until the price hits a <em>stop price</em>,
+  then it becomes a market order. Used to cap losses or confirm a breakout. Caution: stops cluster,
+  so when they trigger they <em>demand liquidity when it is least available</em> and add momentum.</li>
+  <li><strong>Iceberg order.</strong> Shows only a small "tip" in the book and hides the rest, so the
+  market cannot see your true size.</li>
+  <li><strong>Fill-or-Kill (FOK).</strong> Fill the <em>entire</em> quantity at the price right now,
+  or cancel the whole thing.</li>
+  <li><strong>Immediate-or-Cancel (IOC).</strong> Like FOK, but it accepts a <em>partial</em> fill
+  and cancels the rest.</li>
+  <li><strong>Pegged order.</strong> Automatically tracks a benchmark — a pegged buy follows the best
+  bid up and down, staying competitive without you babysitting it.</li>
+  <li><strong>Post-only order.</strong> Designed to <em>add</em> liquidity (and earn the exchange's
+  <em>rebate</em>); it refuses to cross the spread.</li>
+  <li><strong>Discretion order.</strong> A limit order with a hidden second, more aggressive price it
+  is willing to pay when conditions are good — patient most of the time, opportunistic when the
+  spread narrows.</li>
+</ul>
+<p>The two ideas behind all the fancy ones are <strong>hidden volume</strong> (don't show your hand)
+and <strong>how the order behaves inside the spread</strong> (when it becomes visible or active).</p>
+
+<h2>7. Liquidity, makers, takers and rebates</h2>
+<p><strong>Liquidity</strong> is how easily you can trade without moving the price — lots of orders
+flowing in a tight spread. Two roles create it and consume it:</p>
+<ul>
+  <li><strong>Liquidity makers</strong> post limit orders and wait; they earn the spread (and often a
+  rebate) but risk the market running away.</li>
+  <li><strong>Liquidity takers</strong> send market orders; they get certainty but pay the spread.</li>
+</ul>
+<p>A <strong>market maker</strong> is a professional liquidity provider: quote both sides, earn the
+spread, and manage inventory by reading order flow to guess which way the market leans.</p>
+
+<h2>8. From orders to an execution strategy</h2>
+<p>Now the real problem: a fund needs to buy (say) a huge block of shares within a deadline, without
+screaming its intentions and without paying massive impact. One market order would be a disaster;
+one limit order might never fill. The answer is to <strong>slice</strong> the order over time and
+blend passive and aggressive behaviour.</p>
+
+<h3>VWAP — the benchmark that scores your execution</h3>
+<p>The <strong>Volume-Weighted Average Price</strong> is the desk's report card. It weights each
+trade's price by its volume, so it reflects where the <em>bulk</em> of the day actually traded. If
+you <em>buy below</em> VWAP, you did well; if you <em>buy above</em> it, you overpaid. Here is the
+exact four-trade example from the lecture's spreadsheet:</p>
+<table>
+  <tr><th>Price</th><th class="num">Volume</th><th class="num">Price × Volume</th></tr>
+  <tr><td>14.00</td><td class="num">1,100</td><td class="num">15,400</td></tr>
+  <tr><td>14.50</td><td class="num">600</td><td class="num">8,700</td></tr>
+  <tr><td>14.20</td><td class="num">1,800</td><td class="num">25,560</td></tr>
+  <tr><td>14.35</td><td class="num">400</td><td class="num">5,740</td></tr>
+  <tr><td><strong>Total</strong></td><td class="num">3,900</td><td class="num">55,400</td></tr>
+  <tr><td colspan="2"><strong>VWAP = 55,400 ÷ 3,900</strong></td><td class="num answer">14.205</td></tr>
+</table>
+<p>A <strong>moving VWAP (MVWAP)</strong> is the same idea computed on a rolling window, so the desk
+can track its performance live through the day.</p>
+
+<figure>
+  <img src="Week 3-1 MMT-01 code/chart_2_vwap.png" alt="VWAP vs MVWAP over a session">
+  <figcaption>A simulated session: price (grey), cumulative VWAP (blue), rolling MVWAP (orange).
+  Buying under the blue line beats the benchmark.</figcaption>
+</figure>
+
+<h3>Is there enough time? The time-horizon rule</h3>
+<p>Before accepting a big order, the desk checks whether it can realistically be finished in the
+time available. The lecture's rule:</p>
+<table>
+  <tr><th>Step</th><th class="num">Value</th></tr>
+  <tr><td>Order size</td><td class="num">10,000 shares</td></tr>
+  <tr><td>Urgency = High → Vol Ratio</td><td class="num">0.15</td></tr>
+  <tr><td>Min Vol (from 21-day average)</td><td class="num">500 shares/min</td></tr>
+  <tr><td>Theoretical Horizon = 10,000 ÷ (0.15 × 500)</td><td class="num">≈ 134 min</td></tr>
+  <tr><td>Practical Horizon = min(time left 120, 134), capped at 120</td><td class="num">120 min</td></tr>
+  <tr><td>TTH ÷ PTH = 134 ÷ 120</td><td class="num">1.12</td></tr>
+  <tr><td>Rule: ratio &gt; 2 → bounce the order</td><td class="num answer">1.12 → accept</td></tr>
+</table>
+<p>If the theoretical time needed is more than twice the practical time available, there simply isn't
+enough liquidity to finish cleanly, and the desk hands the order back rather than wreck the price.</p>
+
+<h3>Blending passive and aggressive: pegging + discretion</h3>
+<p>A good execution algorithm runs two agents at once. The <strong>passive agent</strong> keeps a
+<em>pegged</em> limit order at the bid, fishing for market orders to hit it at a good price. The
+<strong>aggressive agent</strong> watches the spread and, when it is narrow (cheap to cross), uses a
+<em>discretion</em> price to grab liquidity and keep the order <em>on schedule</em>. If the passive
+side is filling nicely, the aggressive side stays quiet; if the clock is running out, the aggressive
+side steps in. The <em>discretion range</em> is the dial that sets how aggressive the whole thing is.
+The trade-off: too aggressive and you give yourself away (and add momentum that moves the price
+against you); too passive and you miss the deadline.</p>
+
+<h2>9. What really moves the price: order-flow imbalance</h2>
+<p>It is tempting to think "big volume moves prices". The in-class reading (Cont, Kukanov & Stoikov,
+2011) shows the better explanation is <strong>order-flow imbalance (OFI)</strong> — the net change in
+the bid and ask queues. When buyers add to the bid faster than sellers add to the ask, the mid-price
+drifts up, and the relationship is roughly <strong>linear</strong>, explaining about
+<strong>65%</strong> of short-term price moves. The slope (how much a unit of imbalance moves the
+price) is <em>inversely proportional to depth</em>: thin books move more per order.</p>
+
+<figure>
+  <img src="Week 3-1 MMT-01 code/chart_3_ofi_impact.png" alt="OFI vs mid-price change">
+  <figcaption>Simulated ticks: more buying imbalance → higher mid-price, a clean linear fit
+  (here R² ≈ 0.62, close to the paper's 0.65 on real data).</figcaption>
+</figure>
+
+<h2>10. The vocabulary you now own</h2>
+<ul>
+  <li><strong>Market impact</strong> — how much your own buying/selling pushes the price against you.</li>
+  <li><strong>Slippage</strong> — the gap between the price you expected and the price you got
+  (worse in volatile markets and with market orders).</li>
+  <li><strong>Alpha</strong> — risk-adjusted return above a benchmark; <strong>beta</strong> — how
+  much an asset moves with the market, estimated as <code>Cov(asset, market) ÷ Var(market)</code>.</li>
+  <li><strong>OHLC</strong> — the open/high/low/close summary of a bar; the basis of moving averages
+  and Bollinger bands.</li>
+</ul>
+
+<div class="callout">
+  <div class="t">The big picture</div>
+  <p style="margin:8px 0 0;">A strategy's signal tells you <em>what</em> to trade. Execution decides
+  <em>how well</em> you actually trade it. The order book is where these meet — and every basis point
+  you save in execution drops straight to the bottom line.</p>
+</div>
+
+<div class="foot">
+  Week 3-1 · MMT-01 Execution Strategy I — companion to the dense one-page cheat sheet and the
+  executed practice notebook (<code>Week 3-1 MMT-01 code/</code>). All numbers reproduced from the
+  lecture slides, the Excel exercise, and the order-book reading papers.
+</div>
+
+</div>
+</body>
+</html>

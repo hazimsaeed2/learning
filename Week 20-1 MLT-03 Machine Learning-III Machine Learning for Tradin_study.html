@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 20-1 MLT-03 — Neural Networks & Text Mining — Study Guide</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; background:#fdf4ff; color:#2a2430; line-height:1.7; margin:0; }
+  .wrap { max-width:820px; margin:0 auto; padding:54px 30px 90px; }
+  h1 { font-size:2.05rem; line-height:1.25; margin:0 0 6px; color:#86198f; }
+  .sub { color:#7a6a80; font-style:italic; margin-bottom:34px; font-size:1.02rem; }
+  h2 { font-size:1.42rem; color:#86198f; margin:42px 0 10px; border-bottom:2px solid #f5d0fe; padding-bottom:6px; }
+  h3 { font-size:1.12rem; color:#a21caf; margin:26px 0 6px; }
+  p { margin:12px 0; }
+  .lead { font-size:1.08rem; color:#3a2f40; }
+  code { background:#fae8ff; padding:1px 6px; border-radius:4px; font-family:'Consolas',monospace; font-size:0.9em; color:#86198f; }
+  .box { background:#fdf0ff; border-left:4px solid #c026d3; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  .insight { background:#ecfdf5; border-left:4px solid #059669; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  .warn { background:#fef2f2; border-left:4px solid #dc2626; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  ul { margin:12px 0; padding-left:24px; }
+  li { margin:6px 0; }
+  .tag { display:inline-block; background:#86198f; color:#fff; font-size:0.72rem; letter-spacing:2px; padding:4px 12px; border-radius:20px; font-family:Arial,sans-serif; margin-bottom:16px; }
+  table { border-collapse:collapse; width:100%; margin:18px 0; font-size:0.95rem; }
+  th,td { border:1px solid #f5d0fe; padding:7px 11px; text-align:left; }
+  th { background:#fdf0ff; color:#86198f; }
+  .end { text-align:center; color:#b98fc4; margin-top:50px; font-size:0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="tag">WEEK 20-1 · MLT-03 · STUDY GUIDE</div>
+  <h1>Neural Networks &amp; Text Mining: How Machines Learn Their Own Weights</h1>
+  <div class="sub">A plain-English walk through the third machine-learning session — from a single brain-inspired neuron to a deep network that trains itself by gradient descent, tested on real EUR/USD data, and finishing with how to turn news text into numbers a network can read.</div>
+
+  <p class="lead">The first two ML sessions used algorithms where <em>you</em> engineer everything. Neural networks are different: you design the <em>shape</em> of the network, and the network discovers its own <strong>weights</strong> from the data. This session explains what a neuron is, how layers of them form a network, how that network learns by <strong>gradient descent and backpropagation</strong>, and how the same machinery reads <strong>text</strong> once you turn words into numbers.</p>
+
+  <h2>1. From a brain cell to an artificial neuron</h2>
+  <p>A biological neuron collects signals through its <strong>dendrites</strong>, adds them up in the <strong>nucleus</strong>, and — if the total is strong enough — fires a pulse down its <strong>axon</strong> to the next cell. An artificial neuron copies that story exactly. It receives inputs $x_1, x_2, \ldots, x_n$, gives each its own <strong>weight</strong> $w_i$, adds them into a single number, and passes that through an <strong>activation function</strong>:</p>
+  <div class="box" style="text-align:center;"><code>a = Σᵢ wᵢ·xᵢ + b &nbsp;&nbsp;→&nbsp;&nbsp; y = φ(a)</code></div>
+  <p>The weighted sum <code>a</code> is the "how loud is the combined signal" number; the activation <code>φ</code> decides what the neuron passes on. The simplest version is the <strong>Threshold Logic Unit</strong>: output 1 if <code>a</code> clears a threshold θ, else 0. That is nothing more than a <strong>linear classifier</strong> — it draws a straight decision line <code>w₁x₁ + w₂x₂ = θ</code> and calls everything on one side "1" — the very same idea as a support vector machine. Swap the threshold for a plain <code>y = a</code> and the neuron becomes a <strong>linear regression</strong>. So a single neuron already contains the two workhorses of classical ML; the magic comes from combining many of them.</p>
+
+  <h2>2. Stacking neurons into a network</h2>
+  <p>Connect neurons in <strong>layers</strong> and let the signal flow one direction — "forward" — and you get a <strong>deep feed-forward network</strong>, also called a Multi-Layer Perceptron (MLP). It has three kinds of layer:</p>
+  <ul>
+    <li><strong>Input layer</strong> — one node per feature; this is where your data enters.</li>
+    <li><strong>Hidden layer(s)</strong> — neurons that transform the signal. "Deep" simply means several hidden layers.</li>
+    <li><strong>Output layer</strong> — the final prediction, a class (up/down) or a number (a price).</li>
+  </ul>
+  <p>Each neuron in a layer feeds every neuron in the next, each connection carrying its own weight. That is a lot of knobs, which is exactly why networks are so flexible.</p>
+  <div class="box"><strong>Neural networks are universal.</strong> A network with a single hidden layer can approximate <em>any</em> continuous, bounded function to arbitrary accuracy — it might just need a lot of hidden units. That power is also the danger: networks <strong>over-fit very easily</strong>, memorising the training set. The goal is always to minimise the <em>generalisation</em> error (on unseen data), not the training error.</div>
+
+  <h2>3. Activation functions — and why deep networks used to stall</h2>
+  <p>The activation function is the neuron's personality. The lecture surveys four shapes — <strong>linear</strong>, <strong>piecewise-linear</strong>, <strong>sigmoid</strong>, and <strong>threshold</strong> — plus the modern default, <strong>ReLU</strong>. The <strong>sigmoid</strong> squashes any input into the range (0, 1); in the notebook <code>sigmoid(0) = 0.5</code> and <code>sigmoid(2) = 0.881</code>. Its zero-centred cousin <strong>tanh</strong> maps into (−1, 1). <strong>ReLU</strong> is simply <code>max(0, a)</code> — it leaves positive signals untouched and zeroes out negatives.</p>
+  <div class="warn"><strong>The vanishing-gradient problem.</strong> Learning relies on passing gradients (slopes) backwards through the network. But the sigmoid's slope peaks at just <strong>0.25</strong> — at <code>a = 0</code> — and shrinks toward zero for large inputs (the notebook shows <code>sigmoid′(6) = 0.0025</code>). Multiply many such tiny slopes together across deep layers and the gradient effectively <strong>vanishes</strong>; the early layers stop learning. <strong>ReLU</strong> fixes this because its slope is a constant 1 for positive inputs. The mirror-image failure, <strong>exploding gradients</strong> (huge slopes piling up into an unstable network), is tamed with <strong>gradient clipping</strong> and <strong>weight regularisation</strong>.</div>
+
+  <h2>4. How the network learns — gradient descent &amp; backpropagation</h2>
+  <p>You never pick the weights by hand. Instead you define a <strong>loss function</strong> that scores how wrong the network is — commonly the sum of squared errors <code>Σ(yᵢ − ŷᵢ)²</code>, comparing target <code>y</code> to prediction <code>ŷ</code> — and then search for the weights that make it smallest.</p>
+  <p><strong>Gradient descent</strong> is that search. Recall from calculus that a function is minimised where its derivative is zero. Gradient descent walks toward that point: compute the slope of the loss with respect to each weight, then nudge every weight a small step in the <strong>negative-gradient</strong> (downhill) direction, and repeat. The notebook demonstrates it on a toy loss <code>L(w) = (w − 3)²</code>, whose minimum is at <code>w = 3</code>:</p>
+  <table>
+    <tr><th>iteration</th><th>w</th><th>loss (w − 3)²</th></tr>
+    <tr><td>0</td><td>0.60</td><td>5.760</td></tr>
+    <tr><td>4</td><td>2.02</td><td>0.966</td></tr>
+    <tr><td>9</td><td>2.68</td><td>0.104</td></tr>
+    <tr><td>24</td><td>2.99</td><td>0.0001</td></tr>
+  </table>
+  <p>Step by step the weight slides to 3 and the loss melts to zero — exactly where the derivative is zero. In a real network there are thousands of weights, so we need an efficient way to get all those slopes at once. That is <strong>backpropagation</strong>: the chain rule of calculus, applied layer by layer from the output backwards, so each weight receives its fair share of the blame for the final error. Forward pass to predict, backward pass to assign blame, nudge the weights, repeat — that loop <em>is</em> training.</p>
+
+  <h2>5. A real neural network on EUR/USD</h2>
+  <p>The shipped lab builds an actual network with scikit-learn's <code>MLPClassifier</code> on <strong>real EUR/USD daily data</strong> (2009-2018). It engineers <strong>16 features</strong> — rolling standard deviations, moving averages, summed percentage changes, the intraday <code>Close − Open</code>, and three classic technical indicators from TA-Lib (Bollinger Bands, MACD, Parabolic SAR) — and asks the network to predict whether tomorrow's close is up or down. The data is scaled, split 80/20 without shuffling, and fed to a network with one hidden layer of five neurons using a <code>tanh</code> activation and the <code>adam</code> optimiser.</p>
+  <p>The result is humbling and honest. The network converged in 107 iterations and scored <strong>52.7% accuracy on training</strong> and <strong>50.4% on the test set</strong>. Those two numbers being close means the network did <em>not</em> badly over-fit — but both sit right on top of a coin toss, because <strong>next-day close-to-close direction is very nearly random</strong>, the identical lesson from ML-I and ML-II. The five neurons' weight matrices (16×5 into the hidden layer, 5×1 out to the decision) were <em>discovered</em> by backpropagation, not chosen by a human — which is the whole point of the exercise.</p>
+
+  <h2>6. Backtesting — why accuracy is not the verdict</h2>
+  <p>A 50% classifier sounds worthless, but accuracy is the wrong yardstick for a <em>trading</em> model. What matters is money. So the lab back-tests the network on <strong>out-of-sample EUR/USD (2019-2020, 307 days)</strong>: go long when it predicts up, short when it predicts down, and compound the daily returns.</p>
+  <div class="insight"><strong>The strategy earned +11.9% while buy-and-hold lost 4.4%.</strong> How, on 50% accuracy? Because the network's <em>correct</em> calls happened to land on the <strong>larger</strong> price moves, and its wrong calls on the smaller ones. A model can be right only half the time and still make money if it is right when it counts. The takeaway is a rule for the whole course: <strong>judge a trading model by its profit-and-loss, not its classification score.</strong></div>
+
+  <h2>7. Text mining — turning words into numbers</h2>
+  <p>The session closes by pointing the same machinery at <strong>text</strong> — news, tweets, filings — for <strong>sentiment analysis</strong>. A network only eats numbers, so the trick is converting language into a numeric vector. Two steps: first strip out <strong>stop-words</strong> (the filler words "the", "of", "that", "was" that carry no signal); then <strong>vectorise</strong> what remains with <strong>TF-IDF</strong> — <em>term frequency × inverse document frequency</em>. A word's weight grows with how often it appears in a document but shrinks by <code>log(total documents / documents containing the word)</code>, so distinctive words dominate and ubiquitous ones fade.</p>
+  <p>Applied to the lecture's four toy reviews, TF-IDF produces one clean numeric vector per review:</p>
+  <table>
+    <tr><th>review</th><th>surviving words and their TF-IDF weights</th></tr>
+    <tr><td>"I liked the service"</td><td>liked 0.71, service 0.71 ("I", "the" dropped)</td></tr>
+    <tr><td>"It was horrible"</td><td>horrible 1.00 (the only content word)</td></tr>
+    <tr><td>"Waiting area was not so clean"</td><td>area 0.58, clean 0.58, waiting 0.58</td></tr>
+    <tr><td>"Wonderful experience"</td><td>wonderful 0.71, experience 0.71</td></tr>
+  </table>
+  <p>Each review is now a row of numbers indexed by the shared vocabulary — exactly the kind of feature matrix a neural network needs to learn "positive" versus "negative", ready to plug back into everything above.</p>
+
+  <h2>8. The takeaways</h2>
+  <ul>
+    <li>A neuron is <code>a = Σ wᵢxᵢ + b</code> followed by an <strong>activation</strong>; a threshold neuron is a linear classifier, a linear one is regression.</li>
+    <li>Stack neurons into input / hidden / output layers to get a feed-forward <strong>MLP</strong> — a universal approximator that <strong>over-fits easily</strong>.</li>
+    <li><strong>Activation functions</strong>: sigmoid/tanh saturate and cause <strong>vanishing gradients</strong> (max sigmoid slope 0.25); <strong>ReLU</strong> avoids it; clipping/regularisation handle exploding gradients.</li>
+    <li>Networks learn by <strong>gradient descent</strong> (step down the loss gradient, as the toy weight slid to 3) plus <strong>backpropagation</strong> (chain rule through the layers).</li>
+    <li>The real EUR/USD MLP scored ~50% accuracy yet its back-test <strong>beat buy-and-hold (+11.9% vs −4.4%)</strong> — judge trading models by <strong>P&amp;L</strong>.</li>
+    <li><strong>Text mining</strong>: remove stop-words, <strong>TF-IDF</strong>-vectorise, and feed the numbers to a network for sentiment.</li>
+  </ul>
+  <p>The next sessions build on this: recurrent and LSTM networks for sequences (the guided mini-project predicts stock prices with an LSTM), and the practical work of evaluating and deploying these models as live strategies.</p>
+
+  <div class="end">— End of Week 20-1 MLT-03 study guide · pair this with the dashboard cheat sheet and the executed practice notebook —</div>
+
+</div>
+</body>
+</html>

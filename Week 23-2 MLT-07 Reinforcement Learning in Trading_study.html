@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 23-2 · MLT-07 — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;line-height:1.7;color:#1f2937;
+       max-width:820px;margin:0 auto;padding:40px 28px;background:#fbf9f9}
+  h1{font-size:30px;color:#7f1d1d;border-bottom:3px solid #7f1d1d;padding-bottom:10px;margin-bottom:6px}
+  h2{font-size:22px;color:#7f1d1d;margin-top:34px;border-left:5px solid #dc2626;padding-left:12px}
+  h3{font-size:17px;color:#334155;margin-top:22px}
+  p{margin:12px 0}
+  .lead{font-size:17px;color:#374151;font-style:italic}
+  .box{background:#fdf0f0;border:1px solid #f3cccc;border-radius:8px;padding:14px 18px;margin:18px 0}
+  .key{background:#fef9ec;border-left:4px solid #d4a017;padding:10px 16px;margin:16px 0}
+  b{color:#5b1414}
+  code{background:#f1e7e7;padding:1px 6px;border-radius:4px;font-family:Consolas,monospace;font-size:14px}
+  ul{margin:10px 0}li{margin:6px 0}
+  .foot{margin-top:40px;border-top:1px solid #e5d3d3;padding-top:14px;color:#6b7280;font-size:14px}
+</style>
+</head>
+<body>
+
+<h1>Reinforcement Learning in Trading</h1>
+<p class="lead">Week 23-2 · MLT-07 — a plain-English guide to teaching a machine to trade by reward and punishment. Instructor: Dr Tom Starke (PhD in physics, ex-Rolls-Royce principal engineer, quant developer at numerous hedge funds and prop firms, Oxford lecturer, now CEO of AAAQuants and one of the early adopters of reinforcement learning in markets).</p>
+
+<p>There is a seductive dream at the heart of this lecture: a machine you simply switch on, that works out a profitable strategy entirely by itself while you sleep. Reinforcement learning (RL) is the branch of machine learning that comes closest to that promise — instead of being handed a strategy, the machine discovers one through trial and error, reward and punishment, much the way a human learns. Tom has run these systems in real funds for years. He is honest from the outset: the dream has not quite arrived, and the reasons why are as instructive as the technique itself.</p>
+
+<h2>First, the machine-learning ground rules</h2>
+
+<p>RL sits on top of ordinary machine learning, so its problems are ordinary machine-learning problems — amplified. The first is <b>over-fitting</b>, framed as the bias–variance trade-off. A model with too few parameters (a straight line through a curve) under-fits: that is <b>bias</b>. A model with too many parameters (a 300-degree polynomial) fits every wiggle of the noise and swings wildly between the data points: that is <b>variance</b>. In the notebook a quadratic truth is fit two ways and judged on data it never saw; the degree-2 model generalises beautifully (out-of-sample error about 2) while the degree-15 model, despite a <i>lower</i> training error, produces an out-of-sample error of roughly <b>705</b> — hundreds of times worse. The uncomfortable lesson Tom stresses: there is <b>no universal right number of parameters</b> — it depends entirely on the data. Because RL and deep learning sit at the high-variance end, serious finance still leans heavily on simple, hard-to-over-fit models: linear regression, principal component analysis, naïve Bayes.</p>
+
+<h2>Why finance is genuinely harder than cats and dogs</h2>
+
+<p>Three properties make markets uniquely hostile to naïve machine learning.</p>
+
+<p><b>Fat tails.</b> The famous Black–Scholes option formula assumes returns follow a Gaussian bell curve. They do not. Real markets have <b>fat tails</b>, especially on the downside: a crash is not a one-in-a-billion event but something hundreds or thousands of times more likely than the normal curve admits. In the notebook the probability of a move beyond five standard deviations is about <b>219,000 times higher</b> under a fat-tailed (Cauchy) law than under a Gaussian. Worse, market returns resemble <b>Cauchy or Lévy-stable</b> distributions whose sample mean and variance <i>never settle down</i> — draw more data and the average keeps jumping around (in the notebook the Cauchy running mean lurches between −1.13, 0.26 and −0.20 as the sample grows). Neural networks quietly assume stable, well-behaved inputs; a cat is still a cat in every photo, but a market pattern is "kind of a cat, maybe a fox", a moving target.</p>
+
+<p><b>Perception bias.</b> Tom shows two price charts and asks which is more predictable. Almost everyone guesses wrong, because the human eye cannot tell. One is a pure <b>random walk</b> — littered with convincing head-and-shoulders, support and resistance, trends — yet its next tick is a coin toss. The other is genuinely predictable. The only thing that <i>ever</i> makes a chart predictable is <b>autocorrelation</b>: a statistical relationship between today's return and yesterday's. In the notebook the random walk's lag-1 autocorrelation sits at +0.022 (inside the ±0.03 noise band, no edge), while the mean-reverting series sits at −0.749 (clearly significant). Crucially, <i>every</i> technical indicator you have ever seen is just a repackaging of autocorrelation — which is why many professionals use only the simplest ones.</p>
+
+<div class="box"><b>Predict returns, not prices.</b> A blog once went viral for "perfectly predicting" stock prices. It had in fact predicted <i>yesterday's</i> price for today — and since tomorrow's price is always close to today's, the chart looked flawless (an R² of 0.9995 on the real shipped series in the notebook). But trading needs <b>direction</b>, and on returns the same model is a 50/50 coin toss (49.7% accuracy). Always model the percentage return <code>R = (P_t − P_t-1)/P_t-1</code>, never the raw price.</div>
+
+<h2>The idea that sets RL apart: delayed gratification</h2>
+
+<p>Classical machine learning is <b>greedy</b> — it predicts only the very next step. But trading is full of moments where you must forego a small reward now for a larger one later: do you bank a two-day profit, or hold for a bigger move? This is the famous <b>marshmallow test</b> (the children who could wait for a second marshmallow turned out, decades later, to be more successful in life). RL is the first machine-learning approach that handles this delayed gratification properly, and it does so through the mathematics of <b>optimal control</b>, expressed as the <b>Bellman equation</b>:</p>
+
+<div class="box" style="text-align:center"><code style="font-size:15px">Q(s, a) = r + γ · max Q(s′, a′)</code></div>
+
+<p>Read it as a loop. The <b>environment</b> presents a <b>state</b> <code>s</code> — the current values of your indicators, the time of day, the volatility. An <b>agent</b> chooses an <b>action</b> <code>a</code> — in the simplest world, buy, sell or hold. The action earns a <b>reward</b> <code>r</code> and moves the market to a new state. The <b>Q-value</b> <code>Q(s,a)</code> is the <i>unrealised</i> value of an action — the reward you expect eventually, even before the trade closes. To decide, you pick whichever action has the highest Q. The agent learns these values by stepping <b>backward</b> in time during training (a deliberate look-ahead that is perfectly legitimate because it happens in training, never in live trading).</p>
+
+<p>Conceptually the Q-values live in a <b>table</b>: one row per market state, one column per action, pick the biggest entry in your row. The notebook builds exactly this — a tabular Q-learning trader with six momentum buckets, three possible positions and three actions, updated by the rule <code>Q ← Q + α(r + γ·maxQ′ − Q)</code>. The reward for each step is simply <code>position × next return</code>, minus a small cost whenever the position changes. It even reproduces the lecture's <b>marshmallow</b> table exactly — with γ = 0.9 the value of <i>Wait</i> climbs 1.06, 1.18, 1.31, 1.46, 1.62, 1.80, 2.00 and beats <i>Eat</i> at every single step, which is the mathematics of delayed gratification made concrete.</p>
+
+<h2>The single most important habit: test on toy problems first</h2>
+
+<p>Tom is emphatic that you must <b>never train on real price data first</b>. You validate the machine on problems where you already know the answer, climbing a ladder of difficulty:</p>
+
+<ul>
+<li>A <b>pure sine wave</b>. A correctly-built agent <i>must</i> learn to trade this — it flounders at first, then suddenly "gets it" and racks up gains. If it can't, your plumbing is broken. (Notebook: on the idealised, perfectly-predictable cycle $1 compounds to about <b>$17,751</b> at a Sharpe of 17 — an unreachable ceiling.)</li>
+<li>A <b>noisy sine wave</b>. The signal is buried, so, tested out-of-sample, the edge collapses to <b>−36%</b> — the whole difficulty of RL in real markets.</li>
+<li>The <b>real shipped market</b> (a 180-fold uptrend, 1998–2014). The agent leans long — it did learn the trend is up — but its in-and-out timing returns <b>−5%</b> out-of-sample against buy-and-hold's <b>+332%</b>. It rediscovers "the trend is your friend" yet cannot beat simply holding.</li>
+</ul>
+
+<p>The progression is the whole point: profit appears only <i>where there is genuine predictability</i>, and on a real trending market the smartest thing to learn is often just to stay invested — the agent's attempts to be clever cost it.</p>
+
+<div class="key"><b>The famous buy-and-hold moment.</b> Let loose on the raw S&amp;P 500 with a simple profit reward, Tom's machine just bought and held — refusing to sell. His first reaction was "how dumb". His second was: that is precisely what Warren Buffett tells people to do. Was the machine stupid, or quietly brilliant? We genuinely cannot tell — and the deeper lesson is to <i>sit with a surprising result and think</i> rather than dismiss it.</div>
+
+<h2>The reward function is the steering wheel</h2>
+
+<p>If the buy-and-hold behaviour annoys you, the fix is not to change the model but to change the <b>reward</b>. A pure profit-on-exit reward produces passive holding; punish long hold-times, target the Sharpe ratio, penalise drawdowns, or score a flat +1 for a win and −1 for a loss, and the agent trades very differently. The shipped code ships <b>six</b> reward functions — positive-log-categorical, pure P&amp;L, positive-P&amp;L-else-zero, sign-of-P&amp;L (the default in the shipped run), binary win/loss, and exp(P&amp;L) — and swapping between them quietly reshapes the learned policy: sign-of-P&amp;L rewards being <i>right</i> rather than <i>big</i>, which curbs the temptation to chase a few huge wins. One subtlety worth remembering: it is the <b>reward function</b> that changes behaviour, not the loss function — the loss function is set once, according to the nature of your outputs, and left alone.</p>
+
+<h2>What the word "deep" actually adds</h2>
+
+<p>A real market state may have thousands of features across many time-scales. Write out its Q-table and it would have <i>quadrillions</i> of entries — impossible. So deep reinforcement learning replaces the table with a <b>neural network</b> that <i>computes</i> a Q-value on demand. The network itself is humbler than its reputation: inputs are multiplied by <b>weights</b> (just dot products), summed at a <b>hidden layer</b>, passed through an <b>activation function</b> (usually <b>ReLU</b>, which is zero below a threshold and a straight line above it), and finally turned into action probabilities by a <b>softmax</b> that sums to one. The network learns by <b>gradient descent</b> — nudging the weights down the steepest slope of its error surface, using the differentiability of those activations. The plain version is <b>SGD</b> (stochastic gradient descent, sampling a few directions at random for efficiency); the popular <b>Adam</b> is the same idea with a self-adjusting learning rate.</p>
+
+<h2>Features, and the temptation to throw everything in</h2>
+
+<p>Tom is blunt that the inputs matter more than the algorithm. Feeding a gold-futures model the temperature in Antarctica is useless; the features must carry <b>informational content</b>, which for price-action means some autocorrelation or cross-correlation. He builds his own feature sets from open-high-low-close-volume data run through technical indicators at several <b>time granularities</b> (five-minute, hourly, daily), plus time-of-day and day-of-week markers, plus related instruments (bonds, gold, oil) and alternative data (sentiment, macro). When the pile grows too large to compute, he compresses it with PCA. But the worst habit, which he has seen often, is throwing in everything and hoping something sticks — it does not.</p>
+
+<div class="foot">
+<b>One-paragraph recap.</b> Reinforcement learning lets a machine learn a trading strategy by reward and punishment, and its edge over greedy machine learning is <b>delayed gratification</b>, formalised by the Bellman equation Q(s,a)=r+γ·maxQ(s′,a′). It is built on a Q-table that deep RL swaps for a neural network when the state space explodes. But finance fights back with fat tails, with charts whose predictability the eye cannot see (only autocorrelation is real), and with the trap of fitting prices instead of returns. So you test on toy problems first — a clean sine, then a noisy sine, then the real market — and you steer behaviour through the reward function, not the loss. Tom's verdict from the trenches: RL is fascinating and probably the future, it over-fits easily and hides behind a zoo of hyper-parameters, in his experience it has never out-performed a well-built traditional strategy, and its lack of explainability is a real blocker to deploying client money. Learn it deeply, but get market experience first.
+</div>
+
+</body>
+</html>

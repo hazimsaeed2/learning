@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 8-2 · DMP-02 Introduction to OOP — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:48px 28px;
+       color:#2a2233;line-height:1.7;font-size:17px;background:#fdfcff;}
+  h1{font-size:30px;color:#6b21a8;line-height:1.25;margin-bottom:4px;}
+  h2{font-size:23px;color:#7e22ce;margin-top:40px;border-bottom:2px solid #e9d5ff;padding-bottom:5px;}
+  h3{font-size:19px;color:#86198f;margin-top:28px;}
+  .sub{color:#9333ea;font-style:italic;margin-top:0;}
+  code{font-family:ui-monospace,Consolas,monospace;background:#f3e8ff;padding:1px 5px;border-radius:4px;font-size:15px;}
+  pre{background:#2a1b3d;color:#f3e8ff;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.5;}
+  pre code{background:none;color:inherit;padding:0;}
+  .callout{background:#f5f3ff;border-left:4px solid #7e22ce;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  .warn{background:#fef2f2;border-left:4px solid #dc2626;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  .tip{background:#fffbeb;border-left:4px solid #d97706;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px;}
+  th,td{border:1px solid #e9d5ff;padding:7px 10px;text-align:left;}
+  th{background:#f3e8ff;color:#6b21a8;}
+  .closer{background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:18px 22px;margin-top:36px;}
+</style>
+</head>
+<body>
+
+<h1>Object-Oriented Programming, From Scratch</h1>
+<p class="sub">Week 8-2 · Data Analysis &amp; Modeling in Python · DMP-02 · with Ashutosh Dave</p>
+
+<p>Up to now you have written code the way most people first learn it: one line after another, top to bottom.
+You imported a library, picked a ticker, ran a cell, then the next, then the next. That style is called
+<em>sequential</em> or <em>functional</em> programming, and it is perfectly fine when you only have a little to
+do. But open almost any serious project on GitHub, or read any professional's code, and you will see something
+different: code organised into <strong>classes and objects</strong>. That style is called
+<strong>object-oriented programming</strong>, or OOP, and learning it is the goal of this lesson.</p>
+
+<p>We will do it in two halves. First we build the concepts on a tiny, friendly example — a <code>Student</code>.
+Then we put those concepts to work by turning a moving-average back-test into a clean, reusable class. The aim
+throughout is intuition first, syntax second.</p>
+
+<h2>1. Dunders: the magic you've been using all along</h2>
+
+<p>Before classes, one piece of vocabulary. A <strong>dunder</strong> — short for "double underscore" — is a
+built-in method whose name is wrapped in two underscores, like <code>__add__</code> or <code>__len__</code>.
+They look mysterious, but they behave like any other method. Here is the trick: the ordinary things you do
+every day secretly call them.</p>
+
+<pre><code>2 + 2            # 4
+(2).__add__(2)   # 4  — exactly the same thing
+
+len([1, 2, 3])       # 3
+[1, 2, 3].__len__()  # 3  — again, the same</code></pre>
+
+<p>When you write <code>+</code>, Python quietly calls <code>__add__</code> behind the scenes. When you call
+<code>len()</code>, it calls <code>__len__</code>. Libraries are full of them — <code>numpy.__version__</code>
+stores the version string, for instance. Dunders may look scary the first time, but they are just functions.
+The reason we meet them now is that one dunder in particular — <code>__init__</code> — is the beating heart of
+object-oriented programming.</p>
+
+<h2>2. The big idea: blueprints and the things built from them</h2>
+
+<p>Imagine you are a designer and you have to define the <em>concept</em> of a car. You would say: to count as
+a car, a thing needs four tyres, a covered body, and an engine — those are its <strong>properties</strong>. It
+also needs to be able to do things: drive, sound a horn — those are its <strong>functionalities</strong>. That
+whole concept — the idea of a car — is what we call a <strong>class</strong>. It is a blueprint.</p>
+
+<p>Once the blueprint exists, you can produce specific cars from it: a blue Mercedes, a black BMW, each with its
+own engine number. Those specific cars are <strong>objects</strong>, also called <strong>instances</strong>.
+Every car on the road is an instance of the class "car".</p>
+
+<div class="callout">
+<strong>In Python, everything is already an object.</strong> When you write <code>a = 4.3</code> and check
+<code>type(a)</code>, Python answers <code>&lt;class 'float'&gt;</code> — your number is an object of the class
+<code>float</code>, and it comes with functionalities like <code>(4.0).is_integer()</code>. Lists, tuples,
+functions — all of them are objects built from classes that the Python authors wrote for you. The exciting part
+is that you can write <em>your own</em> classes too.</div>
+
+<h2>3. Building a class: shared properties and class methods</h2>
+
+<p>Let's define our <code>Student</code>. We start with the <code>class</code> keyword, a name, a colon, and a
+body. The first thing inside is <code>goal</code>, which looks like a plain variable set to
+<code>"to get educated"</code>. A variable defined directly in the class body is a <strong>class attribute</strong>
+— it is shared by every student, because in general every student has that goal.</p>
+
+<pre><code>class Student:
+    goal = "to get educated"          # class attribute (shared by all)
+
+    @classmethod
+    def update_goal(cls, new_goal):
+        cls.goal = new_goal           # changes the goal for the WHOLE class</code></pre>
+
+<p>The function has two unusual features. On top sits <code>@classmethod</code>, a <strong>decorator</strong>.
+A decorator wraps a function to change how it behaves without rewriting its body; here it simply links the
+method to the <code>Student</code> class. Second, its first parameter is <code>cls</code> — by convention, the
+name for "the class itself". So when we call <code>Student.update_goal("...")</code>, it reaches into the class
+and rewrites <code>goal</code> for <em>every</em> student at once. That shared nature is the whole point of a
+class attribute.</p>
+
+<h2>4. Per-object data: <code>__init__</code> and <code>self</code></h2>
+
+<p>A shared goal is fine, but students also have things that are theirs alone — a name, an age. These belong on
+the <strong>instance</strong>, not the class. That is the job of the special dunder <code>__init__</code>, the
+<em>constructor</em>. It runs automatically the moment you create an object, and its first parameter,
+<code>self</code>, stands for the object being created.</p>
+
+<pre><code>class Student:
+    goal = "to get educated"
+
+    def __init__(self, name, age):    # runs automatically on creation
+        self.name = name              # instance attribute
+        self.age  = age
+
+    def update_age(self, new_age):    # instance method
+        self.age = new_age
+        return f"new age for {self.name} is {self.age}"
+
+john = Student("John Paul", 19)
+john.name    # 'John Paul'
+john.age     # 19</code></pre>
+
+<p>When you write <code>Student("John Paul", 19)</code>, Python looks for <code>__init__</code>, sees it needs a
+name and an age, and assigns them: <code>self.name</code> becomes <code>john.name</code>, because here
+<code>self</code> <em>is</em> John. Those values, attached to the object, are <strong>instance attributes</strong>.
+A method whose first parameter is <code>self</code> is an <strong>instance method</strong>: it has full
+knowledge of that object's data and works on it.</p>
+
+<div class="warn"><strong>Once you add an <code>__init__</code> with required arguments, you must supply them.</strong>
+You can no longer write <code>Student()</code> — Python will complain about missing arguments. You have to give
+it the data it asked for: <code>Student("Mary", 20)</code>.</div>
+
+<h3>The third kind: static methods</h3>
+
+<p>There is one more flavour. A <strong>static method</strong>, marked with <code>@staticmethod</code>, takes
+neither <code>self</code> nor <code>cls</code>. It knows nothing about the object or the class — it is just an
+ordinary helper function that you choose to keep under the class's umbrella for tidiness (printing the academic
+year, say, or a strategy's run-date). Here is the cheat for telling the three apart:</p>
+
+<table>
+<tr><th>Kind</th><th>Decorator</th><th>First argument</th><th>Knows about</th></tr>
+<tr><td>class method</td><td><code>@classmethod</code></td><td><code>cls</code></td><td>the class</td></tr>
+<tr><td>instance method</td><td><em>none</em></td><td><code>self</code></td><td>the object</td></tr>
+<tr><td>static method</td><td><code>@staticmethod</code></td><td><em>none</em></td><td>nothing</td></tr>
+</table>
+
+<h2>5. Inheritance: reusing a blueprint</h2>
+
+<p>The real power of OOP is that once you have a blueprint, you can make new blueprints from it. Suppose we want
+a <code>SportyStudent</code>. Rather than rewrite everything, we let it <strong>inherit</strong> from
+<code>Student</code> and change only what differs.</p>
+
+<pre><code>class SportyStudent(Student):                 # inherits everything
+    goal = "to get educated and win some trophies"   # override just this
+
+dave = SportyStudent("Dave", 17)
+dave.update_age(18)     # 'new age for Dave is 18'  — inherited for free!
+dave.goal               # '...win some trophies'</code></pre>
+
+<p><code>Student</code> is the <strong>parent</strong> (or super-class); <code>SportyStudent</code> is the
+<strong>child</strong> (or sub-class). The child gets every attribute and method of the parent without a single
+line of new code, then diverges only where we want it to. A neat real-world example a student offered in class:
+pandas is, conceptually, built on top of numpy in just this way. Two helpers let you inspect the relationships:</p>
+
+<pre><code>isinstance(dave, SportyStudent)      # True
+isinstance(dave, Student)            # True  — because the parent is in its ancestry
+issubclass(SportyStudent, Student)   # True</code></pre>
+
+<h3>super() and the family tree</h3>
+
+<p>Often a child wants its <em>own</em> constructor but also wants to run the parent's. That is what
+<code>super()</code> is for:</p>
+
+<pre><code>class Child(ParentOne, ParentTwo):
+    def __init__(self, grade, age):
+        self.grade = grade
+        super().__init__(age)        # also run ParentOne's __init__
+
+Child.__mro__   # Child -> ParentOne -> ParentTwo -> object</code></pre>
+
+<p>A class can even inherit from several parents at once. When it does, Python uses the <strong>MRO</strong> —
+the method resolution order — to decide which parent to search first. The MRO is simply the family tree, and it
+always ends in <code>object</code>, the common ancestor of every class in Python. You can see it for anything:
+a list's MRO is <code>list → object</code>; a DataFrame's is a long chain
+(<code>DataFrame → NDFrame → … → object</code>) precisely because a DataFrame is a rich, much-inherited
+structure. (One quick aside you might also use: <code>dave.__dict__</code> shows an object's instance
+attributes as a dictionary.)</p>
+
+<h2>6. Putting it to work: a back-test as a class</h2>
+
+<p>Now the payoff. You already know the seven logical steps of a back-test: start with an
+<em>idea</em>, get the <em>data</em>, build <em>indicators</em>, generate <em>signals</em>, derive
+<em>positions</em>, compute <em>returns</em>, and finally <em>analyse</em>. In the sequential style you run those
+as cells, one after another. That is fine for one strategy — but clumsy when you want to test many. OOP lets us
+bundle all seven steps under a single umbrella.</p>
+
+<pre><code>class BacktestingCrossover:
+    def __init__(self, csv, ma_short, ma_long):
+        self.ma_short, self.ma_long = ma_short, ma_long
+        self.fetch_data()      # each step is an instance method
+        self.indicators()
+        self.signals()
+        self.positions()
+        self.returns()
+
+    def signals(self):
+        self.df["regime"] = np.where(self.df["SMA_s"] > self.df["SMA_l"], 1, -1)
+    # ... fetch_data / indicators / positions / returns similar ...</code></pre>
+
+<p>The <code>__init__</code> stores the parameters as instance attributes — exactly like <code>self.name</code>
+and <code>self.age</code> earlier — and then calls each step in order. Every step is an instance method, so it
+already has access to <code>self.df</code> and the parameters. The beauty is what happens next: <strong>one
+object is one back-test.</strong> Creating a second back-test with different windows is a single line.</p>
+
+<div class="callout"><strong>The result on real NIFTY data (962 daily bars, 2017→2020).</strong> Two objects
+from one blueprint, differing only in their short window:
+<table>
+<tr><th>Object</th><th>SMA-short</th><th>SMA-long</th><th>Total return</th></tr>
+<tr><td><code>bt_10_20</code></td><td>10</td><td>20</td><td>+2.64%</td></tr>
+<tr><td><code>bt_5_20</code></td><td>5</td><td>20</td><td>+5.62%</td></tr>
+<tr><td>Buy &amp; Hold</td><td>—</td><td>—</td><td>+51.48%</td></tr>
+</table>
+</div>
+
+<div class="warn"><strong>Be honest about the numbers.</strong> Both crossover variants trail Buy &amp; Hold
+badly over this period — the long/short regime goes short during a strong up-trend and gives back the gains.
+The lesson of Part 2 is <em>structure</em>, not alpha: notice how cleanly OOP lets us spin up and compare two
+strategies. Between the two, the faster SMA5/20 beat SMA10/20, but neither is something you'd trade as-is.</div>
+
+<div class="tip"><strong>Why bother, then?</strong> Because when you later have ten ideas to test, the class
+pays off enormously. Each test becomes one object, the seven steps run themselves, and your notebook stays a
+short list of clean comparisons instead of a sprawling wall of copy-pasted cells.</div>
+
+<div class="closer">
+<h3 style="margin-top:0">The one-paragraph version</h3>
+<p>Object-oriented programming organises code around <strong>classes</strong> (blueprints) and
+<strong>objects</strong> (specific things built from them). The operators you already use are powered by
+<strong>dunders</strong> like <code>__add__</code> and <code>__init__</code>. Inside a class, a
+<strong>class attribute</strong> is shared by all instances, while <strong>instance attributes</strong> — set on
+<code>self</code> in <code>__init__</code> — belong to each object. Methods come in three kinds:
+<code>@classmethod</code> (gets <code>cls</code>), plain instance methods (get <code>self</code>), and
+<code>@staticmethod</code> (gets neither). <strong>Inheritance</strong> lets a child class reuse a parent's code
+and override only what differs; <code>super()</code> runs the parent's constructor, and the <strong>MRO</strong>
+(ending in <code>object</code>) resolves multiple parents. Wrapping a back-test's seven steps in a
+<code>BacktestingCrossover</code> class turns each run into a single clean object — which is exactly why
+production trading code is written this way.</p>
+</div>
+
+<p style="text-align:center;color:#a78bca;margin-top:36px;font-size:14px;">EPAT · Week 8-2 DMP-02 · Introduction to Object-Oriented Programming</p>
+
+</body>
+</html>

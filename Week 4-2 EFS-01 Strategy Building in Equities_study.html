@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EFS-01 · Strategy Building in Equities — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:800px;margin:0 auto;padding:48px 28px;
+       color:#1f2937;line-height:1.7;font-size:17px;background:#fcfcfb}
+  h1{font-size:30px;color:#b45309;margin-bottom:2px}
+  .sub{color:#6b7280;font-style:italic;margin-bottom:28px}
+  h2{font-size:22px;color:#92400e;margin-top:38px;border-bottom:2px solid #fed7aa;padding-bottom:4px}
+  h3{font-size:18px;color:#b45309;margin-top:24px}
+  p{margin:12px 0}
+  .callout{background:#fff7ed;border-left:4px solid #f59e0b;padding:12px 16px;margin:18px 0;border-radius:0 6px 6px 0}
+  .warn{background:#fef2f2;border-left:4px solid #ef4444;padding:12px 16px;margin:18px 0;border-radius:0 6px 6px 0}
+  table{border-collapse:collapse;width:100%;margin:16px 0;font-size:15px}
+  th,td{border:1px solid #d1d5db;padding:6px 10px;text-align:left}
+  th{background:#fff7ed}
+  code{background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:15px;font-family:Consolas,monospace}
+  .key{font-weight:bold;color:#92400e}
+</style>
+</head>
+<body>
+
+<h1>Strategy Building in Equities — is it ready to go live?</h1>
+<div class="sub">Week 4-2 · EFS-01 · Equity, FX &amp; Futures Strategies · a plain-language walkthrough</div>
+
+<p>Every back-test that loses money is easy to reject. The dangerous ones are the back-tests that
+<i>make</i> money — because a profit number alone tells you almost nothing about whether the strategy
+will survive contact with the real market. This lecture is the instructor's personal checklist: the
+handful of metrics he runs, and the thumb-rules he applies, before he is willing to risk capital. We
+walk through each one on his own example — a <span class="key">moving-average crossover on the Nifty
+index from 2000 to 2016, 4,235 trading days</span> of real data — and we let the numbers deliver an
+honest verdict.</p>
+
+<h2>1. What even counts as a trading system?</h2>
+
+<p>A complete trading system must answer four questions automatically: <span class="key">what to buy,
+when to buy, how much to buy, and when to exit</span> — and crucially, it must be testable on
+historical data. Tips from a friend or a TV anchor fail the last requirement: there is no
+accountability, no record, no way to know if the "edge" was ever real. The instructor's deeper point is
+that <i>you</i> are the weakest link. Emotions, fat-finger typos, hesitation — these are what algorithmic
+trading removes. Remove the weakest link, and the weakest link is usually the human.</p>
+
+<p>Our example system: compute a fast moving average (SMA, 15 days) and a slow one (LMA, 40 days). Go
+long when the fast crosses above the slow; exit when it crosses back below. Run on the Nifty, it
+produces 48 completed trades and grows capital 3.95×.</p>
+
+<table>
+<tr><th>Result on Nifty 2000-2016</th><th>Value</th></tr>
+<tr><td>completed trades</td><td>48</td></tr>
+<tr><td>strategy growth</td><td>3.95×</td></tr>
+<tr><td>buy &amp; hold the index</td><td>5.14×</td></tr>
+</table>
+
+<div class="warn"><b>The first lesson, immediately.</b> The strategy "made money" — but plain buy-and-hold
+made <i>more</i> (5.14× vs 3.95×). Total profit is the metric that lies most. It tells you nothing about
+the risk you took or whether you simply rode a rising market less efficiently than doing nothing.</div>
+
+<h2>2. The overfitting trap — in-sample and out-of-sample</h2>
+
+<p>The temptation is to try every (SMA, LMA) combination and keep the best. But with enough parameters
+you can <i>always</i> find a combination that looks brilliant on past data purely by chance — like
+drawing a line through ten points with a ten-parameter curve. It fits the past perfectly and predicts
+nothing. The discipline that defends you: split the history. <span class="key">Optimise on a training
+slice (in-sample); then test the chosen parameters exactly once on held-out data (out-of-sample).</span>
+If the two broadly agree, the edge is probably real.</p>
+
+<p>We split the Nifty 80/20. The best combination in the training years was SMA 5 / LMA 40, growing
+5.79×. Then we tested that single winner on the years it had never seen:</p>
+
+<table>
+<tr><th>SMA 5 / LMA 40</th><th>Result</th><th>Read</th></tr>
+<tr><td>in-sample (training)</td><td>5.79×</td><td>looks superb</td></tr>
+<tr><td>out-of-sample (held out)</td><td>1.19×</td><td>vs buy &amp; hold 1.34×</td></tr>
+<tr><td>conclusion</td><td colspan="2">the winner <b>underperformed buy &amp; hold</b> live — a classic curve-fit</td></tr>
+</table>
+
+<div class="callout">A second safeguard: look at the <b>neighbourhood</b> of your best parameter. If
+the cell next door gives wildly different results, your "winner" is a lone spike — a fluke. A robust
+choice sits on a smooth plateau where nearby parameters all behave similarly. The instructor also
+divides history into market <i>phases</i> (bull, bear, consolidation, distribution) and insists a
+strategy work across all of them, because you never know which phase you are entering live.</div>
+
+<h2>3. Hit ratio, and why it needs normalising</h2>
+
+<p>The <span class="key">hit ratio</span> is simply the fraction of trades that made money. But it
+hides the most important thing: when you win, do you win <i>big</i>? A strategy can win only 30% of the
+time and still be excellent if those wins dwarf the losses. The instructor's fix is the
+<span class="key">normalised hit ratio</span>: the share of <i>favourable money</i> in the total of all
+absolute moves.</p>
+
+<p style="text-align:center"><code>NHR = Σ(positive returns) / [ Σ(positive) + Σ|negative| ]</code></p>
+
+<p>His worked example: 30 winning trades averaging +10%, and 70 losing trades averaging −2%.</p>
+
+<table>
+<tr><th>Step</th><th>Calculation</th><th>Value</th></tr>
+<tr><td>plain hit ratio</td><td>30 ÷ 100</td><td>30%</td></tr>
+<tr><td>total positive money</td><td>30 × 10%</td><td>3.0</td></tr>
+<tr><td>total negative money</td><td>70 × 2%</td><td>1.0</td></tr>
+<tr style="background:#ecfdf5;font-weight:bold"><td>normalised hit ratio</td><td>3 ÷ (3 + 1)</td><td>68%</td></tr>
+</table>
+
+<p>Only three trades in ten win — yet on a normalised basis this is a strong strategy, because the wins
+are five times the size of the losses. Our own Nifty strategy comes out at a plain hit ratio of 45.8%
+(22 wins, 26 losses) but a normalised hit ratio of <span class="key">69.8%</span>, because the average
+win (+15.2%) is far larger than the average loss (−5.6%). By the thumb-rule that puts it in the
+"tradeable" band (63-75%), though short of the 75% "pure gold" line.</p>
+
+<div class="callout"><b>The thumb-rules.</b> Normalised hit ratio above 75% is pure gold — trade it and
+don't overthink. Around 63-66% is the instructor's comfortable working range. Below 58% he won't touch
+a medium-frequency strategy; at 50% you are just tossing a coin.</div>
+
+<h2>4. How much to bet — the Kelly fraction</h2>
+
+<p>Suppose you have a genuine edge. <i>How much</i> of your capital do you stake each time? Too little
+and you barely grow; too much and a normal losing streak wipes you out. The
+<span class="key">Kelly fraction</span> is the bet size that maximises long-run <i>compounded</i>
+wealth. The clean textbook case the worksheet uses: a 50/50 bet that pays 2:1 — a win pays twice your
+stake, a loss forfeits it.</p>
+
+<p style="text-align:center"><code>f* = (b·p − q) / b = (2 × 0.5 − 0.5) / 2 = 0.25</code></p>
+
+<p>We can confirm it by brute force — sweeping the bet fraction from 1% to 100% and computing the final
+wealth after 50 wins and 50 losses:</p>
+
+<table>
+<tr><th>Bet fraction</th><th>Final wealth (start = 10)</th></tr>
+<tr><td>10%</td><td>469</td></tr>
+<tr><td>20%</td><td>2,890</td></tr>
+<tr style="background:#ecfdf5;font-weight:bold"><td>25% ← Kelly optimum</td><td>3,611</td></tr>
+<tr><td>30%</td><td>2,890</td></tr>
+<tr><td>50%</td><td>10 — right back where you started</td></tr>
+</table>
+
+<p>The curve rises to a peak at 25% and then collapses; bet 50% and a balanced run of wins and losses
+leaves you exactly where you began. Notice how betting <i>more</i> than Kelly is actively destructive.</p>
+
+<div class="callout"><b>In practice, bet less.</b> The instructor trades only <b>half to 60% of full
+Kelly</b>, and only after the strategy has settled past its teething problems. Real edges are estimated
+with error, and full Kelly is brutally volatile — a touch of caution costs little growth and buys a lot
+of survival.</div>
+
+<h2>5. Drawdown — the question investors ask first</h2>
+
+<p><span class="key">Drawdown</span> is how far the equity curve has fallen from its running peak. It is
+always measured from the historical high — not from where you happened to enter — because you can never
+know your future starting point. Unsophisticated investors often ask only two questions: what is the
+profit, and what is the drawdown. The reason drawdown terrifies them is its cruel asymmetry:</p>
+
+<table>
+<tr><th>If you lose…</th><th>…you must gain just to break even</th></tr>
+<tr><td>10%</td><td>+11.1%</td></tr>
+<tr><td>25%</td><td>+33.3%</td></tr>
+<tr style="background:#fef2f2"><td>50%</td><td>+100%</td></tr>
+<tr style="background:#fef2f2;font-weight:bold"><td>90%</td><td>+900%</td></tr>
+</table>
+
+<p>Our Nifty strategy hits a maximum drawdown of −40.2%, against an annualised return of only 8.5%. The
+ratio of return to drawdown is 0.21 — far below the instructor's "comfortable above 2" rule. Yet
+another red flag.</p>
+
+<div class="callout"><b>Drawdown thumb-rules.</b> Below 5% is gold. He likes annual-return-to-drawdown
+above 2 (above 3 is great). Past 25% drawdown, investors get jittery and start redeeming — often at the
+worst possible moment.</div>
+
+<h2>6. Sharpe ratio — return per unit of risk</h2>
+
+<p>If the instructor could keep only one number, it would be the <span class="key">Sharpe ratio</span>:
+excess return divided by its own volatility. Like a dimensionless number in engineering, it strips away
+scale and asks the only question that matters — how much return did you earn for the risk you bore?
+Because returns add over time but volatility grows with the square root of time, you annualise by
+multiplying the daily Sharpe by √252.</p>
+
+<p style="text-align:center"><code>Sharpe(annual) = (mean daily return − daily risk-free) / daily std × √252</code></p>
+
+<table>
+<tr><th>Step</th><th>Value</th></tr>
+<tr><td>mean daily strategy return</td><td>0.00038</td></tr>
+<tr><td>minus daily risk-free (~6%/yr)</td><td>0.00024</td></tr>
+<tr><td>divide by daily std (the risk)</td><td>0.01017</td></tr>
+<tr><td>daily Sharpe</td><td>0.0136</td></tr>
+<tr style="background:#fef2f2;font-weight:bold"><td>× √252 = annualised Sharpe</td><td>0.22</td></tr>
+</table>
+
+<p>A Sharpe of 0.22 is far below the 1.5 floor. Combined with the lost-to-buy-and-hold profit, the 40%
+drawdown, and the failed out-of-sample test, the verdict is clear and honest: <span class="key">this
+particular MA strategy is not ready to go live.</span> That is exactly what the metrics are for — to
+say no before your money does.</p>
+
+<div class="callout"><b>Sharpe thumb-rules.</b> Above 3 is pure gold, execute immediately. Around
+2-2.5 is the sweet spot. Below 1.5 he doesn't bother. (Hedge funds will run 1.4-1.5; he prefers more
+cushion.)</div>
+
+<h2>7. Stops, leverage and slippage</h2>
+
+<p>To choose a <span class="key">stop loss</span>, bucket the losing trades and watch where the
+cumulative loss piles up. In our strategy about half of all loss money accumulates by the −7% to −8%
+bucket, which makes that zone a sensible starting point for a stop — you cut the fat tail without being
+stopped out by ordinary noise. A <span class="key">trailing stop</span> takes this further, tracking a
+percentage below the position's running peak rather than the entry price.</p>
+
+<p><span class="key">Leverage</span> is a double-edged sword: borrow to double your position and you
+double both gains and losses. The instructor only adds leverage once a strategy's Sharpe is in double
+digits. And never forget <span class="key">slippage</span> — the gap between the price you back-tested
+and the price you actually get — typically 4-5 basis points per trade for medium-frequency strategies.
+Subtract brokerage, taxes and slippage before believing any back-test.</p>
+
+<h2>8. Reading the market: open interest, cost of carry, and factor models</h2>
+
+<p>The second half of the lecture introduces derivatives data you can turn into signals.
+<span class="key">Open interest</span> is the number of <i>outstanding</i> futures agreements between
+participants — not the volume traded. (If I buy a contract and later sell it to someone else, volume
+rises but open interest may not.) <span class="key">Cost of carry</span> is the futures price minus the
+spot price, which follows from the fair-futures formula <code>F = S·e^(rT)</code>.</p>
+
+<p>Pairing open interest with price tells you what the crowd is doing:</p>
+
+<table>
+<tr><th></th><th>Price rising</th><th>Price falling</th></tr>
+<tr><td><b>OI rising</b></td><td style="background:#ecfdf5">fresh long build-up (new buyers)</td><td style="background:#fef2f2">fresh shorting (new sellers)</td></tr>
+<tr><td><b>OI falling</b></td><td>short covering</td><td>profit booking</td></tr>
+</table>
+
+<p>Finally, a <span class="key">factor model</span> blends several such factors — change in open
+interest, change in cost of carry, change in delivery volume — into one signal, with weights that sum to
+one. The catch is scale: if one factor swings over a wide range and another barely moves, the wide one
+dominates the signal by accident. The fix is to convert every factor to a <span class="key">z-score</span>
+first — how many standard deviations it sits from its own mean — so all factors speak the same language:</p>
+
+<p style="text-align:center"><code>z = (value − mean) / standard deviation</code></p>
+
+<p>With three factors carrying weights 0.4, 0.5 and 0.1, a day's signal is just the weighted sum of the
+three z-scores; you buy above a positive threshold and sell below a negative one, optimising both the
+weights and the thresholds on in-sample data (and, the instructor notes, doing it in Python rather than
+Excel because the search is computationally heavy).</p>
+
+<h2>The go-live checklist</h2>
+
+<ol>
+<li><b>Profit</b> must beat the index or at least your cost of capital — necessary, never sufficient.</li>
+<li><b>Normalised hit ratio</b>: &gt;75% gold, 63-66% tradeable, &lt;58% avoid.</li>
+<li><b>Sharpe</b> (×√252): &gt;3 gold, ~2-2.5 sweet spot, &lt;1.5 skip.</li>
+<li><b>Drawdown</b>: &lt;5% gold, return/DD &gt;2 comfortable, &gt;25% investors flee.</li>
+<li>Always split <b>in-sample / out-of-sample</b>; prefer a smooth plateau over a lone spike.</li>
+<li>Size with <b>Kelly</b> (the 2:1 flip → 25%), but trade about half-Kelly in reality.</li>
+<li>Set stops from the <b>loss distribution</b>; respect <b>leverage</b> and <b>slippage</b>.</li>
+<li>Mine derivatives data — <b>open interest, cost of carry, delivery volume</b> — into a <b>z-scored factor model</b>.</li>
+</ol>
+
+<div class="callout">The thread running through it all: <b>a profitable back-test is a question, not an
+answer.</b> The metrics — and the honest out-of-sample test — are how you turn that question into a
+confident yes or, just as valuably, a disciplined no.</div>
+
+<p style="color:#9ca3af;font-size:14px;margin-top:34px">Companion practice notebook with every metric
+computed live on real Nifty data: <code>Week 4-2 EFS-01 code/Week 4-2 EFS-01 Strategy Building in Equities_practice.ipynb</code>.</p>
+
+</body>
+</html>

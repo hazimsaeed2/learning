@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 12-1 · ASQ-02 Time Series Modeling (Part 2) — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:48px 28px;
+       color:#1a2e1a;line-height:1.7;font-size:17px;background:#f8faf8;}
+  h1{font-size:30px;color:#14532d;line-height:1.25;margin-bottom:4px;}
+  h2{font-size:23px;color:#166534;margin-top:40px;border-bottom:2px solid #bbf7d0;padding-bottom:5px;}
+  h3{font-size:19px;color:#15803d;margin-top:28px;}
+  .sub{color:#0ea5e9;font-style:italic;margin-top:0;}
+  code{font-family:ui-monospace,Consolas,monospace;background:#dcfce7;padding:1px 5px;border-radius:4px;font-size:15px;}
+  pre{background:#14271a;color:#dcfce7;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.5;}
+  pre code{background:none;color:inherit;padding:0;}
+  .callout{background:#f0fdf4;border-left:4px solid #16a34a;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  .warn{background:#fef2f2;border-left:4px solid #dc2626;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  .tip{background:#f0f9ff;border-left:4px solid #0ea5e9;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px;}
+  th,td{border:1px solid #bbf7d0;padding:7px 10px;text-align:left;}
+  th{background:#dcfce7;color:#14532d;}
+  .closer{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:18px 22px;margin-top:36px;}
+</style>
+</head>
+<body>
+
+<h1>Time Series Modeling, Part 2: When the Machine Picks, Costs Bite, and Risk Refuses to Sit Still</h1>
+<p class="sub">Week 12-1 · Advanced Statistics for Quant Strategies · ASQ-02 (the conclusion of the two-part series)</p>
+
+<p>Two weeks ago we built ARIMA models by hand, learned what stationarity means, and read ACF and
+PACF plots to pick an order. That left four loose ends, and this session ties them all up: can we
+get the <em>machine</em> to pick the ARIMA order for us? What happens to our pretty returns once
+we pay to trade? Is risk really constant the way our backtests quietly assumed? And if it isn't,
+how do we <em>forecast</em> it? A reminder before we start: this is intermediate-to-advanced
+material compressed from a semester into a few hours, so the goal is to <strong>understand the
+ideas and read the results</strong> — not to memorise code. And the recurring refrain:
+<strong>there are no silver bullets.</strong></p>
+
+<h2>1. A one-minute refresher on ARIMA(p, d, q)</h2>
+
+<p>ARIMA stands for <strong>AutoRegressive Integrated Moving Average</strong>, and its three numbers
+each control one piece:</p>
+
+<table>
+<tr><th>Part</th><th>Parameter</th><th>What it controls (model on prices)</th></tr>
+<tr><td>AR — autoregressive</td><td><code>p</code></td><td>how many <strong>past price</strong> terms enter the model</td></tr>
+<tr><td>I — integrated</td><td><code>d</code></td><td>how many times we <strong>difference</strong> the series to make it stationary (nothing to do with calculus)</td></tr>
+<tr><td>MA — moving average</td><td><code>q</code></td><td>how many <strong>past error</strong> terms — errors, not a price moving average</td></tr>
+</table>
+
+<p>And why are there errors at all? Because a model is only ever an approximation. The instructor's
+favourite analogy: a model is like a <em>map</em>. A political map of India shows you the states;
+a topographical map shows you the mountains; neither tells you about the open manhole on the street
+where you're standing at 11 p.m. Every map keeps the features that matter and discards the rest, so
+<strong>reality = model + error</strong> by design. ARIMA captures what it can of a price series; the
+leftover is the error term.</p>
+
+<h2>2. Does one hand-picked order fit every asset? No.</h2>
+
+<p>Last time we chose <code>(2,1,2)</code> from ACF/PACF plots on a single asset. The obvious
+question: will that same order work everywhere? The lecture forced <code>(2,1,2)</code> onto five
+very different US names and found it profitable on only one. We can't download those here, so we
+built five NIFTY-derived "assets" (weekly, two-weekly, monthly, and the two halves of the weekly
+series) and ran a rolling one-step ARIMA strategy: forecast next bar, go long if the forecast is
+above today's price, else short, and compare to buy-and-hold.</p>
+
+<p>The fixed <code>(2,1,2)</code> beat buy-and-hold on <strong>none</strong> of the five. The point
+lands exactly as intended: <strong>each asset may have its own optimal order</strong>, so you
+can't willy-nilly reuse one combination. That is the motivation for letting an algorithm choose.</p>
+
+<h2>3. Automated selection, and why "automated" ≠ "better"</h2>
+
+<p>The professional tools are <code>pmdarima.auto_arima</code> and <code>sktime</code>; both run a
+stepwise search and pick the order that minimises an <strong>information criterion</strong>. They're
+offline here, so we reproduced the same idea with a small grid search over <code>statsmodels</code>,
+choosing the order with the lowest <strong>AIC</strong>.</p>
+
+<pre><code>auto_arima(y, max_p=2, max_d=2, max_q=2,
+           seasonal=False, stepwise=True,
+           information_criterion="aic")</code></pre>
+
+<p>What is AIC actually doing? Every model-builder is caught between two failures.
+<strong>Underfitting</strong> means the model is too simple — it misses real structure and behaves
+the same dumb way in the future; its only virtue is simplicity. <strong>Overfitting</strong> means
+the model is so flexible it starts memorising <em>noise</em> as if it were signal, and then falls
+apart on data it hasn't seen. AIC is a scorecard that <strong>rewards good fit but charges a penalty
+for every extra parameter</strong>, trying to find the sweet spot between the two.</p>
+
+<div class="warn"><strong>The honest result.</strong> When we let AIC choose, it improved on the manual
+guess for only <strong>one of the five</strong> assets — and it often picked <em>simpler</em> models
+(like a near random-walk). Why? Because AIC balances under- and over-fitting <strong>on the training
+data</strong>; it never once looks at profitability or compares against buy-and-hold. Automation is
+a genuinely useful tool, but it is <strong>not</strong> automatically superior. As one student asked:
+what's the point if it can't even rediscover our manual choice? The point is that across <em>many</em>
+assets it will help on some — and back-testing is precisely the business of discarding most ideas to
+keep the few durable ones.</p>
+
+<h2>4. Transaction costs: where the profits quietly leak out</h2>
+
+<p>Every real trade pays commission and crosses a spread. For a liquid US stock the instructor used
+about <strong>0.03% per trade</strong> (<code>0.0003</code>) — and stressed it's both
+<em>country-</em> and <em>broker-specific</em>. We loaded that onto the NIFTY weekly ARIMA strategy,
+charging the cost every time the position actually changed:</p>
+
+<table>
+<tr><th>NIFTY weekly ARIMA(2,1,2)</th><th>Return</th></tr>
+<tr><td>Before costs</td><td>12.9%</td></tr>
+<tr><td>After costs (0.03% per trade, 55 trades)</td><td>9.3%</td></tr>
+<tr><td>Buy &amp; hold over the same window</td><td>13.5%</td></tr>
+</table>
+
+<p>The drag here was about 3.3% — modest, because (like the lecture's PayPal) the index is very
+liquid and we traded only a few dozen times. On a thinner instrument, or a strategy that flips
+positions constantly, the "net" equity line peels away from the "gross" line dramatically, and many
+backtests that looked profitable turn into losers.</p>
+
+<div class="tip"><strong>Takeaway:</strong> a return figure with no cost assumption is fiction.
+<strong>Always backtest net of costs</strong>, and remember that the more you trade, the more the
+costs compound against you — the cumulative cost line is a staircase that only ever climbs.</div>
+
+<h2>5. Risk does not sit still — volatility clusters</h2>
+
+<p>Until now every backtest quietly assumed risk was constant: when the model said "long," we went
+<em>all-in</em>, the same size every time. But look at any long stretch of returns and you'll see
+calm spells and stormy spells. We measured it with a rolling 30-day volatility, annualised by
+multiplying by √252:</p>
+
+<table>
+<tr><th>Period</th><th>Average annual volatility</th></tr>
+<tr><td>2017 — calm</td><td>9%</td></tr>
+<tr><td>2018 — wobble</td><td>12%</td></tr>
+<tr><td>2019 — pre-COVID</td><td>14%</td></tr>
+<tr><td>2020 — COVID</td><td>26% (spiking past 75%)</td></tr>
+</table>
+
+<p>Across the whole sample, volatility swung from about <strong>6% to 75%</strong> annualised. This
+bunching has a name — <strong>volatility clustering</strong> — and a mouthful of a technical term,
+<strong>heteroscedasticity</strong> ("different variance"). The key insight: unlike returns, which
+are nearly random from one day to the next, <strong>volatility has positive autocorrelation</strong>.
+When it's high it tends to stay high for a while; when it's low it lingers low.</p>
+
+<h3>Sizing by volatility</h3>
+
+<p>If volatility quadruples between regimes, a <em>fixed</em> position size means you're risking
+four times as much in the storm as in the calm. Better: fix the <strong>dollar risk</strong> and let
+the position size flex. Using <code>daily&nbsp;risk = size × vol ÷ √252</code>:</p>
+
+<table>
+<tr><th>Regime</th><th>$10,000 position risks/day</th><th>To risk a fixed $250/day, hold…</th></tr>
+<tr><td>Low vol (20%)</td><td>$126</td><td>$19,843</td></tr>
+<tr><td>High vol (100%)</td><td>$630</td><td>$3,969</td></tr>
+</table>
+
+<p>Same dollar of risk, very different position sizes. But this only works if we can <em>predict</em>
+tomorrow's volatility — which is the cue for ARCH and GARCH.</p>
+
+<h2>6. ARCH and GARCH — forecasting the volatility itself</h2>
+
+<p><strong>ARCH</strong> — AutoRegressive Conditional Heteroscedasticity, the model that won Robert
+Engle a Nobel Prize — says today's variance depends on recent <em>shocks</em>:</p>
+
+<pre><code>σ²ₜ = ω + α · ε²ₜ₋₁
+
+predicted variance = baseline ω + α × (yesterday's squared return)</code></pre>
+
+<p>Yesterday's squared return is a stand-in for yesterday's variance. <strong>GARCH</strong>
+(Bollerslev's extension) adds a memory of <em>past variance</em> too:</p>
+
+<pre><code>σ²ₜ = ω + α · ε²ₜ₋₁ + β · σ²ₜ₋₁</code></pre>
+
+<p>That extra <code>β</code> term lets GARCH capture long clustering with very few parameters, which
+is why GARCH(1,1) is the everyday workhorse. We fit one on NIFTY daily returns with the
+<code>arch</code> library and got <code>α ≈ 0.11</code>, <code>β ≈ 0.86</code>, so
+<strong>α + β ≈ 0.97</strong> — close to 1, confirming that volatility shocks are highly persistent.
+Its one-step forecast of next-day volatility was <strong>15.0%</strong> against a realised 14.4% —
+a sensible, useful number to size a position with.</p>
+
+<div class="callout"><strong>The cricket-ticket analogy.</strong> Imagine pricing tickets for a home
+team. On a winning run, fans flock in and demand stays high for a <em>cluster</em> of games; on a
+losing run, demand stays low for a stretch. ARCH and GARCH do the same thing for markets — they read
+which "phase" of high or low variance we're in and forecast accordingly.</div>
+
+<p>Best of all, the two families combine: <strong>ARIMA forecasts the return</strong> while
+<strong>GARCH forecasts the risk</strong> around it. Feed the GARCH volatility into your position
+sizing and you get a return signal that automatically shrinks when markets turn dangerous — a common
+and powerful pairing. (Further cousins — EGARCH, GJR-GARCH — exist but are out of scope.)</p>
+
+<div class="closer">
+<h3 style="margin-top:0">The one-paragraph version</h3>
+<p>This second time-series session fixes four weaknesses in a naïve ARIMA backtest. <strong>Automated
+order selection</strong> via the AIC information criterion (which balances under- against over-fitting)
+replaces hand-picking <code>(p,d,q)</code> — but it optimises fit, not profit, so it improved on our
+manual guess for only one of five assets and is <strong>no silver bullet</strong>. <strong>Transaction
+costs</strong> (~0.03% per trade) must be subtracted from every result; here they shaved 12.9% down to
+9.3% over 55 trades, and on illiquid or high-turnover strategies the damage is far worse. <strong>Risk
+is not constant</strong> — volatility <em>clusters</em> (heteroscedasticity), swinging from ~6% to 75%
+annualised, so we should fix the dollar risk and size <em>inversely</em> to volatility. To do that we
+forecast volatility with <strong>ARCH</strong> (variance from past shocks) and <strong>GARCH</strong>
+(also from past variance), whose α+β ≈ 0.97 confirms strong persistence. Finally, pair them:
+<strong>ARIMA predicts the return, GARCH predicts the risk</strong>. And above all — test everything,
+net of costs, on your own market.</p>
+</div>
+
+<p style="text-align:center;color:#86efac;margin-top:36px;font-size:14px;">EPAT · Week 12-1 ASQ-02 · Time Series Modeling with Python (Part 2)</p>
+
+</body>
+</html>

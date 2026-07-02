@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 21-2 · MLT-04 — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:3rem 1.5rem;
+       background:#faf8ff;color:#2a2440;line-height:1.75;font-size:18px;}
+  h1{font-size:2rem;color:#5b21b6;line-height:1.25;margin-bottom:.25rem;}
+  .sub{color:#7c3aed;font-style:italic;margin-bottom:2rem;}
+  h2{font-size:1.45rem;color:#6d28d9;margin-top:2.5rem;border-bottom:1px solid #ddd6fe;padding-bottom:.3rem;}
+  h3{font-size:1.15rem;color:#7c3aed;margin-top:1.6rem;}
+  p{margin:.9rem 0;}
+  em{color:#6d28d9;}
+  blockquote{border-left:4px solid #a78bfa;background:#f5f3ff;margin:1.5rem 0;padding:.8rem 1.2rem;
+             font-style:italic;color:#4c1d95;}
+  code{font-family:Consolas,monospace;background:#ede9fe;color:#5b21b6;padding:1px 5px;border-radius:3px;font-size:.9em;}
+  .key{background:#f5f3ff;border:1px solid #ddd6fe;border-radius:8px;padding:1rem 1.3rem;margin:1.5rem 0;}
+  .key b{color:#6d28d9;}
+  footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #ddd6fe;color:#8b7cb8;font-size:.85rem;text-align:center;}
+</style>
+</head>
+<body>
+
+<h1>How to Develop a Trading Strategy using Machine Learning</h1>
+<div class="sub">Week 21-2 · MLT-04 — a plain-language walk through the research pipeline that decides whether your results are real</div>
+
+<p>Most people come to machine learning in trading expecting the hard part to be choosing the right algorithm — a neural network here, gradient boosting there. The truth is almost the opposite. The model is the easy part. The hard part, the part that separates a researcher whose strategies survive contact with the market from one whose don't, is <em>knowing whether the result you are looking at is honest</em>. This lecture is about building a research process you can trust, and the single most important skill it teaches is how to avoid leaking information from the future into the past.</p>
+
+<p>We will follow four modules. First, how to benchmark and validate a model so you know whether it has learned anything at all. Second, the surprising relationship between how many features you use and how far ahead you are predicting. Third, how to trim a bloated feature set down to the few inputs that actually matter. And fourth, how to tune, test, and backtest the finished model — and why a losing backtest at the end is not a failure but a success.</p>
+
+<h2>Module 1 — Benchmarks, splits, and the art of not fooling yourself</h2>
+
+<p>Imagine you train a model and it predicts the direction of the market correctly 55% of the time. Is that good? You have absolutely no way to know until you ask: what would a model that knows <em>nothing</em> score? In machine learning the answer comes from a <em>dummy classifier</em> — a model that ignores every feature and simply predicts according to the class distribution. If 54% of days are "up", the dummy predicts "up" 54% of the time and is right about that often. Suddenly your 55% looks like noise. Always compare against the dummy for the model, and against buy-and-hold for the strategy. Context beats absolute numbers every time.</p>
+
+<p>The next decision is how to split your data, and here the most natural instinct — shuffle everything and take a random slice for testing — is exactly wrong. Financial data has an order. Yesterday influences today. If you shuffle, you let the model train on rows that come <em>after</em> the rows it is tested on, which is a polite way of saying you let it see the future. Instead, split in time: a large <em>training</em> block where you engineer features and choose your model, a <em>validation</em> block where you tune the knobs, and a <em>test</em> block you hold back and touch exactly once, ever. Treat that test set as precious, because the moment you peek at it more than once it stops being an honest estimate of the future.</p>
+
+<p>To imitate how a strategy would actually run, we use <em>walk-forward validation</em>: train on the past, predict the next block, then roll the window forward and repeat. Real trading only ever moves in one direction through time, and walk-forward respects that. We also add a small <em>embargo</em> — a gap of a few rows at each train/test boundary — because the days immediately on either side of the boundary are so similar that they would quietly leak information across it. The embargo throws those borderline rows away.</p>
+
+<p>One more trap: the scoring metric. Accuracy is seductive and almost useless when classes are imbalanced. If 54% of days are up, a model that blindly says "up" every single day scores 54% accuracy while having learned nothing. The fix is the <em>Matthews Correlation Coefficient</em>, or MCC, which ranges from −1 to +1, sits at zero for a coin-flip, and accounts properly for all four outcomes — true and false positives and negatives. A model that always predicts "up" gets an MCC of zero, which is exactly the honest verdict.</p>
+
+<blockquote>The benchmark hierarchy in our notebook, run on the real XLF data with the shipped harness: the dummy sits at MCC 0 by construction, the simple three-feature model is actually negative at −0.048, microstructure features recover to +0.031, and the full 88-feature set reaches only +0.035. Every tier hovers around zero — there is no real edge here, and the honest pipeline says so plainly.</blockquote>
+
+<h3>The three anti-patterns — the heart of the whole lecture</h3>
+
+<p>Everything above exists to defend against three specific mistakes, each of which makes a worthless model look brilliant. They are worth memorising because every one of them is something a well-meaning analyst does by accident.</p>
+
+<p>The first is the <em>random shuffle split</em>. Scikit-learn's <code>train_test_split</code> shuffles by default, so a single careless line scatters future rows into your training data. In our notebook this catapults the MCC from an honest +0.035 to a preposterous +0.559 — a fantasy edge conjured out of nothing but leaked future rows. The second is the <em>unshifted rolling feature</em>: if you compute a 20-day volatility but forget to <code>shift(1)</code> it, the feature for day <em>t</em> includes day <em>t</em> itself — information you would not actually have at the moment you place the trade. The third is ordinary <em>k-fold cross-validation</em>, which is wonderful for independent data and poison for time series, because it trains a model on future folds and judges it on past ones. Without shuffling it barely moves, to +0.046; with shuffling — the worst case — it explodes to +0.582.</p>
+
+<p>The pattern is unmistakable: <em>every leaky method scores above the honest baseline</em>. Leakage always flatters. The more impressive a backtest looks relative to a careful walk-forward, the more suspicious you should be.</p>
+
+<h2>Module 2 — Feature explosion and the complexity paradox</h2>
+
+<p>There is an old rule of thumb that fewer features mean less overfitting. Like most rules of thumb it is half true. Whether adding features helps or hurts turns out to depend heavily on your <em>prediction horizon</em>. A high-frequency model that reacts in milliseconds wants very few, very fast inputs. A model making one decision a day about the next month, on the other hand, has room to absorb a much richer picture of the market.</p>
+
+<p>In our next-day experiment the three feature sets barely differ: the simple set comes out slightly negative, while microstructure and the full 88-feature set creep only just above zero. Piling on features did not manufacture an edge — it never does when the signal is not there to begin with. The broader lesson the lecture draws is that the right number of features depends on your <em>horizon</em>: a high-frequency model wants a handful of fast inputs, while a model deciding once a day about the next month can absorb a much richer picture. Match the complexity of your features to the horizon you actually intend to trade — a feature set is not good or bad in the abstract, only good or bad for a particular deployment.</p>
+
+<h2>Module 3 — Cutting back to what matters</h2>
+
+<p>Once you have a sprawling set of features, the goal becomes a <em>parsimonious</em> model: one that achieves the same signal with far fewer inputs, because a lean model is easier to debug, to explain to a risk committee, and to keep running. The tool the course reaches for is <em>SHAP</em>, which borrows from game theory — it treats each feature like a player on a team and fairly divides the credit for each prediction, then keeps every feature whose average contribution clears the mean (this is how 88 features became 18). A related technique, <em>Boruta</em>, adds <em>shadow features</em> — shuffled copies that are pure noise — and keeps only the real features that consistently beat the best shadow; because it judges features inside the full model, it captures interactions a simple correlation filter would miss.</p>
+
+<blockquote>SHAP kept just 18 of the 88 features — led by permutation entropy, Williams %R, and Kyle's lambda illiquidity measure. The lean model trained at MCC +0.066 against the full set's +0.035: essentially the same signal from a fifth of the inputs.</blockquote>
+
+<h2>Module 4 — Tuning, the one-shot test, and an honest ending</h2>
+
+<p>With features chosen, we tune the model's <em>hyper-parameters</em> — its knobs, like tree depth and the number of boosting iterations, as opposed to the features, which are its inputs. Searching every combination is too slow, so smart samplers (the course uses neptune.ai) explore the space efficiently. Crucially, all this tuning happens on the <em>validation</em> set, never the test set. In our run the best validation MCC came out at +0.019 — already essentially zero, which is itself a warning sign that a disciplined researcher would heed before going any further.</p>
+
+<p>Then comes the moment of truth: the test set, used exactly once. We retrain on everything except the holdout, predict it a single time, and read the number. Ours turned negative, to −0.006, and the course's own checklist stamps it a ❌ FAIL — not production-ready. The faint edge that existed in the early years had decayed by the test period — a perfectly realistic outcome, since real market inefficiencies erode as others discover them. This is the system working exactly as designed: it refused to let us fool ourselves.</p>
+
+<p>Finally we backtest, and here too there is a choice. A <em>vectorised</em> backtest is fast but optimistic — it assumes you fill at the close, ignores spreads and commissions, and can quietly let look-ahead bias creep in. An <em>event-driven</em> backtest steps through one bar at a time, computing features and decisions exactly as they would arrive in live trading. Running ours long-only over the 2019-onward holdout, the vectorised strategy eked out just +5.6% — but at a Sharpe of only 0.15, far short of the 1.5 a deployable strategy demands, with a 20% drawdown across 91 trades.</p>
+
+<div class="key">
+<b>Why a losing result is a good result.</b> A failing holdout from an honest pipeline is not a defeat — it is information. It tells you, truthfully, that this particular idea has no edge, which saves you from risking real money on a fantasy. The researchers who lose money are the ones whose pipelines lie to them with inflated numbers. A pipeline that can deliver bad news is the only kind worth building.
+</div>
+
+<h2>The seven habits to carry forward</h2>
+
+<p>Benchmark before you celebrate — the dummy classifier and buy-and-hold are your floor. Split your data in time, never at random. Validate walk-forward with an embargo so the process mirrors live trading. Score with MCC, because accuracy lies whenever the classes are imbalanced. Refuse the three anti-patterns — shuffling, unshifted features, and k-fold — that always inflate your results. Match the number of features to your prediction horizon, then prune with SHAP. And tune on validation, test exactly once, and backtest event-driven with realistic costs. Do all of this and your results, good or bad, will at least be true — and in this field, true is rarer and more valuable than impressive.</p>
+
+<footer>EPAT · Week 21-2 · MLT-04 — How to Develop a Trading Strategy using Machine Learning · study guide</footer>
+
+</body>
+</html>

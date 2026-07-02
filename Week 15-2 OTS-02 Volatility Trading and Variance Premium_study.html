@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 15-2 · OTS-02 — Volatility Trading &amp; Variance Premium · Study Guide</title>
+<style>
+body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:48px 28px;
+  background:#fbfaf7;color:#1f2328;line-height:1.72;font-size:18px;}
+h1{font-size:2rem;line-height:1.2;margin-bottom:.2em;}
+h2{font-size:1.42rem;margin-top:1.9em;border-bottom:2px solid #d8d3ea;padding-bottom:.2em;color:#4338ca;}
+h3{font-size:1.14rem;margin-top:1.5em;color:#6d28d9;}
+.lead{font-size:1.08rem;color:#52525b;font-style:italic;}
+code{background:#efecf8;padding:.05em .35em;border-radius:.2em;font-size:.92em;}
+blockquote{border-left:4px solid #6d28d9;margin:1.2em 0;padding:.3em 1.1em;background:#f4f1fb;color:#3f3f46;font-style:italic;}
+table{border-collapse:collapse;width:100%;margin:1.1em 0;font-size:.92rem;}
+th,td{border:1px solid #d4cfe4;padding:.4rem .6rem;text-align:left;}
+th{background:#ece9f6;}
+.box{background:#fff;border:1px solid #e0dcf0;border-radius:8px;padding:1em 1.2em;margin:1.2em 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.eq{text-align:center;font-style:italic;margin:.8em 0;color:#4338ca;}
+em.k{font-style:normal;font-weight:bold;color:#4338ca;}
+</style>
+</head>
+<body>
+
+<h1>Volatility Trading &amp; the Variance Premium</h1>
+<p class="lead">Week 15-2 · OTS-02 · A plain-language walk through Varun Kumar Potra's foundation lecture — the mental models you need before the real options machinery begins.</p>
+
+<p>This is a deliberately unhurried lecture. Varun's goal is not to hand you a strategy on day two; it's to clear away the misconceptions that make beginners lose money, so that when the pricing models, Greeks, and backtests arrive in OTS-3 through OTS-6, they land on solid ground. The single idea that everything orbits is this: <strong>you do not make money in options by predicting where a stock will go. You make money by trading the gap between the volatility the market expects and the volatility that actually shows up.</strong> Let's build to that.</p>
+
+<h2>Two ways to find an edge</h2>
+<p>Every quantitative trade comes from one of two places. A <em class="k">model-driven</em> approach runs continuously: it ingests data day in and day out and spits out a number — Black-Scholes says this call is worth \$2 while it trades at \$4, so you wait. An <em class="k">event-driven</em> approach fires only on a trigger: an earnings release, an interest-rate decision, an election. Varun's analogies are vivid — in blackjack, <em>card counting</em> is model-driven (a running probability every hand) while reacting to a specific dealt ace is event-driven; in cricket commentary, the live win-probability is a model while "they just lost five wickets, bet against them" is an event.</p>
+
+<p>The trade-off is about <strong>scale</strong>. A model runs on 500 names every day, so you can deploy more capital and trade more often. An event like earnings happens maybe four times a year per stock, so it's powerful but hard to scale. Professionals run <em>both</em>: a daily model for steady alpha, and special event playbooks for earnings season. Don't bank purely on events — when there's no event, you still want the model keeping your portfolio healthy.</p>
+
+<h3>You don't need to be right 90% of the time</h3>
+<p>This is the mindset that trips up engineers and mathematicians. In <em>research</em>, you want a t-statistic of 2 (the famous p &lt; 0.05) before you believe anything. In <em>trading</em>, a <em class="k">t-stat of 1</em> is plenty — you just need to be reliably better than a coin flip. A 55% win rate sounds barely-above-random, but compounded over enough independent trades it is decisively non-random:</p>
+
+<table>
+<tr><th>trades</th><th>win rate</th><th>t-stat vs 50%</th></tr>
+<tr><td>10</td><td>55%</td><td>0.32</td></tr>
+<tr><td>100</td><td>55%</td><td>1.01</td></tr>
+<tr><td>1,000</td><td>55%</td><td>3.18</td></tr>
+</table>
+
+<p>The lesson: chase a <em>small edge applied many times</em>, not a perfect crystal ball. Piling on inputs to push accuracy from 55% toward 90% usually just overfits and demands clean high-frequency data you can't reliably get.</p>
+
+<h2>The two forces that quietly destroy your edge</h2>
+<h3>Adverse selection — why backtests lie</h3>
+<p>This is the most important warning in the lecture. When you place a limit order to buy at \$100 and it <em>fills instantly</em>, ask yourself who sold to you. Someone was <em>happy</em> to sell at exactly your price — which often means you're on the wrong side. The trades that would have been most profitable sit at extreme prices (the very lows your model loves) where there are almost no sellers, so you <em>never get filled</em>. The losing trades, meanwhile, fill easily. A backtest assumes every order fills, so it cheerfully counts winners you'd never actually capture.</p>
+
+<blockquote>If your buy fills the instant you place it, the counterparty was glad to sell to you. Easy fills are often bad fills. The trades you most want are the ones that get away.</blockquote>
+
+<p>The notebook makes this concrete: a strategy that averages <strong>+3.04</strong> per trade in backtest (all orders fill) collapses to <strong>−0.76</strong> per trade live once fills are adverse — the entire edge, and then some, evaporates. The only clean fix is to take <em>all</em> the trades rather than cherry-pick fills — but that raises costs, which brings us to the second force.</p>
+
+<h3>Costs — the silent 80%</h3>
+<p>Every trade pays the <em class="k">bid-ask spread</em> (you wanted 100, you pay 102), plus brokerage, taxes, and platform/exchange fees. Varun's rule of thumb: 20-30% of gross profit disappears, and roughly <strong>80% of "profitable" backtests become worthless</strong> after costs. One student in the session reported a strategy with a Sharpe of 1.45 that turned into a CAGR of <em>−2</em> once transaction costs went in. The notebook shows the same cliff: a \$2 gross edge per trade is positive until a \$2 round-trip cost zeroes it out and a \$3 cost makes it a loser. Two practical habits: be <em>aggressive</em> entering a momentum trade (pay up to get in), but <em>passive</em> when hedging (save the spread). And never use leverage to "save capital" — it multiplies your costs.</p>
+
+<h2>Why trade options at all? Volatility.</h2>
+<p>If you just want a directional bet, futures are simpler. Options exist because of <strong>volatility</strong>, and volatility is the one thing you can actually forecast. Varun anchors this on a William Sharpe quote:</p>
+
+<blockquote>"For predicting future values, historical data appear quite useful with respect to standard deviation, and virtually useless for expected returns." — William Sharpe</blockquote>
+
+<p>In plain terms: you cannot reliably say <em>where</em> a stock will land, but you <em>can</em> say <em>how bumpy</em> the ride will be. Decompose any price series into a <strong>trend</strong> (its moving average) and the <strong>volatility</strong> around it. The 2021 S&amp;P is the classic example — an obvious uptrend, but the path from 370 to 470 was full of sharp dips and recoveries. The notebook rebuilds exactly this: an average daily return of ~0.09% wrapped in ~0.79% daily volatility, a gentle climb on a bumpy road. Options let you trade that second component directly.</p>
+
+<h2>Payoffs — and why payoff is not profit</h2>
+<p>The contract math is simple. A <strong>call</strong> pays <code>max(S − X, 0)</code>; a <strong>put</strong> pays <code>max(X − S, 0)</code>. But <em>payoff is gross</em> — to get profit you subtract the premium you paid. A call bought for \$5 that finishes at S = 120 has a payoff of \$20 but a profit of \$15.</p>
+
+<div class="box">
+<h3 style="margin-top:0">The straddle — the foundation of volatility trading</h3>
+<p>Buy an at-the-money call <em>and</em> an at-the-money put on the same strike. Now you profit if the stock makes a <strong>big move in either direction</strong>, and you lose only if it pins the strike. You've stopped betting on direction and started betting on <em>magnitude</em> — on volatility itself. The catch is cost: you paid two premiums, so the move has to be big enough to clear both. In the notebook, a straddle costing \$10 only profits outside the band [90, 110]; pinned at 100, it loses the whole \$10. That's a long-volatility position in its purest form.</p>
+</div>
+
+<h2>The three laws of volatility</h2>
+<p>Before you can trade vol, you need its personality. Varun gives three empirical laws.</p>
+
+<p><strong>Law 1 — vol is negatively correlated with equity-index returns.</strong> When stocks fall, fear and the VIX spike; when stocks rise, vol drifts lower. The lecture cites about <strong>−0.7</strong> across daily, weekly, and monthly horizons (the notebook reproduces −0.68). This is a regime gauge: if the market is falling but vol stays <em>low</em>, that's abnormal — worth investigating. Note that commodities differ — energy is negative like equities, but <em>gold</em> is positive, because a crisis makes it both a safe haven and more volatile.</p>
+
+<p><strong>Law 2 — volatility of volatility.</strong> Vol doesn't just have a level; the <em>size of its own moves</em> changes too. The level of vol and its variability are positively correlated, around <strong>+0.8</strong> (the notebook gets +0.70). The practical reading is sharp: in a <em>low-vol</em> regime, vol rarely spikes out of nowhere; in a <em>high-vol</em> regime, a vol <em>crash</em> back toward normal is very likely.</p>
+
+<p><strong>Law 3 — vol is mean-reverting.</strong> A stock price <em>trends</em> — its moving average chases it upward. The VIX does the opposite: it oscillates around a stable mean, overshooting and snapping back. So when vol is extremely high you can bet on a reversion down; when it's extremely low it won't spike for no reason. The mean-reversion shows up more clearly at weekly and monthly horizons than daily (the lecture's ~51% daily vs ~60% monthly sign-flips).</p>
+
+<h2>Implied vs historical volatility — and the smile</h2>
+<p>There are two volatilities and they are not the same animal. <em class="k">Historical volatility</em> is backward-looking: the standard deviation of the underlying's past returns. Give a hundred analysts the same data and they all compute the same number. <em class="k">Implied volatility</em> is forward-looking: it is <em>backed out of the option's market price</em> through Black-Scholes, so it reflects what traders <em>expect</em> — and they disagree, so you get a distribution of opinions.</p>
+
+<p>The mechanism is an inversion. Black-Scholes normally takes volatility as an input and produces a price. But since you already <em>know</em> the market price, you run it backwards: feed in the price and solve for the volatility that reproduces it. That solved number is the implied vol. The notebook does exactly this with a root-finder: a 20% input vol prices a call at \$4.485, and inverting \$4.485 recovers 20%.</p>
+
+<h3>Why a "smile"?</h3>
+<p>There is no single implied vol. It changes with the <strong>strike</strong> (the <em>smile</em> or <em>skew</em>) and with the <strong>expiry</strong> (the <em>term structure</em>). Out-of-the-money puts trade rich — partly the leverage effect (a falling stock changes its fundamentals and its vol), partly sheer demand for cheap crash insurance and lottery-ticket payoffs. So implied vol is lowest at the money and rises as you move away. In the notebook the ATM strike sits at 22% while the deep OTM put implies 30%. The <em>shape</em> of that curve is itself a strategy signal: it tells you which strikes are cheap to buy and which are rich to sell.</p>
+
+<h2>The payday — the variance premium</h2>
+<p>Now the core profit engine. <strong>Implied vol is almost always higher than the volatility that actually happens</strong> (realized vol). The gap is the <em class="k">variance premium</em> (or volatility premium):</p>
+<p class="eq">Variance Premium = Implied Vol − Realized Vol</p>
+
+<p>Why does it persist? Because options are <strong>insurance</strong>. Just as you pay an insurer more than your expected claim, investors pay up for crash protection — buying puts to hedge their long stock — so option <em>sellers</em> systematically collect a premium. The notebook's 2015-style simulation shows implied vol averaging 17.5% against realized 13.9%, a +3.5-point premium that's positive on 99% of days — though it <em>inverts</em> on a couple of shock days, which is precisely the tail a vol seller must respect.</p>
+
+<p>And here's the counter-intuitive part. You'd expect a wild market to pay the richest premium. The three-decade observation is the opposite: <strong>when VIX is low, the premium (as a fraction of realized vol) is largest.</strong> The notebook confirms it — the &lt;15 VIX bucket shows a 31% proportional premium versus 22% in the 20-30 bucket. Calm regimes offer <em>more</em> harvesting opportunity, not less.</p>
+
+<div class="box">
+<h3 style="margin-top:0">Why you can't just sell a straddle every day</h3>
+<p>If the premium is almost always positive, why not sell volatility daily and collect forever? In a backtest it looks magnificent — a smooth equity curve climbing from \$200k toward \$700k. But that smooth line hides a <strong>catastrophic left tail</strong>: on the rare vol-spike days you lose enormously, and the resulting drawdown (−20% in the notebook) triggers margin calls that force you out at the worst possible moment. Plus the chart ignores costs. Harvesting the variance premium is the right idea; doing it <em>blindly</em> is exactly how vol sellers blow up. The professional version is <em>selective</em>: sell when implied vol is genuinely rich, with <em>defined risk</em>, net of costs.</p>
+</div>
+
+<h2>The one-paragraph version</h2>
+<p>You find option edge two ways — a <strong>model</strong> that scores the market daily (scalable) or an <strong>event</strong> strategy that fires on earnings and rates (rare) — and you don't need 90% accuracy, just a <strong>t-stat of 1</strong> (≈55%) repeated many times. Two forces fight you: <strong>adverse selection</strong> (your profitable orders never fill while losers fill easily, so a perfect backtest underperforms live) and <strong>costs</strong> (the bid-ask spread and fees turn a Sharpe-1.45 strategy into a negative CAGR). The reason to trade options at all is <strong>volatility</strong> — Sharpe's quote says you can forecast standard deviation but not returns, so trade the bumpiness, which is what a <strong>straddle</strong> does. Volatility has three laws: it's <strong>negatively correlated to index returns</strong> (≈−0.7), it has <strong>vol-of-vol</strong> (high vol means big vol moves, ≈+0.8), and it's <strong>mean-reverting</strong>. There is no single <strong>implied vol</strong> — it's inverted out of the option price (unlike <strong>historical vol</strong> from returns) and varies by strike (the <strong>smile</strong>) and expiry (term structure). The payday is the <strong>variance premium</strong>: implied vol almost always beats realized because options are insurance, so selling vol harvests IV − RV — largest, surprisingly, when VIX is <strong>low</strong>. But selling a straddle every day looks smooth and hides a <strong>brutal tail</strong>, so you harvest the premium <em>selectively, with defined risk, net of costs</em>. Everything after this — pricing, Greeks, forecasts, hedges, backtests — is built on this foundation.</p>
+
+<p style="text-align:center;color:#a8a29e;margin-top:3em;">— end of Week 15-2 OTS-02 study guide —</p>
+
+</body>
+</html>

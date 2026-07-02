@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 13-1 EFS-05 — Trading ETFs · Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:48px 32px;
+       color:#1f2937;line-height:1.7;font-size:17px;background:#fdfdfb}
+  h1{font-size:30px;color:#3730a3;margin-bottom:4px;line-height:1.2}
+  .sub{color:#6b7280;font-style:italic;margin-bottom:28px;font-size:17px}
+  h2{font-size:23px;color:#4338ca;margin-top:38px;border-bottom:2px solid #c7d2fe;padding-bottom:5px}
+  h3{font-size:19px;color:#4f46e5;margin-top:26px}
+  p{margin:14px 0}
+  .callout{background:#eef2ff;border-left:4px solid #4f46e5;padding:12px 18px;margin:20px 0;border-radius:4px}
+  .warn{background:#fef2f2;border-left:4px solid #ef4444;padding:12px 18px;margin:20px 0;border-radius:4px}
+  .tip{background:#fffbeb;border-left:4px solid #f59e0b;padding:12px 18px;margin:20px 0;border-radius:4px}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px}
+  th,td{border:1px solid #c7d2fe;padding:7px 11px;text-align:left}
+  th{background:#eef2ff;color:#3730a3}
+  code{background:#eef2ff;color:#3730a3;padding:1px 5px;border-radius:3px;font-size:15px}
+  .closer{background:#3730a3;color:#e0e7ff;padding:20px 24px;border-radius:8px;margin-top:34px;font-size:16px}
+  em{color:#4338ca}
+</style>
+</head>
+<body>
+
+<h1>Trading ETFs</h1>
+<div class="sub">Week 13-1 · EFS-05 — a plain-language walk through how an ETF is actually built, taught from practice by an ex-Goldman ETF portfolio manager.</div>
+
+<p>Most people think they understand ETFs because they can buy one as easily as a stock. And if all you ever do is trade them in the open market, that's genuinely enough — an ETF behaves like any share. But there is a whole hidden machine behind every ETF, and it is precisely where market makers, systematic traders, and HFT firms make their money. This lesson takes you into that machine. We start with what an index even <em>is</em>, work through why ordinary mutual funds are quietly unfair, and then watch how the ETF structure fixes those problems with one elegant trick: trading in <em>baskets</em> instead of cash.</p>
+
+<h2>1. What an index really is, and the divisor that holds it together</h2>
+
+<p>A <em>cap-weighted</em> index weights each company by its market value, which is simply <code>price × shares outstanding</code>. The Sensex, NIFTY, S&amp;P 500 and NASDAQ are all built this way. But a raw total market value is an ugly number — millions or trillions of rupees — so an <em>index provider</em> (MSCI, FTSE Russell, S&amp;P, or in India the NSE's subsidiary IISL) normalizes it into a clean, comparable level using a single tool: the <em>divisor</em>.</p>
+
+<p>The relationship is just division: the index equals the total market value divided by the divisor. At launch you pick the divisor so the index starts at a round number. If two stocks are worth ₹7.5 million together and you want the index to read 1000, your divisor is 7,500. Easy.</p>
+
+<p>The clever part is what happens when a <em>corporate action</em> rearranges the companies without actually changing investors' wealth. The index must not jump for an artificial reason — so you re-solve the divisor. The instructor drills this with three quick pop-quizzes:</p>
+
+<table>
+<tr><th>Corporate action</th><th>What happens to total market value</th><th>Index</th><th>Divisor</th></tr>
+<tr><td>2-for-1 stock split</td><td>Unchanged (price halves, shares double)</td><td>Same (1000)</td><td>Same (7,500)</td></tr>
+<tr><td>₹2 dividend paid</td><td>Falls (price drops by the dividend)</td><td>Held at 1000</td><td>Changes → 7,400</td></tr>
+<tr><td>Constituent swap (one stock replaced)</td><td>Jumps (new stock has different value)</td><td>Held at 1000</td><td>Changes → 15,000</td></tr>
+</table>
+
+<p>The principle: a split changes nothing real, so nothing moves. A dividend or a constituent change alters the measured total, so to keep the index continuous you recompute the divisor. This happens <em>once a day</em>, at the start of the day — corporate actions are announced well in advance, so there is no need to do it live. On a 500-stock index something is adjusting almost every day.</p>
+
+<div class="tip"><strong>Why this matters beyond arithmetic:</strong> index providers have become extraordinarily powerful. When MSCI decides to add or drop a country from an index, every asset manager tracking it has to follow, moving billions. The index is the master that every ETF silently obeys.</div>
+
+<h2>2. Why ordinary mutual funds are quietly unfair</h2>
+
+<p>Before we can appreciate the ETF, we need to see what it was invented to fix. Pooled investment vehicles come in two broad shapes. <em>Open-ended</em> funds — most mutual funds — create and redeem units on demand, so the number of units floats and there is usually no secondary market; it becomes an assets-under-management game. <em>Closed-ended</em> funds raise a fixed pot once and then trade on an exchange, where the price can drift far from the fund's true <em>net asset value</em> (NAV = total portfolio value ÷ number of units) because there is no mechanism to arbitrage the gap away.</p>
+
+<p>Modern mutual funds price you at the <em>end-of-day</em> NAV. That sounds fair — nobody knows the closing price when they place an order. But the structure has two deep flaws.</p>
+
+<h3>Flaw one: the free-rider problem</h3>
+
+<p>Imagine three friends each put ₹1,000,000 into a fund. One redeems the next day. The manager has already invested the cash, so to pay the redeemer he must sell securities, incurring, say, ₹2,000 in transaction costs. Here is the unfair part: that ₹2,000 is charged at the <em>fund</em> level — it cannot be pinned on the person who left. It is spread across everyone, roughly ₹667 each. So the redeemer effectively walks away with about ₹999,333, more than the ₹998,000 they'd get if they bore the full cost themselves. The people who stayed subsidized the person who came and went.</p>
+
+<div class="warn"><strong>The hidden tax on patience.</strong> Every time someone trades in or out, the long-term holders foot the transaction bill. Studies suggest this "free-rider" drag can cost loyal investors as much as 1.5–2% of CAGR over the years. The most patient investors are penalized the most.</div>
+
+<h3>Flaw two: the tax problem</h3>
+
+<p>An active fund manager who sells a winning position realizes a capital gain — and that taxable event is distributed to <em>all</em> holders, regardless of each person's own tax situation. A ₹500,000 realized gain at a 15% rate creates a ₹75,000 tax event imposed on people who never asked to sell anything. So every single sell decision drags tax consequences across the whole book.</p>
+
+<p>These flaws aren't new. In 1976 Professor Nils Hakansson described them in a (very readable) paper. A decade later a <em>commodity</em> trader named Nathan Most read it and decided to build a product that fixed them — launching SPDR, the first ETF, in 1993. Most's commodity background is why ETF jargon — warehouses, baskets, receipts — sounds like it came from a grain exchange. It did.</p>
+
+<h2>3. The primary market: picture a warehouse</h2>
+
+<p>If you remember only one image from this lesson, make it this: the ETF's primary market is a <em>warehouse of stocks</em>, and the fund manager is a warehouse manager — not a glamorous stock-picker. He doesn't do research; he keeps the shelves matching the index.</p>
+
+<p>You cannot buy a single ETF unit from the fund. You transact in lots called <em>creation units</em> (say 100,000 shares), and crucially the transaction is <em>in kind</em> — no cash changes hands for the stocks. To create ETF shares, a special firm called an <em>Authorized Participant</em> assembles the exact <em>creation basket</em> the fund publishes each day (so many shares of each constituent), adds a small cash component, hands the whole thing over, and receives ETF shares in return. To redeem, the AP gives back ETF shares and receives a basket of stocks, which it then sells itself if it wants cash.</p>
+
+<p>Let's price it. A ten-stock basket worth ₹3,500,046, plus 20 basis points of transaction cost (₹7,000) and a ₹45,325 cash component, costs ₹3,552,371. Divided by 100,000 ETF shares, that's about <em>₹35.52 per ETF</em>. Run the same basket the other way for a redemption — sell the stocks, pay 20 bps, add the cash component — and you net ₹3,538,371, or about ₹35.38 per ETF.</p>
+
+<table>
+<tr><th>Step</th><th>Creation (₹)</th><th>Redemption (₹)</th></tr>
+<tr><td>Stock value of basket</td><td>3,500,046</td><td>3,500,046</td></tr>
+<tr><td>20 bps transaction charge</td><td>+ 7,000</td><td>− 7,000</td></tr>
+<tr><td>Cash component</td><td>+ 45,325</td><td>+ 45,325</td></tr>
+<tr><td>Total</td><td>3,552,371</td><td>3,538,371</td></tr>
+<tr><td>Per ETF (÷ 100,000)</td><td><strong>35.5237</strong></td><td><strong>35.3837</strong></td></tr>
+</table>
+
+<p>The 14-paise round-trip gap is two lots of 20 bps — and it is paid by the Authorized Participant, who does all the assembling and selling. That single fact is the key to everything that follows.</p>
+
+<div class="callout"><strong>Who are these APs?</strong> Special, deep-pocketed firms — SPDR had over thirty originally, and today many are HFT shops. By design ordinary retail investors are kept out of the primary market; you simply can't assemble and deliver a multi-crore basket. That's not a flaw, it's the point.</div>
+
+<h2>4. The elegant fix: how baskets solve both flaws</h2>
+
+<p>Now watch the two mutual-fund flaws dissolve. Replay the three-investor story, but as an ETF. Each investor brings a <em>basket</em> worth ₹2.5 million (not cash) and receives 100,000 ETF shares. On day one the fund holds ₹7.5 million across 300,000 units — a NAV of ₹25. On day two one investor redeems: the manager simply hands back a basket and extinguishes those 100,000 units. Assets fall to ₹5 million, units to 200,000 — and the NAV is still exactly ₹25.</p>
+
+<p>Nothing leaked onto the remaining holders. The transaction burden lives entirely with the Authorized Participant, so the free-rider problem is gone. And because everything moved <em>in kind</em>, the fund realized no capital gain — so there's no tax event to force on anyone. Two flaws, one mechanism.</p>
+
+<div class="callout"><strong>Baskets must keep tracking the index.</strong> Unlike a warehouse of grain, an ETF's basket changes when the index rebalances — a stock leaves, another enters. That's part of why the manager collects a cash component: he never takes cash for the stocks, but he still needs a little money to fund rebalances and corporate actions. Index changes are rare (NIFTY 50 saw only about four in fifteen years), so an ETF manager barely trades day to day — the polar opposite of an active manager constantly buying and selling.</div>
+
+<h2>5. The secondary market: iNAV, premium, discount, and arbitrage</h2>
+
+<p>Out in the open exchange, the ETF trades all day on a <em>lit order book</em> everyone can see. Alongside it, the fund publishes an <em>indicative NAV</em> (iNAV) — a live estimate of fair value, just the current basket value divided by the units. In our basket that's about ₹35.45.</p>
+
+<p>Authorized Participants are unique: they can see <em>both</em> the secondary price and the primary-market fair value, and they have the muscle to act on the difference. When the market price sits <em>above</em> iNAV, the ETF trades at a <em>premium</em> and the AP sells (or posts a limit sell just under the best ask). When it sits <em>below</em>, it trades at a <em>discount</em> and the AP buys. This arbitrage — impossible in a closed-ended fund — is exactly what keeps an ETF's price glued to its NAV.</p>
+
+<div class="tip"><strong>Edge has to clear a hurdle.</strong> No one arbitrages a microscopic gap. The instructor uses a 35-basis-point markup as the threshold on a liquid name — and on illiquid counters that hurdle can be 100 or 200 bps. Below the hurdle, you stand aside; above it, you trade. That discipline is what separates a real strategy from noise-chasing.</div>
+
+<div class="closer">
+<strong>The one-paragraph version.</strong> An ETF tracks a cap-weighted index kept stable through corporate actions by re-solving its divisor (splits change nothing; dividends and constituent swaps move the divisor, once a day). ETFs exist to cure two mutual-fund flaws — the free-rider cost, where in/out traders' transaction bills fall on long-term holders (a 1.5–2% CAGR drag), and the tax cost, where a manager's sell forces capital-gains tax on everyone. The cure is the primary market, a warehouse where Authorized Participants swap a published basket (plus a little cash) for ETF shares <em>in kind</em> — so the AP, not other holders, bears costs, and no gain is realized. In the secondary market a live iNAV lets APs arbitrage premiums (sell) and discounts (buy), pinning price to NAV. That arbitrage is where the HFTs and market makers earn their keep.
+</div>
+
+</body>
+</html>

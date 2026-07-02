@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 7-1 · Pandas Doubt-Solving — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:42px 30px;
+       color:#241f29;line-height:1.72;font-size:17px;background:#fffdfe}
+  h1{font-size:31px;color:#86198f;margin-bottom:4px;line-height:1.18}
+  .sub{color:#a855f7;font-style:italic;margin-bottom:30px;font-size:17px}
+  h2{font-size:23px;color:#a21caf;border-bottom:2px solid #f0abfc;padding-bottom:5px;margin-top:38px}
+  h3{font-size:19px;color:#7e22ce;margin-top:26px}
+  code{background:#fae8ff;color:#86198f;padding:1px 5px;border-radius:3px;font-family:Consolas,monospace;font-size:15px}
+  pre{background:#1e1b22;color:#f5d0fe;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.5}
+  pre code{background:none;color:inherit;padding:0}
+  .callout{background:#fdf4ff;border-left:5px solid #c026d3;padding:13px 18px;margin:20px 0;border-radius:0 7px 7px 0}
+  .warn{background:#fef2f2;border-left:5px solid #dc2626;padding:13px 18px;margin:20px 0;border-radius:0 7px 7px 0}
+  .tip{background:#fefce8;border-left:5px solid #ca8a04;padding:13px 18px;margin:20px 0;border-radius:0 7px 7px 0}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px}
+  th,td{border:1px solid #e9d5ff;padding:7px 11px;text-align:left}
+  th{background:#fae8ff;color:#86198f}
+  .mono{font-family:Consolas,monospace}
+</style>
+</head>
+<body>
+
+<h1>Pandas, For Real This Time</h1>
+<div class="sub">Week 7-1 · A doubt-solving tutorial after PBQ-02 — the practical mechanics of loading, cleaning, and reading market data</div>
+
+<p>By now you have met pandas in the abstract — <code>DataFrame</code>, <code>Series</code>, <code>read_csv</code>. This session is different. It is the tutorial where the instructor stops teaching <em>concepts</em> and starts answering the questions that actually trip people up the first time they load a real price file: <em>why are my numbers printing as <code>1e-05</code>? why won't <code>df["Close"]</code> work? why does pandas think my dates are text? how do I pull out just two columns?</em> Every answer here is small, but together they are the difference between fighting pandas and flowing with it.</p>
+
+<p>We work the whole way through on a real file: <span class="mono">TCS.NS.csv</span> — 1,233 daily bars of Tata Consultancy Services from November 2015 to November 2020, the same data you have seen before.</p>
+
+<h2>1. Warnings are not errors</h2>
+<p>The first thing that rattles beginners is a wall of pink warning text. Take a breath: a <strong>warning</strong> is pandas telling you "this still works, but one day it might change." It does <em>not</em> stop your code. An <strong>error</strong> is different — that genuinely halts execution and must be fixed. To quiet the noise:</p>
+<pre><code>import warnings
+warnings.filterwarnings("ignore")</code></pre>
+<p>Notice what this is: a <em>setting</em> applied to your current kernel session, not a change to your code. You are not fixing anything — you are choosing not to be shown the notices. That is a perfectly reasonable choice while you are learning and the warnings are about library internals you don't control yet.</p>
+
+<h2>2. Making numbers readable</h2>
+<p>Open a file of small numbers and pandas shows you things like <code>1.000000e-05</code>. Scientific notation is precise but miserable to read across a column of prices. pandas lets you set a display format:</p>
+<pre><code>pd.set_option("display.float_format", lambda x: f"{x:.8f}")
+# 1e-05  ->  0.00001000</code></pre>
+<p>The mirror-image command, <code>pd.reset_option("display.float_format")</code>, puts it back. The same pattern controls how many rows you see. By default pandas truncates a long frame with a <code>…</code> in the middle, showing the first and last few rows. If you genuinely want to see everything:</p>
+<pre><code>pd.set_option("display.max_rows", 100)   # or a big number
+# ... look at the data ...
+pd.reset_option("display.max_rows")      # back to the default 60</code></pre>
+<div class="tip"><strong>Why reset?</strong> Telling pandas to render 100,000 rows eats memory and makes the kernel sluggish. Look at what you need, then reset. Treat "show everything" as a temporary lens, not a default.</div>
+
+<h2>3. Series versus DataFrame</h2>
+<p>One sentence clears up most of the confusion: <strong>a DataFrame is a collection of columns, and every single column is a Series.</strong> That is why these two look almost identical but are not the same type:</p>
+<pre><code>df["Close"]      # -> Series  (one labelled column)
+df[["Close"]]    # -> DataFrame (a frame that happens to have one column)</code></pre>
+<p>The single brackets ask for "the Close column" and hand you a Series. The double brackets pass a <em>list</em> of column names — even a list of one — and so you get back a DataFrame. Keep this in your pocket; it explains a lot of "why does this have a different shape than I expected?" moments.</p>
+
+<h2>4. Reading the file — and two classic traps</h2>
+<p>The entry point is exactly what its name suggests:</p>
+<pre><code>raw = pd.read_csv("TCS.NS.csv")
+raw.head()    # sanity check: first 5 rows</code></pre>
+<p>Always run <code>.head()</code> straight after a read. It is your "did this load the way I think it did?" check. Now the two traps.</p>
+
+<h3>Trap one: invisible spaces in column names</h3>
+<p>Exchange exports are notorious for column headers like <code>'Close '</code> — with a trailing space you cannot see. So <code>df["Close"]</code> fails with a <code>KeyError</code>, and you stare at a name that looks <em>exactly right</em>. The diagnosis is to print the raw list:</p>
+<pre><code>list(df.columns)   # ['Date ', 'Open ', 'High ', 'Close ', ...]  <- spaces!</code></pre>
+<p>And the cure is one line that strips whitespace off every name at once:</p>
+<pre><code>df.columns = df.columns.str.strip()</code></pre>
+<div class="callout">This is your first taste of a <strong>vectorised string method</strong>. <code>df.columns.str.strip()</code> applies <code>.strip()</code> to every column name in one go — no loop. The same <code>.str</code> accessor works on text columns too.</div>
+
+<h2>5. The index evolution — a three-stage story</h2>
+<p>This is the heart of the session. When you first read a CSV, pandas gives every row a number — 0, 1, 2, and so on. That is a <strong>RangeIndex</strong>. Run <code>df.info()</code> and you will see it named explicitly, along with the column types and the non-null counts. For a time series, a row number is the wrong label. We want the <strong>date</strong> to be the index. The instructor walks it through deliberately so you see each stage.</p>
+
+<table>
+<tr><th>Stage</th><th>What you run</th><th>Index becomes</th><th>A single label is…</th></tr>
+<tr><td>Raw</td><td class="mono">pd.read_csv(...)</td><td>RangeIndex</td><td>0, 1, 2 (integer)</td></tr>
+<tr><td>A</td><td class="mono">df.set_index("Date")</td><td>Index (object)</td><td><span class="mono">"18/11/2015"</span> — a string</td></tr>
+<tr><td>B</td><td class="mono">pd.to_datetime(idx, dayfirst=True)</td><td>DatetimeIndex</td><td><span class="mono">2015-11-18</span> — a real date</td></tr>
+</table>
+
+<p>Stage A moves the Date column into the index position, but pandas still thinks those dates are <em>text</em>. Check with <code>type()</code> and you'll see <code>str</code>. That matters: you cannot do date arithmetic or slice "all of 2018" on strings. Stage B fixes it. <code>pd.to_datetime</code> looks at anything that resembles a date and parses it into a genuine timestamp, turning the index into a <strong>DatetimeIndex</strong>. We pass <code>dayfirst=True</code> because the file is <code>dd/mm/yyyy</code>.</p>
+
+<div class="warn"><strong>The inplace gotcha.</strong> <code>df.set_index("Date")</code> only <em>shows</em> you what the change would look like — it does not alter <code>df</code>. To make it stick you must either reassign, <code>df = df.set_index("Date")</code>, or pass <code>inplace=True</code>. Running the line and being surprised the index "didn't change" is one of the most common beginner moments.</div>
+
+<h3>The one-shot way</h3>
+<p>Doing it in stages has two drawbacks: you transform the data twice, and you can end up with a duplicate Date column lingering alongside the index. The clean approach tells <code>read_csv</code> everything up front:</p>
+<pre><code>df = pd.read_csv("TCS.NS.csv",
+                 index_col=0,        # column 0 (Date) is the index
+                 parse_dates=True,   # read date-like text as dates
+                 dayfirst=True)      # dd/mm/yyyy</code></pre>
+<p>One call, and you have a <code>DatetimeIndex</code>, no leftover Date column, and the data already in chronological order. We use <code>index_col=0</code> because Date happens to be the first column; had it been the third, we'd write <code>index_col=2</code>.</p>
+
+<div class="tip"><strong>On missing values:</strong> resist the urge to drop nulls at download time. If you blindly call <code>dropna()</code> you may delete hundreds of rows without knowing what you lost. Load the data as-is, run an exploratory pass (EDA) to <em>see</em> where the gaps are and why, and only then decide — drop, or impute with a mean or median. Cleaning is a deliberate step, not a reflex.</div>
+
+<h2>6. Pulling data out: <code>.loc</code> and <code>.iloc</code></h2>
+<p>There are two ways to reach into a frame. <code>.loc</code> selects by <strong>label</strong> — the row's name and the column's name. <code>.iloc</code> selects by <strong>integer position</strong>. A quick recap of slicing first, because the rule is the same everywhere in Python: <code>lst[0:2]</code> gives you indices 0 and 1 — the stop value 2 is <em>excluded</em>. The count of items is simply stop minus start.</p>
+
+<p>With <code>.loc</code> you give it rows, a comma, then columns. A lone colon means "all":</p>
+<pre><code>df.loc[:, "Close"]               # every row, just Close  -> Series
+df.loc[:, ["Open", "Close"]]     # every row, two columns -> DataFrame
+df.loc["2015-12-03"]             # one date, all columns  -> Series</code></pre>
+<p>That last line, asking for a single date, returns a Series where the labels are the column names — for 3 Dec 2015 the Close was <span class="mono">1175.38</span> and the day's Direction was <span class="mono">DOWN</span>. With <code>.iloc</code> you think in positions instead:</p>
+<pre><code>df.iloc[5:8, 0:4]    # rows at positions 5,6,7 and the first 4 columns
+df["Close"].tail()   # the last 5 closes; 17-Nov-2020 closed at 2666.05</code></pre>
+
+<h2>7. Candlesticks</h2>
+<p>Finally, the payoff: yes, Python draws candlestick charts. Each candle carries four numbers — <strong>open, high, low, close</strong>. The thick body runs from the open to the close (coloured green when price rose, red when it fell), and the thin wick stretches from the low to the high. The instructor demonstrates this with <strong>Plotly</strong>:</p>
+<pre><code>import plotly.graph_objects as go
+go.Figure(go.Candlestick(
+    x=df.index, open=df.Open, high=df.High,
+    low=df.Low, close=df.Close)).show()</code></pre>
+<p>The accompanying practice notebook builds the identical picture with matplotlib (since Plotly isn't installed in our environment) for TCS's last 40 days — you can see the COVID-era recovery climb in green candles. The library differs; the idea is the same.</p>
+
+<h2>Where data comes from, and how to keep learning</h2>
+<p>The session closes with two practical asides. On <strong>data sources</strong>: Yahoo Finance (via <code>yfinance</code>) is free and reasonably credible though not exchange-authorised; the NSE's own archive CSVs are the most authoritative; and there are Alpha Vantage, FRED for macroeconomic series, NASDAQ Data Link (formerly Quandl), broker APIs, and <code>pandas_datareader</code>. The quant-specific libraries worth knowing are quantstats, pyfolio, backtrader, and zipline.</p>
+<p>On <strong>learning</strong>: half an hour to an hour a day, consistently, beats occasional marathons. Apply the Pareto principle — master the vital 20% (which brackets go where, the <code>library.method(arguments)</code> syntax, if/else, and loops) and the rest follows. And use large language models as a tool to explain and unblock, not as a crutch that does the thinking for you.</p>
+
+<div class="callout"><strong>The one-paragraph version.</strong> Silence warnings if they distract you (they aren't errors). Format numbers with <code>set_option</code> and reset afterwards. Read market data with <code>read_csv(index_col=0, parse_dates=True, dayfirst=True)</code> so you get a tidy <code>DatetimeIndex</code> in one shot, and strip stray spaces off column names with <code>.str.strip()</code>. Pull pieces out with <code>.loc</code> (by name) and <code>.iloc</code> (by position), remembering slices exclude their stop. Handle nulls after you've looked, never on download. And when you want to <em>see</em> the price, candlesticks — open, high, low, close — are one function call away.</div>
+
+</body>
+</html>

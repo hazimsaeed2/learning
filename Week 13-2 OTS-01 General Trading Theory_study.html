@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 13-2 OTS-01 — General Trading Theory · Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:48px 32px;
+       color:#1f2937;line-height:1.7;font-size:17px;background:#fdfdfb}
+  h1{font-size:30px;color:#9f1239;margin-bottom:4px;line-height:1.2}
+  .sub{color:#6b7280;font-style:italic;margin-bottom:28px;font-size:17px}
+  h2{font-size:23px;color:#be123c;margin-top:38px;border-bottom:2px solid #fecdd3;padding-bottom:5px}
+  h3{font-size:19px;color:#e11d48;margin-top:26px}
+  p{margin:14px 0}
+  .callout{background:#fff1f2;border-left:4px solid #e11d48;padding:12px 18px;margin:20px 0;border-radius:4px}
+  .warn{background:#fef2f2;border-left:4px solid #ef4444;padding:12px 18px;margin:20px 0;border-radius:4px}
+  .tip{background:#fffbeb;border-left:4px solid #f59e0b;padding:12px 18px;margin:20px 0;border-radius:4px}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px}
+  th,td{border:1px solid #fecdd3;padding:7px 11px;text-align:left}
+  th{background:#fff1f2;color:#9f1239}
+  code{background:#ffe4e6;color:#9f1239;padding:1px 5px;border-radius:3px;font-size:15px}
+  .closer{background:#881337;color:#ffe4e6;padding:20px 24px;border-radius:8px;margin-top:34px;font-size:16px}
+  em{color:#be123c}
+</style>
+</head>
+<body>
+
+<h1>General Trading Theory</h1>
+<div class="sub">Week 13-2 · OTS-01 — the opening lecture of the options module, taught by Euan Sinclair, who has traded options since 1995 as a market maker, prop trader, and at hedge funds and investment banks.</div>
+
+<p>This is the first lecture of a course about options, and yet the instructor spends the entire session refusing to talk about options. His reason is the most important idea you will take from the whole module: there are two words in the title, <em>option</em> and <em>trading</em>, and by far the more important is <em>trading</em>. You cannot be an options trader without first being a trader. Nothing about an instrument makes you money simply because you discovered it. So before any Greeks or volatility surfaces, you need a general philosophy of how trading actually works — and that philosophy is what this lesson delivers.</p>
+
+<h2>The two beginners, and the sweet spot between them</h2>
+
+<p>People arrive at the markets making one of two opposite mistakes. The first is the <em>moron</em>, who thinks edge is everywhere — watch a YouTube video, follow three people online, and easy money awaits. He fails because he tries to monetize advantages that don't exist, racking up transaction costs. The second is the <em>theorist</em>, usually from a science or engineering background, who is certain he can out-think the market with one brilliant model that will pay him for life. He fails too, because the market is not a fixed puzzle; it is a competitive, adaptive system made of humans, and any idea that works has to keep adapting. The truth sits in the middle: making money is <em>hard but not impossible</em>, and you survive by finding robust, obvious observations and trading them in an adaptive way.</p>
+
+<h2>The trading pyramid</h2>
+
+<p>Sinclair organizes everything into a pyramid, drawn deliberately with the font size of each layer matching its importance.</p>
+
+<table>
+<tr><th>Layer</th><th>What it is</th><th>Why it ranks there</th></tr>
+<tr><td><strong>1. Edge</strong></td><td>An unfair advantage — positive expected value.</td><td>The only thing that makes money. Without it, nothing else matters.</td></tr>
+<tr><td><strong>2. Risk management</strong></td><td>Everything that isn't edge.</td><td>Done badly it loses money; done well it merely keeps you alive long enough to reach the long run.</td></tr>
+<tr><td><strong>3. Psychology</strong></td><td>Emotional discipline.</td><td>The smallest layer. A Zen master with no edge still loses, like buying lottery tickets calmly.</td></tr>
+</table>
+
+<p>The ranking is strict: if you have no edge, your risk management and psychology are irrelevant; if you have edge but no risk management, your composure won't save you. This is why, in any bank or fund, the traders who find edge are paid the most — finding edge is the hardest thing.</p>
+
+<h2>What edge really is</h2>
+
+<p>Edge means a trade has <em>positive expected value</em> — the probability-weighted average of all outcomes. The textbook example is a loaded coin that lands heads 55% of the time. You call heads, winning a dollar or losing a dollar, so the expected value is 0.55 × (+1) + 0.45 × (−1) = <strong>+10 cents</strong>. But notice: ten cents is never a result you actually get on any single toss — you get +1 or −1. The edge is an <em>average</em>, realized only over many trials.</p>
+
+<table>
+<tr><th>Number of tosses</th><th>Realized edge per toss</th><th>% of runs that profit</th></tr>
+<tr><td>1</td><td>+0.11</td><td>56%</td></tr>
+<tr><td>10</td><td>+0.09</td><td>49%</td></tr>
+<tr><td>100</td><td>+0.10</td><td>81%</td></tr>
+<tr><td>1000</td><td>+0.10</td><td>100%</td></tr>
+</table>
+
+<p>This is why a recurring theme of the lecture is <em>surviving to the long run</em>. Averages only mean something over many trials. Over ten tosses you might well be down; over a thousand the edge is almost certain to show. Sinclair's boss — a member of the Blackjack Hall of Fame who counted cards alongside Ed Thorp — distilled it to: find an edge, then stay in the game.</p>
+
+<div class="warn"><strong>Winning often is not an edge.</strong> Consider a six-sided die where landing on 1–4 (two-thirds of the time) pays \$0.40 but landing on 5–6 loses \$1. You win two times out of three, yet the expected value is −6.7 cents. A high win-rate with poor payoffs is a long-term loser. This is exactly the trap of selling far out-of-the-money options: you win almost every time, but that says nothing about whether you have edge.</p>
+
+<h2>Two bets, same edge, very different risk</h2>
+
+<p>Expected value alone never tells the whole story. Take two coins with <em>identical</em> EV of +10 cents: coin A pays ±\$1 and wins 55% of the time; coin B pays +\$10 or −\$1 and wins only 10% of the time. Over a hundred trials, coin A's results have a standard deviation around 9.8, while coin B's is about 32.5 — roughly three times as risky for the same edge. So edge is the first gate, but risk is the second, and the two together decide whether a trade is good.</p>
+
+<h2>Sampling error means something different in finance</h2>
+
+<p>When a physicist reports a measurement "within error", he means his instrument is imprecise — the true value is exact, his reading is fuzzy. In finance it is the reverse. You know <em>exactly</em> that you made thirty dollars; what you don't know is how representative that thirty dollars is of your <em>true</em> edge, which is itself always changing. Sinclair's analogy is cricket: a batsman scores exactly 100 in an innings, but that single score tells you little about his true average. Don Bradman's career test average was 99.94 — and the next-highest in history is around 60 — yet no innings ever <em>is</em> the average. One result is never the underlying ability.</p>
+
+<h2>Risk is everything that isn't edge</h2>
+
+<p>In trading, only one thing can go right — the edge you predicted — while everything else in the world can go wrong. Sinclair walks through the categories.</p>
+
+<h3>Variance, or plain luck</h3>
+
+<p>Even a genuinely good strategy loses over short windows purely by chance. A strategy with a Sharpe ratio of 1.5 — which is excellent; Warren Buffett's best 20 years scored about 0.8 — still has a <strong>losing year roughly 7% of the time</strong>. That doesn't mean the edge is gone; it's just luck. Knowing your <em>expected</em> Sharpe is what lets you tell the difference: a Sharpe-5 high-frequency shop losing money over a whole month is suspicious and probably overfit, whereas a Sharpe-1.5 strategy having a bad year is simply normal.</p>
+
+<h3>Model risk, unpredicted factors, and meta-risks</h3>
+
+<p>The edge may never have been there, or may have decayed — and the statistics of your own results are a terrible early-warning system, because proving something stopped working needs as many observations as proving it worked. The fix is to know <em>why</em> an edge exists (US month-end stock drift comes from payroll and retirement inflows) so you can stop the moment the reason disappears, without waiting years. Then there are factors you simply don't predict: an options trader predicts <em>volatility</em>, while stock moves, currencies, interest rates and dividends are risks to be hedged or isolated away. And beyond the game itself lie the <em>meta-risks</em> — 9/11 closed the market entirely; wars and inflation strike from outside.</p>
+
+<div class="callout"><strong>The biggest blow-ups are fraud, not Greeks.</strong> Sumitomo, Jérôme Kerviel, Nick Leeson, Bernie Madoff, FTX — the truly enormous losses come from cheating and hidden risk, not from exotic option exposures. The lesson is organizational: Nick Leeson destroyed Barings because he was <em>both</em> the trader and his own risk manager. You always need an independent layer of risk oversight, and you never put all your eggs in one basket.</div>
+
+<h3>Black swans</h3>
+
+<p>A black swan is not merely a big event — a market crash is not a black swan, because crashes happen all the time and if one ruins you, you were doing something wrong. A true black swan is <em>unimaginable</em>: the name comes from Europeans who never thought to ask the probability of a black swan until they reached Australia and saw one. Sinclair was hit twice by index and ETF restructurings that suddenly changed the dividends his options book depended on — events he could not have imagined because an index is, after all, just a number someone made up and can change at will.</p>
+
+<div class="tip"><strong>Hedge the consequence, not the probability.</strong> You can't predict a black swan, but you can limit what it does to you. Risk management is not about how likely an event is — with a true black swan you don't even know the event — it is about the <em>consequences</em>. That said, don't over-hedge: capping a loss too tightly can throw away so much edge that you no longer have positive expected value. You hedge against things that would <em>ruin your life</em>, not against everything unpleasant.</p>
+
+<h2>The efficient market hypothesis, and where money lives</h2>
+
+<p>A market is efficient with respect to some information if you cannot profit from that information. The EMH isn't literally true — even its authors never claimed that — but it is a very good approximation, the way "the earth is a sphere" is far better than "the earth is flat." You make your living in the small exceptions, like a pilot who flies a great-circle route but still has to avoid the mountains. Crucially, the EMH even tells you <em>where to look</em>: markets that are constrained (early crypto, when the big funds couldn't easily get in), markets with information asymmetries (FX desks can legally front-run; commodity giants know more than you), and situations where participants have <em>different goals</em>.</p>
+
+<p>Out of these exceptions come the two kinds of edge that matter.</p>
+
+<table>
+<tr><th></th><th>Inefficiency</th><th>Risk premium</th></tr>
+<tr><td>What it is</td><td>An arbitrage or mispricing — buy gold in London, sell it dearer in New York.</td><td>Someone pays you to take a risk they don't want — insurance, or selling options.</td></tr>
+<tr><td>Lifespan</td><td>Transient — others notice and trade it away.</td><td>Persistent — insurance demand never goes away.</td></tr>
+<tr><td>How to play it</td><td>Trade it as big as you practically can, because it won't last.</td><td>Build a career on it; it can be the basis of a business.</td></tr>
+</table>
+
+<p>The risk premium is the heart of options trading. Just as house insurance is a deliberately bad bet for you and a sound business for the insurer, <em>options tend to be overpriced</em> — a risk premium paid to whoever is willing to be short and bear the danger of a blow-up. This is not a new discovery: Sinclair owns a trading book from 1905 in which the author treats the overpricing of options as already-old common knowledge. An effect that has persisted for 150 years is a reasonable bet to persist through your career.</p>
+
+<div class="warn"><strong>The edge is easy to find; the risk is hard to manage.</strong> Selling options has clear positive expected value, and in a simulation 97% of short-premium trades are profitable — but the rare losing trade is enormous, and if you are simply short options when the market crashes, you blow up. The edge is real; surviving it requires hedging the consequences. Trading options safely is like defusing a bomb: perfectly doable if you know the wrinkles, lethal if you don't.</p>
+
+<h2>Don't be a hero</h2>
+
+<p>Even a real edge will destroy you if you bet too big. Betting everything you own on a 55% coin still has positive expected value — and is still a terrible idea. The growth-optimal stake on that coin is the Kelly fraction, here just <em>p − q = 0.10</em>, a tiny slice of your capital. The simulation makes the point brutally: betting all-in has the edge yet goes broke essentially every time, while a full-Kelly or half-Kelly bettor compounds steadily upward.</p>
+
+<table>
+<tr><th>Bet size</th><th>Median ending wealth (start = 1)</th><th>Probability of ruin</th></tr>
+<tr><td>All-in (f = 1.0)</td><td>~0</td><td>100%</td></tr>
+<tr><td>Full-Kelly (f = 0.10)</td><td>×4.49</td><td>0%</td></tr>
+<tr><td>Half-Kelly (f = 0.05)</td><td>×3.08</td><td>0%</td></tr>
+</table>
+
+<p>You are not paid more for playing on hard mode. Make many small bets, let the edge compound, and resist the urge to take one giant shot — the people who make billions in a single trade rarely do it twice.</p>
+
+<div class="closer">
+<strong>The one-paragraph version.</strong> You are a <em>trader</em> first and an options trader second; nothing about an instrument makes money on its own. Trading is a pyramid: <em>edge</em> (positive expected value — the only thing that pays), then <em>risk management</em> (everything that isn't edge, which keeps you alive to reach the long run), then a sliver of <em>psychology</em>. A 55% coin has EV +10¢ realized only over many trials, so survive the long run and never bet like a hero (Kelly is tiny). <em>Win-rate is not edge</em>, and equal-EV bets can differ wildly in risk. Risk includes model decay, luck (a Sharpe-1.5 strategy loses ~7% of years), unpredicted factors, fraud (have an independent risk manager), and black swans (hedge the consequences, not the probabilities). The EMH is a great approximation; you live in its exceptions — fleeting <em>inefficiencies</em> (arbitrage, trade big) and persistent <em>risk premia</em> (selling options, a career). Always start from an <em>observation</em> and quantify it as simply as possible: the magic is in the observation, never in the method.
+</div>
+
+</body>
+</html>

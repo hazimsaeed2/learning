@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 9-1 · DMP-03 OOP in Python (Part 1) — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:48px 28px;
+       color:#1e293b;line-height:1.7;font-size:17px;background:#fbfcfd;}
+  h1{font-size:30px;color:#0f172a;line-height:1.25;margin-bottom:4px;}
+  h2{font-size:23px;color:#0f766e;margin-top:40px;border-bottom:2px solid #cbd5e1;padding-bottom:5px;}
+  h3{font-size:19px;color:#115e59;margin-top:28px;}
+  .sub{color:#475569;font-style:italic;margin-top:0;}
+  code{font-family:ui-monospace,Consolas,monospace;background:#e2e8f0;padding:1px 5px;border-radius:4px;font-size:15px;}
+  pre{background:#0f172a;color:#ccfbf1;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.5;}
+  pre code{background:none;color:inherit;padding:0;}
+  .callout{background:#f0fdfa;border-left:4px solid #0f766e;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  .warn{background:#fef2f2;border-left:4px solid #dc2626;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  .tip{background:#fffbeb;border-left:4px solid #d97706;padding:12px 18px;margin:20px 0;border-radius:0 8px 8px 0;}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px;}
+  th,td{border:1px solid #cbd5e1;padding:7px 10px;text-align:left;}
+  th{background:#e2e8f0;color:#0f172a;}
+  .closer{background:#f8fafc;border:1px solid #cbd5e1;border-radius:10px;padding:18px 22px;margin-top:36px;}
+</style>
+</head>
+<body>
+
+<h1>Beating the Market — and Why It's So Hard</h1>
+<p class="sub">Week 9-1 · Data Analysis &amp; Modeling in Python · DMP-03 (Part 1) · with Dr. Yves Hilpisch</p>
+
+<p>The lecture is titled "Object-Oriented Programming in Python", but it opens somewhere more fundamental. Before
+you write a single trading class, you need to understand what you are up against. So this first half is a
+journey: we meet the <strong>villain</strong> (the Efficient Market Hypothesis), we pick up the
+<strong>mathematics</strong> we'll need (returns, risk, regression), and we run our first
+<strong>vectorized back-test</strong>. Only once you have felt the friction of doing this the simple way does the
+case for object-oriented programming — coming in Part 2 — really land.</p>
+
+<p>Hilpisch works with a ten-year EUR/USD file in class. We don't have that file, so every idea below is
+reproduced on the shipped <code>eod_prices.csv</code> — the NIFTY index, 962 daily bars from 2017 to 2020. The
+concepts carry over unchanged.</p>
+
+<h2>1. The villain: the Efficient Market Hypothesis</h2>
+
+<p>Algorithmic trading, if we mean an alpha-generating strategy, is about one thing: beating the market. And the
+single financial theory with the most empirical support is the one that says you mostly <em>can't</em> — the
+Efficient Market Hypothesis. It is our benchmark, the baseline against which everything else must be judged.</p>
+
+<p>Three landmarks tell the story. <strong>Fama</strong>, in the 1960s, argued prices behave approximately like a
+random walk, so past price changes carry no systematic forecasting power — which makes the chartist's craft, in
+his words, essentially worthless. <strong>Jensen</strong>, in 1978, sharpened this: a market is efficient with
+respect to some <em>information set</em> if no trading rule using only that information can earn persistent,
+risk-adjusted excess profit. And <strong>Timmermann and Granger</strong>, in 2004, added the crucial twist that
+efficiency depends on the information set <strong>S</strong>, the search technology <strong>T</strong>, and the
+model class <strong>M</strong> available at a given time. In other words, the EMH is a <em>moving target</em>:
+what was unbeatable in 1965, before computers and modern data, may not be unbeatable today.</p>
+
+<div class="warn"><strong>The blunt corollary.</strong> If you firmly believe the EMH, you should not be doing
+algorithmic trading at all — you should buy a broad, low-cost index fund and be done with it. We proceed only
+because we treat efficiency as a moving benchmark and go hunting for <em>exploitable structure</em>.</div>
+
+<h2>2. The random-walk model, and the best you can do</h2>
+
+<p>The simplest model of a price is a random walk: tomorrow's price equals today's price plus some zero-mean
+noise.</p>
+
+<pre><code>S(t+1) = S(t) + ε,      with   E[ε | information today] = 0</code></pre>
+
+<p>Work through the mathematics in a least-squares sense and you reach a humbling conclusion: the best possible
+forecast of tomorrow's price, given everything you know today, is simply <strong>today's price</strong>. There
+is no predictable alpha to be squeezed from past prices alone. Simulating a handful of random walks drives the
+point home — they wander up and down with no memory you could trade on.</p>
+
+<h2>3. Prices versus returns — the distinction that trips everyone</h2>
+
+<p>Here is the single most important habit in quant finance: always know whether you are looking at
+<strong>prices</strong> or <strong>returns</strong>. Hilpisch admits he himself has fallen into the trap too
+often. Prices are <em>trivially</em> autocorrelated — if a price is around 18,000 today it won't be 9,000
+tomorrow, so today and yesterday correlate at about 0.99. That tells you nothing about efficiency.</p>
+
+<pre><code>px.corr(px.shift(1))            # ≈ 0.99   prices, trivially correlated
+r = np.log(px / px.shift(1))    # log returns
+r.corr(r.shift(1))              # ≈ 0      returns — the real test</code></pre>
+
+<p>The genuine test of efficiency lives on the <em>return</em> series. In an efficient market, returns should
+show no usable linear predictability from their own past — their autocorrelation should sit inside a band of
+statistical noise.</p>
+
+<h3>The autocorrelation test in practice</h3>
+
+<p>We compute the autocorrelation function (ACF) of returns out to fifteen lags and draw a 95% confidence band
+of roughly <code>±1.96/√N</code>. Bars inside the band are noise; persistent bars outside hint at structure you
+might exploit. To see what inefficiency would actually look like, we manufacture a synthetic AR(1) series,
+<code>r(t) = ρ·r(t−1) + noise</code>, with <code>ρ = 0.30</code>.</p>
+
+<div class="callout"><strong>What the data said.</strong> The NIFTY return autocorrelations scattered close to
+zero — a couple nudged just past the band, but with no persistent sign, which is exactly the noisy,
+roughly-efficient picture the theory predicts. The synthetic AR(1) series, by contrast, lit up clearly at lag 1
+(autocorrelation ≈ 0.30). That is the difference between a market you can't forecast and a process you can.</div>
+
+<p>Run this same test on EUR/USD, Apple, gold — almost any end-of-day series — and Hilpisch promises you'll see
+the same thing 99.9% of the time: returns look efficient. A student rightly noted that big shocks, regime
+changes and heavy tails can break a single correlation number; true, but this deliberately simple model is a
+thermometer, not a diagnosis. It tells you whether there <em>might</em> be a fever worth investigating.</p>
+
+<h2>4. The mathematics of returns and risk</h2>
+
+<p>Two flavours of return, and they combine differently over time. <strong>Simple</strong> returns compound
+<em>multiplicatively</em> — you take the cumulative product of <code>(1 + R)</code>. <strong>Log</strong>
+returns simply <em>add up</em> — a cumulative sum. Over a single day the two are nearly identical; over long
+horizons, or in high-frequency settings with a million compoundings a day, log returns win because they are
+both analytically convenient and numerically stable.</p>
+
+<p>For risk, end-of-day data is annualized with <strong>252</strong> trading days: multiply mean return by 252,
+and volatility by the square root of 252. The <strong>Sharpe ratio</strong> is annualized mean over annualized
+volatility. On our NIFTY window that gave roughly 12% annual return, 19% annual volatility, a Sharpe of about
+0.63, and a maximum drawdown near −38%.</p>
+
+<h3>The curse of asymmetry</h3>
+
+<p>Now the idea Hilpisch most wants you to remember. Volatility is an average; it quietly hides what happened in
+between. Drawdowns don't. And recovering from a drawdown requires a <em>larger</em> percentage gain than the
+loss itself — the curse of asymmetry.</p>
+
+<table>
+<tr><th>Drawdown</th><th>5%</th><th>10%</th><th>20%</th><th>50%</th><th>90%</th></tr>
+<tr><td>Gain to break even</td><td>+5.3%</td><td>+11.1%</td><td>+25%</td><td>+100%</td><td>+900%</td></tr>
+</table>
+
+<p>A 20% loss needs a 25% gain to recover — only five points more, no big deal. But the relationship is not
+linear: a 50% loss needs a full 100% gain, and a 90% loss needs 900%. It is the large drawdowns, not the
+day-to-day wobble, that quietly kill a strategy.</p>
+
+<div class="warn"><strong>A subtle trap.</strong> "But I'll add stop-losses to avoid drawdowns." If a drawdown
+still appears in your back-test, your execution controls have not removed it — they can only stop you trading.
+Sitting inside a year-long drawdown in real time feels nothing like seeing the tidy end result of a back-test
+where, on average, everything turned out fine.</div>
+
+<h2>5. The first back-test: a vectorized OLS strategy</h2>
+
+<p>Now we try to beat the market. The <strong>vectorized</strong> style expresses the whole strategy as
+deterministic transformations on entire arrays — no <code>for</code> loop walking bar by bar. It is compact and
+fast, which makes sweeping a thousand parameter settings easy. Our example: build seven lagged return features,
+fit an ordinary-least-squares model, forecast the next return, and go long or short on the sign of that
+forecast.</p>
+
+<pre><code>for k in range(1, 8):
+    df[f"l{k}"] = df["r"].shift(k)          # seven lag features
+X = np.column_stack([np.ones(n)] + [df[f"l{k}"] for k in 1..7])  # constant + 7 lags
+beta = np.linalg.lstsq(X, df["r"])[0]       # OLS: alpha + a beta vector
+df["pred"] = X @ beta                       # forecast the return
+df["pos"]  = np.sign(df["pred"]).shift(1)   # long/short — shifted!
+df["strat"] = df["pos"] * df["r"]           # strategy = position × return</code></pre>
+
+<div class="warn"><strong>The cardinal sin: look-ahead bias.</strong> The position you take on day <em>t</em> may
+use only information available up to day <em>t−1</em>. That is why we <code>.shift(1)</code> the position. Forget
+it, and you let the strategy peek at the very return it is trying to predict — and your back-test will look
+spectacular for entirely fake reasons.</div>
+
+<div class="callout"><strong>The honest verdict.</strong> Here is the striking part. This is an
+<em>in-sample</em> fit with <em>no transaction costs</em> — the most flattering possible setup. And the OLS sign
+rule still <strong>lost money</strong>: about −47%, against a buy-and-hold gain of about +54% over the same
+window (572 long days, 381 short). The EMH warned us returns were barely predictable; the autocorrelation test
+agreed; and the back-test delivered the verdict. An arbitrary signal, even fitted to the data, has no real
+edge.</div>
+
+<h2>6. The strategy quality checklist</h2>
+
+<p>Which is exactly why you need a checklist — a pilot's pre-flight before any capital is allocated. "Does it
+make money?" is far too low-dimensional a question.</p>
+
+<table>
+<tr><th>Gate</th><th>The question to ask</th></tr>
+<tr><td>Statistical edge</td><td>Do returns or forecasts genuinely differ from noise?</td></tr>
+<tr><td>Economic edge</td><td>Is it still profitable <em>after</em> financing and transaction costs?</td></tr>
+<tr><td>Persistence / robustness</td><td>Does it survive out-of-sample, not just one small set?</td></tr>
+<tr><td>Implementability</td><td>Are there liquid, tradable instruments? (An index can't be traded directly.)</td></tr>
+<tr><td>Benchmark &amp; capital cost</td><td>Does it beat the benchmark and your cost of capital?</td></tr>
+<tr><td>Risk profile</td><td>Are drawdowns, volatility and tail behaviour acceptable?</td></tr>
+</table>
+
+<p>Hilpisch's favourite retail playground is foreign exchange: the major FX pairs are highly liquid with tight
+spreads, you can go long or short symmetrically (unlike many stocks for retail traders), the data and REST APIs
+are clean, and rates often mean-revert around macro and policy regimes. That is why EUR/USD is his running
+example.</p>
+
+<div class="tip"><strong>Where this is heading.</strong> The vectorized back-test we just built is intuitive and
+fast, but it is unrealistic — it operates on the whole array at once, far from how a market actually delivers
+prices one tick at a time. Part 2 introduces <strong>object-oriented programming</strong> and an
+<strong>event-based back-testing</strong> framework that moves us closer to market reality. The friction you
+felt here — copy-pasted cells, the constant danger of look-ahead bias — is precisely the problem OOP is about to
+solve.</div>
+
+<div class="closer">
+<h3 style="margin-top:0">The one-paragraph version</h3>
+<p>The <strong>Efficient Market Hypothesis</strong> is the benchmark every algorithmic strategy must beat, and
+it is a <em>moving target</em> that depends on information, technology and models. A <strong>random walk</strong>
+implies the best forecast of tomorrow's price is today's price. The real test of efficiency is on
+<strong>returns</strong>, not prices: their <strong>autocorrelation</strong> should sit inside a noise band, as
+NIFTY's roughly did, while a synthetic AR(1) with ρ=0.30 shows what exploitable structure looks like.
+<strong>Simple returns compound (cumprod), log returns add (cumsum)</strong>; risk is annualized with √252, and
+the <strong>curse of asymmetry</strong> means a 50% loss needs a 100% gain to recover. A <strong>vectorized
+OLS back-test</strong> — lag features, fit, sign, and a <code>shift</code> to avoid look-ahead — lost money even
+in-sample with no costs, a textbook EMH lesson. Judge every strategy against the <strong>quality
+checklist</strong> before risking a cent — and let that friction motivate the move to OOP and event-based
+back-testing.</p>
+</div>
+
+<p style="text-align:center;color:#94a3b8;margin-top:36px;font-size:14px;">EPAT · Week 9-1 DMP-03 · OOP in Python (Part 1) — EMH, Random Walks &amp; Vectorized Back-testing</p>
+
+</body>
+</html>

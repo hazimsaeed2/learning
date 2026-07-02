@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 17-2 OTS-03 — Options Pricing &amp; Greeks — Study Guide</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; background:#fdf7f8; color:#2b2b2b; line-height:1.7; margin:0; }
+  .wrap { max-width:820px; margin:0 auto; padding:54px 30px 90px; }
+  h1 { font-size:2.05rem; line-height:1.25; margin:0 0 6px; color:#9d174d; }
+  .sub { color:#7a6b70; font-style:italic; margin-bottom:34px; font-size:1.02rem; }
+  h2 { font-size:1.42rem; color:#9d174d; margin:42px 0 10px; border-bottom:2px solid #f3cfdc; padding-bottom:6px; }
+  h3 { font-size:1.12rem; color:#be185d; margin:26px 0 6px; }
+  p { margin:12px 0; }
+  .lead { font-size:1.08rem; color:#3a3a3a; }
+  code { background:#f6e9ef; padding:1px 6px; border-radius:4px; font-family:'Consolas',monospace; font-size:0.9em; color:#9d174d; }
+  .box { background:#fbeef3; border-left:4px solid #db2777; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  .num { background:#fbf3e8; border-left:4px solid #d9952f; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  .warn { background:#fbecec; border-left:4px solid #c0504d; padding:14px 20px; margin:20px 0; border-radius:0 8px 8px 0; }
+  ul { margin:12px 0; padding-left:24px; }
+  li { margin:6px 0; }
+  .tag { display:inline-block; background:#9d174d; color:#fff; font-size:0.72rem; letter-spacing:2px; padding:4px 12px; border-radius:20px; font-family:Arial,sans-serif; margin-bottom:16px; }
+  table { border-collapse:collapse; width:100%; margin:18px 0; font-size:0.95rem; }
+  th,td { border:1px solid #eccdd9; padding:7px 11px; text-align:left; }
+  th { background:#fbeef3; color:#9d174d; }
+  .end { text-align:center; color:#b09aa2; margin-top:50px; font-size:0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="tag">WEEK 17-2 · OTS-03 · STUDY GUIDE</div>
+  <h1>Options Pricing Models &amp; the Greeks</h1>
+  <div class="sub">A plain-English tour of Varun Kumar's third options session — what a premium is really made of, why combinations let you express any view, how Black-Scholes prices an option, and how the Greeks turn that one number into a dashboard of risk.</div>
+
+  <p class="lead">If the previous sessions were about <em>what</em> options are, this one is about <em>price</em> — the single most important thing in options literature. By the end you should be able to look at a premium and know what is driving it, build a position that expresses a nuanced market view, and read the Greeks the way a trader reads a cockpit.</p>
+
+  <h2>1. What a premium is made of</h2>
+  <p>Every option premium splits into two parts. Take an underlying at <code>S = 100</code> and a 90-strike call quoted at <code>$14</code>. Exercise it right now and you pocket <code>100 − 90 = $10</code>; that floor is the <strong>intrinsic value</strong>. The remaining <code>$4</code> is the <strong>extrinsic</strong> — or <strong>time</strong> — value: the amount you pay for the <em>optionality</em> of having until expiry for things to go your way. Intrinsic value is rigid (it only moves when the price moves); the time value is the dynamic part, and it is exactly what the Greek <em>theta</em> erodes day by day.</p>
+  <p>The same idea gives us <strong>moneyness</strong>. A call is <em>in the money</em> when <code>S &gt; X</code>, <em>at the money</em> when <code>S = X</code>, and <em>out of the money</em> when <code>S &lt; X</code> (a put is the mirror image). This vocabulary lets you describe a contract's position the way "bullish" or "consolidating" describes a market.</p>
+  <div class="box"><strong>Two structural facts.</strong> <em>American</em> options can be exercised any day, so they carry more optionality and cost more than <em>European</em> options (exercisable only at expiry) — and the labels have nothing to do with geography. Most listed and index options you will trade are European. Beyond these live <em>exotics</em> (Asian options settle on an average price, etc.), built case-by-case for institutions — interesting to know, rarely traded by retail.</div>
+
+  <h2>2. Payoff is not P&amp;L — and combinations</h2>
+  <p>A <strong>payoff</strong> diagram ignores what you paid; a <strong>P&amp;L</strong> diagram subtracts the premium, so it starts in the red until the move covers your cost. Keeping the two apart prevents a lot of confusion (a straddle's payoff looks like "win either way", but its P&amp;L only wins after recovering both premiums).</p>
+  <p>The real power of options is that you can <strong>combine</strong> calls and puts to express almost any view — something equities simply cannot do.</p>
+
+  <h3>The protective put</h3>
+  <p>Own the stock at 90 and worried about a fall? Buy a 90-put for <code>$10</code>. Below 90 the put gains exactly what the stock loses, so your worst case is the <code>$10</code> premium, while the upside stays fully open. Hedging <em>caps</em> losses; it can never erase them, because you always pay for the insurance.</p>
+
+  <h3>The bull call spread — and a cautionary tale</h3>
+  <p>Bullish, but you doubt the stock will run past 120? Buy a 90-call and <strong>sell</strong> a 120-call. The short call's premium subsidises the long call, cutting your cost; in return your profit is capped at <code>120 − 90 = $30</code>. Even if the stock rockets to 200 you still only make 30 — a calculated trade-off.</p>
+  <div class="warn"><strong>The 1×2 trap.</strong> Tempted by the premium, you sell <em>two</em> 120-calls instead of one. You collect more cash up front — but the extra <em>naked</em> short means that once the stock pushes well past 120 you start losing money. You got the direction perfectly right and <em>still</em> lost. The lesson: combinations are powerful, but never over-collect premium without a clear objective; over-using them flips your payoff away from your thesis.</div>
+  <p>The same toolkit gives you the <em>risk reversal</em> (buy a put, sell a call — bearish), and, when you have no directional view but expect a big move, the <em>straddle</em> (ATM call + put) and the cheaper <em>strangle</em> (OTM call + put).</p>
+
+  <h2>3. Relationships that always hold</h2>
+  <p>Before any pricing model, certain orderings hold in every market by simple no-arbitrage logic. Verified with Black-Scholes:</p>
+  <table>
+    <tr><th>Relationship</th><th>Why</th><th>Check</th></tr>
+    <tr><td>Longer-dated dearer</td><td>more time to finish ITM</td><td>30-day 1.57 &lt; 1-yr 9.88</td></tr>
+    <tr><td>Call &lt; underlying</td><td>else just buy the stock</td><td>90-call 10.43 &lt; 100</td></tr>
+    <tr><td>Put &lt; strike</td><td>same logic, mirrored</td><td>110-put 10.61 &lt; 110</td></tr>
+    <tr><td>Lower-strike call dearer</td><td>deeper ITM</td><td>90-call 10.43 &gt; 110-call 0.61</td></tr>
+  </table>
+
+  <h3>Put-call parity</h3>
+  <p>A frequent misconception is that if a call's premium rises, the put's must fall. Not so — calls and puts are bound together by <strong>put-call parity</strong>:</p>
+  <div class="box" style="text-align:center"><code>C − P = S − X·e^(−rT)</code></div>
+  <p>The cleanest proof builds a portfolio of <em>long put + short call + long stock</em>. At expiry it is worth exactly the strike <code>X</code> whether the market finishes up or down. With <code>S=100, X=105, r=0, &sigma;=30%, T=30 days</code> the shipped model gives a call of <code>1.566</code> and a put of <code>6.566</code>, so <code>C &minus; P = &minus;5</code>, which equals <code>S &minus; X = &minus;5</code>. Parity holds. (It relies on a fixed holding period <code>T</code>, so it applies to <em>European</em> options, not American.) Among other things, parity lets you derive the strike at which a call and put cost the same, and lets you trade a put synthetically with a call.</p>
+
+  <h2>4. Black-Scholes — turning inputs into a price</h2>
+  <p>The exchange needs a way to <em>quote</em> a premium in the first place — that is what a pricing model does. The standard closed form for a call is:</p>
+  <div class="num" style="text-align:center"><code>C = S·N(d₁) − X·e^(−rT)·N(d₂)</code></div>
+  <p>where <code>d₁ = [ln(S/X) + (r + σ²/2)T] / (σ√T)</code> and <code>d₂ = d₁ − σ√T</code>. It looks intimidating but is just the familiar <code>S − X</code> structure, each term weighted by a cumulative-normal probability:</p>
+  <ul>
+    <li><code>N(d₁)</code> is the <strong>delta</strong> — the hedge ratio, how many shares to hold per option.</li>
+    <li><code>N(d₂)</code> is the risk-neutral <strong>probability the option finishes in the money</strong>.</li>
+  </ul>
+  <p>Feed in six inputs — spot, strike, rate, dividends, time and volatility. Notice what is <em>absent</em>: past <strong>returns or drift</strong>. Options look forward to expiry, and BSM prices in a risk-neutral world, so historical drift is not an input. (Some richer models do add drift; capturing everything would push you toward machine learning.)</p>
+  <div class="box"><strong>Assumptions — and the big flaw.</strong> BSM assumes continuous trading, lognormal prices, a constant risk-free rate, European exercise, no dividends, no transaction costs — and, most controversially, <strong>constant volatility</strong>. Volatility is anything but constant, which is why stochastic-volatility models (e.g. Heston) exist; but without some assumption you never get a clean closed form. For a retail trader or an exchange, BSM is good enough. Note one hard limit: BSM prices <strong>European</strong> options only — for <em>American</em> options (which can be exercised early) you switch to numerical methods such as <strong>binomial trees</strong>.</div>
+  <p>A quick sensitivity check (ATM, 3-month, base premium 4.61): raising the spot, the volatility, or the time-to-expiry all lift the call (to 7.92, 6.57, 6.88 respectively); a higher rate nudges it up slightly to 5.01. The put follows from parity.</p>
+
+  <h2>5. The Greeks — your risk dashboard</h2>
+  <p>Why bother computing a premium the market already quotes? Because the same equation, differentiated, yields the <strong>Greeks</strong> — the partial derivatives that tell you how your premium responds to each input. They are the foundation of risk management, delta hedging, volatility trading and strategy design in the lectures to come.</p>
+  <table>
+    <tr><th>Greek</th><th>Answers</th><th>Derivative</th><th>ATM value</th></tr>
+    <tr><td>Delta</td><td>premium change per $1 spot move</td><td>∂C/∂S = N(d₁)</td><td>+0.57 (call)</td></tr>
+    <tr><td>Gamma</td><td>how fast delta itself moves</td><td>∂²C/∂S²</td><td>+0.039</td></tr>
+    <tr><td>Theta</td><td>daily time decay</td><td>∂C/∂t</td><td>−0.029/day</td></tr>
+    <tr><td>Vega</td><td>premium change per +1% vol</td><td>∂C/∂σ</td><td>+0.196</td></tr>
+    <tr><td>Rho</td><td>premium change per +1% rate</td><td>∂C/∂r</td><td>+0.131</td></tr>
+  </table>
+  <p><strong>Delta</strong> is an S-shaped curve in the spot; a "90-delta call" simply means a delta of 0.9 — a <code>$1</code> rise lifts the premium about <code>$0.90</code>. Because of parity, <code>delta_call − delta_put = 1</code> always. <strong>Gamma</strong> measures how unstable your delta is, and it <em>peaks at the money</em> and for the <em>nearest</em> expiry — so if you want a steady delta, trade deep ITM/OTM or longer-dated; if you want a lively delta, trade ATM near expiry. <strong>Theta</strong> (decay) is also fiercest at the money. <strong>Vega</strong> peaks at the money too, but grows with time — a one-year option is far more vol-sensitive (0.375) than a one-week one (0.055), which matters enormously for volatility trades around events like a budget.</p>
+  <div class="num"><strong>Additivity &amp; trader jargon.</strong> Greeks <em>sum</em> across a book. A position of "long 5000 delta" makes <code>$5000</code> per <code>$1</code> up-move; "short 500 theta" bleeds <code>$500</code> a day; "long 1000 vega" gains <code>$1000</code> per <code>+1%</code> vol. Our sample book (long 10 ATM calls, short 5 110-calls, ×100) nets +460 delta, −19 theta and +123 vega. Beyond the standard five sit second-order Greeks — <em>Vanna</em> (∂delta/∂σ), <em>Veta</em> (∂vega/∂t) — and you can define any derivative you need.</div>
+
+  <h2>6. The takeaways</h2>
+  <ul>
+    <li>Premium = intrinsic + time value; theta eats the time value.</li>
+    <li>Payoff ignores cost; P&amp;L doesn't. Combinations express nuanced views — but don't over-sell premium.</li>
+    <li>Put-call parity (<code>C − P = S − X·e^(−rT)</code>) ties calls and puts together; European only.</li>
+    <li>Black-Scholes prices with six inputs and no drift; its weakest assumption is constant volatility.</li>
+    <li>The Greeks are partial derivatives — Delta, Gamma, Theta, Vega, Rho — and Gamma/Theta/Vega all peak at the money.</li>
+    <li>Greeks are additive across a portfolio; they are the language of every risk and volatility lecture that follows.</li>
+  </ul>
+  <p>Next session moves from definitions into practice: measuring and forecasting volatility, and structuring real volatility trades with these Greeks.</p>
+
+  <div class="end">— End of Week 17-2 OTS-03 study guide · pair this with the dashboard cheat sheet and the executed practice notebook —</div>
+
+</div>
+</body>
+</html>

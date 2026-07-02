@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 23-1 · MLT-06 — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;line-height:1.7;color:#1f2937;
+       max-width:820px;margin:0 auto;padding:40px 28px;background:#fbfbf9}
+  h1{font-size:30px;color:#1e3a5f;border-bottom:3px solid #1e3a5f;padding-bottom:10px;margin-bottom:6px}
+  h2{font-size:22px;color:#1e3a5f;margin-top:34px;border-left:5px solid #3b82f6;padding-left:12px}
+  h3{font-size:17px;color:#334155;margin-top:22px}
+  p{margin:12px 0}
+  .lead{font-size:17px;color:#374151;font-style:italic}
+  .box{background:#eef4fb;border:1px solid #cdddf0;border-radius:8px;padding:14px 18px;margin:18px 0}
+  .key{background:#fef9ec;border-left:4px solid #d4a017;padding:10px 16px;margin:16px 0}
+  b{color:#13283f}
+  code{background:#eceff3;padding:1px 6px;border-radius:4px;font-family:Consolas,monospace;font-size:14px}
+  ul{margin:10px 0}li{margin:6px 0}
+  .foot{margin-top:40px;border-top:1px solid #d1d5db;padding-top:14px;color:#6b7280;font-size:14px}
+</style>
+</head>
+<body>
+
+<h1>Natural Language Processing &amp; Sentiment Analysis in Trading</h1>
+<p class="lead">Week 23-1 · MLT-06 — a plain-English walk through how funds turn unstructured words into tradable numbers. Instructor: Radha Krishna (London Stock Exchange Group / Refinitiv, around twenty-five years in the field including a decade at Goldman).</p>
+
+<p>For most of the history of quantitative trading, the raw material was numbers that the market itself produced: the prices at which trades happened, the sizes that changed hands, the quotes resting in the order book. That kind of data has a comforting property — it has a <b>ground truth</b>. A trade is a fact. There was a buyer, a seller, a price and a time, and nobody can argue about it. The trouble is that everybody can see it, so the easy money in it has been competed away. The edge that used to come from being slightly faster or slightly cleverer with the same price feed keeps getting thinner.</p>
+
+<p>So the industry has been reaching for a different kind of raw material: <b>alternative data</b>. News articles, sentiment feeds, earnings-call transcripts, broker briefs, ESG ratings, satellite images, credit-card panels. The defining feature of all of it is that it is <b>unstructured and modelled</b> rather than discovered. There is no ground truth. If you ask five different ESG vendors how "green" a company is, you will get five different scores, because each of them built a different model out of different documents. Alternative data used to be described as a "supplement" to the core price signal; today people increasingly call it a "complement", because for some strategies it has become a primary driver rather than a garnish.</p>
+
+<h2>From a news story to a number</h2>
+
+<p>The journey from a sentence a journalist typed to a number a model can trade on has several stages, and it helps to see the whole pipeline before zooming into any part of it.</p>
+
+<p>The first problem is humble but fatal if you get it wrong: <b>identity</b>. A news story mentions "Boeing". Which Boeing — the American parent, the European subsidiary, a joint venture? If you cannot reliably attach the story to the right company, every clever thing you do afterwards is built on sand. The market has no single shared identifier; Bloomberg, FactSet and S&amp;P each invented their own, and you stitch between them using the international securities number (ISIN). LSEG publishes an open identifier called the <b>permID</b> — think of it as a ten-digit barcode for an organisation, a quote or an instrument — precisely so that a news item can be pinned to an unambiguous entity.</p>
+
+<p>Once the companies are identified, a model reads the text and emits, for each company, three probabilities: the chance the story is <b>negative</b>, <b>neutral</b> or <b>positive</b>. You take whichever is largest — the <code>argmax</code> — and that becomes a class: minus one, zero or plus one. A single story can carry several companies at once, so one news item fans out into many sentiment rows; this is a <b>one-to-many</b> relationship. Richer feeds (MarketPsych is the example named) go beyond a single positive-or-negative axis and score many separate emotions — optimism, fear, joy, violence, time-urgency, volatility, supply-versus-demand — for each asset, alongside a <b>buzz</b> figure that simply counts how much is being written, normalised so you can compare a quiet day with a frantic one.</p>
+
+<div class="box"><b>Worked example — the score.</b> A model reads a story about Royal Dutch Shell and outputs P(neg)=0.10, P(neu)=0.27, P(pos)=0.63. The largest is the positive bucket, so Shell's sentiment for that story is <b>+1</b>. The same story mentions BP with P(neg)=0.41, P(neu)=0.34, P(pos)=0.25 — largest is negative, so BP scores <b>−1</b>. One story, two opposite signals, because the model judged the news good for one and bad for the other.</div>
+
+<h2>Cleaning the text</h2>
+
+<p>Before any of that modelling, raw text has to be tidied. The classic recipe is to lowercase everything, collapse stray whitespace, throw away punctuation and digits, drop the "stop-words" that carry no meaning (<i>the, of, to, and</i>), and reduce words to their root form so that "jumped" and "jumping" both become "jump" (this last step is called lemmatization). A sentence like <i>"Shell PLC's Q4 2025 profit BEAT estimates by 12%!!"</i> collapses to <i>"shell plc profit beat estimates"</i>. The instructor's preference is to do this with <b>spaCy</b>, a library that has been refined by language experts for more than a decade and behaves predictably; a large language model can do the same job faster, but it can also quietly hallucinate, so whatever it produces has to be checked.</p>
+
+<h2>Turning words into numbers — and the trap of counting</h2>
+
+<p>A model cannot eat words; it needs vectors. The naive way is to count words — bag-of-words, or its weighted cousin TF-IDF. This works, but it has a blind spot that matters enormously in finance. Consider two phrases: "the company went bankrupt" and "the company got delisted". To a human they mean almost the same dreadful thing, yet they share no important <i>content</i> words. A counting model therefore sees them as nearly unrelated — in the notebook the TF-IDF cosine similarity between them is only <b>0.34</b>, and that comes entirely from the shared function words "the company"; strip those and it falls to zero. A modern <b>semantic embedding</b> model, which maps phrases into a space where meaning lives, scores the same pair at around <b>0.83</b> (the lecture's figure — embeddings need a downloaded transformer, so the 0.34 above is what the notebook computes live). That gap is the whole reason embeddings exist.</p>
+
+<div class="key"><b>The lesson.</b> Counting words tells you <i>which</i> words appeared. Embeddings tell you <i>what the sentence meant</i>. For finance, where "delisted" and "bankrupt" must be understood as cousins, meaning is what you are paying for. Typical embedding sizes: OpenAI 1536 numbers, BERT 768, sentence-transformers 384.</p>
+
+<h2>Building your own sentiment model</h2>
+
+<p>A frequent request is "I want my own sentiment model rather than a vendor's." The honest starting point is sobering: a general-purpose large language model, used out of the box, is rather poor at financial sentiment. It is <b>neutral-biased</b> — when it is unsure, it shrugs and says "neutral". If you draw its confusion matrix, only a minority of the genuinely positive and genuinely negative stories land on the diagonal where they belong; in the lecture those figures were roughly 29% and 31%, with the rest swept into neutral.</p>
+
+<p>The fix is <b>fine-tuning</b>: you take the pre-trained model and nudge only its final layers using a set of correctly labelled financial examples. This is comparatively cheap, and the payoff is large — in the lecture the positive hit-rate rose from 29% to 59% and the negative from 31% to 74%. Those are the instructor's own figures, measured on a hand-labelled financial corpus — proprietary data that can't be reproduced offline. The catch, and it is a real one, is that the labelled data has to be created by <b>human experts</b>. You cannot use one language model to grade another and call it ground truth; somebody has to sit down and decide, story by story, what the right answer is. That labelling is the tedious, expensive, irreplaceable heart of the whole exercise.</p>
+
+<h2>Sentiment as a trading signal</h2>
+
+<p>Suppose you now have a sentiment series. The first thing you notice is that it is <b>noisy</b> — it jumps around far more than the thing it is supposed to be tracking. Before overlaying it on price, quants smooth it with a <b>state-space model</b>, the Kalman filter being the famous member of the family. In the notebook a "local level" model (from <code>statsmodels</code>) takes the real Baidu net-sentiment series — a standard deviation of 0.417 — and returns a smoothed mood with a standard deviation of 0.286, and that smoothed mood correlates +0.20 with the Baidu price it is meant to shadow. Only mildly, which is exactly the instructor's point: the overlay is asset-specific. In his examples Alibaba's sentiment tracks its price beautifully, China Mobile's barely moves, and Facebook's was actually <i>negatively</i> correlated — so you always read the overlay one name at a time, and Baidu sits somewhere in between.</p>
+
+<p>The deeper question is whether sentiment <b>leads</b> price or merely follows it. If price moves first and sentiment catches up, then the sentiment is just yesterday's news already baked into the quote, and it is useless to you. The tool for settling this is <b>Granger causality</b>, which asks whether the past of one series helps predict the other. On the real Baidu series the test is nearly symmetric: sentiment-predicting-returns comes back with a best p-value of about 0.046, while returns-predicting-sentiment is actually a touch stronger at 0.010. That is not the clean, one-sided result you hope for — it says the news lags Baidu's price about as much as it leads it, so there is no obvious edge to harvest on this name. A strongly one-sided low p-value would be the green light; a nearly symmetric one like this means you keep looking.</p>
+
+<div class="box"><b>The multi-dimensional twist.</b> With a feed that scores many emotions, you can correlate each one against an asset. In the instructor's crude-oil illustration — run on MarketPsych's proprietary feed, so shown directionally rather than reproduced here — price-forecast, trust and optimism lean positive while violence, supply-demand and volatility lean negative. Rather than guess which matters, you feed all of them into a <b>neural network</b> and let it pick and combine.</p>
+
+<h2>A strategy you can picture — the FX buzz rank</h2>
+
+<p>The most concrete trade in the lecture is a weekly currency strategy, and its logic is worth internalising because it transfers everywhere. Every Monday you do <b>not</b> look at the level of sentiment first. You look at <b>buzz</b> — which currency pairs are being talked about most — and keep only that busy subset. Within it you then <b>rank</b> the pairs on a chosen dimension, say uncertainty, and go long the two most-uncertain while shorting the two least-uncertain, rebalancing each week.</p>
+
+<div class="key"><b>The single most important habit.</b> You trade <b>relative ranks</b>, never absolute sentiment values. An "uncertainty of 0.7" means nothing on its own; "the most uncertain pair this week, among the ones people are actually discussing" means something you can act on. Filter by buzz, rank by a dimension, trade the extremes.</div>
+
+<p>The instructor's own fifteen-year version returns about +37% at a Sharpe near 0.27 — deliberately modest, and on a proprietary feed we can't rerun. What we <i>can</i> run is the closest reproducible cousin, on the real Baidu sentiment file shipped with the lecture: holding Baidu whenever its Kalman-smoothed mood is positive (trading the next day, so there is no look-ahead) turned $1 into roughly $5.90 — a total return of +489% against buy-and-hold's +89% over 2012-2018, at a Sharpe of 1.05 versus 0.45 and a shallower worst drawdown (−31.8% versus −47.1%). One asset, in-sample, no costs — a complement rather than a finished strategy — but a real number, not a synthetic one. The same buzz-filter-then-relative-rank template applies to equities and commodities just as readily as to FX.</p>
+
+<h2>Sorting the firehose — topic modeling</h2>
+
+<p>A surprising share of NLP work in finance — the instructor put it at 60–70% of some teams — is not about sentiment at all but about <b>topic codes</b>: tagging each story with a nested label (markets → foreign exchange → FX derivatives) so that downstream systems can filter by subject, sector or geography. The technology has a tidy lineage: Latent Semantic Analysis in 1988, its probabilistic successor PLSA around 2000, and Latent Dirichlet Allocation (LDA) in 2003, which became practical for everyone around 2010. Today it is a single call in <code>scikit-learn</code>: turn the documents into a word-count matrix and hand it to <code>LatentDirichletAllocation</code>, which — with no labels at all — rediscovers the themes. In the notebook it cleanly separates a mixed news pile back into oil, banking and technology clusters.</p>
+
+<p>Two further ideas round out the picture. <b>Knowledge graphs</b> store entities (people, organisations, instruments) and the relationships between them as subject–predicate–object triples, which is how you capture a supply chain — Alibaba's suppliers, their suppliers — and trace how a shock propagates hop by hop. And large language models now sit at the end of the pipeline as <b>signal generators</b>: feed one all the news, broker reports, transcripts and fundamentals for a stock and it will return a buy/hold/sell view with its reasoning. That is powerful, but the closing caution is firm — the data going in must be trusted and non-fabricated, and the only verdict you should believe is your own backtest.</p>
+
+<div class="foot">
+<b>One-paragraph recap.</b> Alternative data is modelled, fuzzy and without ground truth, and it now complements decaying price-alpha. Each news item is tagged to permID-identified companies and scored as P(neg/neu/pos) → −1/0/+1. Text is cleansed, then turned into numbers — and bag-of-words counting misses meaning that semantic embeddings capture. You can build your own model, but out-of-box LLMs are neutral-biased; fine-tuning on hand-labelled data is the cure. Sentiment is noisy, so smooth it with a Kalman/state-space filter and Granger-test whether it actually leads price. When you trade it, use relative ranks filtered by buzz, never absolute values. Finally, topic models (LSA → PLSA → LDA) file the firehose into codes, knowledge graphs map the relationships, and LLMs can synthesise the lot into a recommendation — which you trust only as far as your own backtest allows.
+</div>
+
+</body>
+</html>

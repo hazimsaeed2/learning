@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 5-1 PBQ-01 · Basics of Python Programming — Study Guide</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;max-width:820px;margin:0 auto;padding:40px 28px;
+       color:#1f2937;line-height:1.7;font-size:17px;background:#fbfbfd}
+  h1{font-size:30px;color:#3730a3;border-bottom:3px solid #6366f1;padding-bottom:10px;margin-bottom:4px}
+  h2{font-size:22px;color:#4338ca;margin-top:34px;border-left:5px solid #6366f1;padding-left:12px}
+  h3{font-size:18px;color:#1e40af;margin-top:22px}
+  code{background:#eef2ff;color:#3730a3;padding:1px 6px;border-radius:4px;font-family:Consolas,monospace;font-size:15px}
+  pre{background:#0f172a;color:#e2e8f0;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.5}
+  pre code{background:none;color:inherit;padding:0}
+  .lead{font-size:18px;color:#475569;font-style:italic}
+  .callout{background:#eef2ff;border-left:5px solid #6366f1;padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0}
+  .warn{background:#fef2f2;border-left:5px solid #ef4444;padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0}
+  .tip{background:#fffbeb;border-left:5px solid #f59e0b;padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0}
+  table{border-collapse:collapse;width:100%;margin:16px 0;font-size:15px}
+  th,td{border:1px solid #cbd5e1;padding:7px 10px;text-align:left}
+  th{background:#eef2ff;color:#3730a3}
+  tr:nth-child(even){background:#f8fafc}
+  .kbd{font-family:monospace;background:#1e1b4b;color:#c7d2fe;padding:1px 6px;border-radius:4px;font-size:13px}
+</style>
+</head>
+<body>
+
+<h1>Basics of Python Programming</h1>
+<p class="lead">Week 5-1 · PBQ-01 — your first coding lecture, written as a lesson you can read end to end.</p>
+
+<p>Up to now this course has lived in spreadsheets and theory. This lecture is the turning point: you start
+writing code. The goal is not to memorise syntax but to become <em>fluent enough to read a strategy and know
+whether its logic is correct</em>. Even in an age where AI writes code for you, that judgement is the skill that
+matters — and it only comes from typing code yourself. The lecturer's advice is blunt and worth repeating:
+practise about an hour a day, one topic at a time, until it becomes muscle memory.</p>
+
+<p>We'll walk the same path as the live session: printing, then variables, then the three core data
+structures, then NumPy and pandas, and finally the thing all of it is for — turning conditions into
+<strong>trading signals</strong> on real TCS stock data.</p>
+
+<h2>1. Why Python, and how it runs</h2>
+<p>Python is a general-purpose, open-source language prized for readability and for its enormous quant
+ecosystem — <code>pandas</code>, <code>numpy</code>, <code>matplotlib</code>, <code>scikit-learn</code> and more. It is an
+<em>interpreted</em> language: an interpreter reads your code and translates it to machine instructions line by
+line, which is why you get immediate feedback in a notebook.</p>
+<p>You can run Python several ways: an interactive shell, a Jupyter notebook (what we use), Google Colab,
+plain <code>.py</code> scripts, or a full IDE like VS Code. In Jupyter, a notebook is a stack of <strong>cells</strong>.
+Code cells run code; markdown cells hold explanations. There are two <strong>modes</strong>: edit mode (click into a
+cell and type) and command mode (press <span class="kbd">Esc</span>, then navigate). A few shortcuts pay for
+themselves immediately:</p>
+<table>
+<tr><th>Shortcut</th><th>Action</th></tr>
+<tr><td><span class="kbd">A</span> / <span class="kbd">B</span></td><td>insert cell above / below (command mode)</td></tr>
+<tr><td><span class="kbd">D D</span></td><td>delete the current cell</td></tr>
+<tr><td><span class="kbd">Shift</span>+<span class="kbd">Enter</span></td><td>run the cell and move on</td></tr>
+<tr><td><code>?print</code> · <code>help(print)</code></td><td>read a function's documentation</td></tr>
+</table>
+
+<h2>2. Printing — making output tell a story</h2>
+<p>A raw number on screen is nearly useless in live trading; you want output that reads like
+<em>"Bought TCS at 3,512 at 09:21."</em> The <code>print</code> function gives you that control. The lecture shows three
+styles using Intel's market capitalisation.</p>
+<pre><code>firm_name = "Intel Corporation"
+market_cap = 105.95 * 10**9
+shares = market_cap / 25.47        # ≈ 4,159.8 million
+
+print("Mkt cap of", firm_name, "is US$", market_cap)          # comma style
+print(f"ticker {ticker}  price US$ {last_price}")             # f-string
+print("{0:s} has {1:.1f} million shares".format(firm_name, shares/10**6))</code></pre>
+<p>The third line is the most precise. The <strong>f-string</strong> (a string prefixed with <code>f</code>) lets you drop
+variables straight into <code>{ }</code>. The <strong>.format</strong> method uses numbered placeholders with optional type
+and precision codes. Here is exactly how that mapping works:</p>
+<table>
+<tr><th>Placeholder</th><th>Takes which argument</th><th>How it renders</th></tr>
+<tr><td><code>{0:s}</code></td><td>argument 0 — <code>firm_name</code></td><td>as a string → "Intel Corporation"</td></tr>
+<tr><td><code>{1:.1f}</code></td><td>argument 1 — 4159.7958</td><td>float, 1 decimal → <strong>4159.8</strong></td></tr>
+<tr><td><code>{1:.2f}</code></td><td>same argument</td><td>float, 2 decimals → 4159.80</td></tr>
+</table>
+<div class="tip"><strong>Remember:</strong> indexing starts at <strong>0</strong>. <code>:s</code> means string, <code>:.1f</code> a float to one
+decimal, <code>:d</code> an integer. Anything outside the braces is printed literally.</div>
+
+<h2>3. Variables and dynamic typing</h2>
+<p>You never declare a type in Python. Assign a value and Python infers it; reassign and the type can change.
+The <code>=</code> sign is assignment, not equality.</p>
+<pre><code>x = 5        # int
+x = 5.5      # float
+x = "five"   # str</code></pre>
+<p>You can list everything in memory with the magic commands <code>%who</code> (names) and <code>%whos</code>
+(names with types and values) — handy when a notebook grows long.</p>
+
+<h2>4. The three native data structures</h2>
+<p>Python ships with three collections you will use constantly. The difference between them is small but
+important.</p>
+<table>
+<tr><th>Structure</th><th>Brackets</th><th>Changeable?</th><th>Typical use</th></tr>
+<tr><td><strong>list</strong></td><td><code>[ ]</code></td><td>yes (mutable)</td><td>an ordered, editable collection</td></tr>
+<tr><td><strong>tuple</strong></td><td><code>( )</code></td><td>no (immutable)</td><td>a fixed set that must not change</td></tr>
+<tr><td><strong>dictionary</strong></td><td><code>{ }</code></td><td>yes</td><td>look up a value by a unique key</td></tr>
+</table>
+<p>All three can hold mixed types. Lists grow with <code>.append</code> (add at the end) and <code>.insert</code> (add at a
+position); <code>len()</code> counts them. A <strong>tuple</strong> looks like a list but is frozen — try <code>.append</code> on
+one and Python tells you the method doesn't exist. A <strong>dictionary</strong> stores <em>key: value</em> pairs, which is
+perfect for trading mappings like <em>symbol → price</em> or <em>order-id → fill details</em>.</p>
+<pre><code>prices = {"TSLA": 248.5, "INTC": 25.47, "AAPL": 189.9}
+prices["INTC"]          # → 25.47   (look up by key)
+prices.keys()           # all symbols
+prices.values()         # all prices</code></pre>
+<div class="warn"><strong>The tuple trap:</strong> once you write <code>t = ("NSE","NYSE")</code> you cannot append, delete,
+or edit it. Use a tuple precisely when you want that protection.</div>
+
+<h3>Indexing and slicing</h3>
+<p>Positions count from <code>0</code> on the left and from <code>-1</code> on the right. A slice <code>a:b</code> includes
+<code>a</code> but <strong>excludes</strong> <code>b</code> — the single most common beginner surprise.</p>
+<pre><code>bp = ["Oil, Gas and Coal", "Energy", 290.0, "LSE", "GBp"]
+bp[0]      # 'Oil, Gas and Coal'  (first)
+bp[-1]     # 'GBp'                (last)
+bp[1:3]    # ['Energy', 290.0]    (1 and 2; 3 excluded)
+"LSE" in bp   # True              (membership test)</code></pre>
+
+<h2>5. NumPy — the reason arrays beat lists</h2>
+<p>NumPy ("numerical Python") adds the <strong>array</strong>, an ordered collection whose elements are all the same
+type. That homogeneity unlocks <em>vectorised</em> maths: an operation applies to every element at once. Compare:</p>
+<pre><code>[1.65, 1.80] * 2                 # → [1.65, 1.80, 1.65, 1.80]  (list duplicates!)
+np.array([1.65, 1.80]) * 2       # → [3.30, 3.60]              (array scales)</code></pre>
+<div class="callout">This is not a curiosity — it is <em>why</em> every back-test uses arrays. To multiply each
+return by a weight, or each price by a factor, an array does it in one expression; a list cannot.</div>
+<p>NumPy also simulates data. <code>np.random.normal(loc, scale, size)</code> draws from a normal distribution —
+<code>loc</code> is the mean, <code>scale</code> the standard deviation, <code>size</code> the count. One line gives you 10,000
+points; a spreadsheet would need 10,000 drags. To <em>find</em> things, <code>np.where(condition)</code> returns the
+indices where the condition holds, and you can read the values back with <code>vol[idx]</code>.</p>
+<p>Note that mathematical helpers like <code>np.mean</code> and <code>np.median</code> belong to NumPy, not to plain
+lists — that is why you call them as <code>np.mean(arr)</code> rather than <code>arr.mean()</code> on a list.</p>
+
+<h2>6. pandas — loading real market data</h2>
+<p>Where NumPy handles arrays of numbers, <strong>pandas</strong> handles <em>labelled</em> tables. Its <code>DataFrame</code>
+is a spreadsheet in code: rows and named columns, with an index down the side. We load the lecture's TCS file
+and make the date the index.</p>
+<pre><code>import pandas as pd
+df = pd.read_csv("TCS.NS.csv", index_col="Date", parse_dates=["Date"])
+df.shape       # (2460, 6)   — 2,460 days, 6 columns
+df.head(10)    # first ten rows
+df.describe()  # count, mean, std, min, quartiles, max</code></pre>
+<p>Our TCS file holds 2,460 daily bars from 2010 onward. A quick <code>describe()</code> on the close summarises the
+whole history at a glance:</p>
+<table>
+<tr><th>Statistic (TCS Close)</th><th>Value</th></tr>
+<tr><td>rows × columns</td><td>2460 × 6 (the Date index is not counted)</td></tr>
+<tr><td>mean / median</td><td>1170.19 / 1198.76</td></tr>
+<tr><td>minimum / maximum</td><td>349.77 / 2277.95</td></tr>
+</table>
+
+<h2>7. Loops and conditionals</h2>
+<p>A <strong>for loop</strong> repeats an action over a sequence — the code equivalent of dragging a formula down
+10,000 spreadsheet rows. <code>range(n)</code> produces <code>0, 1, … n-1</code> (the end is excluded, just like
+slicing).</p>
+<pre><code>for i in range(10):
+    print(i * 2)            # 0, 2, 4, … 18</code></pre>
+<p>When you need <em>both</em> the value and its position — for instance, <em>which day</em> a price crossed a level —
+wrap the sequence in <code>enumerate</code>, which hands you the index and the value together. Pair it with
+<code>if / elif / else</code> to make decisions:</p>
+<pre><code>for day, price in enumerate(closes):
+    if   price > 83: signal = "SELL"
+    elif price < 67: signal = "BUY"
+    else:            signal = 0</code></pre>
+<div class="callout"><code>np.where</code> is simply a one-line version of this <code>if/else</code>: <em>"where the condition is
+true put A, otherwise put B."</em> Both express the same logic; <code>np.where</code> just does it across a whole
+array at once.</div>
+
+<h2>8. The payoff — Python as a signal generator</h2>
+<p>Everything above exists to support this moment. A <strong>trading signal is just a condition encoded as a
+number</strong> — typically <code>+1</code> for long, <code>-1</code> for short, <code>0</code> for flat. The lecture builds them
+two ways. First, vectorised on simulated volume:</p>
+<pre><code>signals = np.where(vol > 325, "short", "0")     # high volume → short
+signals = np.where(vol < 175, "long",  signals) # low volume  → long
+np.unique(signals, return_counts=True)          # count each signal</code></pre>
+<p>Then, the real thing — a <strong>moving-average crossover</strong> on our 2,460 TCS bars. We go long whenever the
+fast 20-day average sits above the slow 50-day average:</p>
+<pre><code>d["SMA20"] = d["Close"].rolling(20).mean()
+d["SMA50"] = d["Close"].rolling(50).mean()
+d["signal"] = np.where(d.SMA20 > d.SMA50, 1, 0)   # 1 = long, 0 = flat</code></pre>
+<p>Across the full TCS history this rule produced <strong>34 long-entry crossovers</strong> and kept us in the market
+<strong>1,456 of 2,460 days (about 59%)</strong>. The shaded regions in the practice notebook's chart show exactly
+when the fast line led the slow one. That is the whole arc of the lecture: a few lines of Python, applied to
+real prices, turn raw data into actionable decisions.</p>
+
+<div class="tip"><strong>How to practise:</strong> open the practice notebook, change a number, and rerun. Make the
+crossover 10/30 instead of 20/50. Swap TCS for another CSV. The fastest way to learn is to break something and
+fix it — about an hour a day, one topic at a time.</div>
+
+<h2>Key takeaways</h2>
+<ul>
+<li><strong>Output:</strong> <code>print</code>, f-strings (<code>f"{var}"</code>), and <code>.format</code> with
+<code>{index:type.precision}</code> for clean, labelled results.</li>
+<li><strong>Typing is dynamic:</strong> <code>=</code> assigns; the value decides the type.</li>
+<li><strong>Three structures:</strong> list <code>[]</code> (mutable), tuple <code>()</code> (immutable), dict <code>{}</code>
+(key→value). Indexing from 0; slices exclude the end.</li>
+<li><strong>NumPy</strong> arrays vectorise maths (a list <code>*2</code> duplicates; an array <code>*2</code> scales);
+<code>np.where</code> finds conditions, <code>np.random.normal</code> simulates.</li>
+<li><strong>pandas</strong> <code>read_csv</code> loads market data; <code>shape</code>, <code>head</code>, <code>describe</code>
+inspect it.</li>
+<li><strong>Loops & conditionals</strong> automate repetition; a <strong>signal</strong> is a condition turned into +1/0/−1
+— the seed of every strategy to come.</li>
+</ul>
+
+<p style="margin-top:30px;color:#94a3b8;font-size:14px;text-align:center;border-top:1px solid #e2e8f0;padding-top:14px">
+Week 5-1 · PBQ-01 · Basics of Python Programming — prose study guide. Pair with the cheat sheet (quick reference) and the practice notebook (runnable code on real TCS data).</p>
+
+</body>
+</html>
