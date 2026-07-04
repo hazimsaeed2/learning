@@ -1,0 +1,6 @@
+step,process_step,question
+1,Select broker,"Who can execute with the required quality, venue access, and transparency?"
+2,Select algorithm and parameters,"What schedule, risk aversion, urgency, and benchmark match the investment objective?"
+3,Transact using LOM and SOR,What market/limit mix and venue allocation best adheres to the macro schedule?
+4,Revise if necessary,"Do live prices, volumes, fills, or risk require an updated trading rate?"
+5,Measure cost and evaluate performance,Did the broker/algorithm deliver quality relative to expected cost and benchmark?

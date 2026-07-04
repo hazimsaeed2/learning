@@ -108,5 +108,35 @@
 <strong>The one-paragraph version.</strong> An ETF tracks a cap-weighted index kept stable through corporate actions by re-solving its divisor (splits change nothing; dividends and constituent swaps move the divisor, once a day). ETFs exist to cure two mutual-fund flaws — the free-rider cost, where in/out traders' transaction bills fall on long-term holders (a 1.5–2% CAGR drag), and the tax cost, where a manager's sell forces capital-gains tax on everyone. The cure is the primary market, a warehouse where Authorized Participants swap a published basket (plus a little cash) for ETF shares <em>in kind</em> — so the AP, not other holders, bears costs, and no gain is realized. In the secondary market a live iNAV lets APs arbitrage premiums (sell) and discounts (buy), pinning price to NAV. That arbitrage is where the HFTs and market makers earn their keep.
 </div>
 
+<h2>6. Continuation addendum: official workbook-backed basket</h2>
+
+<p>The existing example above is preserved exactly as the illustrative version: a ten-stock basket worth about &#8377;3.50m, plus the cash component, producing creation and redemption values around &#8377;35.52 and &#8377;35.38 per ETF. The official in-class workbook adds a different source-backed basket, so this continuation records the corrected workbook version beside the original rather than replacing it.</p>
+
+<p>In the workbook's Slide-22 sheet, the stock basket is &#8377;2,434,333.90 and the cash component is &#8377;45,325.00. A 20 bps transaction charge on the stock basket is &#8377;4,868.67. That produces a creation cost of &#8377;2,484,527.57, or <strong>&#8377;24.8453 per ETF</strong> for a 100,000-share creation unit. The redemption side subtracts the same transaction charge, giving proceeds of &#8377;2,474,790.23, or <strong>&#8377;24.7479 per ETF</strong>. The workbook-backed round-trip burden is therefore <strong>&#8377;0.0974 per ETF</strong>.</p>
+
+<table>
+<tr><th>Workbook-backed item</th><th>Creation</th><th>Redemption</th></tr>
+<tr><td>Stock basket</td><td>&#8377;2,434,333.90</td><td>&#8377;2,434,333.90</td></tr>
+<tr><td>20 bps transaction charge</td><td>+ &#8377;4,868.67</td><td>- &#8377;4,868.67</td></tr>
+<tr><td>Cash component</td><td>+ &#8377;45,325.00</td><td>+ &#8377;45,325.00</td></tr>
+<tr><td>Total</td><td><strong>&#8377;2,484,527.57</strong></td><td><strong>&#8377;2,474,790.23</strong></td></tr>
+<tr><td>Per ETF (divided by 100,000)</td><td><strong>&#8377;24.8453</strong></td><td><strong>&#8377;24.7479</strong></td></tr>
+</table>
+
+<p>The same workbook also contains later secondary-market snapshots. Slide-39 has a stock basket value of &#8377;2,444,588.99, a NAV per ETF of 24.8991, a creation value of 24.9480, and a redemption value of 24.8502. Slide-44 has a stock basket value of &#8377;2,468,156.66, a NAV per ETF of 25.1348, a creation value of 25.1842, and a redemption value of 25.0855. Those snapshots reinforce the main rule: as basket prices move intraday, creation and redemption bounds move with the live fair value.</p>
+
+<p><img src="Week 13-1 EFS-05 Trading ETFs code/chart_addendum_1_efs05_workbook_sheet_map.png" alt="EFS-05 workbook sheet map" style="max-width:100%;border:1px solid #c7d2fe;border-radius:6px;margin:10px 0;"></p>
+<p><img src="Week 13-1 EFS-05 Trading ETFs code/chart_addendum_2_efs05_corrected_creation_redemption.png" alt="Corrected EFS-05 creation and redemption chart" style="max-width:100%;border:1px solid #c7d2fe;border-radius:6px;margin:10px 0;"></p>
+<p><img src="Week 13-1 EFS-05 Trading ETFs code/chart_addendum_3_efs05_source_nav_snapshots.png" alt="EFS-05 source NAV snapshots" style="max-width:100%;border:1px solid #c7d2fe;border-radius:6px;margin:10px 0;"></p>
+<p><img src="Week 13-1 EFS-05 Trading ETFs code/chart_addendum_4_efs05_existing_vs_workbook_basket.png" alt="Existing illustration versus workbook basket" style="max-width:100%;border:1px solid #c7d2fe;border-radius:6px;margin:10px 0;"></p>
+
+<h2>7. Continuation addendum: ETF trading-model ladder</h2>
+
+<p>The later transcript discussion moves from ETF structure into the trading businesses that sit on top of it. At low frequency, ETFs become factor and exposure instruments: a strategy can regress ETF returns against value, momentum, sector, currency, or duration factors and decide which exposures to hold. At mid frequency, ETFs become allocation tools for model portfolios and robo-advisory rebalancing. At high frequency, ETFs become market-making instruments where order-book position, iNAV, premium or discount, latency, and queue priority decide whether the trade is worth taking.</p>
+
+<p>Active ETFs and leveraged ETFs are follow-up topics rather than replacements for the core creation/redemption lesson. Active ETFs package discretionary or systematic ideas inside the ETF wrapper, while leveraged ETFs need special care because daily resetting creates path-dependent compounding. The workbook-backed validation assets, CSVs, addendum notebook, validated composite notebook, charts, and report were added under <code>Week 13-1 EFS-05 Trading ETFs code</code>.</p>
+
+<p><img src="Week 13-1 EFS-05 Trading ETFs code/chart_addendum_5_efs05_trading_model_ladder.png" alt="EFS-05 ETF trading model ladder" style="max-width:100%;border:1px solid #c7d2fe;border-radius:6px;margin:10px 0;"></p>
+
 </body>
 </html>

@@ -171,6 +171,40 @@ th{background:#1b1940;color:#a5b4fc;}
   <p class="text-xs text-indigo-400 mt-2">Straddle P&amp;L · volatility smile · variance premium (IV−RV) · naive sell-vol equity with drawdown.</p>
 </div>
 
+
+<!-- OTS02_ADDITIVE_SOURCE_PACK_START -->
+<section id="ots02-additive-source-pack" class="card rounded-xl p-6 mt-8 text-indigo-100">
+  <h2 class="text-2xl font-bold text-white">Additive Source-Backed Continuation: OTS-02 Validation Pack</h2>
+  <p class="mt-2 text-sm text-indigo-200">This section is appended without replacing the existing lecture notes. It adds source-backed execution controls, IV-surface references, and a SciPy-free validated notebook copy.</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-5">
+    <figure><img src="Week 15-2 OTS-02 Volatility Trading and Variance Premium code/chart_addendum_1_ots02_source_inventory.png" alt="OTS-02 source inventory" class="rounded-lg w-full"><figcaption class="text-xs text-indigo-400 mt-1">Source inventory for lecture notes, summary, FAQ, and option-pricing primer.</figcaption></figure>
+    <figure><img src="Week 15-2 OTS-02 Volatility Trading and Variance Premium code/chart_addendum_2_ots02_edge_framework.png" alt="OTS-02 edge framework" class="rounded-lg w-full"><figcaption class="text-xs text-indigo-400 mt-1">Model/event edge, adverse selection, and costs.</figcaption></figure>
+    <figure><img src="Week 15-2 OTS-02 Volatility Trading and Variance Premium code/chart_addendum_3_ots02_volatility_laws.png" alt="Volatility laws chart" class="rounded-lg w-full"><figcaption class="text-xs text-indigo-400 mt-1">Return/vol correlation, vol-of-vol, and mean reversion.</figcaption></figure>
+    <figure><img src="Week 15-2 OTS-02 Volatility Trading and Variance Premium code/chart_addendum_4_ots02_iv_surface.png" alt="IV surface chart" class="rounded-lg w-full"><figcaption class="text-xs text-indigo-400 mt-1">Smile and term structure show why IV is contract-specific.</figcaption></figure>
+    <figure class="md:col-span-2"><img src="Week 15-2 OTS-02 Volatility Trading and Variance Premium code/chart_addendum_5_ots02_variance_premium_controls.png" alt="Variance premium controls chart" class="rounded-lg w-full"><figcaption class="text-xs text-indigo-400 mt-1">Volatility premium, variance premium, and sell-vol controls.</figcaption></figure>
+  </div>
+  <div class="grid md:grid-cols-2 gap-4 mt-5">
+    <div class="rounded-lg border border-indigo-900 p-4">
+      <h3 class="font-semibold text-white">Corrections Added Beside Existing Material</h3>
+      <ul class="mt-2 list-disc pl-5 text-sm text-indigo-200">
+        <li>The local environment lacks SciPy, so the original notebook fails at <code>scipy.stats</code>/<code>scipy.optimize</code>; the validated copy adds local <code>norm.cdf</code> and <code>brentq</code> fallbacks.</li>
+        <li><code>IV - RV</code> is a volatility premium in vol points. A variance premium in variance units is <code>IV^2 - RV^2</code>.</li>
+        <li>Low-VIX opportunity should be checked as proportional premium versus realized volatility, not just an absolute low-vol sell signal.</li>
+      </ul>
+    </div>
+    <div class="rounded-lg border border-indigo-900 p-4">
+      <h3 class="font-semibold text-white">Live-Trading Controls Added</h3>
+      <ul class="mt-2 list-disc pl-5 text-sm text-indigo-200">
+        <li>Fill model for adverse selection: winners are less likely to fill than losers.</li>
+        <li>Cost model inside the backtest: spread, fees, taxes, slippage, and leverage-driven turnover.</li>
+        <li>Surface sanity and tail controls before selling premium: clean IV surface, margin path, jump loss, and defined-risk sizing.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="mt-4 text-sm text-indigo-200">Added files: <code>ots02_*.csv</code>, <code>chart_addendum_*_ots02_*.png</code>, <code>Week 15-2 OTS-02 Volatility Trading and Variance Premium_resource_addendum_practice.ipynb</code>, <code>Week 15-2 OTS-02 Volatility Trading and Variance Premium_validated_practice.ipynb</code>, and <code>VALIDATION_REPORT.md</code>.</p>
+</section>
+<!-- OTS02_ADDITIVE_SOURCE_PACK_END -->
+
 <footer class="text-center text-xs text-indigo-500 mt-6">Week 15-2 · OTS-02 · Volatility Trading &amp; Variance Premium — self-teaching cheat sheet</footer>
 </div>
 </body>

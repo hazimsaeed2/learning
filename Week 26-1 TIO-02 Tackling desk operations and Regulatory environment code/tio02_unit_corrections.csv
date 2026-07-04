@@ -1,0 +1,4 @@
+item,original_wording_or_variable,additive_correction
+Co-location rack power,rack_power_kwh and server_kwh,Use kW for power capacity/draw; the computed 6 / 0.5 = 12 server power limit is unchanged.
+Line cost per ms,cost_per_ms_saved cumulative vs slowest line,"Addendum records both cumulative and marginal cost per ms. The final 71ms->68ms marginal step is $26,667 per ms/month."
+PDT note,"$25,000 PDT minimum",Current FINRA update added; old PDT framework replaced effective 2026-06-04 with phase-in through 2027-10-20.

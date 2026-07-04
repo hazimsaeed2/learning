@@ -1,0 +1,7 @@
+mistake,risk,fix
+No multi_level_index check,Column names can be nested or version-dependent.,Inspect actual yfinance output.
+dropna without assignment/inplace,NaN warmup rows stay.,Use data = data.dropna() or inplace=True.
+No position.shift(2),Look-ahead bias.,Shift execution-aware position before applying returns.
+list * scalar,Repeats list.,Convert to numpy array for elementwise math.
+cumsum for simple-return equity,Wrong compounding.,Use (1+r).cumprod().
+read_csv without parse_dates,Date stays a string column.,Use index_col and parse_dates where appropriate.

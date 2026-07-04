@@ -1,0 +1,2 @@
+file,cells,code_cells,markdown_cells,imports,pip_lines,note
+PCA_3.ipynb,67,40,27,datetime; dateutil.parser; google.colab; itertools; matplotlib; matplotlib.pyplot; numpy; pandas; pickle; quantstats; scipy; scipy.optimize; sklearn.decomposition; sklearn.linear_model; statsmodels.api; statsmodels.tsa.stattools; traceback; yfinance,pip install yfinance; pip install quantstats,Source notebook preserved outside local practice notebook.

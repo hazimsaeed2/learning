@@ -134,5 +134,18 @@
   <div class="end">— End of Week 20-2 OTS-05 study guide · pair this with the dashboard cheat sheet and the executed practice notebook —</div>
 
 </div>
+
+
+<!-- OTS05_STUDY_ADDITIVE_SOURCE_PACK_START -->
+<section>
+  <h2>Additive Validation Notes</h2>
+  <p>This section was added after the original study guide. It keeps the existing wording and adds a reproducibility layer for local execution and trade-review controls.</p>
+  <div class="box"><strong>Local execution correction.</strong> The original notebook imports <code>scipy.stats.norm</code> and <code>mibian</code>, which are not installed locally. The new validated notebook adds small Black-Scholes/Greek fallbacks for execution validation only.</div>
+  <p><strong>Evaluation precision:</strong> a positive PnL is not the same as a good trade. The additive case table separates expected PnL, actual PnL, hindsight realized-vol attribution, and drift-aware attribution.</p>
+  <p><strong>Early-exercise precision:</strong> for American calls around dividends, compare the dividend to remaining extrinsic value. European options do not have the same early-exercise choice.</p>
+  <p>Added resources are in <code>Week 20-2 OTS-05 Trade Evaluation code</code>: source inventories, Greek references, hedge diagnostics, strategy metrics, SPY attribution, five charts, the addendum notebook, and the validated composite notebook.</p>
+</section>
+<!-- OTS05_STUDY_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

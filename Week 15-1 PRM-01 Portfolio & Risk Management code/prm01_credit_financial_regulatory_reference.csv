@@ -1,0 +1,6 @@
+topic,lecture_formula,risk_type,control
+Basel II IRB,Expected loss = PD x LGD x EAD,Credit and counterparty,Provision expected loss and reserve capital for unexpected loss
+"Expected, unexpected, stress loss split",Expected loss is priced in; unexpected loss needs capital; stress loss may be too expensive to fully hedge,"Credit, liquidity, and disaster","Separate reserves, limits, and stress response rather than one blended number"
+Financial risk,Probability of downgrade x interest-rate hike x size of portfolio,Funding and leverage,Monitor financing capacity and downgrade/rate shock sensitivity
+Regulatory risk,Probability of new regulations estimated from news analysis and historical data,Rule-change and policy risk,"Disable affected strategy legs on short-sale bans, margin changes, taxes, or tariff shocks"
+Settlement mismatch,Economic hedge can still create a cash call when futures MtM today and option cash arrives later,Liquidity and settlement,Set settlement-type and variation-margin liquidity limits

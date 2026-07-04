@@ -1,0 +1,3 @@
+file,rows,columns,date_start,date_end,missing_values
+TSLA.csv,1510,Date; Open; High; Low; Close; Adj Close; Volume,2013-12-31,2019-12-30,0
+ML_Dataset.csv,1486,Date; std_5; std_10; std_15; ma_10; ma_15; ma_20; ma_25; pct_3; pct_6; pct_9; vma_4; co; target,2014-02-05,2019-12-30,0

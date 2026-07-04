@@ -1,0 +1,4 @@
+strategy,total_return_pct,sharpe,max_drawdown_pct
+hedge_ratio_first_90_days,1.482147,,OLS through origin; not a return metric
+AUDCAD single-asset Bollinger,70.6265,0.6403,-11.2905
+EWA/EWC spread Bollinger,49.9276,1.0124,-4.4135

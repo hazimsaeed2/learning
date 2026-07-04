@@ -1,0 +1,8 @@
+tool,best_for,watch_out
+Jupyter Notebook,Linear notebooks and beginner-friendly practice,Execution order can drift from top-to-bottom
+JupyterLab,Notebook work with a fuller browser-based IDE layout,More panels can distract beginners
+VS Code,"Projects, Git, scripts, notebooks, and integrated terminals",Needs environment selection discipline
+PyCharm or Spyder,IDE-style Python work,May feel heavier than needed for early notebooks
+Git and GitHub,"Version control, rollback, and sharing code","Commit small, meaningful checkpoints"
+LLM assistant,"Finding examples, explaining unfamiliar functions, drafting starter code","You must verify every API, assumption, and trading rule"
+LeetCode/HackerRank/HackerEarth,Extra practice after basics are comfortable,Do not skip domain notebooks and data exercises

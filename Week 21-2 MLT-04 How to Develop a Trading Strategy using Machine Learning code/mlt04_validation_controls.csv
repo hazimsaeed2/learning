@@ -1,0 +1,8 @@
+control,lecture_application,additive_check
+Benchmark first,Dummy prior model is the zero-skill floor.,Batch 68 benchmark result saved with MCC 0.0.
+Walk-forward split,"5 splits, 3-year rolling train window, 126-day test windows.",Leakage table keeps walk-forward as baseline.
+Embargo,1 percent embargo between train and test portions.,Validation controls call out label-overlap prevention.
+Feature selection scope,SHAP-selected set has 18 survivors from the full 88.,Feature family audit flags each SHAP survivor.
+Validation then test once,Batch 68 test result is negative after validation degradation.,"Holdout table separates train, validation, and test."
+Batch versioning,Zip also contains Batch 67 with different saved metrics.,Batch comparison table keeps both versions visible.
+Local reproducibility,"Current environment lacks LightGBM, sklearn, joblib, and parquet engine.",Validated notebook adds local stubs only; original files remain unchanged.

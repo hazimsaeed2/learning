@@ -1,0 +1,8 @@
+metric,value,unit,reading
+daily_rows_after_returns,961,rows,Daily OHLCV after pct_change dropna.
+daily_first_date,2017-01-03,date,Start date after first return.
+daily_last_date,2020-11-27,date,End date.
+ma_rows,932,rows,After 10/30 rolling windows and shifted signal.
+ma_10_30_total_pct,26.0441,percent,Moving-average crossover total return.
+ma_window_buy_hold_pct,47.2899,percent,Buy-and-hold over the same MA window.
+weekly_observations,203,weeks,Weekly OHLC after resample and return dropna.

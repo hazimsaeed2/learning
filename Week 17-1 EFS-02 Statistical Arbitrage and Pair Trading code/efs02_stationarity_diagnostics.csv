@@ -1,0 +1,5 @@
+series,adf_stat,p_value_approx,critical_10,critical_5,reading
+AUDCAD,-2.5681,0.5,-2.57,-2.86,borderline stationary around 90% in lecture
+EWA,-1.2632,0.5,-2.57,-2.86,not stationary alone
+EWC,-0.775,0.5,-2.57,-2.86,not stationary alone
+EWC - hedge * EWA,-2.9049,0.05,-2.57,-2.86,cointegrated spread if below critical value

@@ -1,0 +1,3 @@
+resource,status_in_this_workspace,risk_control,artifact
+DataHygieneAuditor.zip,offline_proxy_added,"Do not treat AI/API output as authoritative; validate missing days, OHLC integrity, missing values, and price source mismatches before backtesting.",pbq02_data_hygiene_summary.csv
+Monte-Carlo-Simulations-to-compute-VaR-and-Expected-Shortfall.zip,offline_equivalent_added,"Compare historical, parametric, and Monte Carlo VaR/ES; document distribution assumptions and fat-tail evidence.",pbq02_var_es_summary_corrected.csv

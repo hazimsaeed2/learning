@@ -1,0 +1,9 @@
+metric,value,unit,reading
+code_cells,8,cells,Original executable cells.
+markdown_cells,13,cells,Original explanatory cells.
+safe_execution_errors,0,errors,PASS
+sync_time_seconds,0.1522,seconds,Sequential mock requests.
+async_time_seconds,0.0701,seconds,Threaded mock requests.
+async_speedup,2.1699,multiple,Sync time divided by async time.
+historical_callback_rows,10,bars,Rows received through mock historicalData callbacks.
+cleanup_connected_state,False,bool,Mock app disconnected after safe execution.

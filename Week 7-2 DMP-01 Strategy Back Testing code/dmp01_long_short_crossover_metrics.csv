@@ -1,0 +1,12 @@
+metric,value,units,note
+source_nse_matches_existing_nse_daily,True,boolean,Official source CSV equals local nse_daily.csv after parsing.
+observations_after_sma200_warmup,763,rows,Rows after 200-day moving average warm-up.
+long_short_trade_count,6,crossovers,Number of raw SMA50/SMA200 polarity changes.
+long_exposure_pct,70.7732634338139,percent rows,Share of rows long after shifting position.
+short_exposure_pct,29.095674967234604,percent rows,Share of rows short after shifting position.
+buy_hold_total_return_pct,27.816355755934886,percent,Buy-and-hold over same warm-up-adjusted window.
+long_short_total_return_pct,-52.73363769676883,percent,"Long/short SMA50/SMA200 strategy, shifted one bar."
+long_short_cagr_pct,-21.92488250617449,percent annualized,Annualized growth assuming 252 trading days.
+long_short_ann_vol_pct,20.803823135086393,percent annualized,Annualized volatility of strategy returns.
+long_short_sharpe_0rf,-1.0848654041028893,ratio,Sharpe with zero risk-free rate.
+long_short_max_drawdown_pct,-65.83068733489132,percent,Worst peak-to-trough strategy equity drawdown.

@@ -1,0 +1,11 @@
+library,use
+numpy,Numerical arrays and vectorized math
+pandas,Series/DataFrame time-series data manipulation
+matplotlib,Foundational static plotting
+seaborn,Higher-level statistical plotting
+plotly,Interactive charts
+yfinance,Historical market data from Yahoo Finance
+pandas-datareader,Economic and financial data access
+scikit-learn,Machine-learning models and preprocessing
+statsmodels,Statistical models and time-series tools
+quantstats,Portfolio and strategy performance analytics

@@ -1,0 +1,7 @@
+test,statistic,p_value,reading
+z_spread_mean,0.0,,Z-spread is centered close to zero.
+z_spread_std,0.32341277,,Notebook reports about 0.3234.
+Engle-Granger RB_vs_CL,-4.934,0.0002,Statsmodels unavailable locally; value retained from executed notebook output.
+Granger CL_to_RB lag1,17.52,2.91e-05,Crude leads gasoline in the executed notebook output.
+Granger RB_to_CL lag1,3.67,0.055,Reverse direction is weak in the executed notebook output.
+Eigen-portfolio_vs_SPY_coint,-0.413,0.97,"Tracking is strong, but residual is not formally cointegrated."

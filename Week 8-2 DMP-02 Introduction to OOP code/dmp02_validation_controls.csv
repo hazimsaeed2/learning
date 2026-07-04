@@ -1,0 +1,7 @@
+control,lecture_application,additive_note
+Original notebook execution,Run DMP-02 practice notebook in a temp folder.,Original notebook executed with 0 errors locally.
+OOP concept checks,"Dunder, classmethod, instance method, staticmethod, inheritance, and MRO.",Concept outputs are captured in CSV.
+Class pipeline audit,BacktestingCrossover method order.,Method responsibilities and state mutation are documented.
+Position lag clarification,Avoid look-ahead bias in strategy returns.,The notebook shifts once in positions(); returns() should not shift again.
+Parameter comparison,"Same class, different moving-average windows.",SMA10/20 and SMA5/20 returns are compared to buy-and-hold.
+Offline validation,The notebook uses shipped NIFTY-50 CSV.,No live market data download is needed.

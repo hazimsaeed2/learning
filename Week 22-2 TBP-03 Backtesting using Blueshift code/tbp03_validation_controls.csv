@@ -1,0 +1,8 @@
+control,lecture_application,additive_note
+Event-driven execution,Callbacks see one bar at a time.,Mini-engine uses DataPortal and shifted returns.
+Look-ahead bias,Same-bar return signal creates impossible x10^13 equity.,Lookahead table keeps leaky and honest versions side by side.
+Point-in-time data,Future corporate actions should not reprice past bars.,Dividend adjustment example is quantified.
+Cost model,Shipped scripts set zero commission and zero slippage.,Strategy audit flags zero-cost model.
+Platform dependency,Live Blueshift APIs are proprietary/platform-only.,"Validated notebook runs only the offline mirror, with stubs for local imports."
+Indicator dependency,MACD and RSI use TA-Lib/Blueshift technical indicators.,Validated notebook includes local indicator fallbacks.
+Correlation versus cointegration,AMBUJACEM/ACC correlation is 0.93 but stat-arb loses heavily.,Pair diagnostics make this explicit.

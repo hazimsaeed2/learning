@@ -1,0 +1,5 @@
+underlying,roll_trade,spot_proxy,works,reason
+Gold,short GC future when roll is negative,GLD,yes,GLD holds physical gold exposure and tracks spot closely enough for the lecture exercise.
+Crude oil,short CL future in contango or long CL in backwardation,USO,no,"USO holds crude futures, so it tends to remove the same roll return being harvested."
+Crude oil,hedge CL spot component,XLE,partial,"Energy stocks represent claims on physical oil assets, but add company and equity-market risks."
+Generic futures,harvest roll sign,front futures contract,no,The front contract also has roll exposure and can cancel the roll edge rather than isolate spot.

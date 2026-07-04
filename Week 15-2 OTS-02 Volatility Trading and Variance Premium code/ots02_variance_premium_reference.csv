@@ -1,0 +1,7 @@
+topic,lecture_shortcut,correct_implementation,risk_control
+Volatility premium,IV - RV,Measure in vol points when comparing implied and realized volatility,Keep units clear so a vol-point signal is not mistaken for variance P&L
+Variance premium,Often discussed together with volatility premium,"In variance units, compare IV^2 - RV^2 or model variance-swap exposure",Use variance units when sizing variance swaps or variance-like option portfolios
+Why premium exists,Options are insurance,"Hedgers pay for crash protection, so sellers can earn a risk premium","The premium compensates for rare losses, not free money"
+Low-VIX opportunity,Low VIX can have a high premium,"Check whether the premium is large in percentage terms versus realized volatility, not only absolute vol points",Avoid selling low absolute vol without enough premium or defined risk
+Naive daily straddle selling,Smooth backtest curve,"Include fills, spread, fees, margin, jump loss, and drawdown path","Sell selectively, size for tail events, and prefer defined risk where appropriate"
+Product selection,Some markets have better premium than others,"Compare premium by underlying, regime, expiry, and liquidity","Do not transfer an equity-index rule unchanged to oil, gold, single names, or crypto"

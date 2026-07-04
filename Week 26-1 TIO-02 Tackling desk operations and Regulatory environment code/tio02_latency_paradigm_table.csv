@@ -1,0 +1,8 @@
+strategy,edge_collapses_at_delay,kills_edge_us,paradigm
+weekly factor rotation,~2 s,2000000,LFT
+overnight pairs,~500 ms,500000,LFT
+intraday momentum,~50 ms,50000,MFT
+cross-exchange stat-arb,~2 ms,2000,MFT
+order-book imbalance,~50 us,50,HFT
+latency arbitrage,~1 us,1,HFT
+retail API vs FPGA speed gap,30 ms vs 0.5 us,30000.0,"60,000x slower than FPGA"

@@ -1,0 +1,59 @@
+{
+  "lecture": "Week 22-2 TBP-03 Backtesting using Blueshift",
+  "generated_at": "2026-07-03T02:20:24",
+  "notebooks": [
+    {
+      "notebook": "Week 22-2 TBP-03 Backtesting using Blueshift_practice.ipynb",
+      "code_cells": 8,
+      "errors": 1,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": "Traceback (most recent call last):\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\_validation_work\\generate_tbp03.py\", line 623, in execute_notebook_safely\n    exec(compile(source, str(path), \"exec\"), ns)\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\Week 22-2 TBP-03 Backtesting using Blueshift code\\Week 22-2 TBP-03 Backtesting using Blueshift_practice.ipynb\", line 4, in <module>\n    \"cell_type\": \"markdown\",\n    ^^^^^^^^^^^^\nModuleNotFoundError: No module named 'talib'\n"
+    },
+    {
+      "notebook": "Week 22-2 TBP-03 Backtesting using Blueshift_resource_addendum_practice.ipynb",
+      "code_cells": 4,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 22-2 TBP-03 Backtesting using Blueshift_validated_practice.ipynb",
+      "code_cells": 13,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    }
+  ],
+  "html": [
+    {
+      "file": "Week 22-2 TBP-03 Backtesting using Blueshift.html",
+      "body_open": 1,
+      "body_close": 1,
+      "html_open": 1,
+      "html_close": 1,
+      "generated_chart_refs": 10,
+      "missing_generated_charts": []
+    },
+    {
+      "file": "Week 22-2 TBP-03 Backtesting using Blueshift_study.html",
+      "body_open": 1,
+      "body_close": 1,
+      "html_open": 1,
+      "html_close": 1,
+      "generated_chart_refs": 0,
+      "missing_generated_charts": []
+    }
+  ],
+  "charts": [
+    "chart_addendum_1_tbp03_source_data_dependency_inventory.png",
+    "chart_addendum_2_tbp03_lookahead_point_in_time.png",
+    "chart_addendum_3_tbp03_strategy_performance.png",
+    "chart_addendum_4_tbp03_statarb_pair_diagnostics.png",
+    "chart_addendum_5_tbp03_event_engine_controls.png"
+  ],
+  "main_html_appended": true,
+  "study_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "dependency_note": "talib/sklearn/zipline/blueshift are unavailable locally; validated notebook includes local stubs for offline validation only."
+}

@@ -1,0 +1,9 @@
+dependency,available_locally,version,fallback_or_note
+numpy,yes,2.2.6,not needed
+pandas,yes,3.0.3,not needed
+matplotlib,yes,3.11.0,not needed
+sklearn,no,,validated notebook supplies local execution stub or avoids live use: ModuleNotFoundError
+statsmodels,no,,validated notebook supplies local execution stub or avoids live use: ModuleNotFoundError
+scipy,no,,validated notebook supplies local execution stub or avoids live use: ModuleNotFoundError
+yfinance,yes,0.2.33,not needed
+quantstats,no,,validated notebook supplies local execution stub or avoids live use: ModuleNotFoundError

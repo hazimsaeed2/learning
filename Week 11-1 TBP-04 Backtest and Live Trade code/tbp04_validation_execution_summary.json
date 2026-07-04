@@ -1,0 +1,72 @@
+{
+  "lecture": "Week 11-1 TBP-04 Backtest and Live Trade Algo Strategie",
+  "generated_at": "2026-07-03T14:39:05",
+  "notebooks": [
+    {
+      "notebook": "Week 11-1 TBP-04 Backtest and Live Trade_practice.ipynb",
+      "code_cells": 8,
+      "markdown_cells": 16,
+      "errors": 1,
+      "execution_exception": "Traceback (most recent call last):\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\_validation_work\\generate_tbp04.py\", line 159, in execute_notebook_safely\n    exec(compile(source, str(path), \"exec\"), ns)\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\Week 11-1 TBP-04 Backtest and Live Trade code\\Week 11-1 TBP-04 Backtest and Live Trade_practice.ipynb\", line 3, in <module>\n    {\nModuleNotFoundError: No module named 'sklearn'\n",
+      "stdout_excerpt": "",
+      "coef": "",
+      "corr": "",
+      "swing_total": "",
+      "buy_hold_total": ""
+    },
+    {
+      "notebook": "Week 11-1 TBP-04 Backtest and Live Trade Algo Strategie_resource_addendum_practice.ipynb",
+      "code_cells": 4,
+      "markdown_cells": 4,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "                additive_note\nOriginal notebook execution                 Run TBP-04 practice notebook in temp folder.                                                    Original fails locally because sklearn is unavailable.\n    Validated fallback copy          Permit local execution without installing packages.                  Minimal single-feature LinearRegression fallback is injected only in the validated copy.\n     Regression replication Yesterday-to-today return predicts today-to-tomorrow return.                                                                Coefficient and correlation are both weak.\n         Strategy scorecard                                   Swing mean-reversion rule.                                                 Swing strategy underperforms buy-and-hold on this sample.\n        Timeframe stability                 Daily, 2-day, weekly coefficient comparison.                                              Sign flips across timeframes, reinforcing thin-edge caution.\n         Live-trading scope                   Backtest and live-trade strategy workflow. No broker connectivity, live orders, commissions, slippage, or production risk checks are validated here.\n",
+      "coef": "",
+      "corr": "",
+      "swing_total": "",
+      "buy_hold_total": ""
+    },
+    {
+      "notebook": "Week 11-1 TBP-04 Backtest and Live Trade Algo Strategie_validated_practice.ipynb",
+      "code_cells": 13,
+      "markdown_cells": 21,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "                additive_note\nOriginal notebook execution                 Run TBP-04 practice notebook in temp folder.                                                    Original fails locally because sklearn is unavailable.\n    Validated fallback copy          Permit local execution without installing packages.                  Minimal single-feature LinearRegression fallback is injected only in the validated copy.\n     Regression replication Yesterday-to-today return predicts today-to-tomorrow return.                                                                Coefficient and correlation are both weak.\n         Strategy scorecard                                   Swing mean-reversion rule.                                                 Swing strategy underperforms buy-and-hold on this sample.\n        Timeframe stability                 Daily, 2-day, weekly coefficient comparison.                                              Sign flips across timeframes, reinforcing thin-edge caution.\n         Live-trading scope                   Backtest and live-trade strategy workflow. No broker connectivity, live orders, commissions, slippage, or production risk checks are validated here.\n",
+      "coef": -0.08065089977176793,
+      "corr": -0.08065009145235091,
+      "swing_total": -0.03414396097535166,
+      "buy_hold_total": 0.5830754915087415
+    }
+  ],
+  "html": {
+    "file": "Week 11-1 TBP-04 Backtest and Live Trade Algo Strategie.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 10,
+    "missing_generated_charts": []
+  },
+  "study_html": {
+    "file": "Week 11-1 TBP-04 Backtest and Live Trade Algo Strategie_study.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 5,
+    "missing_generated_charts": []
+  },
+  "charts": [
+    "chart_addendum_1_tbp04_source_dependency_audit.png",
+    "chart_addendum_2_tbp04_swing_regression.png",
+    "chart_addendum_3_tbp04_strategy_equity.png",
+    "chart_addendum_4_tbp04_timeframe_coefficients.png",
+    "chart_addendum_5_tbp04_scope_controls.png"
+  ],
+  "main_html_appended": true,
+  "study_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "dependency_note": "Original notebook requires sklearn; validated copy injects a labelled single-feature fallback."
+}

@@ -1,0 +1,10 @@
+input,value,unit,reading
+S_total_order_shares,100000,shares,Total shares wanted.
+X_executed_shares,80000,shares,Executed shares.
+R_residual_shares,20000,shares,Unexecuted residual.
+P_D_decision,150.0,USD,Decision price.
+P_0_arrival,150.3,USD,Arrival price.
+P_avg_execution,150.8,USD,Average execution price.
+P_N_end,151.0,USD,End/reference price.
+VWAP_market,150.7,USD,Market VWAP.
+commission,0.02,USD/share,Fixed commission.

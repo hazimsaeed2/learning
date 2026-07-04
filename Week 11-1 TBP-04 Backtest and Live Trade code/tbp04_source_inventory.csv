@@ -1,0 +1,10 @@
+artifact,artifact_type,exists,size_bytes,rows,columns,note
+Week 11-1 TBP-04 Backtest and Live Trade_practice.ipynb,practice_notebook,True,282507,,,"8 code cells, 16 markdown cells"
+spy_like_daily.csv,source_data,True,75044,962,6,2017-01-02 through 2020-11-27
+chart_1_swing.png,original_chart,True,88518,,,Existing chart preserved; addendum charts use separate names.
+IBridgePy-and-Interactive-Brokers-v3.pdf,source_pdf,True,1440482,60,180,15083 text chars; keyword hits in columns field.
+TBP-04-05Instructions-and-Key-Takeaways.pdf,source_pdf,True,125993,2,39,2558 text chars; keyword hits in columns field.
+TBP04-and-05-Lecture-Summary.pdf,source_pdf,True,415192,7,106,7115 text chars; keyword hits in columns field.
+TBP04-05-Assignment.zip,source_zip,True,38670,1,,Source ZIP inventoried; archive preserved.
+TBP04-05-Inclass-Exercises-File.zip,source_zip,True,1449255,30,,Source ZIP inventoried; archive preserved.
+TradeContextEnricher.zip,source_zip,True,148512,5,,Source ZIP inventoried; archive preserved.

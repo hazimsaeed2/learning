@@ -1,0 +1,8 @@
+question,answer
+Where should beginners start?,"Start with low-frequency trading, then expand to medium frequency after process discipline improves."
+Do retail orders use DMA by default?,Usually they route through a broker; DMA becomes relevant only at sufficient volume/infrastructure maturity.
+How do I measure broker latency?,Measure local-to-broker with ping; ask broker for broker-to-exchange latency.
+How do I test outside market hours?,Use a market simulator and replay stored data; simple paper trading usually needs live market hours.
+When is co-location justified?,Mostly for low-latency or HFT strategies; slower strategies do not need it.
+How much TBT data for one asset?,The FAQ says a single asset can produce a few hundred MB per day.
+Does TBT include an initial book?,The order book starts fresh each day and algorithms build it as open-session events arrive.

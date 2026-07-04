@@ -1,0 +1,9 @@
+metric,value,unit,reading
+client_margin_cash_only,1000000.0,USD,Client account margin from own cash only.
+member_margin_cash_plus_bg,2000000.0,USD,Member can use cash plus permitted collateral / BG.
+capital_efficiency_multiplier,2.0,x,Illustrative 2x return-on-capital multiplier.
+fd_margin_yield,0.06,fraction,Parked collateral can still earn yield in the lecture example.
+membership_fixed_annual,120000.0,USD/year,"Membership, compliance, and lines fixed annual cost."
+member_per_million_orders,2.0,USD/mn orders,Self-cleared marginal order cost.
+broker_per_million_orders,60.0,USD/mn orders,Broker markup marginal order cost.
+membership_breakeven_million_orders_per_year,2068.9655172413795,mn orders/year,Below this broker is cheaper; above this membership wins.

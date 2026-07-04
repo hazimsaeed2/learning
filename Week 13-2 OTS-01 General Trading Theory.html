@@ -171,6 +171,75 @@
   </div>
 </section>
 
+<!-- CONTINUATION ADDENDUM: SOURCE-BACKED TRADING PROCESS -->
+<section class="bg-white rounded-xl p-4 shadow mb-4 border-t-4 border-cyan-500">
+  <div class="flex items-start justify-between gap-3 flex-wrap mb-3">
+    <div>
+      <div class="text-[10px] font-bold text-cyan-700 tracking-widest">CONTINUATION ADDENDUM - SOURCE-BACKED PROCESS</div>
+      <h2 class="text-lg font-black text-cyan-800 mt-1">6 &middot; From observation to a tradable business</h2>
+    </div>
+    <div class="text-[10px] bg-cyan-50 border border-cyan-200 rounded-lg p-2 max-w-xs">
+      Existing notes are preserved. This section adds the later transcript/PDF process material.
+    </div>
+  </div>
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <p>The source packet repeats a process rule that is easy to lose: <b>do not start from the method</b>. Start with an obvious market observation, quantify it simply, separate edge from risk, then ask whether it can survive costs, adverse selection, mandate limits, compliance, and live execution.</p>
+      <table class="w-full mt-2">
+        <tr><th>Step</th><th>Question</th><th>Failure mode</th></tr>
+        <tr><td>Observation</td><td>What phenomenon did you notice?</td><td>Starting with a model and searching for a story.</td></tr>
+        <tr><td>Simple test</td><td>Does it work with buckets, OLS, or event returns?</td><td>Rescuing a weak idea with complexity.</td></tr>
+        <tr><td>Edge/risk split</td><td>What pays you, and what can hurt you?</td><td>Confusing win-rate or payoff shape with edge.</td></tr>
+        <tr><td>Business</td><td>Can it trade after costs, liquidity, compliance, and execution?</td><td>Stopping at a backtest.</td></tr>
+      </table>
+      <div class="bg-cyan-50 border-l-4 border-cyan-400 p-2 mt-2 text-[10px]"><b>Core continuation:</b> an observation is not a strategy, and a strategy is not yet a business.</div>
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+      <img src="Week 13-2 OTS-01 General Trading Theory code/chart_addendum_1_ots01_source_coverage.png" alt="OTS-01 source coverage chart" class="rounded-lg border border-cyan-200">
+      <img src="Week 13-2 OTS-01 General Trading Theory code/chart_addendum_2_ots01_observation_to_business.png" alt="OTS-01 observation to business pipeline chart" class="rounded-lg border border-cyan-200">
+    </div>
+  </div>
+</section>
+
+<section class="bg-white rounded-xl p-4 shadow mb-4 border-t-4 border-amber-500">
+  <h2 class="text-lg font-black text-amber-800 mb-2">7 &middot; Compliance, participant-specific edge, and review discipline</h2>
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <p>The lecture opening is also a trading control lesson. Options examples are educational, not recommendations; market rules and ethical norms differ; and a trader should get written approval before changing strategy, order type, execution route, or operational workflow.</p>
+      <table class="w-full mt-2">
+        <tr><th>Participant</th><th>Possible edge</th><th>Main risks</th></tr>
+        <tr><td>Directional trader</td><td>Direction prediction</td><td>Volatility, rates, liquidity, execution</td></tr>
+        <tr><td>Market maker</td><td>Bid/ask spread and flow</td><td>Inventory, adverse selection, direction, volatility</td></tr>
+        <tr><td>Options volatility trader</td><td>Vol forecast or volatility risk premium</td><td>Stock direction, dividends, rates, skew, jumps</td></tr>
+        <tr><td>Retail trader</td><td>Niche information or selective premium</td><td>Costs, wide spreads, overtrading, high win-rate illusion</td></tr>
+      </table>
+    </div>
+    <div>
+      <img src="Week 13-2 OTS-01 General Trading Theory code/chart_addendum_3_ots01_edge_risk_map.png" alt="OTS-01 edge risk map" class="rounded-lg border border-amber-200 w-full">
+      <div class="bg-amber-50 border-l-4 border-amber-400 p-2 mt-2 text-[10px]"><b>Review rule:</b> use live trade review to stay immersed, not to rewrite a statistically grounded idea from a tiny sample.</div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-white rounded-xl p-4 shadow mb-4 border-t-4 border-slate-500">
+  <h2 class="text-lg font-black text-slate-800 mb-2">8 &middot; Automation and psychology controls</h2>
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <p>The later transcript adds two practical controls. First, automate <b>needs</b>, not wants: manual contact with market data can preserve feedback when the task is cheap and informative. Second, psychology is a guardrail, not edge. It can stop you from destroying a good strategy, but it cannot turn a bad strategy into a good one.</p>
+      <ul class="list-disc ml-4 mt-1 text-[10px] space-y-1">
+        <li>Do not attach a new narrative to 20 live observations when the original evidence used 1000 observations.</li>
+        <li>Monitor the edge and risk triggers, not every tick of P&amp;L.</li>
+        <li>Use self-coaching tools: write the feared outcome, define the loss limit, and ask what advice you would give another trader.</li>
+        <li>The original notebook is preserved; the new validated notebook adds a SciPy <code>norm.cdf</code> fallback because this environment lacks SciPy.</li>
+      </ul>
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+      <img src="Week 13-2 OTS-01 General Trading Theory code/chart_addendum_4_ots01_trade_review_noise.png" alt="OTS-01 trade review noise chart" class="rounded-lg border border-slate-200">
+      <img src="Week 13-2 OTS-01 General Trading Theory code/chart_addendum_5_ots01_psychology_automation_controls.png" alt="OTS-01 psychology automation controls chart" class="rounded-lg border border-slate-200">
+    </div>
+  </div>
+</section>
+
 <!-- GLOSSARY -->
 <section class="bg-rose-900 text-rose-50 rounded-xl p-4 shadow mb-4">
   <h2 class="text-base font-black text-rose-200 mb-2">30-second glossary</h2>

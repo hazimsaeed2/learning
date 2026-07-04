@@ -1,0 +1,3 @@
+run,ma_short,ma_long,rows,first_date,last_date,strategy_return_pct,buy_hold_return_pct,position_lag_location
+SMA10_20,10,20,942,2017-01-31,2020-11-27,2.6414,51.4834,positions() applies regime.shift(1)
+SMA5_20,5,20,942,2017-01-31,2020-11-27,5.6227,51.4834,positions() applies regime.shift(1)

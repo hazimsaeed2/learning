@@ -1,0 +1,46 @@
+{
+  "lecture_row": 4,
+  "lecture": "Week 4-2 EFS-01 Strategy Building in Equities",
+  "queue_status": "DONE",
+  "summary_type": "legacy_report_digest",
+  "summary_created_utc": "2026-07-03T22:56:54+00:00",
+  "source_report": "Week 4-2 EFS-01 code/VALIDATION_REPORT.md",
+  "source_report_modified_utc": "2026-07-02T14:05:37+00:00",
+  "notebook_execution_rerun_for_this_json": false,
+  "status_from_existing_report": "PASS",
+  "report_pass_indicators": [
+    "PASS. The existing pack covered the main strategy-evaluation lecture, and missing official-resource mechanics were added without deleting or replacing existing content."
+  ],
+  "report_error_indicators": [
+    "- No saved error outputs found."
+  ],
+  "artifacts_in_code_folder": {
+    "notebooks": [
+      "Week 4-2 EFS-01 Strategy Building in Equities_practice.ipynb",
+      "Week 4-2 EFS-01 Strategy Building in Equities_resource_addendum_practice.ipynb",
+      "Week 4-2 EFS-01 Strategy Building in Equities_validated_practice.ipynb"
+    ],
+    "notebook_count": 3,
+    "html_exports": [],
+    "html_export_count": 0,
+    "chart_files": [
+      "chart_1_strategy.png",
+      "chart_2_kelly.png",
+      "chart_3_drawdown.png",
+      "chart_4_pnl_dist.png",
+      "chart_addendum_1_efs01_parameter_surface.png",
+      "chart_addendum_2_efs01_derivative_quadrants.png",
+      "chart_addendum_3_efs01_expiry_vwap_setup.png"
+    ],
+    "chart_file_count": 7,
+    "csv_files": [
+      "efs01_assignment_metric_checklist.csv",
+      "efs01_derivative_signal_rules.csv",
+      "efs01_expiry_vwap_setup.csv",
+      "efs01_parameter_surface.csv",
+      "nifty_daily.csv"
+    ],
+    "csv_file_count": 5
+  },
+  "coverage_note": "This JSON was added after queue completion because the folder already had a VALIDATION_REPORT.md but no machine-readable summary. It is a digest of that existing report and local artifacts, not a fresh execution claim."
+}

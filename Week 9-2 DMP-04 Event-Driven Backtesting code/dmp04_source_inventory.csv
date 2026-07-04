@@ -1,0 +1,5 @@
+artifact,artifact_type,exists,size_bytes,rows,columns,note
+Week 9-2 DMP-04 Event-Driven Backtesting_practice.ipynb,practice_notebook,True,21797,,,"9 code cells, 11 markdown cells"
+eod_prices.csv,source_data,True,75044,962,6,2017-01-02 through 2020-11-27
+chart_1_event.png,original_chart,True,86280,,,Existing chart preserved; addendum charts use separate names.
+DMP-02-03-04-Lecture-Summary.pdf,source_pdf,True,401471,7,125,8491 text chars. Source lecture-summary PDF inventoried.

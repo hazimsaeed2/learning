@@ -1,0 +1,6 @@
+classification,definition,order_mix,examples
+Aggressive,get me done; sweep all liquidity at my price or better,more market orders,"urgent sweep, completion trade"
+Working order,balance market impact and timing risk,market and limit orders,"VWAP, TWAP, POV, IS, optimal strategy"
+Passive,"use crossing systems and dark pools, wait for liquidity",more limit orders,"liquidity seeking, dark-pool posting"
+Static,parameters do not change unless the trader revises them,fixed by initial setup,"fixed TWAP, fixed POV"
+Dynamic,algorithm revises rate/parameters from live market conditions,"changes with prices, volume, and optimization","dynamic POV, arrival price, re-optimized schedule"

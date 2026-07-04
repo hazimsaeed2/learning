@@ -1,0 +1,15 @@
+metric,value,unit,reading
+source_rows,962,rows,Rows in shipped NIFTY-50 CSV.
+source_columns_after_date_index,5,columns,OHLCV columns after Date is index.
+first_date,2017-01-02,date,Start date in shipped CSV.
+last_date,2020-11-27,date,End date in shipped CSV.
+missing_values,0,cells,No missing values in shipped OHLCV data.
+rows_after_21_63_ma_warmup,900,rows,962 - 62 = 900 because the 63-day average first appears on row 63.
+rows_after_return_and_position_dropna,899,rows,Final strategy table after position and return warmup.
+golden_cross_signals,4,signals,SMA crosses above LMA.
+death_cross_signals,4,signals,SMA crosses below LMA.
+time_long,692,rows,Days spent long in the no-look-ahead position series.
+time_short,207,rows,Days spent short in the no-look-ahead position series.
+buy_hold_total_return_pct,40.3893,percent,Buy-and-hold growth over the final test window.
+sma21_lma63_total_return_pct,68.0406,percent,Moving-average crossover growth over the final test window.
+signal_value_counts,"{'0.0': 891, '-2.0': 4, '2.0': 4, 'nan': 1}",dict,0.0 is no crossover; +/-2 are crossing events.

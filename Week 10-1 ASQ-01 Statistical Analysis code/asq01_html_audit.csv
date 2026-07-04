@@ -1,0 +1,77 @@
+source,item,value,reading
+main_html,file_size_bytes,189274,Week 10-1 ASQ-01 Statistical Analysis of Financial Market Data.html
+main_html,html_open,1,structural count
+main_html,html_close,1,structural count
+main_html,body_open,1,structural count
+main_html,body_close,1,structural count
+main_html,tables,6,structural count
+main_html,code_blocks,2,structural count
+main_html,image_tags,1,structural count
+main_html,term_ARIMA,8,ASQ-01 term frequency
+main_html,term_ADF,6,ASQ-01 term frequency
+main_html,term_stationary,12,ASQ-01 term frequency
+main_html,term_returns,9,ASQ-01 term frequency
+main_html,term_ACF,25,ASQ-01 term frequency
+main_html,term_PACF,9,ASQ-01 term frequency
+main_html,term_rolling,9,ASQ-01 term frequency
+main_html,term_Sharpe,1,ASQ-01 term frequency
+main_html,term_drawdown,3,ASQ-01 term frequency
+main_html,term_moving-average,2,ASQ-01 term frequency
+main_html,term_regime,3,ASQ-01 term frequency
+study_html,file_size_bytes,11798,Week 10-1 ASQ-01 Statistical Analysis of Financial Market Data_study.html
+study_html,html_open,1,structural count
+study_html,html_close,1,structural count
+study_html,body_open,1,structural count
+study_html,body_close,1,structural count
+study_html,tables,2,structural count
+study_html,code_blocks,1,structural count
+study_html,image_tags,0,structural count
+study_html,term_ARIMA,6,ASQ-01 term frequency
+study_html,term_ADF,3,ASQ-01 term frequency
+study_html,term_stationary,10,ASQ-01 term frequency
+study_html,term_returns,8,ASQ-01 term frequency
+study_html,term_ACF,10,ASQ-01 term frequency
+study_html,term_PACF,5,ASQ-01 term frequency
+study_html,term_rolling,4,ASQ-01 term frequency
+study_html,term_Sharpe,1,ASQ-01 term frequency
+study_html,term_drawdown,1,ASQ-01 term frequency
+study_html,term_moving-average,4,ASQ-01 term frequency
+study_html,term_regime,3,ASQ-01 term frequency
+transcript_text,file_size_bytes,103511,Week 10-1 ASQ-01 Statistical Analysis of Financial Market Data.txt
+transcript_text,html_open,0,structural count
+transcript_text,html_close,0,structural count
+transcript_text,body_open,0,structural count
+transcript_text,body_close,0,structural count
+transcript_text,tables,0,structural count
+transcript_text,code_blocks,0,structural count
+transcript_text,image_tags,0,structural count
+transcript_text,term_ARIMA,65,ASQ-01 term frequency
+transcript_text,term_ADF,3,ASQ-01 term frequency
+transcript_text,term_stationary,44,ASQ-01 term frequency
+transcript_text,term_returns,116,ASQ-01 term frequency
+transcript_text,term_ACF,50,ASQ-01 term frequency
+transcript_text,term_PACF,15,ASQ-01 term frequency
+transcript_text,term_rolling,23,ASQ-01 term frequency
+transcript_text,term_Sharpe,3,ASQ-01 term frequency
+transcript_text,term_drawdown,10,ASQ-01 term frequency
+transcript_text,term_moving-average,0,ASQ-01 term frequency
+transcript_text,term_regime,8,ASQ-01 term frequency
+practice_notebook_json,file_size_bytes,615942,Week 10-1 ASQ-01 Statistical Analysis_practice.ipynb
+practice_notebook_json,html_open,0,structural count
+practice_notebook_json,html_close,0,structural count
+practice_notebook_json,body_open,0,structural count
+practice_notebook_json,body_close,0,structural count
+practice_notebook_json,tables,2,structural count
+practice_notebook_json,code_blocks,0,structural count
+practice_notebook_json,image_tags,0,structural count
+practice_notebook_json,term_ARIMA,15,ASQ-01 term frequency
+practice_notebook_json,term_ADF,34,ASQ-01 term frequency
+practice_notebook_json,term_stationary,15,ASQ-01 term frequency
+practice_notebook_json,term_returns,39,ASQ-01 term frequency
+practice_notebook_json,term_ACF,40,ASQ-01 term frequency
+practice_notebook_json,term_PACF,11,ASQ-01 term frequency
+practice_notebook_json,term_rolling,19,ASQ-01 term frequency
+practice_notebook_json,term_Sharpe,5,ASQ-01 term frequency
+practice_notebook_json,term_drawdown,6,ASQ-01 term frequency
+practice_notebook_json,term_moving-average,5,ASQ-01 term frequency
+practice_notebook_json,term_regime,4,ASQ-01 term frequency

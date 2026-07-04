@@ -1,0 +1,36 @@
+{
+  "lecture": "Week 12-2 TBP-02 Rest API Trading & Back-testing Platforms",
+  "generated_at": "2026-07-03T00:23:47",
+  "notebooks": [
+    {
+      "notebook": "Week 12-2 TBP-02 Rest API_practice.ipynb",
+      "code_cells": 10,
+      "errors": 0,
+      "markdown_before_code_gaps": 1,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 12-2 TBP-02 Rest API_resource_addendum_practice.ipynb",
+      "code_cells": 6,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 12-2 TBP-02 Rest API_validated_practice.ipynb",
+      "code_cells": 16,
+      "errors": 0,
+      "markdown_before_code_gaps": 1,
+      "execution_exception": null
+    }
+  ],
+  "charts": [
+    "chart_addendum_1_tbp02_source_architecture.png",
+    "chart_addendum_2_tbp02_endpoint_coverage.png",
+    "chart_addendum_3_tbp02_rest_vs_websocket.png",
+    "chart_addendum_4_tbp02_offline_rsi_strategy.png",
+    "chart_addendum_5_tbp02_correction_heartbeat.png"
+  ],
+  "additive_only": true,
+  "source_close_order_bug_preserved_and_corrected_additively": true
+}

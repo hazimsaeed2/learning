@@ -1,0 +1,7 @@
+file,role,size_bytes,rows_from_notebook_output,columns_from_notebook_output,date_start,date_end,local_read_note
+XLF_full_features_X.parquet,full feature matrix,1858891,3157,88,2000-02-02,2012-09-06,88 engineered features.
+XLF_full_features_y.parquet,target labels,30585,3157,1,2000-02-02,2012-09-06,Class balance from notebook output: 1702 up and 1455 down.
+XLF_shap_selected_X.parquet,SHAP-selected feature matrix,539497,3157,18,2000-02-02,2012-09-06,18 SHAP survivors listed in mlt04_feature_list_shap.csv.
+XLF_train_micro.parquet,train microstructure/OHLCV data,501643,,,,,Shape not printed in notebook; direct read needs pyarrow or fastparquet.
+XLF_val.parquet,validation OHLCV data,80044,1510,5,2013-01-02,2018-12-31,Validation window printed by notebook.
+XLF_test.parquet,test OHLCV data,94350,1776,5,2019-01-02,2026-01-26,Untouched test window printed by notebook.

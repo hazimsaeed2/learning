@@ -149,7 +149,56 @@
   </div>
 </div>
 
+<!-- ADDENDUM: OFFICIAL RESOURCE MECHANICS -->
+<div class="card p-4 mb-4 pb">
+  <h2 class="text-lg font-black text-teal-800">Addendum: official resource mechanics</h2>
+  <p class="text-xs mt-1">The worksheet adds the production layer: intake gate, VWAP volume schedule, theoretical/practical horizon check, peg-loop guards, dynamic discretion, and final controls.</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-3">
+    <div>
+      <h3 class="font-bold text-teal-700">Order ticket fields</h3>
+      <table class="mt-1 text-xs">
+        <tr><th>Field</th><th>Use</th></tr>
+        <tr><td>symbol / side</td><td>market data, same-side and opposite-side book checks</td></tr>
+        <tr><td>parent size</td><td>reserve, slice, stub, and impact checks</td></tr>
+        <tr><td>price limit</td><td>hard client constraint before peg or discretion</td></tr>
+        <tr><td>urgency / horizon</td><td>participation rate and TTH/PTH gate</td></tr>
+        <tr><td>ADV / spread / depth</td><td>volume schedule, DR, and significant-size checks</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3 class="font-bold text-teal-700">Extra implementation rules</h3>
+      <ul class="text-xs space-y-1 mt-1">
+        <li><b>VWAP algo:</b> filter unsuitable orders, estimate volume curve, work child orders around liquidity.</li>
+        <li><b>PTH:</b> <code>min(time remaining, TTH)</code>; if <code>TTH/PTH &gt; 2</code>, escalate.</li>
+        <li><b>Sig size:</b> <code>max(500 sh, 50% bid size)</code> before peg adjustment.</li>
+        <li><b>DR:</b> base range plus trend and liquidity adjustments, capped by fair price and client limit.</li>
+        <li><b>FAQ:</b> IOC cancels remainder; iceberg refills hide true size; TBT data supports fill odds.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="grid md:grid-cols-3 gap-3 mt-3">
+    <img src="Week 4-1 MMT-02 code/chart_addendum_1_mmt02_volume_schedule.png" class="w-full border border-slate-200 rounded" alt="volume schedule">
+    <img src="Week 4-1 MMT-02 code/chart_addendum_2_mmt02_dynamic_discretion.png" class="w-full border border-slate-200 rounded" alt="dynamic discretion">
+    <img src="Week 4-1 MMT-02 code/chart_addendum_3_mmt02_order_logic_flow.png" class="w-full border border-slate-200 rounded" alt="order logic flow">
+  </div>
+  <p class="mt-2 text-xs text-slate-500">Additive files: <code>mmt02_volume_schedule.csv</code>, <code>mmt02_execution_rules.csv</code>, <code>Week 4-1 MMT-02 Execution Strategy II_resource_addendum_practice.ipynb</code>, and the validated composite notebook.</p>
+</div>
+
 <p class="text-center text-xs text-slate-400 mt-6">Week 4-1 MMT-02 · Execution Strategy II · numbers reproduced from the lecture's MMT-02 in-class workbook · companion notebook: <code>Week 4-1 MMT-02 code/</code></p>
 </div>
+
+<!-- VALIDATION_EVIDENCE_ADDENDUM_START -->
+<section id="validation-evidence-addendum" data-validation-evidence="true" style="max-width: 1100px; margin: 24px auto; padding: 14px 16px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.45;">
+  <h2 style="margin: 0 0 8px; font-size: 16px; font-weight: 700;">Validation Evidence Addendum</h2>
+  <p style="margin: 0 0 8px;">This additive note points to the validation evidence for this lecture. The original page content above remains unchanged.</p>
+  <ul style="margin: 0; padding-left: 18px;">
+    <li>Queue row: 3</li>
+    <li>Lecture: Week 4-1 MMT-02 Execution Strategy- II</li>
+    <li>Status: DONE</li>
+    <li>Validation report: <a href="Week%204-1%20MMT-02%20code/VALIDATION_REPORT.md">Week 4-1 MMT-02 code/VALIDATION_REPORT.md</a></li>
+    <li>Execution summary JSON: <a href="Week%204-1%20MMT-02%20code/mmt02_validation_execution_summary.json">Week 4-1 MMT-02 code/mmt02_validation_execution_summary.json</a></li>
+  </ul>
+</section>
+<!-- VALIDATION_EVIDENCE_ADDENDUM_END -->
 </body>
 </html>

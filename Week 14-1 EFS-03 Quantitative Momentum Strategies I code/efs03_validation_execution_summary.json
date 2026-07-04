@@ -1,0 +1,36 @@
+{
+  "lecture": "Week 14-1 EFS-03 Quantitative Momentum Strategies I",
+  "generated_at": "2026-07-03T00:46:05",
+  "notebooks": [
+    {
+      "notebook": "Week 14-1 EFS-03 Quantitative Momentum Strategies I_practice.ipynb",
+      "code_cells": 8,
+      "errors": 0,
+      "markdown_before_code_gaps": 2,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 14-1 EFS-03 Quantitative Momentum Strategies I_resource_addendum_practice.ipynb",
+      "code_cells": 6,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 14-1 EFS-03 Quantitative Momentum Strategies I_validated_practice.ipynb",
+      "code_cells": 14,
+      "errors": 0,
+      "markdown_before_code_gaps": 2,
+      "execution_exception": null
+    }
+  ],
+  "charts": [
+    "chart_addendum_1_efs03_source_inventory.png",
+    "chart_addendum_2_efs03_causal_momentum_map.png",
+    "chart_addendum_3_efs03_roll_formula_map.png",
+    "chart_addendum_4_efs03_back_adjustment_demo.png",
+    "chart_addendum_5_efs03_timestamp_sharpe_controls.png"
+  ],
+  "additive_only": true,
+  "source_mat_dependency_note": "Selected source scripts require scipy.io.loadmat; SciPy is not installed here."
+}

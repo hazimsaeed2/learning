@@ -1,0 +1,81 @@
+{
+  "lecture": "Week 9-1 DMP-03 Object Oriented Programming In Python",
+  "generated_at": "2026-07-03T03:22:58",
+  "notebooks": [
+    {
+      "notebook": "Week 9-1 DMP-03 OOP in Python_practice.ipynb",
+      "code_cells": 9,
+      "markdown_cells": 13,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": ".07 87.31 83.75 56.24]\nprice  autocorr (lag 1): 0.9930   <- ~0.99, the random-walk result\nreturn autocorr (lag 1): -0.0828   <- near zero, no usable price-based forecast\n95% band = +/-0.0632\nNIFTY return ACF lags 1-5: [-0.0828  0.0654  0.048  -0.0012  0.163 ]\n   -> 8 of 15 lags nudge past the band: small, scattered, no persistent sign (noisy but ~efficient)\nAR(1) rho=0.3 ACF lags 1-5: [ 0.2979  0.0587 -0.0021  0.0034  0.0106] -> lag-1 clearly outside (exploitable)\ncumulative SIMPLE return (cumprod): 58.55%\ncumulative LOG return    (cumsum) : 46.09%  (= ln of price ratio)\ncheck exp(log) -> simple: 58.55%\nannualized return     :  12.09%\nannualized volatility :  19.21%\nSharpe ratio          :   0.63\nmaximum drawdown      : -38.44%\ndrawdown    5%  ->  needs +   5.3% to break even\ndrawdown   10%  ->  needs +  11.1% to break even\ndrawdown   20%  ->  needs +  25.0% to break even\ndrawdown   50%  ->  needs + 100.0% to break even\ndrawdown   90%  ->  needs + 900.0% to break even\nOLS coefficients (alpha + 7 betas):\n[ 0.00038 -0.03829  0.0421   0.05472  0.01839  0.13946 -0.16291  0.10229]\npositions: long 572 / short 381\nBuy & Hold total :  54.26%\nOLS strategy total: -47.34%\nequity curves drawn\n",
+      "price_ac1": 0.992979283390933,
+      "ret_ac1": -0.08275208524590094,
+      "acf_lags_outside_band": 8,
+      "sharpe": 0.6290380627679711,
+      "max_drawdown": -0.38439852452742074,
+      "ols_strategy_return": -0.4734129793836622,
+      "ols_rows": 953
+    },
+    {
+      "notebook": "Week 9-1 DMP-03 Object Oriented Programming In Python_resource_addendum_practice.ipynb",
+      "code_cells": 5,
+      "markdown_cells": 5,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "                                                                                  additive_note\nOriginal notebook execution      Run DMP-03 practice notebook in a temp folder.                                                       Original notebook executed with 0 errors locally.\n             ACF correction           Return autocorrelation significance band.                         Shipped NIFTY data has 8 of 15 lags outside the simple band, not just a couple.\n         EMH interpretation Scattered ACF signs versus persistent AR structure.                   The AR(1) synthetic process shows what a cleaner exploitable pattern would look like.\n                Return math           Simple returns compound; log returns add.                                      exp(cumulative log return) reconciles to cumulative simple return.\n     OLS look-ahead control   Forecast sign is shifted before applying returns.                                                  The OLS backtest uses df['pos'] = sign(pred).shift(1).\n        Scope clarification               DMP-03 page title says OOP in Python. This notebook is the EMH/vectorized-regression half; class packaging continues in the next DMP lecture.\n",
+      "price_ac1": "",
+      "ret_ac1": "",
+      "acf_lags_outside_band": "",
+      "sharpe": "",
+      "max_drawdown": "",
+      "ols_strategy_return": "",
+      "ols_rows": ""
+    },
+    {
+      "notebook": "Week 9-1 DMP-03 Object Oriented Programming In Python_validated_practice.ipynb",
+      "code_cells": 14,
+      "markdown_cells": 18,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "                                                                                  additive_note\nOriginal notebook execution      Run DMP-03 practice notebook in a temp folder.                                                       Original notebook executed with 0 errors locally.\n             ACF correction           Return autocorrelation significance band.                         Shipped NIFTY data has 8 of 15 lags outside the simple band, not just a couple.\n         EMH interpretation Scattered ACF signs versus persistent AR structure.                   The AR(1) synthetic process shows what a cleaner exploitable pattern would look like.\n                Return math           Simple returns compound; log returns add.                                      exp(cumulative log return) reconciles to cumulative simple return.\n     OLS look-ahead control   Forecast sign is shifted before applying returns.                                                  The OLS backtest uses df['pos'] = sign(pred).shift(1).\n        Scope clarification               DMP-03 page title says OOP in Python. This notebook is the EMH/vectorized-regression half; class packaging continues in the next DMP lecture.\n",
+      "price_ac1": 0.992979283390933,
+      "ret_ac1": -0.08275208524590094,
+      "acf_lags_outside_band": 8,
+      "sharpe": 0.6290380627679711,
+      "max_drawdown": -0.38439852452742074,
+      "ols_strategy_return": -0.4734129793836622,
+      "ols_rows": 953
+    }
+  ],
+  "html": {
+    "file": "Week 9-1 DMP-03 Object Oriented Programming In Python.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 10,
+    "missing_generated_charts": []
+  },
+  "study_html": {
+    "file": "Week 9-1 DMP-03 Object Oriented Programming In Python_study.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 5,
+    "missing_generated_charts": []
+  },
+  "charts": [
+    "chart_addendum_1_dmp03_source_notebook_audit.png",
+    "chart_addendum_2_dmp03_random_walk_acf.png",
+    "chart_addendum_3_dmp03_return_risk_drawdown.png",
+    "chart_addendum_4_dmp03_ols_backtest_equity.png",
+    "chart_addendum_5_dmp03_validation_summary.png"
+  ],
+  "main_html_appended": true,
+  "study_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "correction_note": "ACF outside-band count is 8 of 15 for the shipped NIFTY CSV."
+}

@@ -1,0 +1,9 @@
+source,topic,correct_additive_note,example
+PBQ-02 FAQ,multi_ticker_yfinance,Use yf.download with a ticker list when online; keep notebook examples offline unless network/API access is intentionally enabled.,"yf.download(['AAPL','MSFT'], start='2020-01-01', end='2021-01-01')"
+PBQ-02 FAQ,np_where_vs_df_where,np.where returns an array for vectorized labels or replacements; df.where preserves the DataFrame shape and inserts NaN or other values where the condition is false.,"np.where(df['Volume'] > x, 1, 0); df.where(df['Volume'] > x)"
+PBQ-02 FAQ,price_vs_return_distribution,Equity prices are often modeled as lognormal while simple/log returns are the object usually tested against normality assumptions; real returns often show skew and fat tails.,"Test returns, not raw prices, before using parametric VaR."
+PBQ-02 FAQ,tuple_use_case,"Tuples are useful for immutable strategy configuration such as MA window pairs, fixed ticker baskets, or order parameter presets.","fast_slow_mode = (20, 50, 'long_only')"
+PBQ-02 FAQ,nested_np_where,Nested np.where works for compact three-way labels; np.select is clearer when conditions grow beyond a few branches.,"np.where(close > ma, 1, np.where(close < ma, -1, 0))"
+PBQ-02 FAQ,boolean_slicing,y[y > 3] is valid boolean slicing; use np.where when the task is replacement or signal construction rather than only filtering.,filtered = y[y > 3]
+PBQ-02 FAQ,whos_magic,"%whos lists the variables currently defined in a notebook; it is diagnostic notebook syntax, not portable Python script syntax.",%whos
+PBQ-02 FAQ,args_kwargs,"*args collects extra positional inputs and **kwargs collects named inputs, useful for strategy functions with optional settings.","def build_signal(price, *windows, **options): ..."

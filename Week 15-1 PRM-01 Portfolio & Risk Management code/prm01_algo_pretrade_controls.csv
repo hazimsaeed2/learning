@@ -1,0 +1,8 @@
+control_area,check,reject_or_halt_condition,lecture_detail
+Access,Heartbeat and exchange/order-manager connectivity,No pong inside max gap or gateway not responding,Know whether connectivity is live before trusting the strategy state
+Consistency,"Timestamp lag between market data, strategy, and order manager",Data or order decision older than threshold,Discard data if processing time exceeds the risk threshold
+Quality,Bid/ask sanity and liquidity-spread widening,"Ask below bid, stale book, or event-spread blowout",Bad vendor offsets can make an impossible order book
+Algorithm,"Margin, exposure, price-range, max value, and fat-finger bands","Order breaches account, exchange, or strategy-defined limit",Validate both strategy parameters and generated order fields
+Order gate,Placed plus in-flight order count,New order would exceed limit before acknowledgements arrive,Tick-by-tick logic must not fire faster than fills or acks confirm
+Technology,"Binary size, modified date, checksum, and version across every server",Any server differs from the golden deployment,Knight Capital failed because one of eight servers was stale
+Scalability,Runtime complexity and latency after every strategy change,Data-to-order runtime exceeds latency budget,"O(n), O(n^2), and O(n^3) behavior changes the number of symbols you can safely trade"

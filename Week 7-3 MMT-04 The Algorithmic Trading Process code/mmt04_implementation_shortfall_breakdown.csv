@@ -1,0 +1,8 @@
+component,value_usd,formula,check
+Paper return,100000.0,S * (P_N - P_D),reference
+Actual return after commission,14400.0,X * (P_N - P_avg) - X * commission,reference
+Delay cost,30000.0,S * (P_0 - P_D),component
+Execution cost,40000.0,X * (P_avg - P_0),component
+Opportunity cost,14000.0,R * (P_N - P_0),component
+Fixed cost,1600.0,X * commission,component
+Implementation shortfall,85600.0,Paper return - actual return,must equal component sum

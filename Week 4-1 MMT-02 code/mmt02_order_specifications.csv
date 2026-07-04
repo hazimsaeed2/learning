@@ -1,0 +1,9 @@
+field,official_resource_detail,execution_use
+Trading symbol,"Security to execute, for example MSFT or AXISBANK",Routes the order to the correct instrument and market data feed
+Side,Buy or sell,Determines same-side and opposite-side book checks
+Size,Parent quantity plus any minimum or maximum child-order size,"Controls reserve, slice size, stub handling, and market-impact checks"
+Price limit,Optional client maximum buy price or minimum sell price,Hard guard before any peg or discretion order is sent
+Urgency,"Low, medium, high, or an explicit deadline",Selects participation rate and discretion aggressiveness
+Time horizon,Deadline or remaining trading window,Compared with theoretical time horizon before accepting the order
+Special instructions,"Examples: avoid marketable orders, use post-only, or manual handling",Overrides the default automated logic when needed
+Supporting market data,"21-day ADV, historical spread, depth, and volume distribution","Feeds the VWAP schedule, significant-size checks, and dynamic discretion range"

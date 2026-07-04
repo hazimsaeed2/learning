@@ -1,0 +1,7 @@
+component,source_rule,implementation_detail,caveat
+VIX index,Do not trade it as if it were a cash instrument,It is calculated from options and is not directly tradable or cheaply replicable as the lecture uses it,"Use it as a reference index for estimating VX roll, not as the traded leg"
+VX roll estimate,roll ~= (VIX index - VX future) / T,"If spot VIX is unchanged, a front future above spot converges downward and creates negative roll for a long",Thresholds matter; the copied source uses entryThreshold = 0.1
+ES hedge direction,"VIX and ES are anti-correlated, so the hedge is same-side",Short VX roll harvest is paired with short ES; long VX is paired with long ES,This is not a classic long/short pair trade
+Contract multiplier conversion,Convert beta into dollar contract exposure,The source code regresses 1000*VX against 50*ES and then uses a hedge ratio in contract-dollar terms,A lecture example can round differently; recompute from the selected regime
+Source hedge ratio,VX_ES_rollreturn_regimes_trading.py uses hedgeRatio = 0.315377,"The earlier roll-return script uses 0.35, then the regime script refines it","Existing notes that use a different approximate ratio should be kept, but this source value is the copied-code reference"
+Regime selection,Post-2008 relationship is fitted separately,Do not mix pre-GFC and post-GFC clusters just to use more data,More history can be worse when the mapping changed

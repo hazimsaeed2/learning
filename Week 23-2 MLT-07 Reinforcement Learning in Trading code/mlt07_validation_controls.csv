@@ -1,0 +1,8 @@
+control,lecture_application,additive_note
+Bias variance,High-degree fit overfits training noise.,Train/test MSE table records the explosion.
+Fat tails,Cauchy-like tails make extreme moves far more likely than Gaussian assumptions.,Tail-probability comparison uses local math fallback.
+Predict returns,Price-level R2 is misleading; direction is coin-toss.,Naive price and direction metrics are separate.
+Bellman update,Immediate reward plus discounted future value.,Marshmallow Q-table is regenerated.
+Out-of-sample testing,Noisy/real markets sharply reduce the apparent clean-cycle edge.,"Q-learning results separate clean, noisy, and real tests."
+Reward design,Reward choice reshapes learned policy.,Six reward functions are compared.
+DQN scope,Deep network approximates the same Q-values.,TensorFlow/Keras are documented as source-only dependencies locally.

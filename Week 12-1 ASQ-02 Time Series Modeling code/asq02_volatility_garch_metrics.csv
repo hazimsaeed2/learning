@@ -1,0 +1,10 @@
+metric,avg_annual_vol_pct,min_annual_vol_pct,max_annual_vol_pct,reading
+2017 calm,9.003,6.1871,10.9365,Rolling 30-day realized annualized volatility.
+2018 wobble,11.9975,6.7703,20.9505,Rolling 30-day realized annualized volatility.
+2019 pre-COVID,13.6095,8.064,23.7156,Rolling 30-day realized annualized volatility.
+2020 COVID,26.0211,9.1627,75.2086,Rolling 30-day realized annualized volatility.
+whole_sample_min_vol,,6.1871,,Minimum rolling realized vol.
+whole_sample_max_vol,,,75.2086,Maximum rolling realized vol.
+fallback_garch_alpha_beta,0.98,,,EWMA-GARCH-like persistence parameter; formal GARCH needs arch.
+fallback_next_vol_pct,16.3724,,,Next-day annualized vol estimate from fallback.
+latest_rolling_30d_vol_pct,14.3852,,,Latest realized vol.

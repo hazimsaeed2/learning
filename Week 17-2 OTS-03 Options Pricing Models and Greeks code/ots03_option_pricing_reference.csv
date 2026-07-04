@@ -1,0 +1,8 @@
+case,S,K,r_pct,T_days,vol_pct,option_type,price,d1,d2,reading
+lecture_call,100.0,105.0,0.0,30.0,30.0,call,1.566437,-0.524275,-0.610283,Matches the mibian lecture example within rounding.
+lecture_put,100.0,105.0,0.0,30.0,30.0,put,6.566437,-0.524275,-0.610283,Put-call parity gives C - P = S - K when r is zero.
+strike_90,100.0,90.0,0.0,30.0,30.0,call_and_put,call=10.434490; put=0.434490,,,Lower strike calls cost more; higher strike puts cost more.
+strike_95,100.0,95.0,0.0,30.0,30.0,call_and_put,call=6.421604; put=1.421604,,,Lower strike calls cost more; higher strike puts cost more.
+strike_100,100.0,100.0,0.0,30.0,30.0,call_and_put,call=3.430139; put=3.430139,,,Lower strike calls cost more; higher strike puts cost more.
+strike_105,100.0,105.0,0.0,30.0,30.0,call_and_put,call=1.566437; put=6.566437,,,Lower strike calls cost more; higher strike puts cost more.
+strike_110,100.0,110.0,0.0,30.0,30.0,call_and_put,call=0.608689; put=10.608689,,,Lower strike calls cost more; higher strike puts cost more.

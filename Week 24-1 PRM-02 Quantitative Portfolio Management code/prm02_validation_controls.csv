@@ -1,0 +1,7 @@
+control,lecture_application,additive_note
+Objective first,"Portfolio definition changes with capital preservation, growth, alpha, or mandate constraints.",The addendum keeps objective-specific selection separate from generic max-return language.
+Return and risk measured separately,Arithmetic return and CAGR are both shown; variance and volatility are both retained.,Tables preserve analysis and publishing conventions side by side.
+Covariance matters,Two-stock volatility is lower than either individual stock because covariance is below perfect co-movement.,Pair correlations and realized 50/50 volatilities are added.
+Diversification has a floor,Equal-weight Nifty volatility flattens near the all-name systematic-risk floor.,The floor is plotted and recorded in CSV.
+Optimization is not proof,Max-Sharpe weights are tested out of sample and still require rebalancing.,OOS curves and CSVs separate in-sample selection from held-out performance.
+Treynor convention,"Notebook value is preserved, with an additional annual Treynor convention supplied.",No original line is changed.

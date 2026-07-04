@@ -1,0 +1,12 @@
+zip,path,role,size_bytes
+DMP05-Inclass-Exercises-File.zip,DMP05-Inclass-Exercises-File/,directory,0
+DMP05-Inclass-Exercises-File.zip,DMP05-Inclass-Exercises-File/alpha.py,source_module,1847
+DMP05-Inclass-Exercises-File.zip,DMP05-Inclass-Exercises-File/data.py,source_module,645
+DMP05-Inclass-Exercises-File.zip,DMP05-Inclass-Exercises-File/DMP_05_code_BAB.ipynb,source_notebook,9492011
+DMP05-Inclass-Exercises-File.zip,DMP05-Inclass-Exercises-File/DMP_05_code_Beta.ipynb,source_notebook,1041253
+DMP05-Inclass-Exercises-File.zip,DMP05-Inclass-Exercises-File/DMP_05_code_Strategy Framework Multi Stocks.ipynb,source_notebook,5438227
+DMP05-Inclass-Exercises-File.zip,DMP05-Inclass-Exercises-File/DMP_05_code_Strategy Framework.ipynb,source_notebook,1188758
+DMP05-Inclass-Exercises-File.zip,DMP05-Inclass-Exercises-File/DMP_05_data_ind_nifty50list.csv,source_data,3177
+DMP05-Inclass-Exercises-File.zip,DMP05-Inclass-Exercises-File/DMP_05_data_nifty_stocks_prices.csv,source_data,2639712
+DMP05-Inclass-Exercises-File.zip,DMP05-Inclass-Exercises-File/nifty_stocks_prices.csv,source_data,2641118
+DMP05-Inclass-Exercises-File.zip,DMP05-Inclass-Exercises-File/performance_analytics.py,source_module,1116

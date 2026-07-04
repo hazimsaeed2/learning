@@ -1,0 +1,4 @@
+file,rows,columns,date_start,date_end,missing_values
+AAPL.csv,250,Date; Adj Close; Close; High; Low; Open; Volume,2023-01-03,2023-12-29,0
+NFLX.csv,1510,Date; Adj Close; Close; High; Low; Open; Volume,2016-01-04,2021-12-30,0
+SPY.csv,1510,Date; Adj Close; Close; High; Low; Open; Volume,2017-01-03,2022-12-30,0

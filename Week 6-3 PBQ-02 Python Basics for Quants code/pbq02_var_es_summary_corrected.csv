@@ -1,0 +1,17 @@
+metric,value,units,note
+observations,1230.0,daily returns,TCS local CSV; first return dropped.
+mean_daily_return_pct,0.08731832197544384,percent,Arithmetic daily return mean.
+daily_volatility_pct,1.6282970237472427,percent,Sample standard deviation.
+skewness,0.06345004287464709,unitless,Pandas sample skew.
+excess_kurtosis,4.026144151547541,unitless,Pandas excess kurtosis; positive value shows fat tails.
+shapiro_pvalue_sample_500,not_run_scipy_unavailable,p-value,The official mini-project uses scipy.stats.shapiro; scipy is not installed in this offline workspace.
+jarque_bera_stat_approx,831.5794434911869,test statistic,Normality proxy computed from sample skew and excess kurtosis.
+jarque_bera_pvalue_approx,2.6596115713667143e-181,p-value,Chi-square df=2 survival approximation; near zero rejects normality proxy.
+historical_var_95_pct,-2.431394646605751,percent return,5th percentile of observed daily returns.
+historical_cvar_95_pct,-3.613152401792501,percent return,Mean of observed daily returns at or below VaR threshold.
+parametric_var_95_pct,-2.5909919432894966,percent return,Normal left-tail estimate using sample mean and volatility.
+parametric_cvar_95_pct,-3.271390803334217,percent return,Normal expected shortfall formula for left tail.
+monte_carlo_100d_var_95_pct,-18.269947196568463,percent return,"100-day terminal return 5th percentile, seed 2022."
+monte_carlo_100d_cvar_95_pct,-23.60442130824088,percent return,Mean terminal return below Monte Carlo VaR threshold.
+monte_carlo_100d_price_var_95,2178.9641128136122,price,Implied terminal price at Monte Carlo VaR.
+monte_carlo_100d_price_cvar_95,2036.7443631454776,price,Implied terminal price at Monte Carlo CVaR.

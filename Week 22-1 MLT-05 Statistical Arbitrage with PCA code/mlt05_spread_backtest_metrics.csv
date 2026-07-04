@@ -1,0 +1,3 @@
+strategy,round_trips,total_pnl_z_units,win_rate_pct,note
+crude_gasoline_z_spread,46,11.918123,,"No transaction costs, slippage, or stop loss."
+index_eigenportfolio_residual,54,0.399495,92.5926,"Strong tracking, but coint p-value from notebook is 0.970."

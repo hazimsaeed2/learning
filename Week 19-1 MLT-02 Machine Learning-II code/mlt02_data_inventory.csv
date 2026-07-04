@@ -1,0 +1,4 @@
+file,rows,columns,date_start,date_end,missing_values
+TSLA.csv,1510,Date; Open; High; Low; Close; Adj Close; Volume,2013-12-31,2019-12-30,0
+companydata.csv,368,Unnamed: 0; companyTickers; forward pe; price to book; forward eps; beta; quick ratio; debt to equity,,,0
+ind_nifty50list.csv,51,Company Name; Industry; Symbol; Series; ISIN Code,,,0

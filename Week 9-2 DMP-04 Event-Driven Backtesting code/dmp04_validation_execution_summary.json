@@ -1,0 +1,72 @@
+{
+  "lecture": "Week 9-2 DMP-04 Event Driven Back-Testing and working with Live Data Stream",
+  "generated_at": "2026-07-03T03:27:36",
+  "notebooks": [
+    {
+      "notebook": "Week 9-2 DMP-04 Event-Driven Backtesting_practice.ipynb",
+      "code_cells": 9,
+      "markdown_cells": 11,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "four event types defined: ['MarketEvent', 'SignalEvent', 'OrderEvent', 'FillEvent']\nCSVDataHandler defined\nMomentumStrategy defined\nSimplePortfolio + NaiveExecutionHandler defined\nBacktestEngine defined\nbars processed        : 962\nevent-momentum total  : -10.47%\nbuy & hold total      :  58.55%\n lags  threshold  total_return_%\n    1      0.000          -10.47\n    1      0.005            0.32\n    1      0.010           -0.13\n    3      0.000           15.36\n    3      0.005           50.64\n    3      0.010           61.40\n    5      0.000           32.79\n    5      0.005          -14.92\n    5      0.010           50.36\n    7      0.000           45.65\n    7      0.005           10.40\n    7      0.010           85.81\n\nbuy & hold total: 58.55%\nBuy & Hold               annRet  12.09%  annVol  19.21%  Sharpe  0.63  maxDD -38.44%\nEvent momentum (1-lag)   annRet  -2.90%  annVol  19.34%  Sharpe -0.15  maxDD -43.03%\nequity curve drawn\n",
+      "bars_processed": 962,
+      "event_momentum_return": -0.1046984852198991,
+      "buy_hold_return": 0.585543149986246,
+      "sweep_rows": 12
+    },
+    {
+      "notebook": "Week 9-2 DMP-04 Event Driven Back-Testing and working with Live Data Stream_resource_addendum_practice.ipynb",
+      "code_cells": 5,
+      "markdown_cells": 5,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "                                              additive_note\nOriginal notebook execution         Run DMP-04 practice notebook in a temp folder.                                                          Original notebook executed with 0 errors locally.\n       Event contract audit       MarketEvent, SignalEvent, OrderEvent, FillEvent.                                                    Counts the event flow from the lags=1, threshold=0 run.\n              Queue routing          BacktestEngine drains a deque per market bar.                                                     Market, signal, order, and fill routing is documented.\n      Live scope correction        Same interface can support a live data handler. This notebook does not validate broker connectivity, reconnection, order state, latency, or risk controls.\n          Execution realism NaiveExecutionHandler fills immediately at last price.                             No commissions, slippage, partial fills, or leverage constraints are included.\n    Parameter sweep caution                  The lags/threshold grid is in-sample.                                              The best row is descriptive only, not an out-of-sample claim.\n",
+      "bars_processed": "",
+      "event_momentum_return": "",
+      "buy_hold_return": "",
+      "sweep_rows": 12
+    },
+    {
+      "notebook": "Week 9-2 DMP-04 Event Driven Back-Testing and working with Live Data Stream_validated_practice.ipynb",
+      "code_cells": 14,
+      "markdown_cells": 16,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "                                              additive_note\nOriginal notebook execution         Run DMP-04 practice notebook in a temp folder.                                                          Original notebook executed with 0 errors locally.\n       Event contract audit       MarketEvent, SignalEvent, OrderEvent, FillEvent.                                                    Counts the event flow from the lags=1, threshold=0 run.\n              Queue routing          BacktestEngine drains a deque per market bar.                                                     Market, signal, order, and fill routing is documented.\n      Live scope correction        Same interface can support a live data handler. This notebook does not validate broker connectivity, reconnection, order state, latency, or risk controls.\n          Execution realism NaiveExecutionHandler fills immediately at last price.                             No commissions, slippage, partial fills, or leverage constraints are included.\n    Parameter sweep caution                  The lags/threshold grid is in-sample.                                              The best row is descriptive only, not an out-of-sample claim.\n",
+      "bars_processed": 962,
+      "event_momentum_return": -0.1046984852198991,
+      "buy_hold_return": 0.585543149986246,
+      "sweep_rows": 12
+    }
+  ],
+  "html": {
+    "file": "Week 9-2 DMP-04 Event Driven Back-Testing and working with Live Data Stream.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 10,
+    "missing_generated_charts": []
+  },
+  "study_html": {
+    "file": "Week 9-2 DMP-04 Event Driven Back-Testing and working with Live Data Stream_study.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 5,
+    "missing_generated_charts": []
+  },
+  "charts": [
+    "chart_addendum_1_dmp04_source_notebook_audit.png",
+    "chart_addendum_2_dmp04_event_flow_counts.png",
+    "chart_addendum_3_dmp04_equity_curve.png",
+    "chart_addendum_4_dmp04_parameter_sweep.png",
+    "chart_addendum_5_dmp04_risk_summary.png"
+  ],
+  "main_html_appended": true,
+  "study_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "scope_note": "Offline event-driven interface validated; live broker connectivity and production risk controls are not validated by this notebook."
+}

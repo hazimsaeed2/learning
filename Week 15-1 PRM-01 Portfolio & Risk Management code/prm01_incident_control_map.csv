@@ -1,0 +1,11 @@
+incident,loss_or_impact,root_cause,control_added,control_category
+Kerviel / SocGen,EUR4.9bn,Back-office knowledge used to hide unauthorized trades,"Independent risk department, trader/risk separation, approval workflow, reconciliation",Governance
+Adoboli / UBS,$2.2bn,False trades and weak supervision,"Mandatory leave, team rotation, P&L and trade reconciliation",Governance
+LTCM,Fed-organized rescue,Leveraged bond arbitrage met default and liquidity shock,"Leverage cap, liquidity stress, crowded-trade unwind analysis",Financial/liquidity
+Credit Suisse 2007,$150k,User-interface change caused repeated orders,"Confirmation, order throttle, regression testing after UI changes",Operational
+Infinium Capital,$850k,ETF/futures fair-value logic generated bad orders,Liquidity-aware fair-value validation and max order limit,Model/algorithm
+Deutsche Bank Tokyo,Market moved about 1%,Broken price feed and offset logic,"Stale timestamp, heartbeat, book sanity, and offset validation",Market data
+Knight Capital 2012,$460M plus fine,One of eight servers ran stale code,"File size, modified date, MD5 checksum, and all-server deployment gate",Technology
+Goldman Sachs,$100M,Indications of interest sent as live orders,Order-type validation and production/test environment segregation,Order gateway
+Hanmax Securities,KRW57bn,System read calls as puts,"Instrument-type validation, exposure simulation, kill switch",Model/algorithm
+Everbright,Algo desk closed,Rogue algo bubble and improper follow-on trading,"PnL spike alert, market-impact alert, compliance escalation",Governance

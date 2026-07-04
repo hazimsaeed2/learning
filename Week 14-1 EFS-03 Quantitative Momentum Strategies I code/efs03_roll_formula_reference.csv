@@ -1,0 +1,5 @@
+instrument,roll_formula,example_inputs,example_roll,interpretation
+E-mini S&P 500 future,dividend_yield - interest_rate,"1.8% dividend, 4.5% interest",-2.7%,negative roll; contango from futures collateral earning interest
+Mexican peso future,foreign_rate - domestic_rate,"11.0% MXN rate, 4.5% USD rate",+6.5%,positive carry from interest-rate differential; GDP growth is not part of the arbitrage formula
+Commodity forward curve,- slope of log futures price versus time-to-expiry,Corn 2012-03-14 forward curve,+20.7% annualized in local notebook approximation,downward curve means backwardation and positive roll
+Gold roll-harvest pair,long GLD spot proxy - short GC futures - risk_free_rate,"GC at 16:00, GLD close at 16:00, 2% risk-free assumption",source homework strategy,"cash used to buy GLD loses interest, so excess return subtracts risk-free rate"

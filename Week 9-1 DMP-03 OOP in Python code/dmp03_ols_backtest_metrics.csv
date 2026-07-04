@@ -1,0 +1,8 @@
+metric,value,unit,reading
+lag_features,7,lags,AR(7) feature set.
+ols_rows,953,rows,Rows after lag features and shifted position.
+long_positions,572,rows,Days forecast sign was positive after shift.
+short_positions,381,rows,Days forecast sign was negative after shift.
+buy_hold_total_pct,54.26,percent,Buy-and-hold over OLS test window.
+ols_strategy_total_pct,-47.3413,percent,In-sample AR(7) sign strategy underperforms here.
+beta_coefficients,"[0.00038, -0.03829, 0.0421, 0.05472, 0.01839, 0.13946, -0.16291, 0.10229]",vector,Alpha plus seven lag coefficients.

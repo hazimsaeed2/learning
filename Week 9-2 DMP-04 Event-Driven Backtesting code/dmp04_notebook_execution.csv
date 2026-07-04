@@ -1,0 +1,8 @@
+metric,value,unit,reading
+code_cells,9,cells,Original executable cells.
+markdown_cells,11,cells,Original explanatory cells.
+original_execution_errors,0,errors,PASS
+bars_processed,962,bars,Market events from the shipped CSV.
+event_momentum_return_pct,-10.4698,percent,"One-lag, zero-threshold event momentum result."
+buy_hold_return_pct,58.5543,percent,Buy-and-hold on the same CSV.
+sweep_rows,12,rows,Parameter combinations in original sweep.

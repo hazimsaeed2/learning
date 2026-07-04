@@ -1,0 +1,37 @@
+{
+  "lecture": "Week 13-2 OTS-01 General Trading Theory",
+  "generated_at": "2026-07-03T00:40:27",
+  "notebooks": [
+    {
+      "notebook": "Week 13-2 OTS-01 General Trading Theory_practice.ipynb",
+      "code_cells": 11,
+      "errors": 1,
+      "markdown_before_code_gaps": 3,
+      "execution_exception": "Traceback (most recent call last):\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\_validation_work\\generate_ots01.py\", line 596, in execute_notebook_safely\n    exec(compile(source, str(path), \"exec\"), ns)\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\Week 13-2 OTS-01 General Trading Theory code\\Week 13-2 OTS-01 General Trading Theory_practice.ipynb\", line 3, in <module>\n    {\nModuleNotFoundError: No module named 'scipy'\n"
+    },
+    {
+      "notebook": "Week 13-2 OTS-01 General Trading Theory_resource_addendum_practice.ipynb",
+      "code_cells": 6,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 13-2 OTS-01 General Trading Theory_validated_practice.ipynb",
+      "code_cells": 18,
+      "errors": 0,
+      "markdown_before_code_gaps": 3,
+      "execution_exception": null
+    }
+  ],
+  "charts": [
+    "chart_addendum_1_ots01_source_coverage.png",
+    "chart_addendum_2_ots01_observation_to_business.png",
+    "chart_addendum_3_ots01_edge_risk_map.png",
+    "chart_addendum_4_ots01_trade_review_noise.png",
+    "chart_addendum_5_ots01_psychology_automation_controls.png"
+  ],
+  "additive_only": true,
+  "existing_chart_preserved": true,
+  "original_dependency_gap": true
+}

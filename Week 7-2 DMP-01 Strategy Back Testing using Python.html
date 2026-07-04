@@ -153,6 +153,41 @@ total = eq.iloc[-1] - 1                     # final return</pre>
   </div>
 </section>
 
+<!-- CONTINUATION ADDENDUM -->
+<section class="card p-4 mb-4">
+  <h2 class="text-base font-bold text-orange-900 mb-2">Continuation addendum - source notebook + workbook</h2>
+  <div class="grid md:grid-cols-2 gap-3 items-start">
+    <div>
+      <img src="Week 7-2 DMP-01 Strategy Back Testing code/chart_addendum_1_dmp01_workflow_map.png" alt="DMP-01 seven-step vectorized backtesting workflow" class="w-full rounded border border-orange-200">
+      <div class="bg-orange-50 rounded p-2 mt-2 text-[10px]"><b>Source zip coverage:</b> the official tutorial notebook has 177 cells and formalizes the 7-step vectorized workflow: idea, data, indicators, signals, positions, returns, and analysis.</div>
+    </div>
+    <div>
+      <img src="Week 7-2 DMP-01 Strategy Back Testing code/chart_addendum_2_dmp01_log_simple_workbook.png" alt="DMP-01 log versus simple workbook comparison" class="w-full rounded border border-orange-200">
+      <table class="mt-2">
+        <tr><th>Workbook point</th><th>Correct rule</th></tr>
+        <tr><td>250 to 240</td><td>true net return is -4.00%</td></tr>
+        <tr><td>simple returns</td><td>use <code>(1+r).cumprod()</code>, not plain addition</td></tr>
+        <tr><td>log returns</td><td>use <code>np.exp(log_r.cumsum())-1</code></td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="grid md:grid-cols-2 gap-4 mb-4">
+  <div class="card p-4">
+    <h2 class="text-base font-bold text-orange-900 mb-2">Continuation addendum - long/short crossover</h2>
+    <img src="Week 7-2 DMP-01 Strategy Back Testing code/chart_addendum_3_dmp01_long_short_crossover.png" alt="DMP-01 long-short SMA50 SMA200 crossover" class="w-full rounded border border-orange-200">
+    <div class="bg-orange-50 rounded p-2 mt-2 text-[10px]"><b>Honest local result:</b> using SMA50/SMA200 on local NSE data after the SMA200 warm-up gives 6 crossovers, 70.77% long exposure, 29.10% short exposure, buy-and-hold <b>+27.82%</b>, and long/short strategy <b>-52.73%</b>. This is a warning example: crossing rules still need risk checks and benchmark comparison.</div>
+  </div>
+  <div class="card p-4">
+    <h2 class="text-base font-bold text-orange-900 mb-2">Continuation addendum - analysis and event loop check</h2>
+    <img src="Week 7-2 DMP-01 Strategy Back Testing code/chart_addendum_4_dmp01_metrics_snapshot.png" alt="DMP-01 metrics snapshot" class="w-full rounded border border-orange-200">
+    <div class="bg-amber-50 rounded p-2 mt-2 text-[10px]">Local tear-sheet proxy: CAGR -21.92%, annual volatility 20.80%, Sharpe -1.08, max drawdown -65.83%. Quantstats is not required for these core diagnostics.</div>
+    <img src="Week 7-2 DMP-01 Strategy Back Testing code/chart_addendum_5_dmp01_event_loop_check.png" alt="DMP-01 event loop and vectorized check" class="w-full rounded border border-orange-200 mt-2">
+    <div class="bg-gray-50 rounded p-2 mt-2 text-[10px]">The event-style for-loop check matches the vectorized shifted-position result exactly: final equity 1.544583 vs 1.544583, absolute difference 0.0.</div>
+  </div>
+</section>
+
 <!-- GLOSSARY -->
 <section class="grid md:grid-cols-2 gap-4 mb-4">
   <div class="card p-4">
@@ -176,5 +211,19 @@ total = eq.iloc[-1] - 1                     # final return</pre>
 
 <footer class="text-center text-[9px] text-gray-400 mt-4">Week 7-2 DMP-01 · vectorized back-testing · verified on nse_daily.csv (962 rows) · 0 notebook errors</footer>
 </div>
+
+<!-- VALIDATION_EVIDENCE_ADDENDUM_START -->
+<section id="validation-evidence-addendum" data-validation-evidence="true" style="max-width: 1100px; margin: 24px auto; padding: 14px 16px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.45;">
+  <h2 style="margin: 0 0 8px; font-size: 16px; font-weight: 700;">Validation Evidence Addendum</h2>
+  <p style="margin: 0 0 8px;">This additive note points to the validation evidence for this lecture. The original page content above remains unchanged.</p>
+  <ul style="margin: 0; padding-left: 18px;">
+    <li>Queue row: 11</li>
+    <li>Lecture: Week 7-2 DMP-01 Strategy Back Testing using Python</li>
+    <li>Status: DONE</li>
+    <li>Validation report: <a href="Week%207-2%20DMP-01%20Strategy%20Back%20Testing%20code/VALIDATION_REPORT.md">Week 7-2 DMP-01 Strategy Back Testing code/VALIDATION_REPORT.md</a></li>
+    <li>Execution summary JSON: <a href="Week%207-2%20DMP-01%20Strategy%20Back%20Testing%20code/dmp01_validation_execution_summary.json">Week 7-2 DMP-01 Strategy Back Testing code/dmp01_validation_execution_summary.json</a></li>
+  </ul>
+</section>
+<!-- VALIDATION_EVIDENCE_ADDENDUM_END -->
 </body>
 </html>

@@ -1,0 +1,9 @@
+check,value,unit,reading
+weekly_band,0.137565,correlation,Approximate +/-1.96/sqrt(N) band.
+weekly_acf_lags_1_5,"[0.0481, 0.1412, 0.0986, -0.1823, 0.0902]",correlations,Autocorrelation of weekly returns.
+weekly_pacf_lags_1_5,"[0.0481, 0.1392, 0.0889, -0.219, 0.0896]",correlations,OLS fallback partial autocorrelation.
+acf_lags_outside_band,2,lags,Weekly return lags outside the simple band.
+adf_like_weekly_price_stat,-1.8302,stat,"Fallback ADF-style regression statistic, not statsmodels."
+adf_like_weekly_price_p,0.2,rough_p,Heuristic p bucket; use statsmodels for formal inference.
+adf_like_weekly_return_stat,-13.4909,stat,"Fallback ADF-style regression statistic, not statsmodels."
+adf_like_weekly_return_p,0.01,rough_p,Heuristic p bucket; use statsmodels for formal inference.

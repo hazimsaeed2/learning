@@ -1,0 +1,40 @@
+{
+  "lecture_row": 5,
+  "lecture": "Week 5-1 PBQ-01 Basics of Python Programming",
+  "queue_status": "DONE",
+  "summary_type": "legacy_report_digest",
+  "summary_created_utc": "2026-07-03T22:56:54+00:00",
+  "source_report": "Week 5-1 PBQ-01 code/VALIDATION_REPORT.md",
+  "source_report_modified_utc": "2026-07-02T14:13:37+00:00",
+  "notebook_execution_rerun_for_this_json": false,
+  "status_from_existing_report": "UNKNOWN",
+  "report_pass_indicators": [],
+  "report_error_indicators": [],
+  "artifacts_in_code_folder": {
+    "notebooks": [
+      "Week 5-1 PBQ-01 Basics of Python Programming_practice.ipynb",
+      "Week 5-1 PBQ-01 Basics of Python Programming_resource_addendum_practice.ipynb",
+      "Week 5-1 PBQ-01 Basics of Python Programming_validated_practice.ipynb"
+    ],
+    "notebook_count": 3,
+    "html_exports": [],
+    "html_export_count": 0,
+    "chart_files": [
+      "chart_1_tcs_signals.png",
+      "chart_addendum_1_pbq01_vectorization_benchmark.png",
+      "chart_addendum_2_pbq01_pandas_access_patterns.png",
+      "chart_addendum_3_pbq01_missing_data_signals.png"
+    ],
+    "chart_file_count": 4,
+    "csv_files": [
+      "pbq01_faq_reference.csv",
+      "pbq01_library_map.csv",
+      "pbq01_tcs_signal_counts.csv",
+      "pbq01_vectorization_benchmark.csv",
+      "pbq01_workflow_reference.csv",
+      "TCS.NS.csv"
+    ],
+    "csv_file_count": 6
+  },
+  "coverage_note": "This JSON was added after queue completion because the folder already had a VALIDATION_REPORT.md but no machine-readable summary. It is a digest of that existing report and local artifacts, not a fresh execution claim."
+}

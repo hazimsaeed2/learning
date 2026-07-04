@@ -1,0 +1,9 @@
+control,lecture_application,additive_note
+Preprocessing,"Tokenize, POS-tag, lemmatize, drop stopwords/punct/numbers.",Token counts preserve notebook output; local proxy is marked separately.
+Bag-of-words limitation,TF-IDF misses bankrupt/delisted semantic similarity.,Vectorizer table keeps low TF-IDF similarity and embedding note separate.
+Topic modeling,LDA/LSA recover latent themes from text.,Toy corpus metrics are captured without relying on external corpus.
+Machine-readable news,"MRN JSON envelope contains timestamps, headline/body, and coded metadata.",MRN metadata audit surfaces required fields.
+Sentiment weighting,Daily signal uses relevance-weighted net sentiment.,Baidu sentiment table records class distribution and relevance mean.
+No look-ahead trading,Strategy uses shifted position to trade next-day returns.,Trading metrics label this explicitly.
+API-only demos,PermID and Intelligent Tagging need Refinitiv API keys/network.,Study addendum documents why these remain conceptual locally.
+Fallback scope,spaCy/sklearn/statsmodels are unavailable in this environment.,Validated notebook stubs are for execution validation only.

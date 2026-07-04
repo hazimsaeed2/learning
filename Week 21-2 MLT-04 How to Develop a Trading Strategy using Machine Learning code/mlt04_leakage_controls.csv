@@ -1,0 +1,5 @@
+method,mcc,inflation_vs_honest,control_status,why_it_matters
+Honest walk-forward with embargo,0.0347,0.0,preferred baseline,Train only on past observations with an embargo before the test window.
+Random shuffle split,0.5593,0.5246,leaky anti-pattern,Future regimes can enter the training set.
+K-fold without shuffle,0.046,0.0113,weak time-series control,Contiguous folds still train on data that can sit after the test fold.
+K-fold with shuffle,0.5823,0.5475,leaky anti-pattern,Shuffling breaks time order and creates the largest inflation in the notebook.

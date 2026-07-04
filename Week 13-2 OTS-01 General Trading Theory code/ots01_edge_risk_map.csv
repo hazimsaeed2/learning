@@ -1,0 +1,6 @@
+participant,possible_edge,main_risks,control
+Directional stock trader,Direction prediction,Volatility; rates; liquidity; counterparty; execution,Size small; define thesis decay trigger; avoid confusing one result with true edge
+Market maker,Bid/ask spread and flow information,Inventory; adverse selection; underlying direction; volatility; execution,Quote around fair value; manage inventory; cut stale quotes quickly
+Options volatility trader,Volatility forecast or volatility risk premium,Stock direction; dividends; rates; skew; jump risk; liquidity,Hedge non-volatility exposures; cap ruin outcomes; monitor realized versus implied volatility
+Retail options trader,Selective risk premium or niche information,Costs; wide spreads; overtrading; high win-rate illusion; insufficient data,Trade only when edge is clear; use liquid products; avoid playing on hard mode
+Risk-premium seller,Being paid to hold risk others avoid,Rare large loss; crash gap; margin call; behavioral pressure,"Hedge consequences, not guessed probabilities; size so the edge reaches the long run"

@@ -1,0 +1,7 @@
+topic,source_point,practical_note
+Jupyter cell types,Code runs Python; Markdown stores notes and explanations,Use markdown to document every idea before code
+Command vs edit mode,Command mode moves/manages cells; edit mode changes cell text,Blue border means command mode in classic Jupyter
+Help tools,"Use help(obj), obj?, tab completion, and error messages",Read errors before changing random code
+AI assistants,Useful for explaining errors and generating examples,Verify logic before using any generated trading code
+Anaconda/Jupyter,Recommended beginner setup for notebooks,VS Code is fine if already comfortable
+conda vs pip,pip installs Python packages; conda also manages non-Python binaries and environments,Use environments to avoid dependency conflicts

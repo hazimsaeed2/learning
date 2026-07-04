@@ -1,0 +1,6 @@
+dependency,available_locally,version,fallback_or_note
+numpy,yes,2.2.6,
+pandas,yes,3.0.3,
+matplotlib,yes,3.11.0,
+fitz,yes,1.28.0,
+nbformat,yes,5.10.4,

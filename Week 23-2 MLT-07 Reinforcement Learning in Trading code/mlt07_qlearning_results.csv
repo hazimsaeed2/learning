@@ -1,0 +1,4 @@
+test,train_bars,test_bars,strategy_total_pct,strategy_sharpe,buy_hold_total_pct,buy_hold_sharpe,max_drawdown_pct,time_long_pct
+clean_sine,1000,1000,1774991.4177,17.0211,-1.8492,0.0855,-7.5821,67.2345
+noisy_sine_oos,500,500,-36.1279,0.5703,-7.7863,0.7148,-76.4399,81.7269
+real_market_oos,2928,1255,-5.076,0.0986,332.0139,1.2123,-45.9688,61.7717

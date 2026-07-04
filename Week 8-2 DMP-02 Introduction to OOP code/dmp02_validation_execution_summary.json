@@ -1,0 +1,72 @@
+{
+  "lecture": "Week 8-2 DMP-02 Introduction to Object Oriented Programming",
+  "generated_at": "2026-07-03T03:18:19",
+  "notebooks": [
+    {
+      "notebook": "Week 8-2 DMP-02 Introduction to OOP_practice.ipynb",
+      "code_cells": 11,
+      "markdown_cells": 14,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "d__(2) = 4\nlen(lst)        = 3\nlst.__len__()   = 3\nnumpy version dunder: 2.2.6\ntype(4.3): <class 'float'>\n4.3 is integer?  False\n4.0 is integer?  True\njohn.goal: to get educated\njohn.take_lunch(): enjoying the lunch\nafter update -> mary.goal: to get educated and get a job | class goal: to get educated and get a job\nJohn Paul | age 19\nnew age for John Paul is 20\nstatic: Academic year 2024-25\ndave.name: Dave | dave.goal: to get educated and win some trophies\ninherited update_age: new age for Dave is 18\nisinstance(dave, SportyStudent): True\nisinstance(dave, Student)      : True\nissubclass(SportyStudent, Student): True\ndave.__dict__: {'name': 'Dave', 'age': 18}\nMRO: ['SportyStudent', 'Student', 'object']\nChild __init__, grade A\nParentOne __init__, age 5\nhello from ParentTwo\nMRO: ['Child', 'ParentOne', 'ParentTwo', 'object']\nlist  MRO: ['list', 'object']\narray MRO: ['ndarray', 'object']\nDataFrame MRO: ['DataFrame', 'NDFrame', 'PandasObject', 'DirNamesMixin', 'IndexingMixin', 'OpsMixin', 'object']\nclass defined\nSMA10/20: total return 2.64%\nSMA5/20: total return 5.62%\n\nBuy & Hold over same window: 51.48%\nBoth back-tests share ONE blueprint; only the parameters differ.\nequity curves drawn\n",
+      "sma10_20_return": 0.026414075419357363,
+      "sma5_20_return": 0.056227490076913966,
+      "buy_hold_return": 0.5148342531132644,
+      "bt_rows": 942
+    },
+    {
+      "notebook": "Week 8-2 DMP-02 Introduction to Object Oriented Programming_resource_addendum_practice.ipynb",
+      "code_cells": 5,
+      "markdown_cells": 5,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "                                           lecture_application                                                              additive_note\nOriginal notebook execution                            Run DMP-02 practice notebook in a temp folder.                          Original notebook executed with 0 errors locally.\n         OOP concept checks Dunder, classmethod, instance method, staticmethod, inheritance, and MRO.                                       Concept outputs are captured in CSV.\n       Class pipeline audit                                        BacktestingCrossover method order.                 Method responsibilities and state mutation are documented.\n Position lag clarification                                Avoid look-ahead bias in strategy returns. The notebook shifts once in positions(); returns() should not shift again.\n       Parameter comparison                             Same class, different moving-average windows.                 SMA10/20 and SMA5/20 returns are compared to buy-and-hold.\n         Offline validation                                   The notebook uses shipped NIFTY-50 CSV.                                    No live market data download is needed.\n",
+      "sma10_20_return": "",
+      "sma5_20_return": "",
+      "buy_hold_return": "",
+      "bt_rows": ""
+    },
+    {
+      "notebook": "Week 8-2 DMP-02 Introduction to Object Oriented Programming_validated_practice.ipynb",
+      "code_cells": 16,
+      "markdown_cells": 19,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "                                           lecture_application                                                              additive_note\nOriginal notebook execution                            Run DMP-02 practice notebook in a temp folder.                          Original notebook executed with 0 errors locally.\n         OOP concept checks Dunder, classmethod, instance method, staticmethod, inheritance, and MRO.                                       Concept outputs are captured in CSV.\n       Class pipeline audit                                        BacktestingCrossover method order.                 Method responsibilities and state mutation are documented.\n Position lag clarification                                Avoid look-ahead bias in strategy returns. The notebook shifts once in positions(); returns() should not shift again.\n       Parameter comparison                             Same class, different moving-average windows.                 SMA10/20 and SMA5/20 returns are compared to buy-and-hold.\n         Offline validation                                   The notebook uses shipped NIFTY-50 CSV.                                    No live market data download is needed.\n",
+      "sma10_20_return": 0.026414075419357363,
+      "sma5_20_return": 0.056227490076913966,
+      "buy_hold_return": 0.5148342531132644,
+      "bt_rows": 942
+    }
+  ],
+  "html": {
+    "file": "Week 8-2 DMP-02 Introduction to Object Oriented Programming.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 10,
+    "missing_generated_charts": []
+  },
+  "study_html": {
+    "file": "Week 8-2 DMP-02 Introduction to Object Oriented Programming_study.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 5,
+    "missing_generated_charts": []
+  },
+  "charts": [
+    "chart_addendum_1_dmp02_source_notebook_audit.png",
+    "chart_addendum_2_dmp02_oop_concept_map.png",
+    "chart_addendum_3_dmp02_backtest_equity.png",
+    "chart_addendum_4_dmp02_parameter_comparison.png",
+    "chart_addendum_5_dmp02_method_pipeline.png"
+  ],
+  "main_html_appended": true,
+  "study_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "clarification_note": "Position lag is applied once in positions(); avoid shifting again in returns()."
+}

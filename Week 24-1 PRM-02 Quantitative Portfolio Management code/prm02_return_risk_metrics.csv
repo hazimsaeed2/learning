@@ -1,0 +1,4 @@
+asset,trading_days,holding_return_pct,daily_mean_pct,annual_mean_pct,cagr_pct,annual_variance,annual_volatility_pct
+TCS,1392,105.546,0.064127,16.16,13.9324,0.06230275,24.9605
+MARUTI,1392,126.5478,0.077051,19.4168,15.9568,0.09208422,30.3454
+MARICO,1392,152.8533,0.080288,20.2325,18.2859,0.0688248,26.2345

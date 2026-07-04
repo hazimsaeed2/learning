@@ -106,5 +106,18 @@
   <div class="end">— End of Week 17-2 OTS-03 study guide · pair this with the dashboard cheat sheet and the executed practice notebook —</div>
 
 </div>
+
+
+<!-- OTS03_STUDY_ADDITIVE_SOURCE_PACK_START -->
+<section>
+  <h2>Additive Validation Notes</h2>
+  <p>This section was added after the original study guide. It keeps the existing wording and adds a corrected precision layer for execution and model use.</p>
+  <div class="box"><strong>Local execution correction.</strong> The original notebook imports <code>scipy.stats.norm</code> and <code>mibian.BS</code>. Those packages are not installed in this local environment, so the new validated notebook adds small local fallbacks and leaves the original notebook untouched.</div>
+  <p><strong>Parity precision:</strong> <code>C - P = S - K e^(-rT)</code> is the exact non-dividend European-option parity. American options do not generally satisfy that equality because early exercise is possible, but no-arbitrage bounds still apply. For American exercise, use a binomial tree or another numerical method.</p>
+  <p><strong>Contract-style precision:</strong> many index options are European-style, while many listed single-stock options, especially in the US, are American-style. Always check the exchange contract specification before applying a model directly.</p>
+  <p>Added resources are in <code>Week 17-2 OTS-03 Options Pricing Models and Greeks code</code>: source inventories, Black-Scholes sensitivity tables, Greek reference tables, parity checks, assumption controls, five charts, the addendum notebook, and the validated composite notebook.</p>
+</section>
+<!-- OTS03_STUDY_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

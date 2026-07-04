@@ -1,0 +1,5 @@
+file,rows,columns,date_start,date_end,missing_values
+AUDCAD.csv,3208,Open; High; Low; Close; Volume,2011-12-05,2024-03-20,0
+EWA.csv,2319,Close,2015-01-02,2024-03-20,0
+EWC.csv,2319,Close,2015-01-02,2024-03-20,0
+EURCHF.csv,2679,Close,2010-01-04,2019-02-27,0

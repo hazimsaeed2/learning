@@ -1,0 +1,4 @@
+artifact,artifact_type,exists,size_bytes,rows,columns,note
+Week 12-1 ASQ-02 Time Series Modeling_practice.ipynb,practice_notebook,True,290183,,,"12 code cells, 14 markdown cells"
+market_data.csv,source_data,True,75044,962,6,2017-01-02 through 2020-11-27
+chart_1_arch.png,original_chart,True,198354,,,Existing chart preserved; addendum charts use separate names.

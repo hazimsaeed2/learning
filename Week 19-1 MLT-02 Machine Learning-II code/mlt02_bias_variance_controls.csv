@@ -1,0 +1,7 @@
+risk,lecture_anchor,control
+SVM overfit,kernel train/test comparison,"Choose kernel by validation, not train accuracy"
+Metric blindness,confusion matrix,"Review precision, recall, and F1 for the trading objective"
+Time-series leakage,shuffle=False,Chronological split and train-only scaling
+Using close-open before signal time,co feature,Only use same-day close-open if trading after close; otherwise lag it
+KMeans scale sensitivity,fundamental ratios,Scale or winsorize features before production clustering
+Elbow ambiguity,inertia by k,Pair elbow with business interpretability and stability checks

@@ -1,0 +1,9 @@
+check,value,expected,note
+plain_read_index,RangeIndex,RangeIndex,Plain pd.read_csv leaves Date as a normal column.
+plain_read_shape,962x6,962x6,Includes Date plus OHLCV columns.
+clean_read_index,DatetimeIndex,DatetimeIndex,index_col='Date' and parse_dates=True make it time-series-ready.
+clean_read_shape,962x5,962x5,"Date is the index, not a data column."
+roundtrip_same_shape,True,True,CSV save/reload preserves rows and columns when read with date parsing.
+available_timezones,597,near 600,Local stdlib zoneinfo count; tutorial wording is directionally correct.
+utc_sample_times,"09:30, 09:35, 09:40","09:30, 09:35, 09:40",UTC sample intraday timestamps.
+ist_sample_times,"15:00, 15:05, 15:10","15:00, 15:05, 15:10",UTC converted to Asia/Kolkata.

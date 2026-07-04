@@ -177,6 +177,38 @@ transaction cost while keeping the trade consistent with the fund's investment o
 you <em>can't</em> grade their execution quality. Always verify what a broker tells you — the second session
 (MMT-04) is devoted to exactly that, with the math and the Python.</div>
 
+<h2>10. Resource addendum - landscape, taxonomy, and intraday profiles</h2>
+<p>The official lecture objectives and summary add a broader map around the worked examples: where execution sits in the investment cycle, who participates in the market, how algorithm families differ, and why intraday volume, volatility, and spreads matter to execution logic.</p>
+
+<p><img src="Week 5-2 MMT-03 code/chart_addendum_1_mmt03_market_landscape.png" alt="MMT-03 market landscape and participants" style="max-width:100%;border:1px solid #cbd5e1;border-radius:8px"></p>
+
+<table>
+<tr><th>Participant</th><th>Role in the execution ecosystem</th></tr>
+<tr><td>Brokers</td><td>Facilitate client trades through agency execution, principal commitment, algorithms, DMA, and venue access.</td></tr>
+<tr><td>Institutions</td><td>Generate large parent orders from portfolio construction and rebalancing decisions.</td></tr>
+<tr><td>Liquidity providers</td><td>Post bids and asks, support displayed liquidity, and seek spread/rebate economics.</td></tr>
+<tr><td>Hedge funds / prop / HFT</td><td>Use profit-seeking, market-making, liquidity, or pattern-recognition strategies.</td></tr>
+<tr><td>Retail investors</td><td>Typically submit smaller orders through brokers or wealth-management channels.</td></tr>
+</table>
+
+<p>The algorithm taxonomy below is useful because "algorithmic trading" is not one strategy. Some algorithms only execute a portfolio manager's order; others make investment decisions, provide liquidity, or simply give clients direct venue access through broker infrastructure.</p>
+<p><img src="Week 5-2 MMT-03 code/chart_addendum_2_mmt03_algorithm_taxonomy.png" alt="MMT-03 algorithm taxonomy and urgency logic" style="max-width:100%;border:1px solid #cbd5e1;border-radius:8px"></p>
+
+<table>
+<tr><th>Strategy family</th><th>Execution meaning</th></tr>
+<tr><td>Arrival Price / Implementation Shortfall</td><td>Trades faster or slower relative to the order's arrival price and the cost-risk objective; behavior differs by broker.</td></tr>
+<tr><td>Front-Load / Back-Load</td><td>Front-load trades more at the beginning to stay close to arrival price; back-load waits for a future benchmark such as the close.</td></tr>
+<tr><td>Liquidity Seeking</td><td>Uses displayed and dark venues to capture liquidity at a specified price or better, often aggressively near order completion.</td></tr>
+<tr><td>Optimal Strategy</td><td>Chooses schedule or POV rate by optimizing market impact versus timing risk for a chosen risk-aversion level.</td></tr>
+<tr><td>Portfolio / Basket</td><td>Coordinates many buy and sell orders together so risk, hedge, and schedule constraints stay aligned.</td></tr>
+<tr><td>Dynamic</td><td>Revises participation rate or schedule from live prices, volumes, fills, and re-optimization rules.</td></tr>
+</table>
+
+<p>Finally, execution models use intraday market microstructure. The lecture notes and Q&amp;A highlight that volume is typically J-shaped, volatility is closer to L-shaped in modern US data, and spreads are widest near the open and close. A VWAP, POV, or dynamic algorithm needs those curves to decide how much to trade and how aggressively to place orders.</p>
+<p><img src="Week 5-2 MMT-03 code/chart_addendum_3_mmt03_intraday_profiles.png" alt="MMT-03 intraday volume volatility and spread profiles" style="max-width:100%;border:1px solid #cbd5e1;border-radius:8px"></p>
+
+<p>The code folder now includes additive reference tables: <code>mmt03_market_participants.csv</code>, <code>mmt03_algorithm_taxonomy.csv</code>, <code>mmt03_strategy_classification.csv</code>, <code>mmt03_decision_process.csv</code>, <code>mmt03_execution_styles.csv</code>, and <code>mmt03_intraday_profiles.csv</code>.</p>
+
 <h2>Key takeaways</h2>
 <ul>
 <li><strong>Market impact</strong> = temporary (liquidity premium, reverts) + permanent (information, stays): 25¢ = 20¢ + 5¢.</li>

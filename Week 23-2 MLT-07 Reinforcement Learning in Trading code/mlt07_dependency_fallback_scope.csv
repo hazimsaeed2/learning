@@ -1,0 +1,7 @@
+dependency,available_locally,version,fallback_or_note
+numpy,yes,2.2.6,not needed
+pandas,yes,3.0.3,not needed
+matplotlib,yes,3.11.0,not needed
+scipy,no,,validated notebook supplies fallback or documents deep-learning-only dependency: ModuleNotFoundError
+tensorflow,no,,validated notebook supplies fallback or documents deep-learning-only dependency: ModuleNotFoundError
+keras,no,,validated notebook supplies fallback or documents deep-learning-only dependency: ModuleNotFoundError

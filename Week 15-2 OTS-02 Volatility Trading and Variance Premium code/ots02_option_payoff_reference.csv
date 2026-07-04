@@ -1,0 +1,5 @@
+instrument,payoff,pnl_rule,volatility_view
+Call,"max(S - K, 0)",Profit equals payoff minus premium and costs,Directional upside plus positive convexity
+Put,"max(K - S, 0)",Profit equals payoff minus premium and costs,Crash protection and downside convexity
+Long straddle,call payoff plus put payoff,Needs a move beyond both premiums to profit,"Long volatility, not direction"
+Short straddle,negative long-straddle payoff plus premium collected,Premium income with large tail loss if realized move is too large,Short volatility and short convexity

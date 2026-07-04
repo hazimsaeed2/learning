@@ -1,0 +1,14 @@
+feature,formula,uses_future_data,scaling_needed_for_logistic
+std_5,rolling 5-day close standard deviation,No,Yes
+std_10,rolling 10-day close standard deviation,No,Yes
+std_15,rolling 15-day close standard deviation,No,Yes
+ma_10,rolling 10-day close moving average,No,Yes
+ma_15,rolling 15-day close moving average,No,Yes
+ma_20,rolling 20-day close moving average,No,Yes
+ma_25,rolling 25-day close moving average,No,Yes
+pct_3,rolling 3-day sum of close pct_change,No,Yes
+pct_6,rolling 6-day sum of close pct_change,No,Yes
+pct_9,rolling 9-day sum of close pct_change,No,Yes
+vma_4,rolling 4-day volume moving average,No,Yes
+co,same-day close minus open,No,Yes
+target,next-day return > 0 via shift(-1),Only as label construction before split,No

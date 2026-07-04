@@ -167,5 +167,36 @@ df["strat"] = df["pos"] * df["r"]           # position × return</pre>
 
   <p class="text-center text-[9px] text-slate-400 mt-4">EPAT · Week 9-1 DMP-03 · OOP in Python Part 1 — self-teaching cheat sheet</p>
 </div>
+
+
+<!-- DMP03_ADDITIVE_SOURCE_PACK_START -->
+<section class="mt-10 border-t border-teal-200 pt-6">
+  <h2 class="text-2xl font-black text-teal-900 mb-2">Additive Validation Pack: DMP-03 EMH And Vectorized Backtest</h2>
+  <p class="text-sm text-slate-700 mb-4">This section was added without removing or editing existing lecture content. It validates the original practice notebook, random-walk simulation, price-versus-return autocorrelation, return/risk math, and OLS AR(7) vectorized backtest.</p>
+  <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900 mb-4"><strong>Additive correction.</strong> On the shipped <code>eod_prices.csv</code>, <code>8</code> of 15 return ACF lags sit outside the simple +/-1.96/sqrt(N) band. The signs are still scattered and do not resemble the persistent synthetic AR(1) pattern, but the exact count is 8 rather than only a couple.</div>
+  <div class="grid md:grid-cols-2 gap-4"><figure class="bg-white border border-teal-100 rounded-lg p-3">
+  <img src="Week 9-1 DMP-03 OOP in Python code/chart_addendum_1_dmp03_source_notebook_audit.png" alt="DMP-03 additive validation chart" class="w-full rounded">
+  <figcaption class="text-[11px] text-slate-500 mt-2">chart_addendum_1_dmp03_source_notebook_audit.png</figcaption>
+</figure>
+<figure class="bg-white border border-teal-100 rounded-lg p-3">
+  <img src="Week 9-1 DMP-03 OOP in Python code/chart_addendum_2_dmp03_random_walk_acf.png" alt="DMP-03 additive validation chart" class="w-full rounded">
+  <figcaption class="text-[11px] text-slate-500 mt-2">chart_addendum_2_dmp03_random_walk_acf.png</figcaption>
+</figure>
+<figure class="bg-white border border-teal-100 rounded-lg p-3">
+  <img src="Week 9-1 DMP-03 OOP in Python code/chart_addendum_3_dmp03_return_risk_drawdown.png" alt="DMP-03 additive validation chart" class="w-full rounded">
+  <figcaption class="text-[11px] text-slate-500 mt-2">chart_addendum_3_dmp03_return_risk_drawdown.png</figcaption>
+</figure>
+<figure class="bg-white border border-teal-100 rounded-lg p-3">
+  <img src="Week 9-1 DMP-03 OOP in Python code/chart_addendum_4_dmp03_ols_backtest_equity.png" alt="DMP-03 additive validation chart" class="w-full rounded">
+  <figcaption class="text-[11px] text-slate-500 mt-2">chart_addendum_4_dmp03_ols_backtest_equity.png</figcaption>
+</figure>
+<figure class="bg-white border border-teal-100 rounded-lg p-3">
+  <img src="Week 9-1 DMP-03 OOP in Python code/chart_addendum_5_dmp03_validation_summary.png" alt="DMP-03 additive validation chart" class="w-full rounded">
+  <figcaption class="text-[11px] text-slate-500 mt-2">chart_addendum_5_dmp03_validation_summary.png</figcaption>
+</figure></div>
+  <div class="mt-4 text-xs text-slate-500">Added files: <code>Week 9-1 DMP-03 OOP in Python code/VALIDATION_REPORT.md</code>, <code>Week 9-1 DMP-03 OOP in Python code/Week 9-1 DMP-03 Object Oriented Programming In Python_resource_addendum_practice.ipynb</code>, and <code>Week 9-1 DMP-03 OOP in Python code/Week 9-1 DMP-03 Object Oriented Programming In Python_validated_practice.ipynb</code>. OLS strategy return: <code>-47.34%</code>; buy-and-hold over OLS window: <code>54.26%</code>.</div>
+</section>
+<!-- DMP03_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

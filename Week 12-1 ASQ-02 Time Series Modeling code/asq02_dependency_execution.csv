@@ -1,0 +1,5 @@
+metric,value,unit,reading
+statsmodels_available,no,environment,ModuleNotFoundError
+arch_available,no,environment,ModuleNotFoundError
+original_execution_errors,1,errors,ModuleNotFoundError: No module named 'statsmodels'
+fallback_scope,AR-like + EWMA-GARCH-like,validated_copy,Validated copy injects minimal fallbacks for local execution only.

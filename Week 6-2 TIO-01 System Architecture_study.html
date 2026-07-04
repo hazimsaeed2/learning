@@ -208,6 +208,59 @@ processed the price may have moved away. The instructor notes a head of simulato
 trading, precisely because building a good simulator demands the deepest market-microstructure knowledge.
 Often the gap between a great firm and a mediocre one is the sophistication of its simulator.</div>
 
+<h2>10. Additive infrastructure details: exchange side, queues, feeds, and co-location</h2>
+<p>The official lecture notes, FAQ, and the late transcript section add a few architecture details beyond the
+core server-side story above. The most important addition is that the exchange itself is a distributed system:
+orders enter through gateways, route to matching engines, and then separate services publish market data,
+recovery packets, and drop-copy trade reports.</p>
+
+<p><img src="Week 6-2 TIO-01 System Architecture code/chart_addendum_1_tio01_exchange_side_architecture.png" alt="TIO-01 exchange-side gateway, matching engine, market data, recovery, and drop copy architecture" style="max-width:100%;border:1px solid #cbd5e1;border-radius:8px"></p>
+
+<table>
+<tr><th>Exchange-side component</th><th>Role</th><th>Why it matters to a trader</th></tr>
+<tr><td>Gateway</td><td>Receives member sessions, applies format/rate checks, and routes orders to the right matching engine.</td><td>Your order can queue before it even reaches the book.</td></tr>
+<tr><td>Matching engine</td><td>Maintains order books for assigned instruments and produces acknowledgements, fills, and rejects.</td><td>Cancel/replace logic depends on the exchange acknowledgement and timestamp.</td></tr>
+<tr><td>Market data servers</td><td>Primary/secondary live feeds, plus snapshot and recovery services.</td><td>Missed sequence numbers must be recovered; otherwise your local order book is wrong.</td></tr>
+<tr><td>Drop copy</td><td>Authenticated stream of trade/report copies for risk, compliance, or back office systems.</td><td>Independent visibility is essential when automated systems run across multiple servers.</td></tr>
+</table>
+
+<p><img src="Week 6-2 TIO-01 System Architecture code/chart_addendum_2_tio01_market_data_methods.png" alt="TIO-01 snapshot, tick-by-tick, and snapshot TBT market data methods" style="max-width:100%;border:1px solid #cbd5e1;border-radius:8px"></p>
+
+<table>
+<tr><th>Market-data method</th><th>What arrives</th><th>Main trade-off</th></tr>
+<tr><td>Snapshot</td><td>Top-of-book or depth snapshot every configured interval.</td><td>Lowest volume, but you are blind between snapshots.</td></tr>
+<tr><td>Tick by tick</td><td>Every add, cancel, modify, and trade event.</td><td>Fastest view, but you must build the order book correctly from raw events.</td></tr>
+<tr><td>Snapshot TBT</td><td>Snapshot sent whenever top-N book levels change.</td><td>No full-book maintenance for top levels, but volume can still be large.</td></tr>
+</table>
+
+<p>The order manager also needs internal queues. A <strong>message-rate queue</strong> protects the order-per-second
+limit purchased from the exchange. An <strong>acknowledgement queue</strong> protects cancel/replace logic: before a
+replace is valid, many exchanges require the original order's exchange order ID and exchange timestamp, both of
+which arrive only after acknowledgement.</p>
+
+<p><img src="Week 6-2 TIO-01 System Architecture code/chart_addendum_3_tio01_connectivity_latency_queues.png" alt="TIO-01 connectivity latency and order manager queues" style="max-width:100%;border:1px solid #cbd5e1;border-radius:8px"></p>
+
+<p>The FAQ reinforces the practical boundary: co-location is for low-latency and HFT-style strategies. Beginners
+should start with low-frequency automation, then move toward medium-frequency systems after the trading and
+monitoring process is mature. If trading through a broker, measure local-to-broker latency with tools such as
+<code>ping</code>, and ask the broker for broker-to-exchange latency. A single asset's tick-by-tick data can already
+be a few hundred megabytes per day, so feed choice must match the strategy.</p>
+
+<h2>11. Additive quantified-news detail</h2>
+<p>The quantified-news companion deck expands the four scores listed above. Sentiment is entity-level, not just
+document-level; relevance asks whether the company is central to the story; novelty checks whether this is a
+repeat alert within the same feed or across feeds; market impact uses event category and sometimes article/social
+volume. Good strategies usually filter for quality rather than taking every scored article.</p>
+
+<p><img src="Week 6-2 TIO-01 System Architecture code/chart_addendum_4_tio01_news_score_stack.png" alt="TIO-01 quantified news score stack before trading" style="max-width:100%;border:1px solid #cbd5e1;border-radius:8px"></p>
+
+<p>The code folder now includes additive resources: <code>tio01_exchange_architecture_components.csv</code>,
+<code>tio01_market_data_methods.csv</code>, <code>tio01_order_manager_queues.csv</code>,
+<code>tio01_connectivity_latency_reference.csv</code>, <code>tio01_news_scoring_reference.csv</code>,
+<code>tio01_retail_infra_faq.csv</code>,
+<code>Week 6-2 TIO-01 System Architecture_resource_addendum_practice.ipynb</code>, and
+<code>Week 6-2 TIO-01 System Architecture_validated_practice.ipynb</code>.</p>
+
 <h2>Key takeaways</h2>
 <ul>
 <li>A trading system spans three zones — exchange (external), broker/server (you build it), trader (client) — chained as <strong>adapter → warehouse/operational store → CEP → order manager + RMS → exchange</strong>, with a 7-year back-office record.</li>

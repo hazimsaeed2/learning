@@ -1,0 +1,10 @@
+metric,value,reading
+news_items,4459,Real Baidu scored news items.
+distinct_news_days,964,Distinct days with news.
+date_start,2012-01-09,First news day.
+date_end,2018-08-30,Last news day.
+positive_count,1958,Argmax class.
+neutral_count,1078,Argmax class.
+negative_count,1423,Argmax class.
+mean_net_sentiment,0.105828,P(positive) minus P(negative).
+mean_relevance,0.661304,Refinitiv relevance weight.

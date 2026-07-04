@@ -148,5 +148,36 @@ LinearRegression().fit(X=chg_y2t, y=chg_t2m)</pre>
   <p class="text-center text-stone-400 mt-3">EPAT · Week 11-1 TBP-04 · Backtest &amp; Live Trade Algorithmic Strategies (Part 1)</p>
 </section>
 
+
+
+<!-- TBP04_ADDITIVE_SOURCE_PACK_START -->
+<section class="mt-10 border-t border-sky-200 pt-6">
+  <h2 class="text-2xl font-black text-sky-900 mb-2">Additive Validation Pack: TBP-04 Swing Strategy</h2>
+  <p class="text-sm text-slate-700 mb-4">This section was added without removing or editing existing lecture content. It documents the local <code>sklearn</code> dependency gap, validates the single-feature swing regression, records the strategy scorecard, and adds timeframe and live-scope controls.</p>
+  <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900 mb-4"><strong>Additive correction.</strong> The original notebook requires <code>sklearn</code> and fails locally before execution. The validated copy injects a minimal single-feature <code>LinearRegression</code> fallback only for this teaching example; production modelling should use the intended library.</div>
+  <div class="grid md:grid-cols-2 gap-4"><figure class="bg-white border border-sky-100 rounded-lg p-3">
+  <img src="Week 11-1 TBP-04 Backtest and Live Trade code/chart_addendum_1_tbp04_source_dependency_audit.png" alt="TBP-04 additive validation chart" class="w-full rounded">
+  <figcaption class="text-[11px] text-slate-500 mt-2">chart_addendum_1_tbp04_source_dependency_audit.png</figcaption>
+</figure>
+<figure class="bg-white border border-sky-100 rounded-lg p-3">
+  <img src="Week 11-1 TBP-04 Backtest and Live Trade code/chart_addendum_2_tbp04_swing_regression.png" alt="TBP-04 additive validation chart" class="w-full rounded">
+  <figcaption class="text-[11px] text-slate-500 mt-2">chart_addendum_2_tbp04_swing_regression.png</figcaption>
+</figure>
+<figure class="bg-white border border-sky-100 rounded-lg p-3">
+  <img src="Week 11-1 TBP-04 Backtest and Live Trade code/chart_addendum_3_tbp04_strategy_equity.png" alt="TBP-04 additive validation chart" class="w-full rounded">
+  <figcaption class="text-[11px] text-slate-500 mt-2">chart_addendum_3_tbp04_strategy_equity.png</figcaption>
+</figure>
+<figure class="bg-white border border-sky-100 rounded-lg p-3">
+  <img src="Week 11-1 TBP-04 Backtest and Live Trade code/chart_addendum_4_tbp04_timeframe_coefficients.png" alt="TBP-04 additive validation chart" class="w-full rounded">
+  <figcaption class="text-[11px] text-slate-500 mt-2">chart_addendum_4_tbp04_timeframe_coefficients.png</figcaption>
+</figure>
+<figure class="bg-white border border-sky-100 rounded-lg p-3">
+  <img src="Week 11-1 TBP-04 Backtest and Live Trade code/chart_addendum_5_tbp04_scope_controls.png" alt="TBP-04 additive validation chart" class="w-full rounded">
+  <figcaption class="text-[11px] text-slate-500 mt-2">chart_addendum_5_tbp04_scope_controls.png</figcaption>
+</figure></div>
+  <div class="mt-4 text-xs text-slate-500">Added files: <code>Week 11-1 TBP-04 Backtest and Live Trade code/VALIDATION_REPORT.md</code>, <code>Week 11-1 TBP-04 Backtest and Live Trade code/Week 11-1 TBP-04 Backtest and Live Trade Algo Strategie_resource_addendum_practice.ipynb</code>, and <code>Week 11-1 TBP-04 Backtest and Live Trade code/Week 11-1 TBP-04 Backtest and Live Trade Algo Strategie_validated_practice.ipynb</code>. Coef: <code>-0.0807</code>; corr: <code>-0.0807</code>; swing return: <code>-3.41%</code>; buy-and-hold: <code>58.31%</code>.</div>
+</section>
+<!-- TBP04_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

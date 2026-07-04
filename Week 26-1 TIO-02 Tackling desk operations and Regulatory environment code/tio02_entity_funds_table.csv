@@ -1,0 +1,10 @@
+category,structure,liability,trade_for_client,pooling,compliance,best_for
+entity,Individual,Unlimited,n/a,no,lowest,retail account
+entity,Partnership,Unlimited,n/a,no,low,"few partners, fast"
+entity,LLC / Company,Limited,depends on registration,entity-level only,highest,valuation / listing
+entity,LLP,Limited,depends on registration,entity-level only,medium,pro trading firm
+entity,OPC (one-person co.),Limited,depends on registration,entity-level only,medium,solo founder wanting limited liability
+fund_or_advisor,RA / Investment Advisor,regulated advice,"no, advice only",no,advisor rules,research/advice
+fund_or_advisor,Managed account / PMS,segregated client accounts,"yes, segregated",no,PMS rules,managed account
+fund_or_advisor,Hedge fund / AIF,pooled accredited capital,"yes, pooled",yes,AIF / private fund rules,long/short and leverage
+fund_or_advisor,Mutual fund,pooled public fund,"yes, pooled",yes,highest retail rules,public retail product

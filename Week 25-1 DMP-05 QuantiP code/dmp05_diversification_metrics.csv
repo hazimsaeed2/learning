@@ -1,0 +1,6 @@
+metric,value,unit,reading
+tradable_strategy_count,47,count,47 stock columns have sufficient data; ^NSEI is excluded.
+avg_single_stock_sharpe,0.506843,ratio,Average single-stock MA crossover Sharpe.
+equal_weight_portfolio_sharpe,1.279206,ratio,Equal-weight strategy basket Sharpe.
+portfolio_sharpe_multiple,2.523869,x,Portfolio Sharpe divided by average single Sharpe.
+portfolio_cumulative_return_pct,272.2557,percent,Equal-weight basket cumulative return.

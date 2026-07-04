@@ -1,0 +1,2 @@
+file,rows,columns,date_start,date_end,close_start,close_end,growth_x,size_bytes
+market_daily.csv,4183,open; high; low; close; volume,1998-01-02,2014-08-18,0.54492,99.32,182.265287,407069

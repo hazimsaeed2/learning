@@ -1,0 +1,16 @@
+metric,value,note
+rows,5098,SPY.csv daily rows
+date_start,2001-01-03,source data start
+date_end,2021-04-09,source data end
+ols_slope,-0.101197,negative means mean reversion
+ols_intercept,0.00041026,numpy least-squares fallback
+threshold_0_final,5.2396,in-sample no-cost backtest
+full_history_best_threshold,0.011,chosen by looking at full history; overfit risk
+full_history_best_final,18.8888,in-sample no-cost result
+train_best_threshold,-0.001,threshold chosen only on first half
+test_strategy_final,1.0704,unseen second-half result
+test_buy_hold_final,3.8449,second-half buy and hold
+cost_0.0000_final,19.0261,full-history best threshold with per-flip cost
+cost_0.0005_final,11.4604,full-history best threshold with per-flip cost
+cost_0.0010_final,6.9015,full-history best threshold with per-flip cost
+cost_0.0050_final,0.1183,full-history best threshold with per-flip cost

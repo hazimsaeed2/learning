@@ -1,0 +1,6 @@
+bracket,main_use,data_structure,example,pitfall
+round (),Call functions/methods and pass arguments,Tuple,"df.describe(); (a, b)",Calling an attribute like df.shape()
+square [],"List construction, indexing, slicing",List,prices[0]; prices[1:4],Forgetting slice stop is excluded
+curly {},"Sets, dictionaries, f-string placeholders",Set or dict,{'TCS': price}; f'{price}',Indexing a dict by position instead of key
+"comma ,",Separate arguments and items,Tuple/list/dict entries,"print(a, b); [1, 2, 3]",Missing commas between values
+underscore _,Readable names and Python conventions,Identifier,daily_return,Using spaces in variable names

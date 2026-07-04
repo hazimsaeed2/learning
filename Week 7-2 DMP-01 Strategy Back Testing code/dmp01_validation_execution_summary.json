@@ -1,0 +1,35 @@
+{
+  "notebooks": [
+    {
+      "notebook": "Week 7-2 DMP-01 Strategy Back Testing_practice.ipynb",
+      "code_cells": 10,
+      "errors": 0,
+      "missing_markdown_before_code": 0
+    },
+    {
+      "notebook": "Week 7-2 DMP-01 Strategy Back Testing_resource_addendum_practice.ipynb",
+      "code_cells": 6,
+      "errors": 0,
+      "missing_markdown_before_code": 0
+    },
+    {
+      "notebook": "Week 7-2 DMP-01 Strategy Back Testing_validated_practice.ipynb",
+      "code_cells": 16,
+      "errors": 0,
+      "missing_markdown_before_code": 0
+    }
+  ],
+  "source_nse_matches_existing_nse_daily": true,
+  "outputs": [
+    "dmp01_log_simple_workbook_reference.csv",
+    "dmp01_long_short_crossover_metrics.csv",
+    "dmp01_long_short_crossover_sample.csv",
+    "dmp01_event_vs_vectorized_check.csv",
+    "dmp01_vectorized_workflow_reference.csv",
+    "chart_addendum_1_dmp01_workflow_map.png",
+    "chart_addendum_2_dmp01_log_simple_workbook.png",
+    "chart_addendum_3_dmp01_long_short_crossover.png",
+    "chart_addendum_4_dmp01_metrics_snapshot.png",
+    "chart_addendum_5_dmp01_event_loop_check.png"
+  ]
+}

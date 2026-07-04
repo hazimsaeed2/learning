@@ -1,0 +1,9 @@
+artifact,artifact_type,exists,size_bytes,rows,columns,note
+Week 10-2 TBP-01 IB Python API_practice.ipynb,practice_notebook,True,96929,,,"8 code cells, 13 markdown cells"
+historical_sample.csv,source_data,True,75044,962,6,2017-01-02 through 2020-11-27
+chart_1_ibapi.png,original_chart,True,59270,,,Existing chart preserved; addendum charts use separate names.
+TBP-01-Lecture-Objectives-Prerequisities.pdf,source_pdf,True,147411,1,12,1064 text chars; keyword hits in columns field.
+TBP-01IB-Python-API.pdf,source_pdf,True,567617,28,125,6029 text chars; keyword hits in columns field.
+TBP-01Pre-requisites-Installation-Guide.pdf,source_pdf,True,879513,3,43,2922 text chars; keyword hits in columns field.
+TBP01-Lecture-Summary.pdf,source_pdf,True,526095,6,81,3803 text chars; keyword hits in columns field.
+TBP01-Inclass-Exercises-File.zip,source_zip,True,33104,18,,Source ZIP inventoried; original archive preserved.

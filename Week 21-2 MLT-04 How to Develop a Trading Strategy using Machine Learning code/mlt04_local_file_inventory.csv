@@ -1,0 +1,44 @@
+file,size_bytes,role
+00_environment_setup_source.ipynb,18280,notebook
+01_benchmark_and_microstructure_source.ipynb,361515,notebook
+02_5_horizon_sweep_analysis_source.ipynb,333273,notebook
+02_feature_explosion_source.ipynb,109429,notebook
+03_shap_feature_selection_source.ipynb,180165,notebook
+04_hyperparameter_tuning_source.ipynb,258317,notebook
+05_test_set_evaluation_source.ipynb,56464,notebook
+06_event_driven_backtesting_source.ipynb,119398,notebook
+chart_1_mlt4.png,111595,chart
+chart_addendum_1_mlt04_source_data_inventory.png,77512,chart
+chart_addendum_2_mlt04_model_tier_results.png,54231,chart
+chart_addendum_3_mlt04_holdout_degradation.png,59406,chart
+chart_addendum_4_mlt04_leakage_inflation.png,53706,chart
+chart_addendum_5_mlt04_dependency_controls.png,55426,chart
+mlt04_batch_comparison.csv,1466,generated_csv
+mlt04_dependency_fallback_scope.csv,565,generated_csv
+mlt04_feature_family_audit.csv,3359,generated_csv
+mlt04_feature_list_full.csv,1113,generated_csv
+mlt04_feature_list_shap.csv,236,generated_csv
+mlt04_holdout_results.csv,574,generated_csv
+mlt04_leakage_controls.csv,562,generated_csv
+mlt04_local_file_inventory.csv,1133,generated_csv
+mlt04_metrics.py,10729,python_source
+mlt04_models.py,3110,python_source
+mlt04_parquet_data_inventory.csv,879,generated_csv
+mlt04_saved_model_results.csv,1292,generated_csv
+mlt04_source_pdf_inventory.csv,243,generated_csv
+mlt04_source_zip_inventory.csv,815308,generated_csv
+mlt04_source_zip_summary.csv,589,generated_csv
+mlt04_validation_controls.csv,964,generated_csv
+mlt04_validation_execution_summary.json,2768,other
+mlt04_walkforward.py,13571,python_source
+README_VALIDATION_ADDENDUM.md,423,generated_doc
+VALIDATION_REPORT.md,9802,generated_doc
+Week 21-2 MLT-04 How to Develop a Trading Strategy using Machine Learning_practice.ipynb,165087,notebook
+Week 21-2 MLT-04 How to Develop a Trading Strategy using Machine Learning_resource_addendum_practice.ipynb,3669,notebook
+Week 21-2 MLT-04 How to Develop a Trading Strategy using Machine Learning_validated_practice.ipynb,184543,notebook
+XLF_full_features_X.parquet,1858891,parquet_data
+XLF_full_features_y.parquet,30585,parquet_data
+XLF_shap_selected_X.parquet,539497,parquet_data
+XLF_test.parquet,94350,parquet_data
+XLF_train_micro.parquet,501643,parquet_data
+XLF_val.parquet,80044,parquet_data

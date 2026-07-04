@@ -1,0 +1,10 @@
+step,workflow_step,rule,additive_check
+1,Download data,Use daily market data; avoid relying on live download for validation.,offline synthetic data used
+2,Calculate SMA/LMA,21-day and 63-day rolling means.,verified
+3,Shift prev columns,Use shift(1) for yesterday's SMA/LMA.,verified
+4,dropna,Remove warmup rows after rolling windows.,verified
+5,Signals,np.where or boolean masks for crossovers.,verified
+6,Positions,Forward-fill non-zero signals.,verified
+7,Returns,Use position.shift(2) times pct_change.,verified
+8,Equity,Use (1+r).cumprod().,verified
+9,Square off,Close final open position in execution-grade backtest.,documented

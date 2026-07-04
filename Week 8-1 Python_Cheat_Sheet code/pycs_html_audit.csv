@@ -1,0 +1,19 @@
+item,value,reading
+file_size_bytes,50382,Static HTML support page.
+html_open,1,HTML tag count.
+html_close,1,HTML tag count.
+body_open,1,Body tag count.
+body_close,1,Body tag count.
+sections,9,Major content sections.
+tables,16,Reference tables.
+code_blocks,20,Code blocks.
+term_shift(2),12,Key workflow term frequency.
+term_pct_change,6,Key workflow term frequency.
+term_cumprod,11,Key workflow term frequency.
+term_rolling,8,Key workflow term frequency.
+term_dropna,8,Key workflow term frequency.
+term_np.where,8,Key workflow term frequency.
+term_yfinance,3,Key workflow term frequency.
+term_look-ahead,4,Key workflow term frequency.
+term_SMA,34,Key workflow term frequency.
+term_LMA,27,Key workflow term frequency.

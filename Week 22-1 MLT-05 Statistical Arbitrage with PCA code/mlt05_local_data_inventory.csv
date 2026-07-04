@@ -1,0 +1,5 @@
+file,rows,columns,column_names,date_start,date_end,missing_values,size_bytes
+spy_qqq.csv,5406,2,SPY; QQQ,2005-01-03,2026-06-30,0,261206
+tech_bank.csv,4147,6,AMZN; BAC; GOOG; JPM; NFLX; WFC,2010-01-04,2026-06-30,0,504742
+oil_pair.csv,4149,2,CL=F; RB=F,2010-01-04,2026-07-01,2,200110
+top40.csv,3393,40,AAPL; ABBV; ABT; ACN; ADBE; AMZN; AVGO; BAC; BMY; CMCSA; COST; CSCO; CVX; DHR; DIS; GOOG; GOOGL; HD; JNJ; JPM; KO; LIN; LLY; MA; MCD; MRK; MSFT; NEE; NVDA; PEP; PFE; PG; PM; TMO; UNH; V; VZ; WFC; WMT; XOM,2013-01-02,2026-06-30,0,2515286

@@ -1,0 +1,5 @@
+event,total_market_value,index_level,divisor,correct_rule
+base,7500000,1000,7500,initialize divisor as total market value divided by chosen index level
+2-for-1 split,7500000,1000,7500,"split changes price and shares but not market value, so divisor stays unchanged"
+2 dividend on X1,7400000,1000,7400,cash dividend lowers price/market value; re-solve divisor to keep index continuous
+constituent swap,15000000,1000,15000,new constituent changes aggregate market value; re-solve divisor

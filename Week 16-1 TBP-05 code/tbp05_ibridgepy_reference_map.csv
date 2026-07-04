@@ -1,0 +1,9 @@
+file,signal,live_feature,validation_note
+demo_buy_low_sell_high.py,"Long SPY after a down day, flat after an up day",Runs near 15:59 ET using recent daily history,Notebook backtests the same long-only rule offline
+moving_average_crossover_1_basic.py,MA(5) above MA(60) means hold SPY,Basic scheduled trading function,Core rule is backtested offline
+moving_average_crossover_2_trading_day.py,Same MA rule,Adds trading-day/holiday check,Production calendar control
+moving_average_crossover_early_close.py,Same MA rule,Handles 1 PM early close days,Production clock control
+moving_average_crossover_email.py,Same MA rule,Emails account balance/status,Monitoring control
+moving_average_crossover_handle_error.py,Same MA rule,try/except around orders and email on failure,Error handling control
+moving_average_crossover_minute_bar.py,Same MA rule,Checks every minute,Higher-frequency live loop
+example_VIX_predicts_returns.py,Extreme VIX high -> long SPY; extreme VIX low -> short SPY,Uses VIX history and real-time VIX,Notebook uses SPY realized-vol proxy because no VIX column ships in SPY.csv

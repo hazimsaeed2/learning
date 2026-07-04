@@ -253,6 +253,76 @@ Excel because the search is computationally heavy).</p>
 answer.</b> The metrics — and the honest out-of-sample test — are how you turn that question into a
 confident yes or, just as valuably, a disciplined no.</div>
 
+<h2>9. Resource addendum - worksheet and expiry mechanics</h2>
+
+<p>The official files add a practical layer around the lecture metrics. They show how the Excel sheet is
+made dynamic, what the assignment expects from an EMA version of the crossover model, how to read
+derivatives data with quadrant rules, and how the expiry-day VWAP/cash-unwind setup is framed.</p>
+
+<h3>Excel OFFSET and data tables</h3>
+
+<p>The lecture spends time on the Excel <code>OFFSET</code> function because a back-test sheet should not
+be hard-coded to one SMA/LMA pair. If the input cells change from 5/40 to 10/50, the moving averages,
+signals, P&amp;L, CAGR, hit ratio, and drawdown should all update. The Python equivalent is a parameter
+surface: scan many SMA/LMA combinations and check whether the winner is part of a stable neighborhood,
+not just a lonely overfit spike.</p>
+
+<p><img src="Week 4-2 EFS-01 code/chart_addendum_1_efs01_parameter_surface.png" alt="EFS-01 SMA LMA parameter surface" style="width:100%;border:1px solid #d1d5db;border-radius:6px"></p>
+
+<h3>Assignment checklist</h3>
+
+<p>The assignment asks for the same crossover idea, but with <b>EMA</b> rather than SMA. It also asks for
+more than a total-profit number:</p>
+
+<table>
+<tr><th>Required output</th><th>Why it matters</th></tr>
+<tr><td>CAGR</td><td>Annualized performance scale.</td></tr>
+<tr><td>Hit ratio</td><td>How often the system wins.</td></tr>
+<tr><td>Average profit and average loss</td><td>Whether winners are large enough to pay for losers.</td></tr>
+<tr><td>Profit/loss ratio</td><td>Payoff asymmetry.</td></tr>
+<tr><td>Maximum drawdown at leverage 1</td><td>Baseline capital pain before leverage.</td></tr>
+<tr><td>Equity curves at leverage 1, 2, 3, 4</td><td>How quickly leverage turns a tolerable strategy into an intolerable one.</td></tr>
+<tr><td>Year-wise long profit, short profit, and hit ratio</td><td>Whether the system depends on only one market regime.</td></tr>
+</table>
+
+<h3>Derivative data quadrant maps</h3>
+
+<p>The official summary separates two diagnostic maps. Pair <b>price</b> with <b>open interest</b> to
+infer whether new longs, new shorts, short covering, or long profit-taking dominate. Pair <b>price</b>
+with <b>cost of carry</b> to distinguish strong buying, topping out, futures selling, and cash selling.
+These are not automatic trades; they are inputs to the factor model.</p>
+
+<p><img src="Week 4-2 EFS-01 code/chart_addendum_2_efs01_derivative_quadrants.png" alt="EFS-01 derivative quadrant maps" style="width:100%;border:1px solid #d1d5db;border-radius:6px"></p>
+
+<p><b>Delivery volume</b> completes the factor set. The resource note says to compare delivery volume
+with its own moving average, then use it together with OI and price change. The important engineering
+point is the same as the notebook's z-score section: put every factor on comparable scale before assigning
+weights.</p>
+
+<h3>Expiry-day VWAP/cash-unwind setup</h3>
+
+<p>The in-class VWAP note describes traders who buy cash and short futures to capture cost of carry. If
+OI stays high and cost of carry does not compress into expiry, those traders may need to unwind cash
+positions near the end of expiry day. The proposed idea is to short cash around 3:00pm, buy back around
+3:20pm after the expected dip, and treat the last 5-10 minutes carefully because institutional buying can
+appear at lower cash prices.</p>
+
+<p><img src="Week 4-2 EFS-01 code/chart_addendum_3_efs01_expiry_vwap_setup.png" alt="EFS-01 expiry VWAP setup using cost of carry and open interest" style="width:100%;border:1px solid #d1d5db;border-radius:6px"></p>
+
+<h3>FAQ implementation cautions</h3>
+
+<table>
+<tr><th>FAQ point</th><th>Implementation consequence</th></tr>
+<tr><td>Live results diverge from backtest</td><td>Compare the current regime with regimes represented in the historical test.</td></tr>
+<tr><td>Slippage</td><td>Subtract the gap between signal price and real fill price before trusting P&amp;L.</td></tr>
+<tr><td>Volume reporting</td><td>Check whether the vendor reports shares or lots before using futures volume.</td></tr>
+<tr><td>Averaging losing positions</td><td>Only do it if the tested system explicitly includes that rule.</td></tr>
+<tr><td>Sharpe threshold</td><td>FAQ says 2 or above is good; 3 or above is excellent.</td></tr>
+</table>
+
+<p>The addendum notebook and CSVs in <code>Week 4-2 EFS-01 code/</code> reproduce these source mechanics
+without changing the original practice notebook.</p>
+
 <p style="color:#9ca3af;font-size:14px;margin-top:34px">Companion practice notebook with every metric
 computed live on real Nifty data: <code>Week 4-2 EFS-01 code/Week 4-2 EFS-01 Strategy Building in Equities_practice.ipynb</code>.</p>
 

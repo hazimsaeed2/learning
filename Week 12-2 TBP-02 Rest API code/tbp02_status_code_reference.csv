@@ -1,0 +1,5 @@
+status_family,meaning,client_action,example
+2xx,success,parse content after confirming status,"200 auth status, 200 order accepted"
+3xx,redirect or further action,rare in broker REST code; check docs before following automatically,browser-oriented login redirects
+4xx,client-side request problem,"fix URL, endpoint, method, headers, params, auth, or payload","401 not authenticated, 404 bad endpoint"
+5xx,server/gateway-side failure,"log response, retry only under a controlled policy, do not duplicate orders blindly",503 local gateway unavailable

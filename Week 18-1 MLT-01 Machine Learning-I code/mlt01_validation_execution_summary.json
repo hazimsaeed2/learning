@@ -1,0 +1,75 @@
+{
+  "lecture": "Week 18-1 MLT-01 Machine Learning-I Machine Learning for Trading",
+  "generated_at": "2026-07-03T01:32:49",
+  "notebooks": [
+    {
+      "notebook": "Week 18-1 MLT-01 Machine Learning-I_practice.ipynb",
+      "code_cells": 12,
+      "errors": 1,
+      "markdown_before_code_gaps": 6,
+      "execution_exception": "Traceback (most recent call last):\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\_validation_work\\generate_mlt01.py\", line 625, in execute_notebook_safely\n    exec(compile(source, str(path), \"exec\"), ns)\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\Week 18-1 MLT-01 Machine Learning-I code\\Week 18-1 MLT-01 Machine Learning-I_practice.ipynb\", line 10, in <module>\n    \"\\n\",\nModuleNotFoundError: No module named 'sklearn'\n"
+    },
+    {
+      "notebook": "Week 18-1 MLT-01 Machine Learning-I_resource_addendum_practice.ipynb",
+      "code_cells": 4,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 18-1 MLT-01 Machine Learning-I_validated_practice.ipynb",
+      "code_cells": 17,
+      "errors": 0,
+      "markdown_before_code_gaps": 7,
+      "execution_exception": null
+    }
+  ],
+  "html": [
+    {
+      "file": "Week 18-1 MLT-01 Machine Learning-I Machine Learning for Trading.html",
+      "body_open": 1,
+      "body_close": 1,
+      "html_open": 1,
+      "html_close": 1,
+      "generated_chart_refs": 10,
+      "missing_generated_charts": []
+    },
+    {
+      "file": "Week 18-1 MLT-01 Machine Learning-I Machine Learning for Trading_study.html",
+      "body_open": 1,
+      "body_close": 1,
+      "html_open": 1,
+      "html_close": 1,
+      "generated_chart_refs": 0,
+      "missing_generated_charts": []
+    }
+  ],
+  "charts": [
+    "chart_addendum_1_mlt01_source_data_dependency_inventory.png",
+    "chart_addendum_2_mlt01_gini_impurity_split.png",
+    "chart_addendum_3_mlt01_time_series_split_controls.png",
+    "chart_addendum_4_mlt01_model_metrics_vs_base_rate.png",
+    "chart_addendum_5_mlt01_feature_importance_controls.png"
+  ],
+  "raw_tsla_rows": 1510,
+  "post_feature_dropna_rows": 1486,
+  "engineered_features": [
+    "std_5",
+    "std_10",
+    "std_15",
+    "ma_10",
+    "ma_15",
+    "ma_20",
+    "ma_25",
+    "pct_3",
+    "pct_6",
+    "pct_9",
+    "vma_4",
+    "co"
+  ],
+  "main_html_appended": true,
+  "study_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "dependency_note": "sklearn is not installed locally; validated notebook adds local fallbacks."
+}

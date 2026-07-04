@@ -1,0 +1,5 @@
+control,bad_assumption,correct_version,why_it_matters
+Crude futures settlement time,Use official CL settlement with an ETF close without checking timestamp,CL settlement is around 2:30pm ET; USO and XLE close at 4:00pm ET,A two-market backtest can create fake intraday alpha from stale futures prices
+VWAP settlement detail,Treat the settlement as a clean single closing print,The lecture notes the settlement is based on a final-window VWAP around the settlement time,"You need a tradable price that matches the execution clock, not just a convenient data field"
+Back-adjustment boundary,Back-adjusting the futures contract fixes every data problem,"Back-adjustment removes roll gaps, but it does not fix timestamp mismatch",Continuous-price hygiene and cross-market execution alignment are separate checks
+USO versus XLE hedge choice,Use USO as a clean oil spot hedge,USO holds futures exposure; XLE is an equity proxy for oil assets but adds company risk,"USO can cancel the roll edge, while XLE leaves equity and basis risk"

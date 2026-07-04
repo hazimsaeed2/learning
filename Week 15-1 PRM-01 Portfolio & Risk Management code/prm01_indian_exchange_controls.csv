@@ -1,0 +1,6 @@
+rule_area,lecture_rule,why_it_exists,system_control
+Trade price protection,Order price should stay within an accepted band around last traded price or circuit range,Prevents obvious fat-finger and runaway algo orders,Price-range check before order submission
+Order size freeze,Each instrument has a maximum order size or freeze quantity,Prevents oversized orders from overwhelming the market,Instrument-level quantity cap
+Market-wide position / open interest,Do not use derivatives to increase open interest beyond threshold,Porsche/VW showed derivatives can squeeze the underlying free float,OI and free-float concentration monitor
+Client position limits,Maximum client position in a stock or derivative contract,Prevents hidden concentration and forced-cover spirals,Client/instrument position-limit table
+Shares available for selling,Check overnight sellable shares and delivery availability,Avoids creating obligations the account cannot settle,Inventory and settlement availability check

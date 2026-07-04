@@ -1,0 +1,77 @@
+source,item,value,reading
+main_html,file_size_bytes,274627,Week 12-1 ASQ-02 Time Series Modeling with Python.html
+main_html,html_open,1,structural count
+main_html,html_close,1,structural count
+main_html,body_open,1,structural count
+main_html,body_close,1,structural count
+main_html,tables,5,structural count
+main_html,code_blocks,1,structural count
+main_html,image_tags,1,structural count
+main_html,term_ARIMA,12,ASQ-02 term frequency
+main_html,term_auto,9,ASQ-02 term frequency
+main_html,term_AIC,19,ASQ-02 term frequency
+main_html,term_transaction,1,ASQ-02 term frequency
+main_html,term_cost,13,ASQ-02 term frequency
+main_html,term_volatility,3,ASQ-02 term frequency
+main_html,term_GARCH,12,ASQ-02 term frequency
+main_html,term_ARCH,19,ASQ-02 term frequency
+main_html,term_heteroscedasticity,2,ASQ-02 term frequency
+main_html,term_risk,7,ASQ-02 term frequency
+main_html,term_forecast,9,ASQ-02 term frequency
+study_html,file_size_bytes,13455,Week 12-1 ASQ-02 Time Series Modeling with Python_study.html
+study_html,html_open,1,structural count
+study_html,html_close,1,structural count
+study_html,body_open,1,structural count
+study_html,body_close,1,structural count
+study_html,tables,4,structural count
+study_html,code_blocks,3,structural count
+study_html,image_tags,0,structural count
+study_html,term_ARIMA,14,ASQ-02 term frequency
+study_html,term_auto,14,ASQ-02 term frequency
+study_html,term_AIC,7,ASQ-02 term frequency
+study_html,term_transaction,2,ASQ-02 term frequency
+study_html,term_cost,11,ASQ-02 term frequency
+study_html,term_volatility,16,ASQ-02 term frequency
+study_html,term_GARCH,12,ASQ-02 term frequency
+study_html,term_ARCH,20,ASQ-02 term frequency
+study_html,term_heteroscedasticity,3,ASQ-02 term frequency
+study_html,term_risk,14,ASQ-02 term frequency
+study_html,term_forecast,9,ASQ-02 term frequency
+transcript_text,file_size_bytes,112759,Week 12-1 ASQ-02 Time Series Modeling with Python.txt
+transcript_text,html_open,0,structural count
+transcript_text,html_close,0,structural count
+transcript_text,body_open,0,structural count
+transcript_text,body_close,0,structural count
+transcript_text,tables,0,structural count
+transcript_text,code_blocks,0,structural count
+transcript_text,image_tags,0,structural count
+transcript_text,term_ARIMA,62,ASQ-02 term frequency
+transcript_text,term_auto,41,ASQ-02 term frequency
+transcript_text,term_AIC,9,ASQ-02 term frequency
+transcript_text,term_transaction,21,ASQ-02 term frequency
+transcript_text,term_cost,36,ASQ-02 term frequency
+transcript_text,term_volatility,36,ASQ-02 term frequency
+transcript_text,term_GARCH,22,ASQ-02 term frequency
+transcript_text,term_ARCH,90,ASQ-02 term frequency
+transcript_text,term_heteroscedasticity,4,ASQ-02 term frequency
+transcript_text,term_risk,41,ASQ-02 term frequency
+transcript_text,term_forecast,55,ASQ-02 term frequency
+practice_notebook_json,file_size_bytes,290183,Week 12-1 ASQ-02 Time Series Modeling_practice.ipynb
+practice_notebook_json,html_open,0,structural count
+practice_notebook_json,html_close,0,structural count
+practice_notebook_json,body_open,0,structural count
+practice_notebook_json,body_close,0,structural count
+practice_notebook_json,tables,0,structural count
+practice_notebook_json,code_blocks,0,structural count
+practice_notebook_json,image_tags,0,structural count
+practice_notebook_json,term_ARIMA,31,ASQ-02 term frequency
+practice_notebook_json,term_auto,29,ASQ-02 term frequency
+practice_notebook_json,term_AIC,30,ASQ-02 term frequency
+practice_notebook_json,term_transaction,4,ASQ-02 term frequency
+practice_notebook_json,term_cost,29,ASQ-02 term frequency
+practice_notebook_json,term_volatility,16,ASQ-02 term frequency
+practice_notebook_json,term_GARCH,20,ASQ-02 term frequency
+practice_notebook_json,term_ARCH,36,ASQ-02 term frequency
+practice_notebook_json,term_heteroscedasticity,5,ASQ-02 term frequency
+practice_notebook_json,term_risk,21,ASQ-02 term frequency
+practice_notebook_json,term_forecast,15,ASQ-02 term frequency

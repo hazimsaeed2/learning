@@ -106,5 +106,22 @@ em.k{font-style:normal;font-weight:bold;color:#4338ca;}
 
 <p style="text-align:center;color:#a8a29e;margin-top:3em;">— end of Week 15-2 OTS-02 study guide —</p>
 
+
+<!-- OTS02_STUDY_ADDITIVE_SOURCE_PACK_START -->
+<section id="ots02-study-additive-source-pack" style="margin-top: 32px; padding: 20px; border: 1px solid #d8d3ea; border-radius: 8px; background: #fff;">
+  <h2>Additive Source-Backed Continuation: OTS-02</h2>
+  <p>This block is appended beside the existing study guide. It adds implementation-level controls and unit clarifications for volatility trading.</p>
+  <ul>
+    <li><strong>Notebook execution:</strong> the original notebook imports SciPy. The new validated notebook keeps the original cells and adds local <code>norm.cdf</code> and <code>brentq</code> fallbacks before them.</li>
+    <li><strong>Volatility versus variance premium:</strong> <code>IV - RV</code> is a vol-point premium; <code>IV^2 - RV^2</code> is the variance-unit version.</li>
+    <li><strong>Adverse selection:</strong> live fills are biased toward worse trades. A backtest must model fill probability instead of assuming every extreme limit order fills.</li>
+    <li><strong>Costs:</strong> spread, fees, taxes, slippage, and leverage-driven turnover belong inside the backtest.</li>
+    <li><strong>IV surface:</strong> implied volatility is not one number. Match strike, expiry, and moneyness before deciding whether a contract is cheap or rich.</li>
+    <li><strong>Short-vol control:</strong> premium exists because options are insurance against rare events, so sizing must survive jump loss, margin calls, and drawdown path.</li>
+  </ul>
+  <p>See the new code-folder files <code>ots02_*.csv</code>, <code>chart_addendum_*_ots02_*.png</code>, <code>Week 15-2 OTS-02 Volatility Trading and Variance Premium_resource_addendum_practice.ipynb</code>, and <code>Week 15-2 OTS-02 Volatility Trading and Variance Premium_validated_practice.ipynb</code>.</p>
+</section>
+<!-- OTS02_STUDY_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

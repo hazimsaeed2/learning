@@ -1,0 +1,4 @@
+series,total_return_pct,annual_return_pct,annual_vol_pct,sharpe,max_drawdown_pct
+Buy & Hold,58.5543,12.0867,19.2146,0.629038,-38.4399
+Event momentum (1-lag),-10.4698,-2.9001,19.3393,-0.149958,-43.0343
+Best in-sample sweep,85.8063,16.2459,18.5538,0.875607,-22.3415

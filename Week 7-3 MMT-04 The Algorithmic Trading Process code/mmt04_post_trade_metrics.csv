@@ -1,0 +1,6 @@
+metric,value,unit,reading
+Arrival cost,33.2668,bps,Cost versus arrival price.
+VWAP slippage,6.6357,bps,Execution versus market VWAP.
+RPM percentile,35.0,percent,"Percent of volume beaten, with half credit for equal-price volume."
+Value add,16.7332,bps,Expected cost minus actual arrival cost.
+Z-score,1.1155,std_dev,Value add divided by assumed timing risk.

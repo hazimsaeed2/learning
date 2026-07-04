@@ -1,0 +1,5 @@
+metric,value,reading
+leaky_final_equity_x,10386673080120.266,Same-bar return signal peeks at the answer.
+honest_final_equity_x,0.948612,Signal shifted by one bar.
+buy_hold_reliance_x,6.371663,Reference buy-and-hold.
+leaky_to_honest_ratio,10949339772728.625,Magnitude of look-ahead inflation.

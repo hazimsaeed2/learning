@@ -1,0 +1,7 @@
+case,value,formula
+ATM_call_IV_30,11.92353847,Black-Scholes call price at IV 30%
+ATM_call_RV_24,9.5516852,Black-Scholes call price at RV 24%
+premium_difference,2.37185327,premium(IV) - premium(RV)
+vega_per_1_vol_point,0.39447933,S*N'(d1)*sqrt(T)/100
+vega_times_IV_minus_RV,2.36687599,vega per vol point times 6 vol points
+precision_note,,This is a volatility-point approximation; variance-swap payoff is in variance units.

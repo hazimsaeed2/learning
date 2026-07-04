@@ -194,6 +194,78 @@ that <i>before</i> you start, not after you've run out of time.</p>
 the fair-price guard is the line you never cross.</b> Expected value tells you where to stand; the guard
 keeps you from being dragged off it.</div>
 
+<h2>7. Resource addendum - what the worksheet adds</h2>
+
+<p>The official notes and in-class workbook add one more layer: the execution system is not only choosing
+between VWAP, EV, pegging, and discretion. It first decides whether the order is suitable for automation,
+then schedules the parent order against expected volume, then runs book-level guards before every child
+order.</p>
+
+<h3>Order ticket before order logic</h3>
+
+<p>The algo should not start from a blank screen. It needs a complete order ticket and supporting market
+data.</p>
+
+<table>
+<tr><th>Field</th><th>Why it matters</th></tr>
+<tr><td>Trading symbol and side</td><td>Defines the instrument, market data feed, and same-side/opposite-side book checks.</td></tr>
+<tr><td>Parent size plus child-size limits</td><td>Controls reserve quantity, slice size, stub handling, and market-impact limits.</td></tr>
+<tr><td>Client price limit</td><td>Hard constraint before any peg or discretion child order can be sent.</td></tr>
+<tr><td>Urgency and time horizon</td><td>Selects participation rate, discretion aggressiveness, and TTH/PTH feasibility.</td></tr>
+<tr><td>Historical ADV, spread, depth, and volume curve</td><td>Feeds the VWAP schedule, dynamic discretion range, and significant-size checks.</td></tr>
+</table>
+
+<h3>VWAP strategy is also a schedule</h3>
+
+<p>The resource notes describe three VWAP-algo stages: filter incoming orders that are too illiquid or too
+large for automation, estimate the intraday volume distribution, and work child orders intelligently around
+that distribution. A 30,000-share Microsoft order should therefore trade more during heavy-volume intervals
+and slow down during thin periods.</p>
+
+<p><img src="Week 4-1 MMT-02 code/chart_addendum_1_mmt02_volume_schedule.png" alt="MMT-02 volume-weighted child-order schedule" style="width:100%;border:1px solid #d1d5db;border-radius:6px"></p>
+
+<h3>Practical time horizon gate</h3>
+
+<p>The official formula adds one more rule to the TTH section:</p>
+
+<p style="text-align:center"><code>Practical Time Horizon = min(time remaining, TTH)</code></p>
+
+<p>If <code>TTH / Practical Time Horizon &gt; 2</code>, the notes treat the time window as insufficient for
+normal automated completion. That is a pre-trade escalation, not an after-the-fact excuse.</p>
+
+<h3>Dynamic discretion and book guards</h3>
+
+<p>A static discretion range can become too passive when time is running out, or too aggressive when the
+market is moving against the order. The resource formula makes discretion a function of base range, expected
+spread, price trend, and opposite-side liquidity. The practical rule is simple: widen only when the market
+conditions justify it, and still respect client limit and fair-price guards.</p>
+
+<p><img src="Week 4-1 MMT-02 code/chart_addendum_2_mmt02_dynamic_discretion.png" alt="MMT-02 dynamic discretion range scenarios" style="width:100%;border:1px solid #d1d5db;border-radius:6px"></p>
+
+<table>
+<tr><th>Guard</th><th>Purpose</th></tr>
+<tr><td>Alone flag</td><td>If your order is alone at the inside, do not keep advertising intent blindly.</td></tr>
+<tr><td>Peg thresholds</td><td>Move the peg only when the target has shifted enough to justify a correction.</td></tr>
+<tr><td>Significant size</td><td>Use <code>max(500 shares, 50% of bid size)</code> as a queue-depth sanity check.</td></tr>
+<tr><td>Stub order logic</td><td>When only a small remainder is left, stop treating it like the full parent order.</td></tr>
+<tr><td>Final controls</td><td>Apply fair-price guard, client limit, audit logs, and kill-switch discipline.</td></tr>
+</table>
+
+<p><img src="Week 4-1 MMT-02 code/chart_addendum_3_mmt02_order_logic_flow.png" alt="MMT-02 order logic flow from intake to controls" style="width:100%;border:1px solid #d1d5db;border-radius:6px"></p>
+
+<h3>FAQ clarifications that change implementation</h3>
+
+<ul>
+<li><b>IOC orders</b> execute immediately against available liquidity and cancel the unfilled remainder.</li>
+<li><b>Iceberg liquidity</b> means displayed book size can understate true interest; refilling size is a clue, not something you control.</li>
+<li><b>TBT data</b> is the evidence behind fill probability, queue position, and order-book reconstruction.</li>
+<li><b>Pegging loops</b> can happen when multiple algos chase the same reference; size and threshold checks reduce the risk.</li>
+<li><b>Spoofing</b> is not normal cancellation. Repeated orders intended to move price without intent to trade are illegal and should be blocked by compliance controls.</li>
+</ul>
+
+<p>The addendum notebook and CSVs in <code>Week 4-1 MMT-02 code/</code> reproduce these checks as executable
+practice material without changing the original practice notebook.</p>
+
 <p style="color:#9ca3af;font-size:14px;margin-top:34px">Companion practice notebook with every calculation
 in Python: <code>Week 4-1 MMT-02 code/Week 4-1 MMT-02 Execution Strategy II_practice.ipynb</code>.</p>
 

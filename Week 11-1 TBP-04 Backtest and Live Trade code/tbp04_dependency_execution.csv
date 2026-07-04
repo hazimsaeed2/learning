@@ -1,0 +1,5 @@
+metric,value,unit,reading
+sklearn_available,no,environment,ModuleNotFoundError
+original_execution_errors,1,errors,ModuleNotFoundError: No module named 'sklearn'
+original_failure_cell,8,cell,Import cell when sklearn is unavailable.
+fallback_scope,single-feature OLS,validated_copy,Validated notebook injects a minimal LinearRegression fallback only for this teaching notebook.

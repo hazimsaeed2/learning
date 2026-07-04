@@ -180,5 +180,31 @@ stays clean — exactly what we did against a mock broker fed with real NIFTY ba
 
 <p style="text-align:center;color:#a1a1aa;margin-top:36px;font-size:14px;">EPAT · Week 12-2 TBP-02 · REST API for Algorithmic Trading</p>
 
+<h2>Continuation addendum: official source scripts</h2>
+<p>The official TBP-02 source zip adds material that was not explicit in the first local pack: a REST helper library, an entry-point script, IB WebSocket streaming, Alpaca crypto streaming, reusable strategy base functions, and a full RSI intraday strategy. The addendum keeps those live-trading scripts as copied source references and adds offline notebooks that do not contact IB, Alpaca, or any broker.</p>
+
+<p><img src="Week 12-2 TBP-02 Rest API code/chart_addendum_1_tbp02_source_architecture.png" alt="TBP-02 official source architecture and offline addendum" style="max-width:100%;border:1px solid #e4e4e7;border-radius:8px"></p>
+
+<p>The source files reinforce the production pattern: keep the strategy code away from raw URL construction. A function such as <code>fetch_historical_data()</code>, <code>get_orders()</code>, or <code>place_orders()</code> should hide the base URL, endpoint, method, headers, payload, status-code check, and JSON parsing. The strategy should call clean functions, not rebuild HTTP requests every time.</p>
+
+<p><img src="Week 12-2 TBP-02 Rest API code/chart_addendum_2_tbp02_endpoint_coverage.png" alt="TBP-02 endpoint and channel coverage" style="max-width:100%;border:1px solid #e4e4e7;border-radius:8px"></p>
+
+<h3>REST versus WebSocket in practice</h3>
+<p>The addendum separates the two communication styles. REST is a discrete request followed by one response, so it is a natural fit for authentication checks, historical bars, account details, PnL, positions, and order placement. WebSockets are a subscription followed by many pushed messages, so they are the right shape for live last price, bid, ask, PnL updates, and order updates.</p>
+
+<p><img src="Week 12-2 TBP-02 Rest API code/chart_addendum_3_tbp02_rest_vs_websocket.png" alt="REST calls are discrete while WebSocket ticks stream continuously" style="max-width:100%;border:1px solid #e4e4e7;border-radius:8px"></p>
+
+<h3>Corrected RSI decision logic</h3>
+<p>The source RSI strategy is preserved unchanged. The addendum flags one code issue additively: the close-position branches use comparison, <code>order_action == 'SELL'</code> and <code>order_action == 'BUY'</code>, where assignment is intended. The corrected offline implementation assigns the exit order action while keeping the copied source file intact.</p>
+
+<p><img src="Week 12-2 TBP-02 Rest API code/chart_addendum_5_tbp02_correction_heartbeat.png" alt="Corrected RSI close-position order logic and heartbeat schedule" style="max-width:100%;border:1px solid #e4e4e7;border-radius:8px"></p>
+
+<h3>Offline RSI warning example</h3>
+<p>Using the local <code>historical_sample.csv</code> file, the corrected RSI example produces 13 mock orders after the RSI warm-up. The strategy is long 25.88% of the time, short 71.73% of the time, and flat 2.39% of the time. The result is deliberately treated as a warning example: over the same local sample, buy-and-hold returns +58.55%, while the corrected RSI strategy returns -21.76% with a -32.87% max drawdown.</p>
+
+<p><img src="Week 12-2 TBP-02 Rest API code/chart_addendum_4_tbp02_offline_rsi_strategy.png" alt="TBP-02 offline corrected RSI strategy on local historical sample" style="max-width:100%;border:1px solid #e4e4e7;border-radius:8px"></p>
+
+<p>The new additive notebooks are <code>Week 12-2 TBP-02 Rest API_resource_addendum_practice.ipynb</code> and <code>Week 12-2 TBP-02 Rest API_validated_practice.ipynb</code>. The validated composite has 16 code cells, 0 code errors, and preserves the original notebook unchanged.</p>
+
 </body>
 </html>

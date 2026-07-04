@@ -1,0 +1,10 @@
+concept,implementation_rule
+Vectorization,Prefer NumPy/pandas operations over Python loops for arrays and DataFrames
+Built-ins,"Use built-in functions such as sum, min, max, sort where possible"
+List vs tuple,Use lists for changing collections; tuples for fixed immutable records
+append vs extend,append adds one object; extend adds each element from an iterable
+[] vs (),Square brackets index/slice or define lists; parentheses call functions or define tuples
+parse_dates,Parse date columns on read_csv when using time series
+loc vs iloc,loc is label-based; iloc is integer-position-based
+None/NaN vs zero,Zero is a value; None/NaN means missing or undefined
+glob,Use pathlib/glob patterns to load matching files such as many CSVs

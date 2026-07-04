@@ -543,7 +543,27 @@
     </div>
   </section>
 
-  <footer class="text-center text-gray-500 text-[9px] mt-2 pt-2 border-t border-gray-300">
+  
+<!-- TBP05_ADDITIVE_SOURCE_PACK_START -->
+<section id="tbp05-additive-source-pack" class="mt-4 p-3 border border-cyan-200 rounded bg-cyan-50 text-gray-900">
+  <h2 class="text-base font-bold">Additive Source-Backed Continuation: TBP-05 Validation Pack</h2>
+  <p class="mt-1 text-[10px]">This section is appended without replacing the existing lecture notes. It adds dependency-safe validation, source inventory, and a corrected going-live checklist.</p>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+    <figure><img src="Week 16-1 TBP-05 code/chart_addendum_1_tbp05_source_inventory.png" alt="TBP-05 source inventory" class="rounded border"><figcaption class="text-[9px] text-gray-600">Source and code inventory.</figcaption></figure>
+    <figure><img src="Week 16-1 TBP-05 code/chart_addendum_2_tbp05_dependency_validation.png" alt="TBP-05 dependency validation" class="rounded border"><figcaption class="text-[9px] text-gray-600">Local dependency gaps and additive fallbacks.</figcaption></figure>
+    <figure><img src="Week 16-1 TBP-05 code/chart_addendum_3_tbp05_backtest_honesty.png" alt="TBP-05 backtest honesty" class="rounded border"><figcaption class="text-[9px] text-gray-600">Full-history tuning versus honest test split.</figcaption></figure>
+    <figure><img src="Week 16-1 TBP-05 code/chart_addendum_4_tbp05_live_robot_controls.png" alt="TBP-05 live robot controls" class="rounded border"><figcaption class="text-[9px] text-gray-600">IBridgePy production controls.</figcaption></figure>
+    <figure class="md:col-span-2"><img src="Week 16-1 TBP-05 code/chart_addendum_5_tbp05_cost_and_parameter_rules.png" alt="TBP-05 costs and parameter rules" class="rounded border"><figcaption class="text-[9px] text-gray-600">Cost sensitivity and backtest honesty controls.</figcaption></figure>
+  </div>
+  <ul class="mt-2 list-disc pl-4 text-[10px]">
+    <li>The existing notebook/script require <code>sklearn</code>, which is not installed locally. The validated notebook adds a NumPy <code>LinearRegression</code> fallback.</li>
+    <li>The existing README is preserved even though it contains encoding damage. A separate <code>README_VALIDATION_ADDENDUM.md</code> is added beside it.</li>
+    <li>The IBridgePy files are reference robots only; they require IBridgePy, Interactive Brokers, and a live/paper brokerage context.</li>
+  </ul>
+</section>
+<!-- TBP05_ADDITIVE_SOURCE_PACK_END -->
+
+<footer class="text-center text-gray-500 text-[9px] mt-2 pt-2 border-t border-gray-300">
     EPAT Week 16-1 &#183; TBP-05 &#183; Backtesting &amp; Live Trading &#183; Pair with <code>..._study.html</code> for the full lesson and the <code>Week 16-1 TBP-05 code</code> folder (executable notebook + SPY.csv) to run every model yourself.
   </footer>
 

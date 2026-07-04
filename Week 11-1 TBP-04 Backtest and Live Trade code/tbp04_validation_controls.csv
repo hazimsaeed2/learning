@@ -1,0 +1,7 @@
+control,lecture_application,additive_note
+Original notebook execution,Run TBP-04 practice notebook in temp folder.,Original fails locally because sklearn is unavailable.
+Validated fallback copy,Permit local execution without installing packages.,Minimal single-feature LinearRegression fallback is injected only in the validated copy.
+Regression replication,Yesterday-to-today return predicts today-to-tomorrow return.,Coefficient and correlation are both weak.
+Strategy scorecard,Swing mean-reversion rule.,Swing strategy underperforms buy-and-hold on this sample.
+Timeframe stability,"Daily, 2-day, weekly coefficient comparison.","Sign flips across timeframes, reinforcing thin-edge caution."
+Live-trading scope,Backtest and live-trade strategy workflow.,"No broker connectivity, live orders, commissions, slippage, or production risk checks are validated here."

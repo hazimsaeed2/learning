@@ -1,0 +1,8 @@
+dependency,available_locally,version,fallback_or_note
+numpy,yes,2.2.6,
+pandas,yes,3.0.3,
+matplotlib,yes,3.11.0,
+statsmodels,no,ModuleNotFoundError,Original notebook import fails locally; validated notebook adds a minimal OLS fallback.
+seaborn,no,ModuleNotFoundError,Only used inside an uncalled helper in performance_analytics.py; no fallback needed.
+yfinance,yes,0.2.33,Imported by data.py for live downloads; shipped notebook uses offline CSV data.
+fitz,yes,1.28.0,

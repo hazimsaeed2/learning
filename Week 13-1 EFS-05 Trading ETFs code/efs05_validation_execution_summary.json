@@ -1,0 +1,36 @@
+{
+  "lecture": "Week 13-1 EFS-05 Trading ETFs",
+  "generated_at": "2026-07-03T00:31:28",
+  "notebooks": [
+    {
+      "notebook": "Week 13-1 EFS-05 Trading ETFs_practice.ipynb",
+      "code_cells": 11,
+      "errors": 0,
+      "markdown_before_code_gaps": 4,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 13-1 EFS-05 Trading ETFs_resource_addendum_practice.ipynb",
+      "code_cells": 4,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 13-1 EFS-05 Trading ETFs_validated_practice.ipynb",
+      "code_cells": 15,
+      "errors": 0,
+      "markdown_before_code_gaps": 4,
+      "execution_exception": null
+    }
+  ],
+  "charts": [
+    "chart_addendum_1_efs05_workbook_sheet_map.png",
+    "chart_addendum_2_efs05_corrected_creation_redemption.png",
+    "chart_addendum_3_efs05_source_nav_snapshots.png",
+    "chart_addendum_4_efs05_existing_vs_workbook_basket.png",
+    "chart_addendum_5_efs05_trading_model_ladder.png"
+  ],
+  "additive_only": true,
+  "workbook_backed_correction_added": true
+}

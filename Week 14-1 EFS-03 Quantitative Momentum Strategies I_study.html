@@ -89,5 +89,43 @@
 <strong>The one-paragraph version.</strong> Momentum is best understood in <em>futures</em>, and its engine is the <em>roll return</em> — what's left of a future's total return after the spot move (<em>total = spot + roll</em>). For the E-mini you can derive it exactly by arbitrage against SPY: <em>roll = dividend yield − interest rate</em> (for an FX future like the peso it's the <em>interest-rate differential</em> — pure carry). A positive roll is <em>normal backwardation</em> (downward forward curve), a negative roll is <em>contango</em>; Keynes explained backwardation as the premium paid to speculators for taking the long side from hedging farmers. Model futures prices as linear in log-time, <code>ln F = α·t − γ·T</code>, so the <em>roll return γ = −(slope of the log forward curve)</em> — and on the corn snapshot that slope yields a backwardated <em>+20.7%</em>. We use log returns because they're additive and can be normal (net returns are floored at −1). The causal payoff: roll returns persist, so you harvest a predictable edge <em>without</em> ever forecasting the noisy spot price — which is exactly why CTAs trade momentum in futures.
 </div>
 
+<h2>Continuation addendum: source files and the full momentum map</h2>
+
+<p>The EFS03/04 source packet contains more implementation material than the original local page showed. Selected source artifacts have been added to the code folder: the corn roll-estimation script, the GC/GLD script, the crude/XLE hedge script, and the raw MATLAB data files for corn, gold futures, and ETFs. The original notebook and original chart remain unchanged.</p>
+
+<p>The broader causal map has four momentum engines. This EFS-03 lecture focuses on the first one: persistence of futures roll returns. EFS-04 continues with factor returns, slow diffusion of news, and forced institutional buying or selling.</p>
+
+<table>
+<tr><th>Momentum cause</th><th>Market</th><th>Lecture focus</th></tr>
+<tr><td>Persistence of futures roll returns</td><td>Futures</td><td>EFS-03</td></tr>
+<tr><td>Persistence of factor returns</td><td>Stocks and factors</td><td>EFS-04</td></tr>
+<tr><td>Slow diffusion and interpretation of news</td><td>Events and equities</td><td>EFS-04</td></tr>
+<tr><td>Forced institutional buying or selling</td><td>Index funds, mutual funds, hedge funds, leveraged ETFs</td><td>EFS-04</td></tr>
+</table>
+
+<p>The copied source scripts use <code>scipy.io.loadmat</code>. SciPy is not installed in this environment, so the raw <code>.mat</code> files are preserved as source artifacts and the addendum notebook validates the implementation logic without loading them.</p>
+
+<p><img src="Week 14-1 EFS-03 Quantitative Momentum Strategies I code/chart_addendum_1_efs03_source_inventory.png" alt="EFS-03 source inventory chart" style="max-width:100%;border:1px solid #a7f3d0;border-radius:6px;margin:10px 0;"></p>
+<p><img src="Week 14-1 EFS-03 Quantitative Momentum Strategies I code/chart_addendum_2_efs03_causal_momentum_map.png" alt="EFS-03 causal momentum map" style="max-width:100%;border:1px solid #a7f3d0;border-radius:6px;margin:10px 0;"></p>
+
+<h2>Continuation addendum: roll formulas and hedge choice</h2>
+
+<p>The later transcript connects the formulas to implementation. For the E-mini S&amp;P 500, roll equals dividend yield minus interest rate because the futures collateral continues to earn interest. For an FX future such as the Mexican peso, roll equals the foreign interest rate minus the domestic interest rate; GDP growth is not part of that arbitrage formula. For commodities, there usually is no exact formula, so the roll must be estimated from the term structure.</p>
+
+<p>The gold homework strategy is short GC futures and long GLD as a spot proxy. That hedge choice works because GLD holds physical gold exposure closely enough for this exercise. The crude-oil discussion shows why hedge choice matters: USO holds crude futures, so using USO can remove the same roll exposure you are trying to harvest. XLE is closer to a physical-oil proxy because energy companies own oil assets, but it introduces company and equity-market risk.</p>
+
+<p><img src="Week 14-1 EFS-03 Quantitative Momentum Strategies I code/chart_addendum_3_efs03_roll_formula_map.png" alt="EFS-03 roll formula map" style="max-width:100%;border:1px solid #a7f3d0;border-radius:6px;margin:10px 0;"></p>
+
+<h2>Continuation addendum: two backtest traps</h2>
+
+<p>First, a continuous futures contract is not made by naively stitching expiring contracts together. When one contract expires and the next contract has a different price, that price gap is not real profit or loss. A naive backtest can treat the gap as a return, which is wrong. Use a back-adjusted continuous series or explicitly model the roll from one contract into the next.</p>
+
+<p>Second, paired-market arbitrage needs matching timestamps. In the GC/GLD exercise, GLD closes at the equity-market close, while the standard GC settlement may be captured earlier. Comparing those two prices as if they were simultaneous can create fictitious profit. Use an intraday futures price captured at the same time as the ETF close.</p>
+
+<p>The Sharpe-ratio funding rule also depends on construction. Futures-only strategies usually do not subtract the risk-free rate because the cash remains in the account and earns interest. Dollar-neutral long/short stock strategies usually do not subtract it because the short side funds the long side. But short GC plus long GLD does subtract it, because buying GLD consumes cash and creates an opportunity cost.</p>
+
+<p><img src="Week 14-1 EFS-03 Quantitative Momentum Strategies I code/chart_addendum_4_efs03_back_adjustment_demo.png" alt="EFS-03 back adjustment demo" style="max-width:100%;border:1px solid #a7f3d0;border-radius:6px;margin:10px 0;"></p>
+<p><img src="Week 14-1 EFS-03 Quantitative Momentum Strategies I code/chart_addendum_5_efs03_timestamp_sharpe_controls.png" alt="EFS-03 timestamp and Sharpe controls chart" style="max-width:100%;border:1px solid #a7f3d0;border-radius:6px;margin:10px 0;"></p>
+
 </body>
 </html>

@@ -1,0 +1,81 @@
+source,item,value,reading
+main_html,file_size_bytes,150255,Week 8-1 Tutorial Session - Doubt Solving on Python after DMP-01.html
+main_html,html_open,1,structural count
+main_html,html_close,1,structural count
+main_html,body_open,1,structural count
+main_html,body_close,1,structural count
+main_html,tables,5,structural count
+main_html,code_blocks,5,structural count
+main_html,image_tags,1,structural count
+main_html,term_yfinance,5,key tutorial term frequency
+main_html,term_multi_level_index,3,key tutorial term frequency
+main_html,term_auto_adjust,3,key tutorial term frequency
+main_html,term_parse_dates,2,key tutorial term frequency
+main_html,term_timezone,2,key tutorial term frequency
+main_html,term_zoneinfo,1,key tutorial term frequency
+main_html,term_pytz,1,key tutorial term frequency
+main_html,term_vectorization,3,key tutorial term frequency
+main_html,term_moving-average,0,key tutorial term frequency
+main_html,term_crossover,10,key tutorial term frequency
+main_html,term_look-ahead,1,key tutorial term frequency
+main_html,term_shift,2,key tutorial term frequency
+study_html,file_size_bytes,12557,Week 8-1 Tutorial Session - Doubt Solving on Python after DMP-01_study.html
+study_html,html_open,1,structural count
+study_html,html_close,1,structural count
+study_html,body_open,1,structural count
+study_html,body_close,1,structural count
+study_html,tables,1,structural count
+study_html,code_blocks,5,structural count
+study_html,image_tags,0,structural count
+study_html,term_yfinance,7,key tutorial term frequency
+study_html,term_multi_level_index,3,key tutorial term frequency
+study_html,term_auto_adjust,3,key tutorial term frequency
+study_html,term_parse_dates,3,key tutorial term frequency
+study_html,term_timezone,2,key tutorial term frequency
+study_html,term_zoneinfo,1,key tutorial term frequency
+study_html,term_pytz,1,key tutorial term frequency
+study_html,term_vectorization,3,key tutorial term frequency
+study_html,term_moving-average,3,key tutorial term frequency
+study_html,term_crossover,7,key tutorial term frequency
+study_html,term_look-ahead,0,key tutorial term frequency
+study_html,term_shift,3,key tutorial term frequency
+transcript_text,file_size_bytes,74354,Week 8-1 Tutorial Session - Doubt Solving on Python after DMP-01.txt
+transcript_text,html_open,0,structural count
+transcript_text,html_close,0,structural count
+transcript_text,body_open,0,structural count
+transcript_text,body_close,0,structural count
+transcript_text,tables,0,structural count
+transcript_text,code_blocks,0,structural count
+transcript_text,image_tags,0,structural count
+transcript_text,term_yfinance,0,key tutorial term frequency
+transcript_text,term_multi_level_index,0,key tutorial term frequency
+transcript_text,term_auto_adjust,0,key tutorial term frequency
+transcript_text,term_parse_dates,0,key tutorial term frequency
+transcript_text,term_timezone,0,key tutorial term frequency
+transcript_text,term_zoneinfo,0,key tutorial term frequency
+transcript_text,term_pytz,0,key tutorial term frequency
+transcript_text,term_vectorization,4,key tutorial term frequency
+transcript_text,term_moving-average,0,key tutorial term frequency
+transcript_text,term_crossover,17,key tutorial term frequency
+transcript_text,term_look-ahead,0,key tutorial term frequency
+transcript_text,term_shift,27,key tutorial term frequency
+practice_notebook_json,file_size_bytes,20651,Week 8-1 Tutorial Doubt-Solving Python after DMP-01_practice.ipynb
+practice_notebook_json,html_open,0,structural count
+practice_notebook_json,html_close,0,structural count
+practice_notebook_json,body_open,0,structural count
+practice_notebook_json,body_close,0,structural count
+practice_notebook_json,tables,0,structural count
+practice_notebook_json,code_blocks,8,structural count
+practice_notebook_json,image_tags,0,structural count
+practice_notebook_json,term_yfinance,10,key tutorial term frequency
+practice_notebook_json,term_multi_level_index,4,key tutorial term frequency
+practice_notebook_json,term_auto_adjust,3,key tutorial term frequency
+practice_notebook_json,term_parse_dates,6,key tutorial term frequency
+practice_notebook_json,term_timezone,4,key tutorial term frequency
+practice_notebook_json,term_zoneinfo,2,key tutorial term frequency
+practice_notebook_json,term_pytz,4,key tutorial term frequency
+practice_notebook_json,term_vectorization,3,key tutorial term frequency
+practice_notebook_json,term_moving-average,2,key tutorial term frequency
+practice_notebook_json,term_crossover,6,key tutorial term frequency
+practice_notebook_json,term_look-ahead,1,key tutorial term frequency
+practice_notebook_json,term_shift,3,key tutorial term frequency

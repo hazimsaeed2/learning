@@ -110,6 +110,44 @@ go.Figure(go.Candlestick(
     low=df.Low, close=df.Close)).show()</code></pre>
 <p>The accompanying practice notebook builds the identical picture with matplotlib (since Plotly isn't installed in our environment) for TCS's last 40 days — you can see the COVID-era recovery climb in green candles. The library differs; the idea is the same.</p>
 
+<h2>8. Continuation addendum: official tutorial source files</h2>
+<p>The optional PBQ-02 tutorial source zip contains more than the existing TCS notebook: it includes an interactive
+Pyodide/Plotly tutorial HTML, an AAPL daily data file, and an NSE HDFCBANK exchange export. The two files have
+<code>.xls</code> extensions, but they are CSV-style text, so the reliable parser is <code>pd.read_csv</code>. The addendum keeps
+the raw source copies and also writes parsed CSV files: <code>AAPL_daily_tutorial.csv</code>,
+<code>HDFCBANK_exchange_tutorial_raw.csv</code>, and <code>HDFCBANK_exchange_tutorial_clean.csv</code>.</p>
+
+<p><img src="Week 7-1 Tutorial Python after PBQ-02 code/chart_addendum_1_week7_source_data_ranges.png" alt="Week 7-1 source data ranges" style="max-width:100%;border:1px solid #e9d5ff;border-radius:8px"></p>
+
+<table>
+<tr><th>Dataset</th><th>Rows</th><th>Date range</th><th>Why it matters</th></tr>
+<tr><td>TCS existing pack</td><td>1,233</td><td>2015-11-18 to 2020-11-17</td><td>Preserved original tutorial practice data.</td></tr>
+<tr><td>AAPL official tutorial source</td><td>3,900</td><td>2004-12-31 to 2020-06-29</td><td>Shows a longer Yahoo-style OHLCV dataset.</td></tr>
+<tr><td>HDFCBANK exchange source</td><td>252</td><td>2024-02-19 to 2025-02-19</td><td>Shows the exchange CSV issues discussed in the transcript.</td></tr>
+</table>
+
+<h3>HDFCBANK cleanup: the exact column trap</h3>
+<p>The HDFCBANK export reproduces the hidden-space problem from the lecture. Raw columns include names such as
+<code>'VALUE '</code>, so <code>df["VALUE"]</code> fails even though the displayed header looks right. The fix remains the same:
+<code>df.columns = df.columns.str.strip()</code>. The addendum also removes comma separators from numeric fields and parses
+the Date column before setting it as the index.</p>
+
+<p><img src="Week 7-1 Tutorial Python after PBQ-02 code/chart_addendum_2_week7_hdfc_column_cleanup.png" alt="HDFCBANK raw and stripped columns" style="max-width:100%;border:1px solid #e9d5ff;border-radius:8px"></p>
+
+<h3>Calendar slicing and deliberate edits</h3>
+<p>Once HDFCBANK has a <code>DatetimeIndex</code>, calendar logic works directly: <code>df.loc["2024-04"]</code> or
+<code>df[df.index.month == 4]</code>. The local addendum finds 20 April rows, an average April close of 1514.61, and an
+average April high-low range of 24.63. It also demonstrates the dataframe-modification part of the transcript by
+adding a null notes column, a static source column, computed range and return columns, and an up/down/flat direction
+signal.</p>
+
+<p><img src="Week 7-1 Tutorial Python after PBQ-02 code/chart_addendum_3_week7_calendar_slicing.png" alt="HDFCBANK April DatetimeIndex selection" style="max-width:100%;border:1px solid #e9d5ff;border-radius:8px"></p>
+<p><img src="Week 7-1 Tutorial Python after PBQ-02 code/chart_addendum_4_week7_dataframe_modification.png" alt="HDFCBANK dataframe modification direction counts" style="max-width:100%;border:1px solid #e9d5ff;border-radius:8px"></p>
+
+<p>The new additive notebooks are <code>Week 7-1 Tutorial Doubt-Solving Python after PBQ-02_resource_addendum_practice.ipynb</code>
+and <code>Week 7-1 Tutorial Doubt-Solving Python after PBQ-02_validated_practice.ipynb</code>. The validated composite
+executes with 22 code cells, 0 errors, and 0 markdown-before-code gaps.</p>
+
 <h2>Where data comes from, and how to keep learning</h2>
 <p>The session closes with two practical asides. On <strong>data sources</strong>: Yahoo Finance (via <code>yfinance</code>) is free and reasonably credible though not exchange-authorised; the NSE's own archive CSVs are the most authoritative; and there are Alpha Vantage, FRED for macroeconomic series, NASDAQ Data Link (formerly Quandl), broker APIs, and <code>pandas_datareader</code>. The quant-specific libraries worth knowing are quantstats, pyfolio, backtrader, and zipline.</p>
 <p>On <strong>learning</strong>: half an hour to an hour a day, consistently, beats occasional marathons. Apply the Pareto principle — master the vital 20% (which brackets go where, the <code>library.method(arguments)</code> syntax, if/else, and loops) and the rest follows. And use large language models as a tool to explain and unblock, not as a crutch that does the thinking for you.</p>

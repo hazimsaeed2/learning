@@ -1,0 +1,4 @@
+method,trigger,user_work,data_volume_score,immediacy_score,best_for
+Snapshot,Every configured time interval,No full order-book maintenance,1,1,Lower-frequency users without microsecond needs
+Tick by tick,Every order/add/cancel/modify/trade event,Maintain the order book from event stream,5,5,"HFT, market making, arbitrage"
+Snapshot TBT,Top N book changes,No full book maintenance for top levels,4,4,Fast users focused on top-of-book depth

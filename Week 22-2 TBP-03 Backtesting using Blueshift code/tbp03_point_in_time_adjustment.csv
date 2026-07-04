@@ -1,0 +1,5 @@
+item,value,reading
+dividend_reference_date,2020-07-02,Nearest local date to the notebook dividend example.
+day_minus_100_as_was_proxy,630.401794,Point-in-time/as-was proxy.
+day_minus_100_pre_adjusted,616.9552,Back-adjusted series leaks later corporate action.
+difference,13.446594,Future event smuggled into past data.

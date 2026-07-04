@@ -1,0 +1,6 @@
+item,metric,value,reading
+document_term_matrix,shape,3 x 47,Executed notebook output over the real news item sentences.
+tfidf_phrase_similarity,bankrupt_vs_delisted,0.336,Bag-of-words overlap is low despite related meaning.
+LDA_topics,n_topics,3,"Toy corpus recovers credit, energy, and tech topics."
+LSA,explained_variance_3_components_pct,29.4,Executed notebook output.
+external_news_body_samples,included_in_zip,yes,Full source zip includes news-body-samples-v1.csv; local practice uses a compact toy corpus.

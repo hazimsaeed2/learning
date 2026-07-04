@@ -1,0 +1,20 @@
+metric,value
+local_data_rows,962
+date_start,2017-01-02
+date_end,2020-11-27
+rsi_lookback,14
+rsi_lower,30
+rsi_upper,70
+observations_after_rsi_warmup,948
+mock_order_count,13
+buy_orders,6
+sell_orders,7
+long_exposure_pct,25.883575883575883
+short_exposure_pct,71.72557172557173
+flat_exposure_pct,2.390852390852391
+buy_hold_total_return_pct,58.55431499862469
+offline_rsi_total_return_pct,-21.756068961490104
+offline_rsi_max_drawdown_pct,-32.86715643572775
+final_target_position,-1
+source_close_order_bug_observed,True
+source_close_order_bug_location,Strategy_TBP02_code_RSI_Intraday_Strategy_source.py lines with order_action == SELL/BUY

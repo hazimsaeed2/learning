@@ -96,5 +96,30 @@ equity      = (1 + d["strat"]).cumprod()         # 7. equity curve</code></pre>
 
 <div class="callout"><strong>The one-paragraph version.</strong> Build dates with <code>datetime</code>, and remember yfinance's two flags (<code>multi_level_index=False</code>, <code>auto_adjust</code>) and its 60-day intraday limit. Save with <code>to_csv</code> and reload with <code>read_csv(index_col=..., parse_dates=True)</code>, using raw strings for Windows paths. Convert intraday UTC timestamps to your zone with <code>tz_convert</code>. Lean on numpy's vectorization (array maths runs all at once; loops are event-driven). Then build a crossover strategy in seven clean steps — rolling means, a regime via <code>np.where</code>, crossings via <code>.diff()</code>, a one-bar <code>.shift()</code>, returns, and a compounded equity curve — and always hold it up against buy-and-hold to see whether it earned its complexity.</div>
 
+
+
+<!-- DMP01_TUTORIAL_STUDY_ADDITIVE_SOURCE_PACK_START -->
+<h2>Additive Validation Pack</h2>
+<div class="callout">
+  <p><strong>Added without changing the original study guide.</strong> The validation pack confirms that the shipped practice notebook runs offline against <code>nifty50_daily.csv</code>, that CSV date parsing and timezone conversion behave as taught, and that the moving-average crossover metrics are reproducible.</p>
+</div>
+<table>
+  <tr><th>Check</th><th>Additive result</th></tr>
+  <tr><td>Original notebook execution</td><td>0 errors in an isolated temporary folder.</td></tr>
+  <tr><td>Source CSV</td><td>962 rows, 2017-01-02 through 2020-11-27, no missing OHLCV cells.</td></tr>
+  <tr><td>Warmup/final rows</td><td>900 rows after the 63-day moving-average warmup; 899 rows after shifted position and returns.</td></tr>
+  <tr><td>Strategy comparison</td><td>Buy-and-hold 40.39%; SMA21/LMA63 crossover 68.04%.</td></tr>
+  <tr><td>Timezone dependency note</td><td>The notebook uses Python <code>zoneinfo</code>; <code>pytz</code> is optional for this validation path.</td></tr>
+</table>
+<p>Generated validation artifacts are in <code>Week 8-1 Tutorial Python after DMP-01 code</code>, including <code>VALIDATION_REPORT.md</code>, the addendum notebook, the validated notebook copy, and these charts:</p>
+<ul>
+<li><code>Week 8-1 Tutorial Python after DMP-01 code/chart_addendum_1_dmp01_tutorial_data_notebook_audit.png</code></li>
+<li><code>Week 8-1 Tutorial Python after DMP-01 code/chart_addendum_2_dmp01_tutorial_csv_timezone.png</code></li>
+<li><code>Week 8-1 Tutorial Python after DMP-01 code/chart_addendum_3_dmp01_tutorial_crossover_equity.png</code></li>
+<li><code>Week 8-1 Tutorial Python after DMP-01 code/chart_addendum_4_dmp01_tutorial_signal_position.png</code></li>
+<li><code>Week 8-1 Tutorial Python after DMP-01 code/chart_addendum_5_dmp01_tutorial_vectorization_controls.png</code></li>
+</ul>
+<!-- DMP01_TUTORIAL_STUDY_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

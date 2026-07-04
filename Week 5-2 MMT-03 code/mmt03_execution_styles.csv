@@ -1,0 +1,3 @@
+style,who_bears_risk,broker_compensation,price_certainty
+Agency execution,investor,"commission, often 1-3 cents/share",unknown until execution completes
+Principal bid / capital commitment,broker after committing price,"premium, often much higher such as 5-25 cents/share",guaranteed benchmark or all-in price

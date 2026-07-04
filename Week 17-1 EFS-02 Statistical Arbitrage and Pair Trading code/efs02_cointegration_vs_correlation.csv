@@ -1,0 +1,5 @@
+concept,tests,not_enough_because,trade_requirement
+Correlation,Whether returns move together over a window,Two prices can be highly correlated and still drift apart forever,"Use for screening, not final stationarity proof"
+Cointegration,Whether a linear combination or spread is stationary,The relationship can break after the test window,ADF-test the residual spread and monitor for breakdown
+Hedge ratio,How many units of one leg offset the other,Look-ahead hedge ratios overstate live performance,Estimate on training window only; lecture uses first 90 days
+Johansen extension,Multivariate cointegration for baskets/triplets,Adds complexity and parameter risk,Use when pair logic becomes a portfolio

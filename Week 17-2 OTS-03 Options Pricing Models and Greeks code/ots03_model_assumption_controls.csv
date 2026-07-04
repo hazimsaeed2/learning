@@ -1,0 +1,6 @@
+topic,lecture_statement,additive_precision,trading_control
+European versus American exercise,BSM and the parity equality use a fixed expiry.,Use exact C - P = S - K*exp(-rT) for non-dividend European options; use American bounds or trees for early exercise.,Check contract exercise style before applying parity or Black-Scholes directly.
+Single-stock listed options,Index options are commonly European-style.,"Many listed single-stock options, especially in the US, are American-style; style is a contract specification.","Read exchange specs for exercise, settlement, multiplier, expiry, and dividend treatment."
+Constant volatility,BSM assumes constant volatility.,"Observed markets have skew, term structure, and volatility clustering.","Treat BSM as a mapping between price and implied volatility, then monitor vega/gamma/theta risk."
+No dividends,The simple equation ignores dividends.,Dividends affect forwards and early-exercise incentives.,Use dividend-adjusted or forward-based pricing when the underlying pays dividends.
+Greeks are local,Greeks are partial derivatives around the current inputs.,"Large spot/vol/time moves require revaluation, not only first-order Greek extrapolation.",Stress the whole portfolio under spot-vol-time scenarios.

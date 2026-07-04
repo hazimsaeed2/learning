@@ -1,0 +1,12 @@
+metric,value,unit,reading
+avg_daily_dollar_volume,14868000.0,dollars,1.18M shares times $12.60.
+one_percent_absorbable,148680.0,dollars,Liquidity rule-of-thumb capacity per day.
+desired_deployment,10000000.0,dollars,"Target is much larger than 1 percent ADV capacity, so avoid."
+reliance_ma_bars_long,1659,bars,Long 1659 of 3068 signalable bars.
+raw_ma_cumulative_return_pct,251.0056,percent,Fast MA crossover without trend filter.
+raw_ma_sharpe,0.640723,ratio,Raw crossover Sharpe.
+raw_ma_signal_changes,507,count,Over-trading proxy.
+buy_hold_reliance_return_pct,673.1878,percent,Buy and hold benchmark.
+crossover_trend_cumulative_return_pct,150.8217,percent,Crossover AND trend filter.
+crossover_trend_sharpe,0.550023,ratio,Filtered crossover Sharpe.
+crossover_trend_signal_changes,399,count,Signal changes after trend filter.

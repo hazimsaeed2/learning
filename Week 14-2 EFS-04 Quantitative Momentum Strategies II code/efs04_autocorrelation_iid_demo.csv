@@ -1,0 +1,3 @@
+sample_method,lookback_days,holding_days,sample_step_days,sample_count,correlation,p_value_approx,iid_valid,lecture_note
+overlapping_every_day,250,25,1,2749,0.505873,0.0,no,"Overlapping windows share returns, so the p-value is too optimistic"
+nonoverlap_every_min_L_H,250,25,25,110,0.50774,1e-08,yes,"Lecture poor-man IID fix: sample every min(L,H) days and require p < 0.05"

@@ -1,0 +1,77 @@
+source,item,value,reading
+main_html,file_size_bytes,128652,Week 11-1 TBP-04 Backtest and Live Trade Algo Strategie.html
+main_html,html_open,1,structural count
+main_html,html_close,1,structural count
+main_html,body_open,1,structural count
+main_html,body_close,1,structural count
+main_html,tables,5,structural count
+main_html,code_blocks,2,structural count
+main_html,image_tags,1,structural count
+main_html,term_swing,15,TBP-04 term frequency
+main_html,term_mean-reversion,1,TBP-04 term frequency
+main_html,term_LinearRegression,1,TBP-04 term frequency
+main_html,term_correlation,2,TBP-04 term frequency
+main_html,term_Backtest,15,TBP-04 term frequency
+main_html,term_Live,13,TBP-04 term frequency
+main_html,term_IBridgePy,0,TBP-04 term frequency
+main_html,term_Blueshift,0,TBP-04 term frequency
+main_html,term_signal,0,TBP-04 term frequency
+main_html,term_drawdown,1,TBP-04 term frequency
+main_html,term_Sharpe,1,TBP-04 term frequency
+study_html,file_size_bytes,11620,Week 11-1 TBP-04 Backtest and Live Trade Algo Strategie_study.html
+study_html,html_open,1,structural count
+study_html,html_close,1,structural count
+study_html,body_open,1,structural count
+study_html,body_close,1,structural count
+study_html,tables,1,structural count
+study_html,code_blocks,2,structural count
+study_html,image_tags,0,structural count
+study_html,term_swing,9,TBP-04 term frequency
+study_html,term_mean-reversion,2,TBP-04 term frequency
+study_html,term_LinearRegression,1,TBP-04 term frequency
+study_html,term_correlation,3,TBP-04 term frequency
+study_html,term_Backtest,16,TBP-04 term frequency
+study_html,term_Live,22,TBP-04 term frequency
+study_html,term_IBridgePy,0,TBP-04 term frequency
+study_html,term_Blueshift,0,TBP-04 term frequency
+study_html,term_signal,0,TBP-04 term frequency
+study_html,term_drawdown,0,TBP-04 term frequency
+study_html,term_Sharpe,1,TBP-04 term frequency
+transcript_text,file_size_bytes,96593,Week 11-1 TBP-04 Backtest and Live Trade Algo Strategie.txt
+transcript_text,html_open,0,structural count
+transcript_text,html_close,0,structural count
+transcript_text,body_open,0,structural count
+transcript_text,body_close,0,structural count
+transcript_text,tables,0,structural count
+transcript_text,code_blocks,0,structural count
+transcript_text,image_tags,0,structural count
+transcript_text,term_swing,50,TBP-04 term frequency
+transcript_text,term_mean-reversion,0,TBP-04 term frequency
+transcript_text,term_LinearRegression,0,TBP-04 term frequency
+transcript_text,term_correlation,14,TBP-04 term frequency
+transcript_text,term_Backtest,2,TBP-04 term frequency
+transcript_text,term_Live,24,TBP-04 term frequency
+transcript_text,term_IBridgePy,0,TBP-04 term frequency
+transcript_text,term_Blueshift,0,TBP-04 term frequency
+transcript_text,term_signal,2,TBP-04 term frequency
+transcript_text,term_drawdown,4,TBP-04 term frequency
+transcript_text,term_Sharpe,1,TBP-04 term frequency
+practice_notebook_json,file_size_bytes,282507,Week 11-1 TBP-04 Backtest and Live Trade_practice.ipynb
+practice_notebook_json,html_open,0,structural count
+practice_notebook_json,html_close,0,structural count
+practice_notebook_json,body_open,0,structural count
+practice_notebook_json,body_close,0,structural count
+practice_notebook_json,tables,2,structural count
+practice_notebook_json,code_blocks,2,structural count
+practice_notebook_json,image_tags,0,structural count
+practice_notebook_json,term_swing,36,TBP-04 term frequency
+practice_notebook_json,term_mean-reversion,2,TBP-04 term frequency
+practice_notebook_json,term_LinearRegression,3,TBP-04 term frequency
+practice_notebook_json,term_correlation,3,TBP-04 term frequency
+practice_notebook_json,term_Backtest,16,TBP-04 term frequency
+practice_notebook_json,term_Live,16,TBP-04 term frequency
+practice_notebook_json,term_IBridgePy,0,TBP-04 term frequency
+practice_notebook_json,term_Blueshift,0,TBP-04 term frequency
+practice_notebook_json,term_signal,5,TBP-04 term frequency
+practice_notebook_json,term_drawdown,2,TBP-04 term frequency
+practice_notebook_json,term_Sharpe,4,TBP-04 term frequency

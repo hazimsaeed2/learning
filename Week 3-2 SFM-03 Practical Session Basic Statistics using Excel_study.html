@@ -220,6 +220,175 @@ upper band</strong> — betting it reverts to the mean.</p>
   rest is just applying them.</p>
 </div>
 
+<h2>9. Validation addendum: the exact official workbook details</h2>
+<p>The second-pass audit found useful details in the official Excel workbooks and practice exercise
+files that should sit beside the original lesson. The existing guide above is kept intact; this
+section adds the missing workbook formulas, source differences, and practice-workbook answer checks.</p>
+
+<h3>The exact Bessel-correction sample from the workbook</h3>
+<p>The official explanation workbook uses this sample: <code>2051, 2053, 2055, 2050, 2051</code>.
+The known population mean in the example is <code>2050</code>, while the sample mean is
+<code>2052</code>. That makes the distinction very concrete:</p>
+
+<table>
+  <tr><th>Calculation</th><th>Arithmetic</th><th class="num">Result</th></tr>
+  <tr><td>Population variance</td><td><code>(1^2 + 3^2 + 5^2 + 0^2 + 1^2) / 5</code></td><td class="num">7.2</td></tr>
+  <tr><td>Sample variance if wrongly divided by n</td><td><code>((-1)^2 + 1^2 + 3^2 + (-2)^2 + (-1)^2) / 5</code></td><td class="num">3.2</td></tr>
+  <tr><td>Sample variance after Bessel correction</td><td><code>((-1)^2 + 1^2 + 3^2 + (-2)^2 + (-1)^2) / 4</code></td><td class="num answer">4.0</td></tr>
+</table>
+
+<figure>
+  <img src="Week 3-2 SFM-03 code/chart_addendum_2_sfm03_bessel_sample.png" alt="Official Bessel correction workbook sample">
+  <figcaption>The workbook's exact Bessel sample: estimating the mean from the sample consumes one degree of freedom, so the denominator becomes n-1.</figcaption>
+</figure>
+
+<h3>Transcript risk limit versus slide risk limit</h3>
+<p>The transcript describes the SBIN/ICICI problem using a tight investor risk limit around
+<strong>1.03%</strong> daily volatility, while the official slide deck problem statement says
+<strong>2.7%</strong>. This is not a reason to delete either number. It is a source difference:
+the same frontier is being judged under different investor constraints.</p>
+
+<table>
+  <tr><th>Source</th><th>Limit used</th><th>Best feasible sampled portfolio</th><th>Interpretation</th></tr>
+  <tr><td>Lecture transcript</td><td class="num">1.03%</td><td>5% SBIN / 95% ICICI</td><td>The tight limit excludes high-SBIN portfolios and forces the answer near the low-volatility side.</td></tr>
+  <tr><td>Transcript wording variant</td><td class="num">1.303%</td><td>0% SBIN / 100% ICICI</td><td>This slightly looser reading already allows the all-ICICI portfolio.</td></tr>
+  <tr><td>Official slide deck</td><td class="num">2.7%</td><td>0% SBIN / 100% ICICI</td><td>All 101 sampled portfolios are feasible, so the maximum-return sample is all ICICI.</td></tr>
+</table>
+
+<figure>
+  <img src="Week 3-2 SFM-03 code/chart_addendum_1_sfm03_limit_comparison.png" alt="SBIN and ICICI efficient frontier with transcript and slide risk limits">
+  <figcaption>The portfolio math is unchanged; the volatility limit controls which frontier points are allowed.</figcaption>
+</figure>
+
+<h3>The exact Excel formula map</h3>
+<p>The official workbook makes the spreadsheet mechanics explicit. In Python, these map to the same
+operations with <code>mean()</code>, <code>std(ddof=1)</code>, <code>cov()</code>, rolling windows,
+and random draws.</p>
+
+<table>
+  <tr><th>Workbook task</th><th>Excel formula pattern</th><th>Plain-English meaning</th></tr>
+  <tr><td>Daily log return</td><td><code>=LN(today_price / yesterday_price)</code></td><td>Continuously compounded one-day return.</td></tr>
+  <tr><td>Mean return</td><td><code>=AVERAGE(return_range)</code></td><td>The historical average used as the center of the model.</td></tr>
+  <tr><td>Sample standard deviation</td><td><code>=STDEV.S(return_range)</code></td><td>Historical volatility with n-1 in the denominator.</td></tr>
+  <tr><td>Covariance</td><td><code>=SUM((Xi-Xbar)*(Yi-Ybar))/(n-1)</code></td><td>Whether two returns tend to move together or apart.</td></tr>
+  <tr><td>Portfolio return</td><td><code>wA*RA + wB*RB</code></td><td>Weighted average of asset returns.</td></tr>
+  <tr><td>Portfolio variance</td><td><code>wA^2*sigmaA^2 + wB^2*sigmaB^2 + 2*wA*wB*Cov(A,B)</code></td><td>Total portfolio risk including the co-movement term.</td></tr>
+  <tr><td>Monte Carlo next price</td><td><code>=previous_price*EXP(NORMINV(RAND(), mean, stdev))</code></td><td>Draw a random return, compound it into the next price.</td></tr>
+  <tr><td>VaR floor</td><td><code>=PERCENTILE(simulated_prices, 0.05)</code></td><td>The 5th-percentile price floor.</td></tr>
+  <tr><td>Expected shortfall</td><td><code>=AVERAGEIF(simulated_prices, "&lt;"&amp;VaR_cell)</code></td><td>The average of outcomes worse than the VaR floor.</td></tr>
+  <tr><td>Bollinger Bands</td><td><code>SMA20 +/- 2*STDEV.S(last_20_closes)</code></td><td>A rolling normal-range estimate around the current price.</td></tr>
+</table>
+
+<h3>Practice exercise pack: HDB, SBIN, and NIFTY</h3>
+<p>The practice zip adds a separate Stooq-based assignment for <strong>HDB</strong>, <strong>SBIN</strong>,
+and <strong>NIFTY</strong> from <strong>8 July 2025</strong> to <strong>20 February 2026</strong>.
+It asks the student to compute NIFTY daily returns, single-value descriptive statistics, and a
+10-trading-day Monte Carlo forecast. The worked-solution answer key reports:</p>
+
+<table>
+  <tr><th>Question</th><th>Official worked answer</th></tr>
+  <tr><td>Minimum SBIN price</td><td class="num">62.27</td></tr>
+  <tr><td>Date of minimum SBIN price</td><td>9 July 2025</td></tr>
+  <tr><td>Mean SBIN price</td><td class="num">69.7967088608</td></tr>
+  <tr><td>Mean HDB price</td><td class="num">35.6145955696</td></tr>
+  <tr><td>Sample stdev of SBIN price</td><td class="num">4.8106244471</td></tr>
+  <tr><td>Sample stdev of HDB price</td><td class="num">1.7027214025</td></tr>
+  <tr><td>Sample stdev of NIFTY daily returns</td><td class="num">0.0076671948</td></tr>
+  <tr><td>Average NIFTY daily return</td><td class="num">-0.0001291407</td></tr>
+  <tr><td>NIFTY daily-return variance</td><td class="num">0.0000587859</td></tr>
+</table>
+
+<figure>
+  <img src="Week 3-2 SFM-03 code/chart_addendum_3_sfm03_practice_mc.png" alt="Practice exercise Monte Carlo paths and final price distribution">
+  <figcaption>The addendum notebook uses the official practice mean and standard deviation in the same Excel-style Monte Carlo formula.</figcaption>
+</figure>
+
+<div class="warn">
+  <div class="t">Modern best practice</div>
+  <p style="margin:8px 0 0;">The random-walk and Bollinger sections depend on independence and approximate normality.
+  The instructor notes that you should test this in real work. Check autocorrelation, volatility clustering,
+  skew, kurtosis, and regime changes before relying on a normal <code>NORMINV</code> model. For quick
+  back-of-the-envelope work Excel is fine; for larger data, repeated backtests, and production research, Python
+  is the safer tool.</p>
+</div>
+
+<div class="callout">
+  <div class="t">Addendum notebook</div>
+  <p style="margin:8px 0 0;">The original practice notebook is preserved. The extra workbook-only validation lives in
+  <code>Week 3-2 SFM-03 code/Week 3-2 SFM-03 Basic Statistics_resource_addendum_practice.ipynb</code>,
+  and the strict-compliance combined notebook lives in
+  <code>Week 3-2 SFM-03 code/Week 3-2 SFM-03 Basic Statistics_validated_practice.ipynb</code>.
+  Both use the extracted practice CSVs and the three addendum charts shown above.</p>
+</div>
+
+<h2>10. Continuation addendum: practical spreadsheet notes from the transcript</h2>
+<p>This section keeps the original guide intact and adds a few operating details from the transcript
+that matter when you copy the lecture workflow into your own spreadsheet or backtest.</p>
+
+<h3>The repeated average column is not a day-one signal</h3>
+<p>In the Excel demonstration, the instructor copies the same 60-day average return beside every
+daily return so the row formula <code>x_i - xbar</code> is easy to audit. That can look forward-looking
+if you read it as a live trading signal, but that is not the intended interpretation. The calculation
+is done after the historical window has finished. In the lecture example, you have the full three
+months of data, calculate the mean and volatility at the end of that window, and then decide what
+portfolio to hold next.</p>
+
+<div class="warn">
+  <div class="t">Backtest control</div>
+  <p style="margin:8px 0 0;">If you convert this spreadsheet into a historical trading rule, do not let
+row t use returns from row t+1 or later. Use a rolling or expanding window that only contains data
+available at that point in time. Otherwise the backtest uses information the trader did not have.</p>
+</div>
+
+<p>Rebalancing is a separate choice. You might rebalance monthly, weekly, or daily, but each rebalance
+must use the data available before that rebalance date. The sample mean will change when the window
+changes, and that is normal.</p>
+
+<h3>The frontier in the lecture is long-only unless you explicitly allow shorts</h3>
+<p>The 101-portfolio grid runs from 0% SBIN / 100% ICICI to 100% SBIN / 0% ICICI in 1% steps. That is a
+long-only investing exercise. When the instructor extends the graph beyond those weights, a negative
+weight means shorting one stock and using the proceeds to buy more of the other. That is not the same
+problem. It introduces borrow availability, short-sale rules, margin, financing cost, and execution
+risk.</p>
+
+<p>So keep the interpretation separate:</p>
+<table>
+  <tr><th>Case</th><th>Meaning</th><th>How to read the frontier</th></tr>
+  <tr><td>Long-only portfolio</td><td>Weights are between 0% and 100%.</td><td>Use the upper efficient branch inside the allowed grid.</td></tr>
+  <tr><td>Short-enabled portfolio</td><td>At least one weight is negative or above 100%.</td><td>This is closer to a trading or pair-trading setup and needs separate constraints.</td></tr>
+  <tr><td>Dominated lower branch</td><td>Same risk, lower expected return.</td><td>Do not choose it when a higher-return portfolio exists at the same volatility.</td></tr>
+</table>
+
+<h3>Small Excel details that prevent spreadsheet mistakes</h3>
+<p>The transcript also contains several small Excel conventions that are easy to miss but useful in
+practice:</p>
+<table>
+  <tr><th>Detail</th><th>Correct reading</th><th>Common mistake</th></tr>
+  <tr><td><code>$A$1</code> style references</td><td>The dollar signs lock a cell or range when formulas are copied down.</td><td>Forgetting to lock the mean or data range, so every copied row uses a different window by accident.</td></tr>
+  <tr><td><code>6.86E-05</code></td><td>Scientific notation: <code>6.86 x 10^-5 = 0.0000686</code>.</td><td>Reading it as a large number or ignoring it because it looks unfamiliar.</td></tr>
+  <tr><td><code>COVARIANCE.S</code></td><td>Sample covariance, matching the lecture's divide-by-<code>n-1</code> arithmetic.</td><td>Mixing sample standard deviation with population covariance, which uses a different denominator.</td></tr>
+  <tr><td><code>AVERAGEIF(range,"&lt;"&amp;VaR_cell)</code></td><td>Expected shortfall averages simulated prices below the current VaR floor.</td><td>Hard-coding a number such as <code>&lt;100</code> when the VaR threshold should update after recalculation.</td></tr>
+</table>
+
+<h3>Modern best practice: stress the model before trusting the range</h3>
+<p>The instructor makes an important practical point in the Q&amp;A: a sudden market shock can fall outside
+the old 95% range because the historical standard deviation has not caught up yet. As new volatile
+days enter the sample, the rolling standard deviation rises and the model range widens, but that is
+too late for the first shock.</p>
+
+<p>That is why a normal random-walk model should be treated as a baseline, not as a guarantee. In
+practice, test autocorrelation to see whether returns are independent, inspect skew and kurtosis to
+see whether the normal distribution is too thin-tailed, and watch for regime changes. If independence
+fails, later EPAT topics such as ARIMA-style time-series models or regime models become relevant.</p>
+
+<div class="callout">
+  <div class="t">Excel versus Python boundary</div>
+  <p style="margin:8px 0 0;">The lecture frames Excel as a fast tool for back-of-the-envelope checks.
+For repeated strategy testing, larger datasets, high-frequency workflows, or work that needs to be
+reproducible, move the same calculations into Python. The statistics are the same; the engineering
+control is stronger.</p>
+</div>
+
 <div class="foot">
   Week 3-2 · SFM-03 Basic Statistics using Excel — companion to the dense one-page cheat sheet and the
   executed practice notebook (<code>Week 3-2 SFM-03 code/</code>). All numbers reproduced from the

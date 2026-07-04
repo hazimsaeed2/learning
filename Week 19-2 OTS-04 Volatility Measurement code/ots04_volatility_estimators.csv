@@ -1,0 +1,5 @@
+asset,estimator,daily_vol,annualized_vol,reading
+AAPL,close_to_close,0.01252459,0.19882173,Uses close-to-close returns including overnight moves in adjusted close.
+AAPL,Parkinson,0.01121882,0.17809328,Range-based estimator is more precise but biased low when overnight gaps matter.
+AAPL,EWMA_0.94,0.0084513,0.1341603,Smooths recent shocks instead of cliff-crashing like a fixed rolling window.
+AAPL,Parkinson_to_close_ratio,0.89574354,0.89574354,Ratio below 1 demonstrates the low-bias note.

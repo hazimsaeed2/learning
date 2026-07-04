@@ -1,0 +1,5 @@
+channel,direction,timing,lecture_use,offline_addendum
+REST request/response,"client sends request, server returns one response",synchronous,"auth status, PnL, positions, historical data, order placement",MockResponse and status-first request log
+IB WebSocket,"client subscribes once, server pushes many messages",streaming/asynchronous,"real-time last price, bid, ask, bid/ask sizes, PnL/order updates",sample smd/spl/sor parser with local messages
+Alpaca WebSocket,client authenticates then subscribes to quotes,streaming/asynchronous,crypto quote stream using key/secret placeholders,sample BTCUSD quote parser without network
+FIX/HFT context,low-level institutional protocol,very low latency,not the target of this REST session,documented as non-goal for REST examples

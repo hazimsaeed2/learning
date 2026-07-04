@@ -1,0 +1,5 @@
+artifact,artifact_type,exists,size_bytes,rows,columns,note
+Week 9-1 DMP-03 OOP in Python_practice.ipynb,practice_notebook,True,20386,,,"9 code cells, 13 markdown cells"
+eod_prices.csv,source_data,True,75044,962,6,2017-01-02 through 2020-11-27
+chart_1_emh.png,original_chart,True,81835,,,Existing chart preserved; addendum charts use separate names.
+DMP-02-03-04-Lecture-Summary.pdf,source_pdf,True,401471,7,108,8491 text chars. Source lecture-summary PDF inventoried.

@@ -1,0 +1,6 @@
+control,implementation,failure_prevented
+Economic linkage first,"Choose same-sector, common-factor, ETF, FX, or futures relationships before testing",Data-mined pairs with no reason to reconnect
+Stationarity gate,ADF-test single series or spread before Bollinger reversion,Trading a random walk as if it were mean-reverting
+No look-ahead hedge ratio,"Estimate h on first 90 days or rolling training window, then trade forward",Using future prices to size past trades
+Cost and borrow check,"Include short borrow, ETF fees, FX rollover, slippage, and commissions",Spread edge disappears after carrying costs
+Diversify across pairs,Use a portfolio of independently validated spreads,Single cointegration break wipes out the book

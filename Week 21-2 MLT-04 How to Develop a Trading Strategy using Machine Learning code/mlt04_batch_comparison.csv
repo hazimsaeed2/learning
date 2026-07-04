@@ -1,0 +1,16 @@
+metric,batch_68_onwards,batch_67,note
+features,18,19,Practice notebook uses Batch 68 Onwards path.
+mcc_train,0.06566404266222578,0.12157297407165399,Practice notebook uses Batch 68 Onwards path.
+mcc_val,0.019279814837205297,-0.002622459546211988,Practice notebook uses Batch 68 Onwards path.
+mcc_test,-0.005899880052585674,0.06798461451302383,Practice notebook uses Batch 68 Onwards path.
+f1_train,0.4930237899194626,0.5094167178535549,Practice notebook uses Batch 68 Onwards path.
+f1_val,0.24615384615384617,0.15311004784688995,Practice notebook uses Batch 68 Onwards path.
+f1_test,0.1759697256385998,0.09472551130247578,Practice notebook uses Batch 68 Onwards path.
+val_change_pct,-70.63870262088463,-102.15710733922354,Practice notebook uses Batch 68 Onwards path.
+test_change_pct,-130.60133150864272,2692.398979470406,Practice notebook uses Batch 68 Onwards path.
+production_ready,False,True,Practice notebook uses Batch 68 Onwards path.
+vectorized_total_return,5.641560032065551,6.629348128208079,Practice notebook uses Batch 68 Onwards path.
+vectorized_sharpe,0.14842537672360537,0.1664540123473351,Practice notebook uses Batch 68 Onwards path.
+vectorized_max_dd,-20.38801356018867,-25.88210970927623,Practice notebook uses Batch 68 Onwards path.
+vectorized_trades,91,39,Practice notebook uses Batch 68 Onwards path.
+verdict,❌ FAIL - Excessive degradation,✅ PASS - Test outperformed validation,Practice notebook uses Batch 68 Onwards path.

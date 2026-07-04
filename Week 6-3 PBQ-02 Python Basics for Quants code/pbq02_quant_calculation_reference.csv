@@ -1,0 +1,12 @@
+method,feature_name,formula,first_values,quant_use
+diff(),Close_Change,"df[""Close""].diff()",first row is NaN,Currency change from prior close.
+pct_change(),Return_Pct,"100 * df[""Close""].pct_change()",first row is NaN,Simple close-to-close return in percent.
+np.log(...).diff(),Log_Return,"np.log(df[""Close""]).diff()",first row is NaN,Log return; close to simple return for small moves.
+shift(1),Previous_Close,"df[""Close""].shift(1)",first row is NaN,Bring yesterday close into today row for overnight/open calculations.
+shift(-1),Next_Close_Demo,"df[""Close""].shift(-1)",last row is NaN,Demo only; using future values in signals creates look-ahead bias.
+rolling(window=5).mean(),MA_5,"df[""Close""].rolling(5).mean()",first 4 rows are NaN,Short moving average.
+rolling(window=100).mean(),MA_100,"df[""Close""].rolling(100).mean()",first 99 rows are NaN,Trend filter or moving average comparison.
+ewm(span=20).mean(),EMA_20,"df[""Close""].ewm(span=20, adjust=False).mean()",starts immediately,Exponential moving average; recent observations get more weight.
+apply(axis=1),High_Volume_By_Apply,"df.apply(function, axis=1)",depends on function,Apply row-level custom logic when vectorized operations are not enough.
+np.where(),Volume_Regime,"np.where(df[""Volume""] > 1500000, ""HV"", ""LV"")",no NaN from condition alone,Vectorized if/else signal labels.
+groupby().agg(),regime summary,"df.groupby(""Volume_Regime"")[""Return_Pct""].agg([""count"",""mean"",""std""])",group-level rows,Summarize performance by signal/regime.

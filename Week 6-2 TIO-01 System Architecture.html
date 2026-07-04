@@ -167,6 +167,36 @@ struct.unpack(fmt, raw)
     </div>
   </div>
 
+  <!-- ADDITIVE INFRASTRUCTURE DETAILS -->
+  <div class="mt-4 bg-white rounded-2xl p-4 shadow border-t-4 border-violet-600">
+    <div class="flex items-center gap-2"><span class="bg-violet-600 text-white rounded-full w-6 h-6 grid place-items-center font-bold">9</span><h2 class="font-extrabold text-violet-800 text-base">Additive details: exchange side + queues</h2></div>
+    <p class="text-slate-600 mt-1 text-xs">The exchange side is a distributed system: gateways route to matching engines, while market-data, recovery, and drop-copy streams support the trading flow.</p>
+    <div class="grid grid-cols-12 gap-3 mt-3">
+      <img class="col-span-12 lg:col-span-6 rounded-lg border border-slate-200" src="Week 6-2 TIO-01 System Architecture code/chart_addendum_1_tio01_exchange_side_architecture.png" alt="TIO-01 exchange-side architecture">
+      <img class="col-span-12 lg:col-span-6 rounded-lg border border-slate-200" src="Week 6-2 TIO-01 System Architecture code/chart_addendum_3_tio01_connectivity_latency_queues.png" alt="TIO-01 connectivity and order manager queues">
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 text-xs">
+      <div class="rounded-lg border border-violet-200 bg-violet-50 p-3"><b>Gateway</b><br>Receives member sessions, applies checks, and routes each symbol to its matching engine.</div>
+      <div class="rounded-lg border border-rose-200 bg-rose-50 p-3"><b>Message-rate queue</b><br>Holds orders once the purchased orders-per-second quota is used.</div>
+      <div class="rounded-lg border border-amber-200 bg-amber-50 p-3"><b>Ack queue</b><br>Blocks cancel/replace until exchange order ID and timestamp are known.</div>
+    </div>
+  </div>
+
+  <div class="mt-4 bg-white rounded-2xl p-4 shadow border-t-4 border-teal-600">
+    <div class="flex items-center gap-2"><span class="bg-teal-600 text-white rounded-full w-6 h-6 grid place-items-center font-bold">10</span><h2 class="font-extrabold text-teal-800 text-base">Additive details: feeds + news scores</h2></div>
+    <div class="grid grid-cols-12 gap-3 mt-3">
+      <img class="col-span-12 lg:col-span-6 rounded-lg border border-slate-200" src="Week 6-2 TIO-01 System Architecture code/chart_addendum_2_tio01_market_data_methods.png" alt="TIO-01 market data methods">
+      <img class="col-span-12 lg:col-span-6 rounded-lg border border-slate-200" src="Week 6-2 TIO-01 System Architecture code/chart_addendum_4_tio01_news_score_stack.png" alt="TIO-01 quantified news score stack">
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-2 mt-3 text-xs">
+      <div class="rounded-lg border border-slate-200 bg-slate-50 p-2"><b>Snapshot</b><br>low volume, blind between intervals</div>
+      <div class="rounded-lg border border-slate-200 bg-slate-50 p-2"><b>TBT</b><br>every event; you maintain the book</div>
+      <div class="rounded-lg border border-slate-200 bg-slate-50 p-2"><b>Snapshot TBT</b><br>top-N changes without full book maintenance</div>
+      <div class="rounded-lg border border-slate-200 bg-slate-50 p-2"><b>News filter</b><br>sentiment + relevance + novelty + impact</div>
+    </div>
+    <div class="mt-3 text-xs bg-slate-50 border border-slate-200 rounded-lg p-2">New companion files: <code>Week 6-2 TIO-01 System Architecture_resource_addendum_practice.ipynb</code>, <code>Week 6-2 TIO-01 System Architecture_validated_practice.ipynb</code>, and <code>tio01_*.csv</code> reference tables.</div>
+  </div>
+
   <!-- GLOSSARY -->
   <div class="mt-4 bg-slate-900 text-slate-100 rounded-2xl p-4 shadow">
     <h2 class="font-extrabold text-rose-300 text-base">30-second glossary</h2>
@@ -184,5 +214,19 @@ struct.unpack(fmt, raw)
 
   <div class="mt-3 text-center text-xs text-slate-400">Week 6-2 · TIO-01 System Architecture — self-teaching cheat sheet · next: PBQ-02</div>
 </div>
+
+<!-- VALIDATION_EVIDENCE_ADDENDUM_START -->
+<section id="validation-evidence-addendum" data-validation-evidence="true" style="max-width: 1100px; margin: 24px auto; padding: 14px 16px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.45;">
+  <h2 style="margin: 0 0 8px; font-size: 16px; font-weight: 700;">Validation Evidence Addendum</h2>
+  <p style="margin: 0 0 8px;">This additive note points to the validation evidence for this lecture. The original page content above remains unchanged.</p>
+  <ul style="margin: 0; padding-left: 18px;">
+    <li>Queue row: 8</li>
+    <li>Lecture: Week 6-2 TIO-01 System Architecture</li>
+    <li>Status: DONE</li>
+    <li>Validation report: <a href="Week%206-2%20TIO-01%20System%20Architecture%20code/VALIDATION_REPORT.md">Week 6-2 TIO-01 System Architecture code/VALIDATION_REPORT.md</a></li>
+    <li>Execution summary JSON: <a href="Week%206-2%20TIO-01%20System%20Architecture%20code/tio01_validation_execution_summary.json">Week 6-2 TIO-01 System Architecture code/tio01_validation_execution_summary.json</a></li>
+  </ul>
+</section>
+<!-- VALIDATION_EVIDENCE_ADDENDUM_END -->
 </body>
 </html>

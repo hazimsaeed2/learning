@@ -1,0 +1,4 @@
+dataset,rows,start,end,close_column,note
+TCS.NS.csv existing pack data,1233,2015-11-18,2020-11-17,Close,Existing notebook data retained.
+AAPL official tutorial source,3900,2004-12-31,2020-06-29,Close,CSV text shipped with .xls extension.
+HDFCBANK official exchange source,252,2024-02-19,2025-02-19,close,Raw columns include trailing spaces and comma-formatted numbers.

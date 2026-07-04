@@ -94,5 +94,44 @@ total  = equity.iloc[-1] - 1                   # final return</code></pre>
 
 <div class="callout"><strong>The one-paragraph version.</strong> Measure moves in simple returns (<code>pct_change</code>) or log returns (<code>np.log(P/P.shift(1))</code>) — and combine them correctly: simple with <code>cumprod</code>, log with <code>cumsum</code>, never mixed. Always <code>shift</code> your signal by one bar to avoid look-ahead bias. Screen many ideas fast with vectorized back-tests, then validate the survivors with realistic event-driven ones. And when you finally run your clean little strategy and it merely ties the benchmark — that isn't failure, that's the back-test doing its job.</div>
 
+<h2>Continuation addendum: source notebook and workbook</h2>
+<p>The official tutorial zip contains three source artifacts that were not explicit in the first local pack:
+<code>DMP_01_code_Tutorial Session.ipynb</code>, <code>DMP_01_data_tutorial_nse.csv</code>, and
+<code>Log Returns vs Simple Returns.xlsx</code>. The source NSE CSV matches the existing local <code>nse_daily.csv</code>,
+so the addendum keeps the original data and adds references around it instead of replacing anything.</p>
+
+<p><img src="Week 7-2 DMP-01 Strategy Back Testing code/chart_addendum_1_dmp01_workflow_map.png" alt="DMP-01 vectorized workflow map" style="max-width:100%;border:1px solid #fed7aa;border-radius:8px"></p>
+
+<p>The Excel workbook uses the price path 250, 245, 234, 237, 240. The correct total return is 240/250 - 1,
+which is -4.00%. A plain sum of simple returns is close but wrong; simple returns must compound with
+<code>(1+r).cumprod()</code>. Log returns add with <code>cumsum</code>, but you convert back with <code>exp</code>.</p>
+
+<p><img src="Week 7-2 DMP-01 Strategy Back Testing code/chart_addendum_2_dmp01_log_simple_workbook.png" alt="DMP-01 workbook log versus simple return comparison" style="max-width:100%;border:1px solid #fed7aa;border-radius:8px"></p>
+
+<h3>Long/short crossover warning example</h3>
+<p>The source notebook also formalizes a moving-average crossover workflow. The addendum implements a local
+SMA50/SMA200 long/short variant on the same NSE data, with the position shifted by one bar before returns are applied.
+After the SMA200 warm-up there are 763 observations and 6 crossovers. The strategy is long on 70.77% of shifted rows
+and short on 29.10%.</p>
+<p>The result is deliberately unflattering: over the same warm-up-adjusted window, buy-and-hold returns +27.82%, while
+the local long/short crossover returns -52.73%. The CAGR is -21.92%, annualized volatility is 20.80%, Sharpe is -1.08,
+and max drawdown is -65.83%. This is exactly why strategy evaluation must include benchmark comparison and drawdown,
+not only a chart of signals.</p>
+
+<p><img src="Week 7-2 DMP-01 Strategy Back Testing code/chart_addendum_3_dmp01_long_short_crossover.png" alt="DMP-01 long-short SMA50 SMA200 crossover" style="max-width:100%;border:1px solid #fed7aa;border-radius:8px"></p>
+<p><img src="Week 7-2 DMP-01 Strategy Back Testing code/chart_addendum_4_dmp01_metrics_snapshot.png" alt="DMP-01 local metric snapshot" style="max-width:100%;border:1px solid #fed7aa;border-radius:8px"></p>
+
+<h3>Event-driven loop equivalence</h3>
+<p>For a simple long-flat SMA12 example, the addendum also writes an event-style loop that processes one row at a time.
+It matches the vectorized shifted-position method exactly: final equity 1.544583 in both versions, absolute difference
+0.0, and 100% matching positions. This reinforces the lecture point: vectorized testing is the fast screening tool;
+event-driven testing is the more realistic next step once the idea survives basic checks.</p>
+
+<p><img src="Week 7-2 DMP-01 Strategy Back Testing code/chart_addendum_5_dmp01_event_loop_check.png" alt="DMP-01 vectorized versus event loop final equity" style="max-width:100%;border:1px solid #fed7aa;border-radius:8px"></p>
+
+<p>The new additive notebooks are <code>Week 7-2 DMP-01 Strategy Back Testing_resource_addendum_practice.ipynb</code>
+and <code>Week 7-2 DMP-01 Strategy Back Testing_validated_practice.ipynb</code>. The validated composite executes with
+16 code cells, 0 errors, and 0 markdown-before-code gaps.</p>
+
 </body>
 </html>

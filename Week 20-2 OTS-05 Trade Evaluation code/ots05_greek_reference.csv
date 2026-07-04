@@ -1,0 +1,7 @@
+option_type,price,delta,theta,rho,gamma,vega,reading
+call,1.56643702,0.30004347,-0.04984345,0.02337362,0.04042858,9.96869087,Lecture 30-day 105 strike example.
+put,6.56643702,-0.69995653,-0.04984345,-0.06292775,0.04042858,9.96869087,Lecture 30-day 105 strike example.
+call_spot_90,7.0128799,0.42027042,-0.01445974,0.30811458,0.01447957,35.18535945,Delta rises with spot; gamma controls hedge urgency.
+call_spot_100,11.92353847,0.55961769,-0.01621148,0.44038231,0.01314931,39.44793309,Delta rises with spot; gamma controls hedge urgency.
+call_spot_110,18.14101205,0.68000064,-0.01616596,0.56659059,0.01083669,39.33717133,Delta rises with spot; gamma controls hedge urgency.
+call_spot_120,25.44056347,0.77569623,-0.01476423,0.67642985,0.00831627,35.92629128,Delta rises with spot; gamma controls hedge urgency.

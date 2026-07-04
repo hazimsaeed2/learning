@@ -1,0 +1,13 @@
+parameter,value,role
+a1,882,impact scale
+a2,0.35,size exponent
+a3,0.75,volatility exponent
+a4,0.85,POV exponent
+b1,0.96,temporary impact share
+size_example,0.1,shares / ADV
+volatility_example,0.3,annual volatility
+model_market_impact_pov_0.05,18.4026,bps for example size/vol
+model_market_impact_pov_0.10,28.0442,bps for example size/vol
+model_market_impact_pov_0.20,45.4233,bps for example size/vol
+model_market_impact_pov_0.35,69.1995,bps for example size/vol
+model_market_impact_pov_0.50,91.4441,bps for example size/vol

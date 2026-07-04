@@ -1,0 +1,6 @@
+control,implementation,status,risk_prevented
+target construction,shift(-1) creates tomorrow-up label before split,OK,Confusing label construction with training leakage
+time split,"earliest 75% train, latest 25% test",OK,Training on future rows
+shuffle,shuffle=False,OK,Look-ahead bias in time series
+scaler fitting,"fit scaler on train, transform test",OK,Leaking test mean and volatility
+last row,drop final row before supervised fit,OK,Using a row whose next-day label is not tradable

@@ -1,0 +1,6 @@
+day,contract,raw_price,stitched_price,back_adjusted_price,return_label
+1,old,101.0,101.0,91.0,real contract move
+2,old,102.0,102.0,92.0,real contract move
+3,roll gap,,92.0,92.0,not real P&L
+4,new,93.0,93.0,93.0,real contract move
+5,new,94.0,94.0,94.0,real contract move

@@ -1,0 +1,7 @@
+metric,value,reading
+aligned_trading_days,1674,2012-01-09 to 2018-08-31.
+raw_daily_net_std,0.41667,Recomputed locally.
+notebook_kalman_smoothed_std,0.286,Executed notebook statsmodels output.
+corr_raw_sentiment_price,0.14138,Recomputed locally.
+notebook_corr_smoothed_price,0.202,Executed notebook statsmodels output.
+ewm_proxy_smooth_std,0.28425,"Local fallback proxy, not a replacement for Kalman smoothing."

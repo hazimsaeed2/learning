@@ -1,0 +1,4 @@
+file,size_bytes,role
+Backtesting a strategy on Blueshift_Files/MACD.py,4294,python_strategy
+Backtesting a strategy on Blueshift_Files/rsi_strategy.py,4146,python_strategy
+Backtesting a strategy on Blueshift_Files/Statarb using PCA.py,3906,python_strategy

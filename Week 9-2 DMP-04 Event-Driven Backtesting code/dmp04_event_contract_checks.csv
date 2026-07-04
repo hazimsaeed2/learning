@@ -1,0 +1,8 @@
+check,value,unit,reading
+event_types_defined,"MarketEvent, SignalEvent, OrderEvent, FillEvent",classes,Dataclass event contract.
+queue_type,collections.deque,type,FIFO event queue used by engine.
+market_events,962,events,One market event per CSV bar.
+signal_events,961,events,Signals produced after momentum warmup and threshold filter.
+order_events,766,events,Naive all-in portfolio emits one order per non-zero target change.
+fill_events,766,events,Naive execution fills every order immediately at last price.
+engine_swap_contract,stream_next -> MarketEvent,interface,CSVDataHandler can be replaced by a live handler only if the interface is preserved.

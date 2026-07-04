@@ -1,0 +1,57 @@
+{
+  "lecture_row": 9,
+  "lecture": "Week 6-3 PBQ-02 Python Basics for Quants",
+  "queue_status": "DONE",
+  "summary_type": "legacy_report_digest",
+  "summary_created_utc": "2026-07-03T22:56:54+00:00",
+  "source_report": "Week 6-3 PBQ-02 Python Basics for Quants code/VALIDATION_REPORT.md",
+  "source_report_modified_utc": "2026-07-03T04:57:24+00:00",
+  "notebook_execution_rerun_for_this_json": false,
+  "status_from_existing_report": "PASS",
+  "report_pass_indicators": [
+    "- No live `yfinance`, Gemini, or Mistral calls were made. The official resources can use those services, but this validation pass uses local files only.",
+    "Status: PASS"
+  ],
+  "report_error_indicators": [
+    "- The AXISBANK missing-day check is a business-day proxy. It correctly flags dates for investigation, but an exchange holiday calendar is required before treating every missing business day as a data error."
+  ],
+  "artifacts_in_code_folder": {
+    "notebooks": [
+      "Week 6-3 PBQ-02 Python Basics for Quants_practice.ipynb",
+      "Week 6-3 PBQ-02 Python Basics for Quants_resource_addendum_practice.ipynb",
+      "Week 6-3 PBQ-02 Python Basics for Quants_resource_continuation_practice.ipynb",
+      "Week 6-3 PBQ-02 Python Basics for Quants_strict_resource_validation_practice.ipynb",
+      "Week 6-3 PBQ-02 Python Basics for Quants_validated_practice.ipynb"
+    ],
+    "notebook_count": 5,
+    "html_exports": [],
+    "html_export_count": 0,
+    "chart_files": [
+      "chart_1_tcs.png",
+      "chart_addendum_1_pbq02_pandas_workflow_map.png",
+      "chart_addendum_2_pbq02_tcs_returns_rolling.png",
+      "chart_addendum_3_pbq02_missing_apply_signal_workflow.png",
+      "chart_continuation_1_pbq02_data_hygiene.png",
+      "chart_continuation_2_pbq02_var_es.png",
+      "chart_continuation_2_pbq02_var_es_corrected.png",
+      "chart_continuation_3_pbq02_resource_bridge.png"
+    ],
+    "chart_file_count": 8,
+    "csv_files": [
+      "AXISBANK_data_hygiene.csv",
+      "pbq02_data_hygiene_summary.csv",
+      "pbq02_dataframe_selection_reference.csv",
+      "pbq02_faq_resource_reference.csv",
+      "pbq02_mini_project_reference.csv",
+      "pbq02_missing_data_reference.csv",
+      "pbq02_quant_calculation_reference.csv",
+      "pbq02_signal_counts.csv",
+      "pbq02_tcs_addendum_feature_stats.csv",
+      "pbq02_var_es_summary.csv",
+      "pbq02_var_es_summary_corrected.csv",
+      "TCS.NS.csv"
+    ],
+    "csv_file_count": 12
+  },
+  "coverage_note": "This JSON was added after queue completion because the folder already had a VALIDATION_REPORT.md but no machine-readable summary. It is a digest of that existing report and local artifacts, not a fresh execution claim."
+}

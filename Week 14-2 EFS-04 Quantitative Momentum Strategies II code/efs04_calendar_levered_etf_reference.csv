@@ -1,0 +1,6 @@
+topic,lecture_rule,calculation,trading_implication
+Calendar spread edge,A linear curve gives equal roll on both legs,roll = -slope of log futures price versus time to expiry,A spread needs curvature; slope alone is not enough
+Curvature sign,The front/back decision depends on which expiry has the more favorable roll after hedging spot,Compare local slopes or finite-difference roll by expiry,"Preserve any existing simplified sign rule, but validate the sign from the actual curve"
+Curvature stability,Term-structure shape can switch,Test whether curvature persists over the planned holding window,The spread can lose even if spot is hedged when the curve shape changes
+Leveraged ETF drag,g = mu - sigma^2/2; 3x leverage means 3*mu and 9*sigma^2,Higher variance can make 3x long-run growth lower than 1x,Do not read annual ETF return as simple leverage times index return
+Leveraged ETF rebalance flow,Daily reset creates same-direction trading near the close,A down day lowers NAV and requires selling to restore target leverage,"This is a short-horizon flow signal, separate from the long-run drag math"

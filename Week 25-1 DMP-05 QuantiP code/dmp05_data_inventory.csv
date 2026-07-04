@@ -1,0 +1,5 @@
+file,rows,columns_raw,columns_after_date_index,tradable_stock_columns,index_columns,date_start,date_end,missing_cells,correction_note
+nifty_stocks_prices.csv,3075,49,48,47,1,2013-01-01,2025-06-19,21,Price matrix has 47 tradable stock columns plus ^NSEI; HDFC is listed but absent from prices.
+nifty50_list.csv,48,7,,48,0,,,0,Listed symbols missing from price matrix: HDFC
+alpha.py,47,,,,,,,,Signal module shipped beside notebook.
+performance_analytics.py,27,,,,,,,,Return/performance helper module shipped beside notebook.

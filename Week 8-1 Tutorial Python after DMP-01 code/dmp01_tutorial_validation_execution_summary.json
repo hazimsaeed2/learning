@@ -1,0 +1,72 @@
+{
+  "lecture": "Week 8-1 Tutorial Session - Doubt Solving on Python after DMP-01",
+  "generated_at": "2026-07-03T03:13:32",
+  "notebooks": [
+    {
+      "notebook": "Week 8-1 Tutorial Doubt-Solving Python after DMP-01_practice.ipynb",
+      "code_cells": 11,
+      "markdown_cells": 16,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "1)\nmemory usage: 45.2 KB\nclean read -> index: DatetimeIndex\nshape: (962, 5) | df.shape[0] rows = 962 , df.shape[1] cols = 5\n                   Open         High          Low    Close  Volume\nDate                                                              \n2017-01-02  8210.099609  8212.000000  8133.799805  8179.50  118300\n2017-01-03  8196.049805  8219.099609  8148.600098  8192.25  127300\n2017-01-04  8202.650391  8218.500000  8180.899902  8190.50  132400\nround-trip identical shape: True\ntotal tz names: 597\na few: ['Asia/Kolkata', 'Europe/London']\nUTC : ['09:30', '09:35', '09:40']\nIST : ['15:00', '15:05', '15:10']\nlist * 3  (repeat): [1, 2, 11, 5, 8, 1, 2, 11, 5, 8, 1, 2, 11, 5, 8]\narray * 3 (vectorized): [ 3  6 33 15 24]\nfor-loop  (iterated): [3, 6, 33, 15, 24]\nrows after warm-up: 900\n                  Close          SMA          LMA\nDate                                             \n2017-04-03  9237.849609  9067.978516  8759.315027\n2017-04-05  9265.150391  9085.483305  8776.547573\ncrossings (2.0=golden up, -2.0=death down): {0.0: 891, -2.0: 4, 2.0: 4}\nperiod 2017-04-05 -> 2020-11-27\nBuy & Hold     : 40.39%\nSMA21/LMA63 x  : 68.04%\ntime long: 692 | time short: 207\nequity curve drawn\n",
+      "bh_return": 0.4038927611628351,
+      "strategy_return": 0.6804060399202994,
+      "final_data_rows": 899,
+      "final_data_columns": 10
+    },
+    {
+      "notebook": "Week 8-1 Tutorial Session - Doubt Solving on Python after DMP-01_resource_addendum_practice.ipynb",
+      "code_cells": 5,
+      "markdown_cells": 5,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "                                  lecture_application                                                           additive_note\nOriginal notebook execution                       Run the shipped practice notebook in a temporary folder.       Protects original files and confirms local CSV workflow executes.\n           CSV date parsing                             Demonstrates why index_col and parse_dates matter.                  Plain and clean read shapes are recorded side by side.\n        Timezone conversion                       Shows UTC intraday timestamps converted to Asia/Kolkata.               Uses stdlib zoneinfo; pytz is optional for this notebook.\n        Vectorization check                 Shows list repetition versus numpy elementwise multiplication.                                  Loop and numpy results are reconciled.\n     No look-ahead position                                  Uses regime.shift(1) before applying returns.     Final row count and return path are validated from the shipped CSV.\n         Offline validation yfinance appears in the teaching material, but validation does not fetch data. The shipped CSV makes the addendum reproducible without network access.\n",
+      "bh_return": "",
+      "strategy_return": "",
+      "final_data_rows": "",
+      "final_data_columns": ""
+    },
+    {
+      "notebook": "Week 8-1 Tutorial Session - Doubt Solving on Python after DMP-01_validated_practice.ipynb",
+      "code_cells": 16,
+      "markdown_cells": 21,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "                                  lecture_application                                                           additive_note\nOriginal notebook execution                       Run the shipped practice notebook in a temporary folder.       Protects original files and confirms local CSV workflow executes.\n           CSV date parsing                             Demonstrates why index_col and parse_dates matter.                  Plain and clean read shapes are recorded side by side.\n        Timezone conversion                       Shows UTC intraday timestamps converted to Asia/Kolkata.               Uses stdlib zoneinfo; pytz is optional for this notebook.\n        Vectorization check                 Shows list repetition versus numpy elementwise multiplication.                                  Loop and numpy results are reconciled.\n     No look-ahead position                                  Uses regime.shift(1) before applying returns.     Final row count and return path are validated from the shipped CSV.\n         Offline validation yfinance appears in the teaching material, but validation does not fetch data. The shipped CSV makes the addendum reproducible without network access.\n",
+      "bh_return": 0.4038927611628351,
+      "strategy_return": 0.6804060399202994,
+      "final_data_rows": "",
+      "final_data_columns": ""
+    }
+  ],
+  "html": {
+    "file": "Week 8-1 Tutorial Session - Doubt Solving on Python after DMP-01.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 10,
+    "missing_generated_charts": []
+  },
+  "study_html": {
+    "file": "Week 8-1 Tutorial Session - Doubt Solving on Python after DMP-01_study.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 5,
+    "missing_generated_charts": []
+  },
+  "charts": [
+    "chart_addendum_1_dmp01_tutorial_data_notebook_audit.png",
+    "chart_addendum_2_dmp01_tutorial_csv_timezone.png",
+    "chart_addendum_3_dmp01_tutorial_crossover_equity.png",
+    "chart_addendum_4_dmp01_tutorial_signal_position.png",
+    "chart_addendum_5_dmp01_tutorial_vectorization_controls.png"
+  ],
+  "main_html_appended": true,
+  "study_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "note": "Original notebook, chart, CSV, HTML, and study content preserved; validation material added separately."
+}

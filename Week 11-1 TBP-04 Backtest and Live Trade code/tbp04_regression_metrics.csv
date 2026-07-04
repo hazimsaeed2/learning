@@ -1,0 +1,8 @@
+metric,value,unit,reading
+source_rows,962,rows,Rows in local daily sample.
+regression_rows,960,rows,After lag/lead return construction.
+first_date,2017-01-02,date,Start date.
+last_date,2020-11-27,date,End date.
+single_feature_coef,-0.0806509,coefficient,Negative coefficient indicates weak daily mean reversion.
+intercept,0.00059608,return,OLS intercept.
+correlation,-0.08065009,correlation,Very weak predictor/target relationship.

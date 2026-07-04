@@ -160,5 +160,29 @@ to self-correct — the foundation for the order-selection work that follows.</p
 
 <p style="text-align:center;color:#f9a8d4;margin-top:36px;font-size:14px;">EPAT · Week 10-1 ASQ-01 · Statistical Analysis of Financial Market Data (Part 1)</p>
 
+
+
+<!-- ASQ01_STUDY_ADDITIVE_SOURCE_PACK_START -->
+<h2>Additive Validation Pack</h2>
+<div class="callout">
+  <p><strong>Added without changing the original study guide.</strong> The validation pack records that <code>statsmodels</code> is unavailable locally, keeps the original notebook untouched, and adds a fallback validated copy for offline practice.</p>
+</div>
+<table>
+  <tr><th>Check</th><th>Additive result</th></tr>
+  <tr><td>Original notebook execution</td><td>Fails locally at the <code>statsmodels</code> import; original file preserved.</td></tr>
+  <tr><td>Daily MA rule</td><td>MA10/30 26.04%; buy-and-hold 47.29% over the same window.</td></tr>
+  <tr><td>Weekly diagnostics</td><td>203 weekly observations; 2 of 15 weekly ACF lags outside the simple 95% band.</td></tr>
+  <tr><td>Fallback AR(1)</td><td>Fallback OLS rolling AR(1) -15.64%; buy-and-hold 21.28% over that forecast window.</td></tr>
+</table>
+<p>Generated validation artifacts are in <code>Week 10-1 ASQ-01 Statistical Analysis code</code>, including <code>VALIDATION_REPORT.md</code>, the addendum notebook, the validated notebook copy, and these charts:</p>
+<ul>
+<li><code>Week 10-1 ASQ-01 Statistical Analysis code/chart_addendum_1_asq01_source_dependency_audit.png</code></li>
+<li><code>Week 10-1 ASQ-01 Statistical Analysis code/chart_addendum_2_asq01_price_return_stationarity.png</code></li>
+<li><code>Week 10-1 ASQ-01 Statistical Analysis code/chart_addendum_3_asq01_ma_crossover_equity.png</code></li>
+<li><code>Week 10-1 ASQ-01 Statistical Analysis code/chart_addendum_4_asq01_weekly_acf.png</code></li>
+<li><code>Week 10-1 ASQ-01 Statistical Analysis code/chart_addendum_5_asq01_rolling_ar_equity.png</code></li>
+</ul>
+<!-- ASQ01_STUDY_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

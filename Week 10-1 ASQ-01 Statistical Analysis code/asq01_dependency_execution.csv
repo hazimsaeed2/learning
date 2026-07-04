@@ -1,0 +1,5 @@
+metric,value,unit,reading
+statsmodels_available,no,environment,ModuleNotFoundError
+original_execution_errors,1,errors,ModuleNotFoundError: No module named 'statsmodels'
+original_failure_cell,2,cell,First import cell when statsmodels is unavailable.
+fallback_scope,educational,validated_copy,"Validated notebook injects AR(1), ADF-like, ACF/PACF plotting fallbacks only for local execution."

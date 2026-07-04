@@ -1,0 +1,5 @@
+stage,source_basis,student_action,why_it_matters
+Risk disclaimer,Lecture note and transcript opening,"Treat all trades as educational examples, not recommendations; do not risk money you cannot afford to lose.",Derivatives and options are leveraged and can lose more quickly than linear instruments.
+Market-specific rules,Transcript compliance discussion,Do not infer legality or ethics from first principles; local market customs differ.,A behavior accepted in one market can be disallowed in another.
+Written approval,Transcript compliance discussion,"Before changing a strategy, order type, execution route, or operational process, get manager/compliance approval in writing.",A written chain protects the trader when rules are ambiguous.
+Independent risk layer,Lecture risk examples,Separate trading from risk oversight; never let the trader be the only risk manager.,"Fraud and control failures are meta-risks, not market-risk edge."

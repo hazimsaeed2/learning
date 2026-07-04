@@ -1,0 +1,7 @@
+reward_function,win_plus_4pct,loss_minus_4pct,reading
+1 positive log categorical,2.0,0.0,Reward-function shape changes what the agent learns.
+2 pure pnl,0.04,-0.04,Reward-function shape changes what the agent learns.
+3 positive pnl else 0,0.04,0.0,Reward-function shape changes what the agent learns.
+4 sign of pnl,1.0,-1.0,Reward-function shape changes what the agent learns.
+5 binary win/loss,1.0,0.0,Reward-function shape changes what the agent learns.
+6 exp(pnl),1.040811,0.960789,Reward-function shape changes what the agent learns.

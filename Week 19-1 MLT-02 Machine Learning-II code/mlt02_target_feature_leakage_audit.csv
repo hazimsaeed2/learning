@@ -1,0 +1,15 @@
+item,implementation,uses_future_data,control
+target,next open greater than current open via Open.shift(-1),Only as supervised label,Drop final row and split chronologically
+Volume,Volume.shift(1),No,Uses only yesterday's known volume
+std_5,rolling 5-day close standard deviation,No,Computed before train/test split with backward-looking rolling window
+std_10,rolling 10-day close standard deviation,No,Computed before train/test split with backward-looking rolling window
+std_15,rolling 15-day close standard deviation,No,Computed before train/test split with backward-looking rolling window
+ma_10,rolling 10-day close moving average,No,Backward-looking rolling window
+ma_15,rolling 15-day close moving average,No,Backward-looking rolling window
+ma_20,rolling 20-day close moving average,No,Backward-looking rolling window
+ma_25,rolling 25-day close moving average,No,Backward-looking rolling window
+pct_3,rolling 3-day pct-change sum,No,Backward-looking rolling window
+pct_6,rolling 6-day pct-change sum,No,Backward-looking rolling window
+pct_9,rolling 9-day pct-change sum,No,Backward-looking rolling window
+vma_4,rolling 4-day average of lagged volume,No,Volume is lagged first
+co,same-day close minus open,Depends on trading horizon,Use only if signal is formed after close; otherwise lag it

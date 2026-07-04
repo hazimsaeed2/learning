@@ -1,0 +1,5 @@
+artifact,artifact_type,exists,size_bytes,rows,columns,note
+Week 8-2 DMP-02 Introduction to OOP_practice.ipynb,practice_notebook,True,20566,,,"11 code cells, 14 markdown cells"
+nifty50_daily.csv,source_data,True,75044,962,6,2017-01-02 through 2020-11-27
+chart_1_oop.png,original_chart,True,93065,,,Existing chart preserved; addendum charts use separate names.
+DMP-02-03-04-Lecture-Summary.pdf,source_pdf,True,401471,7,158,8491 text chars. Source lecture-summary PDF inventoried.

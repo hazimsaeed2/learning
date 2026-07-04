@@ -205,7 +205,57 @@
   </div>
 </div>
 
+<!-- ADDENDUM: OFFICIAL RESOURCE MECHANICS -->
+<div class="card p-4 mb-4 pb">
+  <h2 class="text-lg font-black text-orange-700">Addendum: official worksheet mechanics</h2>
+  <p class="text-xs mt-1">Extra source items: dynamic Excel OFFSET/data tables, EMA assignment outputs, OI/COC quadrant rules, delivery-volume factor use, and the expiry-day VWAP/cash-unwind setup.</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-3">
+    <div>
+      <h3 class="font-bold text-orange-700">Dynamic model checklist</h3>
+      <table class="mt-1 text-xs">
+        <tr><th>Item</th><th>Meaning</th></tr>
+        <tr><td>OFFSET/data table</td><td>SMA/LMA inputs update the whole backtest.</td></tr>
+        <tr><td>Surface check</td><td>Prefer a stable plateau over a one-cell spike.</td></tr>
+        <tr><td>EMA assignment</td><td>Report CAGR, hit ratio, avg win/loss, P/L ratio, MDD.</td></tr>
+        <tr><td>Leverage curves</td><td>Show equity at leverage 1, 2, 3, and 4.</td></tr>
+        <tr><td>Year-wise stats</td><td>Long P&amp;L, short P&amp;L, and hit ratio by calendar year.</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3 class="font-bold text-orange-700">Derivative interpretation</h3>
+      <ul class="text-xs space-y-1 mt-1">
+        <li><b>OI up + price up:</b> fresh long build-up.</li>
+        <li><b>OI up + price down:</b> fresh short build-up.</li>
+        <li><b>COC up + price up:</b> strong buying.</li>
+        <li><b>COC down + price up:</b> topping out.</li>
+        <li><b>Delivery volume:</b> compare with its own SMA and use with OI/price.</li>
+        <li><b>FAQ:</b> include slippage, know shares-vs-lots volume, do not average losers unless tested.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="grid md:grid-cols-3 gap-3 mt-3">
+    <img src="Week 4-2 EFS-01 code/chart_addendum_1_efs01_parameter_surface.png" class="w-full border border-slate-200 rounded" alt="parameter surface">
+    <img src="Week 4-2 EFS-01 code/chart_addendum_2_efs01_derivative_quadrants.png" class="w-full border border-slate-200 rounded" alt="derivative quadrants">
+    <img src="Week 4-2 EFS-01 code/chart_addendum_3_efs01_expiry_vwap_setup.png" class="w-full border border-slate-200 rounded" alt="expiry VWAP setup">
+  </div>
+  <p class="mt-2 text-xs text-slate-500">Additive files: <code>efs01_parameter_surface.csv</code>, <code>efs01_derivative_signal_rules.csv</code>, <code>efs01_expiry_vwap_setup.csv</code>, resource addendum notebook, and validated composite notebook.</p>
+</div>
+
 <p class="text-center text-xs text-slate-400 mt-6">Week 4-2 EFS-01 · Strategy Building in Equities · numbers computed live on real Nifty data (2000-2016) · companion notebook: <code>Week 4-2 EFS-01 code/</code></p>
 </div>
+
+<!-- VALIDATION_EVIDENCE_ADDENDUM_START -->
+<section id="validation-evidence-addendum" data-validation-evidence="true" style="max-width: 1100px; margin: 24px auto; padding: 14px 16px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.45;">
+  <h2 style="margin: 0 0 8px; font-size: 16px; font-weight: 700;">Validation Evidence Addendum</h2>
+  <p style="margin: 0 0 8px;">This additive note points to the validation evidence for this lecture. The original page content above remains unchanged.</p>
+  <ul style="margin: 0; padding-left: 18px;">
+    <li>Queue row: 4</li>
+    <li>Lecture: Week 4-2 EFS-01 Strategy Building in Equities</li>
+    <li>Status: DONE</li>
+    <li>Validation report: <a href="Week%204-2%20EFS-01%20code/VALIDATION_REPORT.md">Week 4-2 EFS-01 code/VALIDATION_REPORT.md</a></li>
+    <li>Execution summary JSON: <a href="Week%204-2%20EFS-01%20code/efs01_validation_execution_summary.json">Week 4-2 EFS-01 code/efs01_validation_execution_summary.json</a></li>
+  </ul>
+</section>
+<!-- VALIDATION_EVIDENCE_ADDENDUM_END -->
 </body>
 </html>

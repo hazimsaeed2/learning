@@ -1,0 +1,4 @@
+kernel,train_accuracy,test_accuracy,train_test_gap,note
+linear,0.851752,0.83871,0.013042,Local proxy validates bias-variance workflow; sklearn SVC remains preferred.
+poly,0.85894,0.811828,0.047112,Local proxy validates bias-variance workflow; sklearn SVC remains preferred.
+rbf,0.853549,0.841398,0.012151,Local proxy validates bias-variance workflow; sklearn SVC remains preferred.

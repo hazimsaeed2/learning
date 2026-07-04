@@ -1,0 +1,5 @@
+control,lecture_application,additive_note
+Shortfall identity,Paper return minus actual return equals component sum.,"Verified at $85,600."
+Post-trade metrics,"Arrival cost, VWAP slippage, RPM, value add, and z-score isolate execution quality.",All example calculations are exported.
+Pre-trade model,"I-star and POV-adjusted market impact connect size, volatility, and participation.",Parameter table and example curve added.
+Source data,MIData_KRG.csv is the historical data behind model estimation notebooks.,"233,135 rows profiled from the ZIP without altering the source ZIP."

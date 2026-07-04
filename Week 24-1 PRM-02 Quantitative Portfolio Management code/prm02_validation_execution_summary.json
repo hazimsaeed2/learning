@@ -1,0 +1,59 @@
+{
+  "lecture": "Week 24-1 PRM-02 Quantitative Portfolio Management",
+  "generated_at": "2026-07-03T02:44:13",
+  "notebooks": [
+    {
+      "notebook": "Week 24-1 PRM-02 Quantitative Portfolio Management_practice.ipynb",
+      "code_cells": 14,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 24-1 PRM-02 Quantitative Portfolio Management_resource_addendum_practice.ipynb",
+      "code_cells": 4,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 24-1 PRM-02 Quantitative Portfolio Management_validated_practice.ipynb",
+      "code_cells": 18,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    }
+  ],
+  "html": [
+    {
+      "file": "Week 24-1 PRM-02 Quantitative Portfolio Management.html",
+      "body_open": 1,
+      "body_close": 1,
+      "html_open": 1,
+      "html_close": 1,
+      "generated_chart_refs": 10,
+      "missing_generated_charts": []
+    },
+    {
+      "file": "Week 24-1 PRM-02 Quantitative Portfolio Management_study.html",
+      "body_open": 1,
+      "body_close": 1,
+      "html_open": 1,
+      "html_close": 1,
+      "generated_chart_refs": 0,
+      "missing_generated_charts": []
+    }
+  ],
+  "charts": [
+    "chart_addendum_1_prm02_source_data_inventory.png",
+    "chart_addendum_2_prm02_return_risk.png",
+    "chart_addendum_3_prm02_diversification_limit.png",
+    "chart_addendum_4_prm02_frontier_weights.png",
+    "chart_addendum_5_prm02_oos_risk_controls.png"
+  ],
+  "main_html_appended": true,
+  "study_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "correction_note": "Original Treynor output preserved; annual Treynor convention added."
+}

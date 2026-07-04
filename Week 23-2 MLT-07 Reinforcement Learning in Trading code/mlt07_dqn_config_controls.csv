@@ -1,0 +1,7 @@
+parameter,value,reading
+DISCOUNT_gamma,0.99,Future reward discount in shipped DQN.
+LKBK,30,Lookback/state history length.
+MAX_MEM,600,Experience replay memory size.
+EPSILON,0.01,Base exploration schedule.
+default_reward,sign(pnl),"Rewards being right, not being big."
+network_outputs,hold/short/long,Three action Q-values.

@@ -1,0 +1,7 @@
+method,formula_or_rule,captures,misses,implementation_control
+Historical VaR,Empirical alpha-percentile of portfolio returns,Recent realized distribution,New regimes and unseen tail events,Compare against stress tests before accepting the number
+Parametric VaR,mean + z_alpha * standard deviation under a distribution assumption,Fast normal-approximation risk estimate,"Fat tails, skew, jumps, and nonlinear payoff curvature",Validate distribution assumption and use CVaR/tail checks
+Monte Carlo VaR,Simulate risk-factor paths and take the alpha-percentile loss,Multi-factor scenarios and nonlinear portfolios if the simulator is good,"Wrong model, wrong correlations, missing stress scenarios","Seed, version, and backtest the simulation engine"
+CVaR / Expected Shortfall,Average loss conditional on being beyond the VaR threshold,Tail severity beyond the cliff edge,Still depends on observed or simulated tail sample,Report next to VaR so a threshold loss is not mistaken for worst loss
+Liquidity-adjusted VaR,VaR plus estimated liquidation cost from spread/depth/participation,The cost of getting out when size meets limited depth,Sudden market closure or exchange-level halt unless stress-tested,Tie max order size and participation to order-book depth
+Stress test,Replay historical or hypothetical shocks against today's book,Black-swan survivability and known crisis templates,Unknown unknowns and operational failures unless included,"Include 2008, 2011, COVID, geopolitical, tariff, and exchange-failure events"

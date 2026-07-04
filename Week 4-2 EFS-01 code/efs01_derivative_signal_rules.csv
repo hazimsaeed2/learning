@@ -1,0 +1,14 @@
+condition,interpretation,implementation_note
+"OI up, price up",Fresh long build-up,Trend confirmation from new longs
+"OI up, price down",Fresh short build-up,Bearish pressure from new shorts
+"OI down, price up",Short covering,Rally may be driven by shorts exiting
+"OI down, price down",Profit taking from longs,Weakness may be longs exiting
+"COC up, price up",Strong buying,Futures premium confirms demand
+"COC up, price down",Selling in cash segment,Cash selling while futures premium remains elevated
+"COC down, price up",Topping out,Price rises while futures premium weakens
+"COC down, price down",Selling in futures segment,Futures selling confirms weakness
+Delivery volume above its SMA,Delivery participation is meaningful,"Use with OI and price change, not alone"
+High OI and high COC near expiry,Potential cash unwind pressure,Candidate for expiry-day short-cash setup
+Sharpe >= 2,Good strategy quality,"FAQ says 2+ good, 3+ excellent"
+Live results deviate from tested regime,Diagnose regime mismatch,Compare current market regime to backtest regimes
+Averaging loser not in rules,Avoid discretionary averaging,Systematic strategy should follow tested rules

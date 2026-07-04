@@ -1,0 +1,4 @@
+file,imports,api_calls,params_detected,has_zero_cost_model
+MACD.py,blueshift.api; blueshift.finance; blueshift_library.technicals.indicators,order_target_percent; set_commission; set_slippage,buy_signal_threshold; indicator_freq; indicator_lookback; leverage; sell_signal_threshold; trade_freq,yes
+rsi_strategy.py,blueshift.api; blueshift.finance; blueshift_library.technicals.indicators,order_target_percent; set_commission; set_slippage,indicator_freq; indicator_lookback; leverage; rsi_period; trade_freq,yes
+Statarb using PCA.py,blueshift.api; blueshift_library.utils.utils; numpy; sklearn.decomposition,order_target_percent; schedule_function,frequency; indicator_lookback; leverage; threshold,no

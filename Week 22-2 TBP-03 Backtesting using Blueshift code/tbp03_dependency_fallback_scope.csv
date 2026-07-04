@@ -1,0 +1,8 @@
+dependency,available_locally,version,fallback_or_note
+numpy,yes,2.2.6,not needed
+pandas,yes,3.0.3,not needed
+matplotlib,yes,3.11.0,not needed
+talib,no,,validated notebook supplies local stub or documents platform-only dependency: ModuleNotFoundError
+sklearn,no,,validated notebook supplies local stub or documents platform-only dependency: ModuleNotFoundError
+zipline,no,,validated notebook supplies local stub or documents platform-only dependency: ModuleNotFoundError
+blueshift,no,,validated notebook supplies local stub or documents platform-only dependency: ModuleNotFoundError

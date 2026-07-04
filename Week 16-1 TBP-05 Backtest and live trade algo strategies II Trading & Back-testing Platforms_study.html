@@ -376,5 +376,20 @@ def buy_low_sell_high(context, data):
 <hr>
 <p class="lead">Master rule: a backtest is only as honest as its frictions and its data-per-parameter. Make costs realistic, keep ≥1,000 data points per tuned knob for price strategies, then forward-test before risking real money. The companion notebook and the runnable code folder put all of this on the real SPY data file so you can run it, see every chart, and swap in any stock.</p>
 
+
+<!-- TBP05_STUDY_ADDITIVE_SOURCE_PACK_START -->
+<section id="tbp05-study-additive-source-pack" style="margin-top: 32px; padding: 20px; border: 1px solid #cfe8ef; border-radius: 8px; background: #ffffff;">
+  <h2>Additive Source-Backed Continuation: TBP-05</h2>
+  <p>This block is appended beside the existing study guide. It keeps the original text and adds the dependency and going-live corrections needed to run the material locally.</p>
+  <ul>
+    <li><strong>Local dependency:</strong> the original notebook and <code>01_buy_low_sell_high_model.py</code> import <code>sklearn</code>. The new validated notebook and <code>tbp05_sklearn_free_model_validation.py</code> use NumPy least squares instead.</li>
+    <li><strong>Notebook context:</strong> the original notebook uses Jupyter <code>display()</code>. The validated composite adds a display fallback only for script-style validation.</li>
+    <li><strong>Backtest honesty:</strong> the 1.1% threshold is an in-sample full-history selection. The addendum keeps it, then adds the train/test result beside it.</li>
+    <li><strong>Live robot boundary:</strong> the IBridgePy reference files are not standalone Python scripts. They need IBridgePy, Interactive Brokers, market calendar, account state, and broker API functions.</li>
+    <li><strong>README preservation:</strong> the existing README is not rewritten; the corrected validation notes are in <code>README_VALIDATION_ADDENDUM.md</code>.</li>
+  </ul>
+</section>
+<!-- TBP05_STUDY_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

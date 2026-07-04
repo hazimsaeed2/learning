@@ -1,0 +1,5 @@
+sklearn_api,fallback_behavior,validation_scope
+SVC,linear/polynomial/RBF-inspired proxy classifier,Notebook execution only
+KMeans,small deterministic Lloyd-style clustering,Workflow smoke test only
+StandardScaler,train mean/std transform,Leakage workflow validation
+metrics,accuracy/confusion/precision/recall/F1/report,Local report generation

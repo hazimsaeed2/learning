@@ -1,0 +1,7 @@
+control,lecture_application,additive_note
+Original notebook execution,Run the shipped practice notebook in a temporary folder.,Protects original files and confirms local CSV workflow executes.
+CSV date parsing,Demonstrates why index_col and parse_dates matter.,Plain and clean read shapes are recorded side by side.
+Timezone conversion,Shows UTC intraday timestamps converted to Asia/Kolkata.,Uses stdlib zoneinfo; pytz is optional for this notebook.
+Vectorization check,Shows list repetition versus numpy elementwise multiplication.,Loop and numpy results are reconciled.
+No look-ahead position,Uses regime.shift(1) before applying returns.,Final row count and return path are validated from the shipped CSV.
+Offline validation,"yfinance appears in the teaching material, but validation does not fetch data.",The shipped CSV makes the addendum reproducible without network access.

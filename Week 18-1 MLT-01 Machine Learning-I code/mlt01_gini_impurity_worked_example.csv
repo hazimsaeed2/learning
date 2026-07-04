@@ -1,0 +1,5 @@
+node,rows,fit_count,unfit_count,gini,reading
+parent,30,20,10,0.444444,Exact 20/10 class split gives 0.4444.
+Age < 27,7,6,1,0.244898,Younger branch is purer.
+Age >= 27,23,14,9,0.476371,Older branch remains mixed.
+weighted_children,30,,,0.42236,Split reduces impurity versus parent.

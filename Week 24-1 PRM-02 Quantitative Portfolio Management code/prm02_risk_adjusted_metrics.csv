@@ -1,0 +1,12 @@
+metric,value,unit,reading
+Sharpe ratio,0.647422,ratio,Excess return per unit of total volatility.
+Sortino ratio,0.928618,ratio,Excess return per unit of downside volatility.
+Beta vs Nifty,0.625594,beta,Systematic market sensitivity.
+Treynor ratio - notebook scaled,0.016272,ratio,Original notebook output; daily mean scaled by sqrt(252).
+Treynor ratio - corrected annual convention,0.258314,ratio,"Annual excess return divided by beta; additive correction, original preserved."
+Maximum drawdown,-27.211302,percent,Worst peak-to-trough loss in TCS cumulative return curve.
+Calmar ratio,0.512009,ratio,CAGR divided by absolute maximum drawdown.
+Information ratio,0.358948,ratio,Active return per unit of tracking error vs benchmark.
+Daily VaR 95,-2.424362,percent,Loss threshold for the worst 5 percent of days.
+Daily CVaR 95,-3.531179,percent,Average loss once the VaR threshold is breached.
+Kelly fraction,2.593783,fraction,"Growth-optimal fraction; leverage implied, so practitioners usually fraction it."

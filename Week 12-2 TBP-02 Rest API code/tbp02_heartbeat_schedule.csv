@@ -1,0 +1,8 @@
+seconds_from_start,operation,reason
+0,manual login already complete,keep local gateway session from going idle between strategy events
+55,POST /tickle heartbeat,keep local gateway session from going idle between strategy events
+110,POST /tickle heartbeat,keep local gateway session from going idle between strategy events
+165,POST /tickle heartbeat,keep local gateway session from going idle between strategy events
+220,POST /tickle heartbeat,keep local gateway session from going idle between strategy events
+275,POST /tickle heartbeat,keep local gateway session from going idle between strategy events
+330,POST /tickle heartbeat,keep local gateway session from going idle between strategy events

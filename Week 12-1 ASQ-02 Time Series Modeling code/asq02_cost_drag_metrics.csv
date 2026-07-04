@@ -1,0 +1,9 @@
+metric,value,unit,reading
+cost_rate_per_turn,0.0003,fraction,0.03% per position change unit.
+gross_total_pct,-7.9319,percent,Before transaction costs.
+net_total_pct,-10.1328,percent,After transaction costs.
+buy_hold_total_pct,13.4691,percent,Buy-and-hold over same window.
+gross_excess_pct,-21.401,percent,Gross excess over B&H.
+net_excess_pct,-23.6019,percent,Net excess over B&H.
+number_of_trades,41,trades,Position changes counted from signal flips.
+total_cost_drag_pct,2.43,percent,Sum of cost series.

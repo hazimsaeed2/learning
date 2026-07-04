@@ -1,0 +1,7 @@
+route,latency_ms,note
+Legacy fiber,18.0,Fiber follows existing rights-of-way
+Straighter fiber,13.5,Shorter dug route under lakes/mountains
+Microwave towers,7.5,Near straight-line tower hops
+Shortwave / RF path,4.0,Closer to speed-of-light limit
+Physics reference,3.5,Approximate straight-line lower bound mentioned in lecture
+Co-located one-way,0.02,Around 20 microseconds to matching engine

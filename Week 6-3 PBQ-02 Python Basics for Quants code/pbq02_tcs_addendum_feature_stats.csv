@@ -1,0 +1,2 @@
+rows,columns_original,start_date,end_date,close_mean,close_std,max_range,max_range_date,cumulative_close_return_pct,daily_return_mean_pct,daily_return_std_pct,annualized_return_vol_pct,high_volume_days_gt_1500000,ma_signal_buy_days,ma_signal_sell_days,missing_values_before_ffill,missing_values_after_ffill
+1233,7,2015-11-18,2020-11-17,1680.1694331996755,449.1951472027316,313.94995100000006,2020-03-13,126.75893195319378,0.07719724411482126,1.6288244977973396,25.85678730324861,1031,722,312,678,331

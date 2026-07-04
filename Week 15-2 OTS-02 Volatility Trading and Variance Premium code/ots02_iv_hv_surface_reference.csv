@@ -1,0 +1,7 @@
+concept,definition,source_or_model,implementation_note
+Historical volatility,Backward-looking standard deviation of underlying returns,Computed from the underlying price series,Every analyst using the same window and returns definition gets the same number
+Realized volatility,Volatility that actually occurs over the holding period,Computed after the fact from realized returns,Use it to score whether implied volatility was rich or cheap
+Implied volatility,Forward-looking volatility backed out from option market price,Invert an option pricing model such as BSM,"It is contract-specific, not one number for the underlying"
+Smile or skew,IV changes by strike for the same expiry,Plot strike versus IV,OTM puts are often rich because crash insurance is demanded
+Term structure,IV changes by time to expiry for the same strike or moneyness,Plot expiry versus IV,Do not compare contracts without matching strike/moneyness and expiry
+Volatility surface,"Three-dimensional map of strike, expiry, and IV",Smile plus term structure,The surface tells which contract is relatively cheap or rich

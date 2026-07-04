@@ -1,0 +1,6 @@
+family,decision_scope,typical_user,key_controls
+Execution-only,execute an order already decided by the portfolio manager,institutional buy side,"schedule, urgency, limit/market mix, venue routing"
+Quant / profit-seeking,decide the investment and execute it,"quant funds, prop firms","signal model, risk limits, immediate execution logic"
+Auto market making / HFT,post bids and asks to provide liquidity,"market makers, HFT firms","spread, inventory, rebates, adverse selection"
+Liquidity trading,find and capture available liquidity,HFT and broker liquidity algos,"venue mix, displayed/dark split, pattern detection"
+Direct market access,client uses broker connectivity with own logic,sophisticated institutions,"connectivity, risk checks, venue access"

@@ -1,0 +1,9 @@
+dependency,available_locally,version,fallback_or_note
+numpy,yes,2.2.6,not needed
+pandas,yes,3.0.3,not needed
+matplotlib,yes,3.11.0,not needed
+spacy,no,,validated notebook supplies local stub or documents unavailable dependency: ModuleNotFoundError
+en_core_web_sm,no,,validated notebook supplies local stub or documents unavailable dependency: ModuleNotFoundError
+sklearn,no,,validated notebook supplies local stub or documents unavailable dependency: ModuleNotFoundError
+statsmodels,no,,validated notebook supplies local stub or documents unavailable dependency: ModuleNotFoundError
+scipy,no,,validated notebook supplies local stub or documents unavailable dependency: ModuleNotFoundError

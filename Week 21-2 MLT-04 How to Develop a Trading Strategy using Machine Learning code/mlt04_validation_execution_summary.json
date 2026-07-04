@@ -1,0 +1,62 @@
+{
+  "lecture": "Week 21-2 MLT-04 How to Develop a Trading Strategy using Machine Learning",
+  "generated_at": "2026-07-03T02:07:14",
+  "notebooks": [
+    {
+      "notebook": "Week 21-2 MLT-04 How to Develop a Trading Strategy using Machine Learning_practice.ipynb",
+      "code_cells": 9,
+      "errors": 1,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": "Traceback (most recent call last):\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\_validation_work\\generate_mlt04.py\", line 935, in execute_notebook_safely\n    exec(compile(source, str(path), \"exec\"), ns)\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\Week 21-2 MLT-04 How to Develop a Trading Strategy using Machine Learning code\\Week 21-2 MLT-04 How to Develop a Trading Strategy using Machine Learning_practice.ipynb\", line 14, in <module>\n    \"**What ships in the exercise (and what we use here):**\\n\",\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nModuleNotFoundError: No module named 'joblib'\n"
+    },
+    {
+      "notebook": "Week 21-2 MLT-04 How to Develop a Trading Strategy using Machine Learning_resource_addendum_practice.ipynb",
+      "code_cells": 4,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 21-2 MLT-04 How to Develop a Trading Strategy using Machine Learning_validated_practice.ipynb",
+      "code_cells": 14,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    }
+  ],
+  "html": [
+    {
+      "file": "Week 21-2 MLT-04 How to Develop a Trading Strategy using Machine Learning.html",
+      "body_open": 1,
+      "body_close": 1,
+      "html_open": 1,
+      "html_close": 1,
+      "generated_chart_refs": 10,
+      "missing_generated_charts": []
+    },
+    {
+      "file": "Week 21-2 MLT-04 How to Develop a Trading Strategy using Machine Learning_study.html",
+      "body_open": 1,
+      "body_close": 1,
+      "html_open": 1,
+      "html_close": 1,
+      "generated_chart_refs": 0,
+      "missing_generated_charts": []
+    }
+  ],
+  "charts": [
+    "chart_addendum_1_mlt04_source_data_inventory.png",
+    "chart_addendum_2_mlt04_model_tier_results.png",
+    "chart_addendum_3_mlt04_holdout_degradation.png",
+    "chart_addendum_4_mlt04_leakage_inflation.png",
+    "chart_addendum_5_mlt04_dependency_controls.png"
+  ],
+  "main_html_appended": false,
+  "study_html_appended": false,
+  "queue_updated": true,
+  "additive_only": true,
+  "dependency_note": "sklearn, lightgbm, joblib, and parquet engines are unavailable locally; validated notebook includes local stubs only.",
+  "local_file_count_before_docs": 43,
+  "feature_audit_rows": 88,
+  "source_zip_rows": 4329
+}

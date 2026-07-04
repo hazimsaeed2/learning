@@ -1,0 +1,14 @@
+source,model,features,mcc,f1,note
+practice_notebook_output,Dummy (0),0,0.0,,Notebook output from cell 7.
+practice_notebook_output,Simple (3),3,-0.0477,0.4577,Executed output already present in the shipped practice notebook.
+practice_notebook_output,Microstructure (12),12,0.0309,0.524,Executed output already present in the shipped practice notebook.
+practice_notebook_output,Full (88),88,0.0347,0.4944,Executed output already present in the shipped practice notebook.
+practice_notebook_output,SHAP-selected (18),18,0.0657,0.493,Executed output already present in the shipped practice notebook.
+Batch 68 Onwards saved_pickle,Dummy Model,0,0.0,0.37547122,benchmark_results.pkl
+Batch 68 Onwards saved_pickle,Simple Model,3,-0.09061973,0.45533081,simple_results.pkl
+Batch 68 Onwards saved_pickle,Microstructure Model,12,-0.01468457,0.49930994,microstructure_results.pkl
+Batch 68 Onwards saved_pickle,Full Features,88,0.03472818,0.49435004,full_results.pkl
+Batch 67 saved_pickle,Dummy Model,0,0.0,0.37547122,benchmark_results.pkl
+Batch 67 saved_pickle,Simple Model,3,-0.11238565,0.44361781,simple_results.pkl
+Batch 67 saved_pickle,Microstructure Model,12,-0.02077746,0.49864072,microstructure_results.pkl
+Batch 67 saved_pickle,Full Features,88,0.07284681,0.4947252,full_results.pkl

@@ -113,5 +113,23 @@ em.k{font-style:normal;font-weight:bold;color:#7f1d1d;}
 
 <p style="text-align:center;color:#a8a29e;margin-top:3em;">— end of Week 15-1 PRM-01 study guide —</p>
 
+
+<!-- PRM01_STUDY_ADDITIVE_SOURCE_PACK_START -->
+<section id="prm01-study-additive-source-pack" style="margin-top: 32px; padding: 20px; border: 1px solid #d6dee8; border-radius: 8px; background: #fff;">
+  <h2>Additive Source-Backed Continuation: PRM-01</h2>
+  <p>This block is appended beside the existing study guide. It adds the source-backed controls that make the lecture operational.</p>
+  <ul>
+    <li><strong>Notebook execution:</strong> the original notebook imports <code>scipy.stats.norm</code>. The new validated notebook keeps the original cells and adds a local <code>NormalDist.inv_cdf</code> fallback before them.</li>
+    <li><strong>VaR versus CVaR:</strong> VaR is the 95% threshold; CVaR is the average loss after crossing that threshold.</li>
+    <li><strong>Liquidity-adjusted VaR:</strong> add spread, depth, and participation cost to the statistical loss so the position can actually be exited.</li>
+    <li><strong>Credit formula:</strong> Basel-style expected loss is <code>PD x LGD x EAD</code>; unexpected and stress losses need separate capital and response plans.</li>
+    <li><strong>Incident controls:</strong> Kerviel and Adoboli map to independent risk and mandatory leave; Knight maps to MD5/version gates; Hanmax maps to instrument-type validation and a kill switch.</li>
+    <li><strong>Pretrade gateway:</strong> heartbeat, stale timestamp, garbled-book rejection, fat-finger bands, placed-plus-in-flight order gate, checksum deployment, and latency profiling should happen before the order reaches the exchange.</li>
+    <li><strong>Exchange addendum:</strong> price protection, order-size freeze, position limits, and open-interest/free-float checks are the system version of the Porsche/VW lesson.</li>
+  </ul>
+  <p>See the new code-folder files <code>prm01_*.csv</code>, <code>chart_addendum_*_prm01_*.png</code>, <code>Week 15-1 PRM-01 Portfolio & Risk Management_resource_addendum_practice.ipynb</code>, and <code>Week 15-1 PRM-01 Portfolio & Risk Management_validated_practice.ipynb</code>.</p>
+</section>
+<!-- PRM01_STUDY_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

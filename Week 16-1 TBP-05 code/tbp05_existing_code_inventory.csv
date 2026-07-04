@@ -1,0 +1,27 @@
+file,bytes,role
+01_buy_low_sell_high_model.py,7098,existing script; requires sklearn
+02_backtest_costs_and_traps.py,4698,existing script; pandas/numpy only
+chart_1_regression.png,58547,existing chart
+chart_2_equity_curve.png,41201,existing chart
+chart_3_rate_sweep.png,42082,existing chart
+chart_4_cost_impact.png,20544,existing chart
+chart_5_out_of_sample.png,52703,existing chart
+README.md,4760,"existing generated README, preserved"
+reference_ibridgepy_strategies/demo_buy_low_sell_high.py,1939,reference IBridgePy live-trading script
+reference_ibridgepy_strategies/example_VIX_predicts_returns.py,4800,reference IBridgePy live-trading script
+reference_ibridgepy_strategies/moving_average_crossover_1_basic.py,2688,reference IBridgePy live-trading script
+reference_ibridgepy_strategies/moving_average_crossover_2_trading_day.py,3471,reference IBridgePy live-trading script
+reference_ibridgepy_strategies/moving_average_crossover_early_close.py,3470,reference IBridgePy live-trading script
+reference_ibridgepy_strategies/moving_average_crossover_email.py,4073,reference IBridgePy live-trading script
+reference_ibridgepy_strategies/moving_average_crossover_handle_error.py,4406,reference IBridgePy live-trading script
+reference_ibridgepy_strategies/moving_average_crossover_minute_bar.py,2472,reference IBridgePy live-trading script
+SPY.csv,281882,lecture data
+tbp05_backtest_trap_controls.csv,857,generated validation CSV
+tbp05_dependency_fallbacks.csv,644,generated validation CSV
+tbp05_ibridgepy_reference_map.csv,1100,generated validation CSV
+tbp05_live_robot_control_matrix.csv,808,generated validation CSV
+tbp05_model_validation_metrics.csv,893,generated validation CSV
+tbp05_sklearn_free_model_validation.py,2159,generated validation script
+tbp05_source_pdf_inventory.csv,554,generated validation CSV
+tbp05_source_zip_inventory.csv,2170,generated validation CSV
+Week 16-1 TBP-05 Backtest and live trade algo strategies II Trading & Back-testing Platforms_practice.ipynb,897049,existing practice notebook; requires sklearn and Jupyter display

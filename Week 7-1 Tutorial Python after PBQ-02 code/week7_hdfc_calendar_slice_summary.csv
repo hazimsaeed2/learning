@@ -1,0 +1,5 @@
+metric,value,note
+april_rows,20.0,Rows where DatetimeIndex month equals 4.
+april_mean_close,1514.6074999999998,Mean HDFCBANK close during April 2024.
+april_mean_range,24.62750000000001,Mean high-low range during April 2024.
+last_5_close_mean,1712.03,Example equivalent to iloc/tail last five close values.

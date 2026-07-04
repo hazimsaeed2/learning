@@ -1,0 +1,4 @@
+artifact,artifact_type,exists,size_bytes,rows,columns,note
+Week 8-1 Tutorial Doubt-Solving Python after DMP-01_practice.ipynb,practice_notebook,True,20651,,,"11 code cells, 16 markdown cells"
+nifty50_daily.csv,source_data,True,75044,962,6,2017-01-02 through 2020-11-27
+chart_1_crossover.png,original_chart,True,104528,,,Existing chart preserved; addendum charts use separate names.

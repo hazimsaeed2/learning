@@ -1,0 +1,7 @@
+control,lecture_application,additive_note
+Local dependency gap,statsmodels.api.OLS is required for beta estimation.,Original notebook is unchanged; validated notebook injects a minimal OLS fallback.
+Data-count correction,The price matrix has 48 columns total after indexing: 47 tradable stocks plus ^NSEI.,Original wording is preserved; additive data inventory names HDFC as listed but absent from prices.
+Liquidity before alpha,1 percent ADV capacity is far below desired deployment in the worked example.,Liquidity values are recorded in CSV and charted.
+Costs before conclusion,Trade-cost drag consumes a material share of gross PnL.,Gross/net PnL and cost drag are retained separately.
+Diversification,The same fast MA signal improves Sharpe when averaged across many names.,Single-stock Sharpe average and portfolio Sharpe are shown side by side.
+Beta anomaly,Low-beta and quality-filtered low-beta portfolios are compared against Nifty and high-beta names.,All beta and performance rows are exported.

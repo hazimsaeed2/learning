@@ -187,6 +187,36 @@ real prices, turn raw data into actionable decisions.</p>
 crossover 10/30 instead of 20/50. Swap TCS for another CSV. The fastest way to learn is to break something and
 fix it — about an hour a day, one topic at a time.</div>
 
+<h2>9. Resource addendum - workflow and pandas mechanics</h2>
+<p>The official FAQ, pre-lecture notes, in-class files, and combined PBQ-01/PBQ-02 summary add a practical layer around the first coding lecture: how to work inside Jupyter, how to avoid pandas assignment mistakes, and why vectorised NumPy/pandas code matters once market data grows beyond toy examples.</p>
+
+<table>
+<tr><th>Workflow point</th><th>Operational use</th></tr>
+<tr><td>Jupyter command/edit modes</td><td><code>Esc</code> enters command mode, <code>Enter</code> edits a cell, <code>Shift+Enter</code> runs it. Use markdown cells to explain assumptions before code cells.</td></tr>
+<tr><td>Help tools</td><td><code>help(obj)</code>, <code>obj?</code>, tab completion, <code>%who</code>, and <code>%whos</code> help you inspect functions and the variables currently in memory.</td></tr>
+<tr><td>AI debugging guardrail</td><td>Use AI to explain errors or generate small examples, but verify all trading logic, data alignment, and signal definitions yourself.</td></tr>
+<tr><td>Environment hygiene</td><td><code>conda</code> manages environments and compiled scientific packages well; <code>pip</code> installs Python packages. Keep project dependencies isolated.</td></tr>
+</table>
+
+<p>The vectorisation benchmark below compares a plain Python loop with a NumPy expression for the same signal-count task. The exact timings vary by machine, but the important lesson is stable: arrays let the scientific stack do the loop in compiled code.</p>
+<p><img src="Week 5-1 PBQ-01 code/chart_addendum_1_pbq01_vectorization_benchmark.png" alt="PBQ-01 vectorization benchmark" style="max-width:100%;border:1px solid #e2e8f0;border-radius:8px"></p>
+
+<table>
+<tr><th>Python / pandas item</th><th>Correct mental model</th></tr>
+<tr><td><code>set</code></td><td>An unordered unique collection. Use it for membership and de-duplication, not ordered market bars.</td></tr>
+<tr><td><code>append</code> vs <code>extend</code></td><td><code>append(x)</code> adds one object; <code>extend(xs)</code> adds each element from another iterable.</td></tr>
+<tr><td><code>[]</code> vs <code>()</code></td><td>Lists use square brackets and are mutable; tuples use parentheses and are immutable.</td></tr>
+<tr><td><code>None</code> / <code>NaN</code> vs zero</td><td>Missing values are not the same as a numeric zero. Rolling windows create warm-up <code>NaN</code> rows that need explicit handling.</td></tr>
+<tr><td><code>.loc</code> vs <code>.iloc</code></td><td><code>.loc</code> is label-based; <code>.iloc</code> is integer-position based. Prefer <code>.loc[row, col] = value</code> for assignment.</td></tr>
+<tr><td><code>parse_dates</code></td><td>Parse date columns while loading CSVs so time-series slicing and plotting behave correctly.</td></tr>
+<tr><td><code>glob</code></td><td>Use it to find matching files, such as all CSVs in a folder, before looping through them.</td></tr>
+</table>
+
+<p><img src="Week 5-1 PBQ-01 code/chart_addendum_2_pbq01_pandas_access_patterns.png" alt="PBQ-01 pandas access and assignment patterns" style="max-width:100%;border:1px solid #e2e8f0;border-radius:8px"></p>
+<p><img src="Week 5-1 PBQ-01 code/chart_addendum_3_pbq01_missing_data_signals.png" alt="PBQ-01 missing data and signal states" style="max-width:100%;border:1px solid #e2e8f0;border-radius:8px"></p>
+
+<p>The addendum code folder also includes small reference CSVs for the notebook: <code>pbq01_workflow_reference.csv</code>, <code>pbq01_faq_reference.csv</code>, <code>pbq01_library_map.csv</code>, <code>pbq01_vectorization_benchmark.csv</code>, and <code>pbq01_tcs_signal_counts.csv</code>. The library map groups the main quant stack into data work, plotting, market data access, statistics, machine learning, and performance reporting.</p>
+
 <h2>Key takeaways</h2>
 <ul>
 <li><strong>Output:</strong> <code>print</code>, f-strings (<code>f"{var}"</code>), and <code>.format</code> with

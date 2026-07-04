@@ -1,0 +1,40 @@
+{
+  "lecture": "Week 7-3 MMT-04 The Algorithmic Trading Process",
+  "generated_at": "2026-07-03T03:02:29",
+  "notebooks": [
+    {
+      "notebook": "Week 7-3 MMT-04 The Algorithmic Trading Process_resource_addendum_practice.ipynb",
+      "code_cells": 4,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 7-3 MMT-04 The Algorithmic Trading Process_validated_practice.ipynb",
+      "code_cells": 4,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    }
+  ],
+  "html": {
+    "file": "Week 7-3 MMT-04 The Algorithmic Trading Process.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 10,
+    "missing_generated_charts": []
+  },
+  "charts": [
+    "chart_addendum_1_mmt04_source_inventory.png",
+    "chart_addendum_2_mmt04_implementation_shortfall.png",
+    "chart_addendum_3_mmt04_post_trade_metrics.png",
+    "chart_addendum_4_mmt04_mi_data_diagnostics.png",
+    "chart_addendum_5_mmt04_pre_trade_model.png"
+  ],
+  "main_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "note": "No original root practice notebook existed; validated additive notebook created."
+}

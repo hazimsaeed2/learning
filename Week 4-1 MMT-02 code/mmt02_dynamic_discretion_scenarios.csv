@@ -1,0 +1,5 @@
+scenario,trend,liq,expected_spread,base_dr,dynamic_dr
+"negative trend, no liquidity",-1,0,0.5,0.15,0.0
+"flat trend, no liquidity",0,0,0.5,0.15,0.15
+"positive trend, no liquidity",1,0,0.5,0.15,0.65
+positive trend plus liquidity,1,1,0.5,0.15,1.15

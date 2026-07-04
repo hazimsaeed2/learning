@@ -1,0 +1,7 @@
+control,lecture_application,additive_note
+Original notebook execution,Run DMP-03 practice notebook in a temp folder.,Original notebook executed with 0 errors locally.
+ACF correction,Return autocorrelation significance band.,"Shipped NIFTY data has 8 of 15 lags outside the simple band, not just a couple."
+EMH interpretation,Scattered ACF signs versus persistent AR structure.,The AR(1) synthetic process shows what a cleaner exploitable pattern would look like.
+Return math,Simple returns compound; log returns add.,exp(cumulative log return) reconciles to cumulative simple return.
+OLS look-ahead control,Forecast sign is shifted before applying returns.,The OLS backtest uses df['pos'] = sign(pred).shift(1).
+Scope clarification,DMP-03 page title says OOP in Python.,This notebook is the EMH/vectorized-regression half; class packaging continues in the next DMP lecture.

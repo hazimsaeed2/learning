@@ -1,0 +1,9 @@
+area,lecture_method,use_when,example,lookahead_or_gotcha
+DataFrame diagnostics,df.info(),"Confirm row count, non-null count, dtypes, and memory use before analysis",df.info(),Info prints to screen; use df.isnull().sum() for a reusable missing-value Series.
+DataFrame diagnostics,df.describe(),"Summarize numeric columns with mean, std, min, quartiles, and max",df.describe(),Summary ignores object/string columns unless include is specified.
+Selection by column,[],Fetch one or more columns or filter rows with boolean masks,"df[[""Close"", ""Volume""]]","df[""Close""] is a Series; df[[""Close""]] is a DataFrame."
+Selection by label,.loc[],Slice a time period or named rows/columns by labels,"df.loc[""2020-03-01"":""2020-06-30"", [""Close"", ""Range""]]","With label slices, the end label is included."
+Selection by integer,.iloc[],Fetch by row/column position,"df.iloc[30:50, 1:3]","The stop position is excluded, like normal Python slicing."
+Boolean filtering,mask conditions,Keep rows satisfying one or more conditions,"df[(df[""Open""] < 1200) & (df[""Range""] < 20)]",Wrap each condition in parentheses when combining with & or |.
+Rounding,df.round(),Show numeric output at a readable precision,df.round(2),Rounding display does not replace robust risk calculations.
+Dropping rows/columns,df.drop(),Remove a row or column,"df.drop([""Adj Close""], axis=1)",axis=1 means columns; axis=0 means rows; reassign or inplace to persist.

@@ -1,0 +1,4 @@
+level,bid_qty,bid_price,eligible_qty,fill_formula,fill_qty
+1,2,100.00,20,2*10/20,1
+2,6,99.50,20,6*10/20,3
+3,12,99.00,20,12*10/20,6

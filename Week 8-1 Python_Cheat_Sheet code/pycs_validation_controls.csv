@@ -1,0 +1,5 @@
+control,lecture_application,additive_note
+Static HTML audit,Support page has no notebook/source package.,"Counts sections, tables, code blocks, and key terms."
+Calendar sanity check,Original row counts are approximate.,Adds business-day row-count correction without editing original.
+Look-ahead control,position.shift(2) is the core backtest safety rule.,Synthetic backtest compares shifted and unshifted paths.
+Return math,Simple returns compound; log returns add.,cumprod and exp(cumsum(log)) reconciliation added.

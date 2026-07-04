@@ -1,0 +1,7 @@
+magic,use,when_to_use
+%who,Show variable names in the current namespace,Quick cleanup and memory check
+%whos,Show variables with type and value summary,Audit a notebook after many cells
+%pwd,Show current working directory,Before reading or writing files
+%history,Show commands executed in the session,Recover or review exploratory steps
+%time,Time one execution,Rough timing for a single operation
+%timeit,Benchmark repeated executions and report mean plus variation,Compare two ways to perform the same calculation

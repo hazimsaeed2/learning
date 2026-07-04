@@ -1,0 +1,5 @@
+anchor,offset,date,rolling_30d_ann_vol,ewma_094_ann_vol,reading
+2016-10-18,before,2016-10-14,0.31444327,0.30301902,Rolling carries shock until window exit; EWMA decays smoothly.
+2016-10-18,plus_2d,2016-10-20,0.59300486,0.70144928,Rolling carries shock until window exit; EWMA decays smoothly.
+2016-10-18,plus_28d,2016-11-28,0.56917393,0.38032946,Rolling carries shock until window exit; EWMA decays smoothly.
+2016-10-18,plus_35d,2016-12-07,0.27261478,0.37004707,Rolling carries shock until window exit; EWMA decays smoothly.

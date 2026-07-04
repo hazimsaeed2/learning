@@ -1,0 +1,7 @@
+metric,value,reading
+news_chars,524,Real Reuters wire sample.
+sentence_count,3,Simple sentence split; spaCy output reports 3.
+raw_word_tokens_proxy,71,Regex token proxy because spaCy is unavailable locally.
+kept_alpha_tokens_proxy,54,Alpha non-stopword token proxy.
+notebook_reported_tokens_total,104,Executed notebook spaCy output.
+notebook_reported_kept_tokens,53,Executed notebook spaCy output.

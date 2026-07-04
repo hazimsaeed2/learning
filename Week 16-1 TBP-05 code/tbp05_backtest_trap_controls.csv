@@ -1,0 +1,5 @@
+trap,lecture_example,control,why
+Full-history threshold tuning,1.1% threshold looks best after scanning all SPY history,"Tune on train data only, then report untouched test data",Avoids selecting a parameter that only fit the past
+Transaction cost omission,Daily long/short flips make a high curve collapse after small costs,Charge spread/commission/slippage when position changes,High-turnover strategies are cost-sensitive first
+Too many tuned knobs,Each extra threshold/window can fit noise,Use few parameters and target at least 1000 rows per tuned price parameter,More degrees of freedom need more independent evidence
+Robot code equals backtest logic,"Live robots need holidays, early closes, errors, and broker API state",Maintain a going-live checklist separate from research logic,Production failures can occur even when the signal is correct

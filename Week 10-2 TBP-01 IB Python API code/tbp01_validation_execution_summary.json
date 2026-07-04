@@ -1,0 +1,72 @@
+{
+  "lecture": "Week 10-2 TBP-01 IB Python API",
+  "generated_at": "2026-07-03T14:35:04",
+  "notebooks": [
+    {
+      "notebook": "Week 10-2 TBP-01 IB Python API_practice.ipynb",
+      "code_cells": 8,
+      "markdown_cells": 13,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "client asks 'PING'     -> server responds 'PONG'\nclient asks 'TIME'     -> server responds 'server-time: 12:00:00'\nclient asks 'garbage'  -> server responds 'ERROR: unknown request'\nSYNC  took 0.15s  -> ['response[RQ1]', 'response[RQ2]', 'response[RQ3]']\nASYNC took 0.07s  -> ['response[RQ1]', 'response[RQ2]', 'response[RQ3]']\nAsync overlaps the waits -> ~3x faster here. This is why streaming needs async.\nmock EClient / EWrapper defined\nStrategy(EClient, EWrapper) defined\nthreaded run() listener defined\n[EClient] connected to 127.0.0.1:7496 as clientId=1\nisConnected: True\n[callback currentTime] server time = 2026-07-03 14:35:01\n[callback historicalDataEnd] reqId=9001: received 10 bars\n      Date        Close\n2020-11-13 12719.950195\n2020-11-17 12874.200195\n2020-11-18 12938.250000\n2020-11-19 12771.700195\n2020-11-20 12859.049805\n2020-11-23 12926.450195\n2020-11-24 13055.150391\n2020-11-25 12858.400391\n2020-11-26 12987.000000\n2020-11-27 12968.950195\nsaved chart_1_ibapi.png\n",
+      "sync_time": 0.15218782424926758,
+      "async_time": 0.07013654708862305,
+      "history_rows": 10,
+      "app_connected_after_cleanup": false
+    },
+    {
+      "notebook": "Week 10-2 TBP-01 IB Python API_resource_addendum_practice.ipynb",
+      "code_cells": 4,
+      "markdown_cells": 4,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "ctivity and data callbacks, not live orders.\n                control                                    lecture_application                                                                         additive_note\nSafe notebook execution Run mock IB API notebook with noninteractive plotting.      Original file preserved; validator replaces plt.show only during temp execution.\n Request/response audit                   MiniServer PING/TIME/error examples.                                             Structured responses are recorded in CSV.\n     Async timing audit                    Synchronous vs threaded mock waits.                            Speedup is measured locally and may vary slightly per run.\n    Callback flow audit               EClient requests and EWrapper callbacks.           currentTime and historicalData callbacks execute through the mock listener.\nHistorical sample audit              reqHistoricalData mock returns tail rows.                                                  10 bars from local CSV are verified.\n     Live trading scope                                   IB API architecture. No real TWS/Gateway, account, permissions, market data farm, or orders are validated.\n",
+      "sync_time": "",
+      "async_time": "",
+      "history_rows": "",
+      "app_connected_after_cleanup": ""
+    },
+    {
+      "notebook": "Week 10-2 TBP-01 IB Python API_validated_practice.ipynb",
+      "code_cells": 12,
+      "markdown_cells": 17,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "ctivity and data callbacks, not live orders.\n                control                                    lecture_application                                                                         additive_note\nSafe notebook execution Run mock IB API notebook with noninteractive plotting.      Original file preserved; validator replaces plt.show only during temp execution.\n Request/response audit                   MiniServer PING/TIME/error examples.                                             Structured responses are recorded in CSV.\n     Async timing audit                    Synchronous vs threaded mock waits.                            Speedup is measured locally and may vary slightly per run.\n    Callback flow audit               EClient requests and EWrapper callbacks.           currentTime and historicalData callbacks execute through the mock listener.\nHistorical sample audit              reqHistoricalData mock returns tail rows.                                                  10 bars from local CSV are verified.\n     Live trading scope                                   IB API architecture. No real TWS/Gateway, account, permissions, market data farm, or orders are validated.\n",
+      "sync_time": 0.15196442604064941,
+      "async_time": 0.05160021781921387,
+      "history_rows": 10,
+      "app_connected_after_cleanup": false
+    }
+  ],
+  "html": {
+    "file": "Week 10-2 TBP-01 IB Python API.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 10,
+    "missing_generated_charts": []
+  },
+  "study_html": {
+    "file": "Week 10-2 TBP-01 IB Python API_study.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 5,
+    "missing_generated_charts": []
+  },
+  "charts": [
+    "chart_addendum_1_tbp01_source_notebook_audit.png",
+    "chart_addendum_2_tbp01_sync_async_timing.png",
+    "chart_addendum_3_tbp01_callback_flow.png",
+    "chart_addendum_4_tbp01_historical_sample.png",
+    "chart_addendum_5_tbp01_live_scope_controls.png"
+  ],
+  "main_html_appended": true,
+  "study_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "scope_note": "Mock IB API workflow validated offline; no real TWS/Gateway session or live order flow validated."
+}

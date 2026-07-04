@@ -183,6 +183,120 @@
     </div>
   </div>
 
+  <!-- VALIDATION ADDENDUM -->
+  <div class="card p-3 mb-3 border-l-4" style="border-left-color:#7c3aed;">
+    <h2 class="text-sm font-bold text-violet-800 mb-1">RESOURCE ADDENDUM · official workbook checks</h2>
+    <p class="text-[10.5px] mb-2">These items were added during second-pass validation. Existing sections are preserved; this box adds source differences, exact Excel workbook formulas, and the separate practice exercise pack.</p>
+    <div class="grid md:grid-cols-2 gap-3">
+      <div>
+        <p class="font-semibold text-violet-700 mb-1">SOURCE DIFFERENCE · volatility limit</p>
+        <table>
+          <tr><th>Source</th><th>Limit</th><th>Best feasible sample</th></tr>
+          <tr><td>Transcript</td><td class="num">1.03%</td><td>5% SBIN / 95% ICICI</td></tr>
+          <tr><td>Transcript variant</td><td class="num">1.303%</td><td>0% SBIN / 100% ICICI</td></tr>
+          <tr><td>Slide deck</td><td class="num">2.7%</td><td>0% SBIN / 100% ICICI</td></tr>
+        </table>
+        <p class="text-[10px] mt-1">Same formula, different investor constraint. Do not silently replace one number with the other.</p>
+      </div>
+      <figure class="m-0">
+        <img src="Week 3-2 SFM-03 code/chart_addendum_1_sfm03_limit_comparison.png" alt="SBIN ICICI risk limit comparison">
+        <figcaption class="text-[9.5px] text-slate-500 mt-1 text-center">Risk-limit choice changes which frontier points are feasible.</figcaption>
+      </figure>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-3 mt-3">
+      <div>
+        <p class="font-semibold text-violet-700 mb-1">OFFICIAL BESSEL SAMPLE</p>
+        <table>
+          <tr><td>Sample</td><td class="num">2051, 2053, 2055, 2050, 2051</td></tr>
+          <tr><td>Known population mean</td><td class="num">2050</td></tr>
+          <tr><td>Sample mean</td><td class="num">2052</td></tr>
+          <tr><td>Population variance</td><td class="num">7.2</td></tr>
+          <tr><td>Sample variance if /n</td><td class="num">3.2</td></tr>
+          <tr><td class="font-bold">Sample variance after /(n-1)</td><td class="num ans">4.0</td></tr>
+        </table>
+        <p class="text-[10px] mt-1">The n-1 denominator corrects the downward bias caused by estimating the mean from the same sample.</p>
+      </div>
+      <figure class="m-0">
+        <img src="Week 3-2 SFM-03 code/chart_addendum_2_sfm03_bessel_sample.png" alt="Official Bessel correction sample">
+        <figcaption class="text-[9.5px] text-slate-500 mt-1 text-center">Workbook's exact Bessel correction arithmetic.</figcaption>
+      </figure>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-3 mt-3">
+      <div>
+        <p class="font-semibold text-violet-700 mb-1">PRACTICE ZIP · HDB / SBIN / NIFTY</p>
+        <table>
+          <tr><td>Data source/date range</td><td>Stooq, 8 Jul 2025 to 20 Feb 2026</td></tr>
+          <tr><td>Min SBIN</td><td class="num">62.27 on 9 Jul 2025</td></tr>
+          <tr><td>Mean SBIN / HDB</td><td class="num">69.7967 / 35.6146</td></tr>
+          <tr><td>STDEV.S SBIN / HDB</td><td class="num">4.8106 / 1.7027</td></tr>
+          <tr><td>NIFTY return mean</td><td class="num">-0.0001291407</td></tr>
+          <tr><td>NIFTY return STDEV.S</td><td class="num">0.0076671948</td></tr>
+          <tr><td>NIFTY return variance</td><td class="num">0.0000587859</td></tr>
+        </table>
+      </div>
+      <figure class="m-0">
+        <img src="Week 3-2 SFM-03 code/chart_addendum_3_sfm03_practice_mc.png" alt="Practice Monte Carlo paths">
+        <figcaption class="text-[9.5px] text-slate-500 mt-1 text-center">10-day MC uses the practice answer-key mean and volatility.</figcaption>
+      </figure>
+    </div>
+
+    <div class="bg-violet-50 border border-violet-200 rounded-lg p-2 text-[10.5px] mt-3">
+      <p class="font-bold text-violet-800 mb-1">EXCEL FORMULA MAP</p>
+      <p><code>=LN(Pt/P0)</code> log return · <code>=STDEV.S(range)</code> sample volatility · <code>=SUM((Xi-Xbar)(Yi-Ybar))/(n-1)</code> covariance · <code>wA^2*sigmaA^2 + wB^2*sigmaB^2 + 2wAwBCov</code> portfolio variance · <code>=previous*EXP(NORMINV(RAND(),mean,stdev))</code> Monte Carlo · <code>=PERCENTILE(paths,0.05)</code> VaR · <code>=AVERAGEIF(paths,"&lt;"&amp;VaR)</code> expected shortfall · <code>SMA20 +/- 2*STDEV.S(last20)</code> Bollinger.</p>
+      <p class="mt-1"><b>Modern best practice:</b> test independence, volatility clustering, skew, kurtosis, and regime changes before trusting a normal random-walk model. Excel is good for back-of-the-envelope work; Python is safer for large data and repeatable research.</p>
+    </div>
+  </div>
+
+  <!-- CONTINUATION ADDENDUM -->
+  <div class="card p-3 mb-3 border-l-4" style="border-left-color:#0f766e;">
+    <h2 class="text-sm font-bold text-teal-800 mb-1">CONTINUATION ADDENDUM · transcript-only operating notes</h2>
+    <p class="text-[10.5px] mb-2">This continuation preserves the existing sheet and adds practical lecture comments that were not yet explicit in the validation addendum.</p>
+
+    <div class="grid md:grid-cols-3 gap-2">
+      <div class="bg-teal-50 border border-teal-200 rounded-lg p-2">
+        <p class="font-bold text-teal-800 mb-1">NO LOOK-AHEAD TRAP</p>
+        <p>The repeated average column is an Excel convenience, not a signal known on day 1. The decision is made after the sample window closes, then rebalanced on the chosen schedule.</p>
+      </div>
+      <div class="bg-cyan-50 border border-cyan-200 rounded-lg p-2">
+        <p class="font-bold text-cyan-800 mb-1">LONG-ONLY FRONTIER</p>
+        <p>The 0% to 100% weight grid is a long-only investing exercise. Extending weights below 0% means shorting one stock and using proceeds to buy the other, which is a different trading problem.</p>
+      </div>
+      <div class="bg-amber-50 border border-amber-200 rounded-lg p-2">
+        <p class="font-bold text-amber-800 mb-1">EXCEL DECODERS</p>
+        <p><code>$A$1</code> locks a reference. <code>6.86E-05</code> means <code>6.86 x 10^-5 = 0.0000686</code>. Use sample formulas when the data is a return sample.</p>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-3 mt-3">
+      <div>
+        <p class="font-semibold text-teal-700 mb-1">LECTURE METHOD VS PRACTICAL CONTROL</p>
+        <table>
+          <tr><th>Topic</th><th>Lecture spreadsheet shortcut</th><th>Correct practical interpretation</th></tr>
+          <tr><td>Mean beside every row</td><td>Same full-window average copied down</td><td>Use only after the full historical window is available; in backtests, row t must use data up to t only.</td></tr>
+          <tr><td>Portfolio weights</td><td>101 portfolios: 0%, 1%, ..., 100%</td><td>Long-only grid. Negative weights are short positions and need different assumptions, costs, and constraints.</td></tr>
+          <tr><td>Covariance formula</td><td><code>SUM((x-xbar)(y-ybar))/(n-1)</code></td><td>Sample covariance. In modern Excel prefer <code>COVARIANCE.S</code>; population covariance divides by n.</td></tr>
+          <tr><td>Expected shortfall</td><td><code>AVERAGEIF(paths,"&lt;"&amp;VaR)</code></td><td>Average only the outcomes below the VaR floor; use a cell reference so the threshold updates when simulations refresh.</td></tr>
+        </table>
+      </div>
+      <div>
+        <p class="font-semibold text-teal-700 mb-1">MODEL FAILURE CHECKLIST</p>
+        <table>
+          <tr><th>Question</th><th>Why it matters</th></tr>
+          <tr><td>Are returns independent?</td><td>If not, the square-root-of-time and random-walk assumptions weaken. Check autocorrelation or use time-series models such as ARIMA.</td></tr>
+          <tr><td>Did volatility regime change?</td><td>A shock can sit outside the old 95% range before rolling volatility catches up.</td></tr>
+          <tr><td>Are tails skewed or fat?</td><td><code>NORMINV</code> ignores skew and kurtosis; Monte Carlo can use a different return distribution if the normal model fails.</td></tr>
+          <tr><td>Is Excel still the right tool?</td><td>Excel is fine for quick checks; Python is safer for large data, repeated research, and high-frequency workflows.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="bg-red-50 border border-red-200 rounded-lg p-2 text-[10.5px] mt-3">
+      <p><b>Correction-by-addition:</b> if any earlier wording sounds like a universal rule, read it with these constraints. The lecture's Bollinger, VaR, and Monte Carlo examples are normal-model demonstrations, not guarantees that price stays inside the band or VaR floor.</p>
+    </div>
+  </div>
+
   <!-- GLOSSARY -->
   <div class="card p-3 mb-2">
     <h2 class="text-sm font-bold text-slate-700 mb-1">📖 30-SECOND GLOSSARY</h2>

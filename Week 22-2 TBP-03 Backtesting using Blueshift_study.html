@@ -83,5 +83,17 @@
 <div class="note"><strong>The one-paragraph version.</strong> Blueshift is an event-driven, low-frequency backtesting and trading platform. Event-driven beats vectorised because it cannot leak the future and the same code runs live. It rests on three pillars — callbacks you register, a context object that carries state, and domain APIs. Prefer targeting orders so you trade only the difference; trust the point-in-time data portal that returns the simplest shape; map the quant lifecycle (universe → signal → target → rebalance → review) directly onto your functions; reach for the pipeline factor/filter graph when the universe is large; and remember that a backtest is the beginning of the work, not the end.</div>
 
 </div>
+
+
+<!-- TBP03_STUDY_ADDITIVE_SOURCE_PACK_START -->
+<section>
+  <h2>Additive Validation Notes</h2>
+  <p>This section was added after the original study guide. It keeps the existing wording and adds a reproducibility layer for the Blueshift backtesting workflow.</p>
+  <div class="box"><strong>Local execution note.</strong> The current environment lacks <code>talib</code>, <code>sklearn</code>, <code>zipline</code>, and live <code>blueshift</code>. The new validated notebook adds local stubs for the offline mirror only; use the real platform/runtime for deployment work.</div>
+  <p><strong>Precision note:</strong> the shipped strategies use zero commission and zero slippage, and the PCA stat-arb example shows that high pair correlation is not enough to establish a tradable mean-reverting spread.</p>
+  <p>Added resources are in <code>Week 22-2 TBP-03 Backtesting using Blueshift code</code>: source inventories, dependency audit, strategy audits, validation tables, five charts, the addendum notebook, and the validated composite notebook.</p>
+</section>
+<!-- TBP03_STUDY_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

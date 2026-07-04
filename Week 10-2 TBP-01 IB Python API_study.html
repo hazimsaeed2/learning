@@ -165,5 +165,29 @@ Spyder/VS Code rather than Jupyter for the real thing.</p>
 
 <p style="text-align:center;color:#fde047;margin-top:36px;font-size:14px;">EPAT · Week 10-2 TBP-01 · Strategy Automation with the Interactive Brokers Python API</p>
 
+
+
+<!-- TBP01_STUDY_ADDITIVE_SOURCE_PACK_START -->
+<h2>Additive Validation Pack</h2>
+<div class="callout">
+  <p><strong>Added without changing the original study guide.</strong> The validation pack confirms the mock request/callback flow and records exactly what is not validated as a live Interactive Brokers connection.</p>
+</div>
+<table>
+  <tr><th>Check</th><th>Additive result</th></tr>
+  <tr><td>Safe notebook execution</td><td>0 errors with noninteractive plotting and mock disconnect cleanup.</td></tr>
+  <tr><td>Async timing</td><td>Threaded mock requests were about 2.17x faster than sequential waits in this run.</td></tr>
+  <tr><td>Historical callbacks</td><td>10 bars received from the local <code>historical_sample.csv</code> mock.</td></tr>
+  <tr><td>Live scope</td><td>No real TWS/Gateway, account authentication, market-data permissions, socket connection, or orders are validated.</td></tr>
+</table>
+<p>Generated validation artifacts are in <code>Week 10-2 TBP-01 IB Python API code</code>, including <code>VALIDATION_REPORT.md</code>, the addendum notebook, the validated notebook copy, and these charts:</p>
+<ul>
+<li><code>Week 10-2 TBP-01 IB Python API code/chart_addendum_1_tbp01_source_notebook_audit.png</code></li>
+<li><code>Week 10-2 TBP-01 IB Python API code/chart_addendum_2_tbp01_sync_async_timing.png</code></li>
+<li><code>Week 10-2 TBP-01 IB Python API code/chart_addendum_3_tbp01_callback_flow.png</code></li>
+<li><code>Week 10-2 TBP-01 IB Python API code/chart_addendum_4_tbp01_historical_sample.png</code></li>
+<li><code>Week 10-2 TBP-01 IB Python API code/chart_addendum_5_tbp01_live_scope_controls.png</code></li>
+</ul>
+<!-- TBP01_STUDY_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

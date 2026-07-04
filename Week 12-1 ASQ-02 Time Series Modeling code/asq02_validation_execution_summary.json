@@ -1,0 +1,69 @@
+{
+  "lecture": "Week 12-1 ASQ-02 Time Series Modeling with Python",
+  "generated_at": "2026-07-03T14:44:00",
+  "notebooks": [
+    {
+      "notebook": "Week 12-1 ASQ-02 Time Series Modeling_practice.ipynb",
+      "code_cells": 12,
+      "markdown_cells": 14,
+      "errors": 1,
+      "execution_exception": "Traceback (most recent call last):\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\_validation_work\\generate_asq02.py\", line 206, in execute_notebook_safely\n    exec(compile(\"\".join(cell.get(\"source\", [])), str(path), \"exec\"), ns)\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\Week 12-1 ASQ-02 Time Series Modeling code\\Week 12-1 ASQ-02 Time Series Modeling_practice.ipynb\", line 4, in <module>\n    \"cell_type\": \"markdown\",\nModuleNotFoundError: No module named 'statsmodels'\n",
+      "stdout_excerpt": "",
+      "gross_total": "",
+      "net_total": "",
+      "vol_next": ""
+    },
+    {
+      "notebook": "Week 12-1 ASQ-02 Time Series Modeling with Python_resource_addendum_practice.ipynb",
+      "code_cells": 4,
+      "markdown_cells": 4,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "   Latest realized vol.\n                    control                                 lecture_application                                                                           additive_note\nOriginal notebook execution                       Run ASQ-02 practice notebook.           Original fails locally because statsmodels/arch dependencies are unavailable.\n    Validated fallback copy Permit local execution without installing packages. Fallback AR-like and EWMA-GARCH-like classes are labelled and limited to this notebook.\n    Fixed versus auto order                      ARIMA order selection and AIC.               Fallback AIC search is recorded separately from formal statsmodels ARIMA.\n          Transaction costs                   Gross versus net strategy return.                                 Cost drag is explicitly subtracted from signal returns.\n         Volatility regimes      Heteroscedasticity and COVID volatility spike.                                 Rolling 30-day realized vol confirms non-constant risk.\n     Formal inference scope                          GARCH and ARIMA modelling.                             Use statsmodels/arch for production-grade model estimation.\n",
+      "gross_total": "",
+      "net_total": "",
+      "vol_next": ""
+    },
+    {
+      "notebook": "Week 12-1 ASQ-02 Time Series Modeling with Python_validated_practice.ipynb",
+      "code_cells": 17,
+      "markdown_cells": 19,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "   Latest realized vol.\n                    control                                 lecture_application                                                                           additive_note\nOriginal notebook execution                       Run ASQ-02 practice notebook.           Original fails locally because statsmodels/arch dependencies are unavailable.\n    Validated fallback copy Permit local execution without installing packages. Fallback AR-like and EWMA-GARCH-like classes are labelled and limited to this notebook.\n    Fixed versus auto order                      ARIMA order selection and AIC.               Fallback AIC search is recorded separately from formal statsmodels ARIMA.\n          Transaction costs                   Gross versus net strategy return.                                 Cost drag is explicitly subtracted from signal returns.\n         Volatility regimes      Heteroscedasticity and COVID volatility spike.                                 Rolling 30-day realized vol confirms non-constant risk.\n     Formal inference scope                          GARCH and ARIMA modelling.                             Use statsmodels/arch for production-grade model estimation.\n",
+      "gross_total": -0.07931887768930068,
+      "net_total": -0.10132770158913063,
+      "vol_next": 0.16372355714861525
+    }
+  ],
+  "html": {
+    "file": "Week 12-1 ASQ-02 Time Series Modeling with Python.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 10,
+    "missing_generated_charts": []
+  },
+  "study_html": {
+    "file": "Week 12-1 ASQ-02 Time Series Modeling with Python_study.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 5,
+    "missing_generated_charts": []
+  },
+  "charts": [
+    "chart_addendum_1_asq02_source_dependency_audit.png",
+    "chart_addendum_2_asq02_fixed_auto_arima.png",
+    "chart_addendum_3_asq02_cost_drag.png",
+    "chart_addendum_4_asq02_volatility_regimes.png",
+    "chart_addendum_5_asq02_garch_risk_sizing.png"
+  ],
+  "main_html_appended": true,
+  "study_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "dependency_note": "Original notebook requires statsmodels and arch; validated copy injects labelled educational fallbacks."
+}

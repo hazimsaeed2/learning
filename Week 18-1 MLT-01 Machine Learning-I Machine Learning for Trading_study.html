@@ -105,5 +105,18 @@
   <div class="end">— End of Week 18-1 MLT-01 study guide · pair this with the dashboard cheat sheet and the executed practice notebook —</div>
 
 </div>
+
+
+<!-- MLT01_STUDY_ADDITIVE_SOURCE_PACK_START -->
+<section>
+  <h2>Additive Validation Notes</h2>
+  <p>This section was added after the original study guide. It keeps the existing wording and adds a reproducibility layer.</p>
+  <div class="box"><strong>Local execution correction.</strong> The original notebook imports <code>sklearn</code>, which is not installed in this local environment. The new validated notebook adds small fallback classes for execution validation only; full scikit-learn remains the correct implementation for production modelling.</div>
+  <p><strong>Leakage control:</strong> using <code>shift(-1)</code> to create the next-day label is dataset construction. The actual anti-look-ahead controls are the time-ordered split, <code>shuffle=False</code>, fitting scalers only on train, and dropping the final unlabeled tradable row.</p>
+  <p><strong>Evaluation control:</strong> the added tables include a majority-class baseline and local proxy model scores so that small accuracy edges are not read without context.</p>
+  <p>Added resources are in <code>Week 18-1 MLT-01 Machine Learning-I code</code>: source inventories, data audits, feature checks, leakage controls, model metrics, five charts, the addendum notebook, and the validated composite notebook.</p>
+</section>
+<!-- MLT01_STUDY_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

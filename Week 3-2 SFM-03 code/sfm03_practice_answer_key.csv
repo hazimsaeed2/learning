@@ -1,0 +1,10 @@
+Question_ID,Question,Official_Worked_Answer
+Q2,Identify the minimum price of SBIN using MIN().,62.27
+Q3,Return the date corresponding to the minimum price of SBIN using XLOOKUP().,2025-07-09 00:00:00
+Q4,Compute the mean price of SBIN using AVERAGE().,69.7967088607595
+Q5,Compute the mean price of HDB using AVERAGE().,35.61459556962026
+Q6,Compute the sample standard deviation of SBIN prices using STDEV.S().,4.810624447070153
+Q7,Compute the sample standard deviation of HDB prices using STDEV.S().,1.702721402547587
+Q8,Compute the standard deviation of daily returns of NIFTY using STDEV.S().,0.007667194761460805
+Q9,Compute the average of daily returns of NIFTY using AVERAGE().,-0.0001291406931850168
+Q10,Calculate the variance of daily returns using the standard deviation value.,5.8785875510172e-05

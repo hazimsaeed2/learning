@@ -1,0 +1,6 @@
+dependency,available_locally,version,fallback_or_note
+numpy,yes,2.2.6,
+pandas,yes,3.0.3,
+matplotlib,yes,3.11.0,
+yfinance,yes,0.2.33,"Installed locally; download signature is decorated in this version, so live keyword support should be checked in the target environment."
+bs4,yes,4.12.2,

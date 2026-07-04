@@ -1,0 +1,7 @@
+method,lecture_guidance,when_it_fits,risk
+df.isnull().sum(),Count missing values by column before deciding what to do.,Audit stage.,None; it only reports.
+df.dropna(axis=0),Deletes rows with any NaN and returns a copy unless assigned/inplace.,Small number of non-essential missing rows.,Can discard useful market history.
+df.dropna(axis=1),Deletes columns with any NaN and returns a copy unless assigned/inplace.,Columns are optional and mostly incomplete.,Can remove important features such as rolling averages.
+df.fillna(0),Possible but dangerous for price data.,Only when zero is economically meaningful.,Creates false jumps in prices/returns.
+df.ffill(),Preferred lecture default for measures when no new information is available.,Time series prices or state variables.,First value still remains NaN; stale values can persist through long gaps.
+rolling mean fill,"Discussed as a better alternative in some cases, using only past data.",Noisy metrics where recent history is a reasonable estimate.,Window choice matters; do not use future data.

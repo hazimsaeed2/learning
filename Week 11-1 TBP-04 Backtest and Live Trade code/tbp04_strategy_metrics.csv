@@ -1,0 +1,8 @@
+metric,value,unit,reading
+swing_total_pct,-3.4144,percent,Mean-reversion swing strategy total return.
+buy_hold_total_pct,58.3075,percent,Buy-and-hold over target return window.
+swing_sharpe,0.045655,ratio,Annualized daily Sharpe.
+buy_hold_sharpe,0.730134,ratio,Annualized daily Sharpe.
+swing_max_drawdown_pct,-29.5094,percent,Swing strategy drawdown.
+buy_hold_max_drawdown_pct,-38.4399,percent,Buy-and-hold drawdown.
+swing_win_rate_pct,47.1875,percent,Positive strategy days.

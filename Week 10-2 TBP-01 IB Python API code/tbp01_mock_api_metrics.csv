@@ -1,0 +1,8 @@
+check,value,unit,reading
+mini_server_ping,PONG,response,Structured request/response concept.
+mini_server_time,server-time: 12:00:00,response,Known request returns known response.
+mini_server_error,ERROR: unknown request,response,Unknown request handled explicitly.
+request_side_class,EClient,mock_class,Sends requests in the teaching mock.
+response_side_class,EWrapper,mock_class,Receives callbacks in the teaching mock.
+strategy_inheritance,"Strategy(EClient, EWrapper)",class,Double inheritance mirrors IB API pattern.
+listener_thread,daemon=True,thread,Mock listener runs separately from main request flow.

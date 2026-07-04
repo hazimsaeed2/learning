@@ -1,0 +1,38 @@
+{
+  "notebooks": [
+    {
+      "notebook": "Week 7-1 Tutorial Doubt-Solving Python after PBQ-02_practice.ipynb",
+      "code_cells": 14,
+      "errors": 0,
+      "missing_markdown_before_code": 0
+    },
+    {
+      "notebook": "Week 7-1 Tutorial Doubt-Solving Python after PBQ-02_resource_addendum_practice.ipynb",
+      "code_cells": 8,
+      "errors": 0,
+      "missing_markdown_before_code": 0
+    },
+    {
+      "notebook": "Week 7-1 Tutorial Doubt-Solving Python after PBQ-02_validated_practice.ipynb",
+      "code_cells": 22,
+      "errors": 0,
+      "missing_markdown_before_code": 0
+    }
+  ],
+  "outputs": [
+    "AAPL_daily_tutorial.csv",
+    "HDFCBANK_exchange_tutorial_raw.csv",
+    "HDFCBANK_exchange_tutorial_clean.csv",
+    "week7_source_file_inventory.csv",
+    "week7_tutorial_resource_stats.csv",
+    "week7_pandas_tutorial_reference.csv",
+    "week7_hdfc_feature_sample.csv",
+    "week7_hdfc_calendar_slice_summary.csv",
+    "chart_addendum_1_week7_source_data_ranges.png",
+    "chart_addendum_2_week7_hdfc_column_cleanup.png",
+    "chart_addendum_3_week7_calendar_slicing.png",
+    "chart_addendum_4_week7_dataframe_modification.png"
+  ],
+  "source_html_contains_pyodide": true,
+  "source_html_contains_plotly": true
+}

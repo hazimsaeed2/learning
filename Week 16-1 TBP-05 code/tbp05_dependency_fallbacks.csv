@@ -1,0 +1,6 @@
+component,local_issue,additive_fix
+Original notebook,Requires sklearn and Jupyter display,Validated notebook adds NumPy LinearRegression and display fallback
+01_buy_low_sell_high_model.py,Requires sklearn,Added tbp05_sklearn_free_model_validation.py
+02_backtest_costs_and_traps.py,No sklearn dependency,Executed in temp to avoid overwriting charts
+Reference IBridgePy robots,"Require IBridgePy, IB account, market clock, broker API",Inventoried as reference-only and backtested equivalent rules offline
+README.md,Existing text has mojibake/encoding damage,Preserved original and added README_VALIDATION_ADDENDUM.md instead of overwriting

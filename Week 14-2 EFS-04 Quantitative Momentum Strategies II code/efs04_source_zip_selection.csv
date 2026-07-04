@@ -1,0 +1,19 @@
+source_path,copied_as,bytes,role
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/XLE_CL_rollReturn2.py,XLE_CL_rollReturn2_source.py,2537,script
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/VX_ES.py,VX_ES_source.py,1282,script
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/VX_ES_rollreturn.py,VX_ES_rollreturn_source.py,4059,script
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/VX_ES_rollreturn_regimes.py,VX_ES_rollreturn_regimes_source.py,3366,script
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/VX_ES_rollreturn_regimes_trading.py,VX_ES_rollreturn_regimes_trading_source.py,3671,script
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/VX_ES_rollreturn_testset.py,VX_ES_rollreturn_testset_source.py,3808,script
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/TU_mom.py,TU_mom_source.py,3206,script
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/TU_mom_hypothesisTest.py,TU_mom_hypothesisTest_source.py,3578,script
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/CL_rev.py,CL_rev_source.py,2775,script
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/VIX.csv,VIX_source.csv,245232,raw CSV source
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/inputData_ETF.mat,inputData_ETF_source.mat,1218621,raw MATLAB data source
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/inputDataDaily_CL_20120502.mat,inputDataDaily_CL_20120502_source.mat,299155,raw MATLAB data source
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/inputDataDaily_VX_20120507.mat,inputDataDaily_VX_20120507_source.mat,43291,raw MATLAB data source
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/inputDataDaily_VX_20150828.mat,inputDataDaily_VX_20150828_source.mat,314492,raw MATLAB data source
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/inputDataDaily_ES_20150828.mat,inputDataDaily_ES_20150828_source.mat,221640,raw MATLAB data source
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/inputDataOHLCDaily_20120507.mat,inputDataOHLCDaily_20120507_source.mat,1461422,raw MATLAB data source
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/inputDataOHLCDaily_20120511.mat,inputDataOHLCDaily_20120511_source.mat,1437682,raw MATLAB data source
+EFS03 & 04 Inclass Exercises File/Batch 69 Onwards/MomentumWS/inputDataOHLCDaily_20120517.mat,inputDataOHLCDaily_20120517_source.mat,1439326,raw MATLAB data source

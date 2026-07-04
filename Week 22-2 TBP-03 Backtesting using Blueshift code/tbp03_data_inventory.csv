@@ -1,0 +1,2 @@
+file,rows,columns,tickers,date_start,date_end,missing_values,size_bytes
+nse_prices.csv,2467,4,ACC; AMBUJACEM; RELIANCE; TATASTEEL,2015-01-01,2024-12-31,0,208320

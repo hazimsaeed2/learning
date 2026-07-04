@@ -1,0 +1,5 @@
+api,fallback_behavior,validation_scope
+talib.BBANDS/MACD/SAR,pandas/numpy technical indicator proxies,Notebook execution only
+MLPClassifier,single hidden tanh random-feature linear head,Smoke test only
+TfidfVectorizer,small stop-word and TF-IDF implementation,Toy text example only
+StandardScaler/metrics,minimal compatible methods,Local reproducibility

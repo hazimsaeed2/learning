@@ -1,0 +1,5 @@
+line_usd_per_month,latency_ms,ms_saved_vs_slowest,cumulative_cost_per_ms_saved,marginal_cost_per_ms_saved
+2000,82,0,0.0,0.0
+5000,78,4,750.0,750.0
+45000,71,11,3909.0,5714.0
+125000,68,14,8786.0,26667.0

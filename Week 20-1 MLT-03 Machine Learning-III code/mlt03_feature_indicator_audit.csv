@@ -1,0 +1,18 @@
+feature,source,uses_future_data,control
+std_5,backward-looking rolling close feature,No,Drop final target row; scale on train only
+std_10,backward-looking rolling close feature,No,Drop final target row; scale on train only
+std_15,backward-looking rolling close feature,No,Drop final target row; scale on train only
+ma_10,backward-looking rolling close feature,No,Drop final target row; scale on train only
+ma_15,backward-looking rolling close feature,No,Drop final target row; scale on train only
+ma_20,backward-looking rolling close feature,No,Drop final target row; scale on train only
+ma_25,backward-looking rolling close feature,No,Drop final target row; scale on train only
+pct_3,backward-looking rolling close feature,No,Drop final target row; scale on train only
+pct_6,backward-looking rolling close feature,No,Drop final target row; scale on train only
+pct_9,backward-looking rolling close feature,No,Drop final target row; scale on train only
+co,same-day close-open; use only after close or lag for earlier signal,Depends on signal time,Drop final target row; scale on train only
+upper_band,fallback Bollinger Bands matching TA-Lib interface,No,Drop final target row; scale on train only
+middle_band,fallback Bollinger Bands matching TA-Lib interface,No,Drop final target row; scale on train only
+lower_band,fallback Bollinger Bands matching TA-Lib interface,No,Drop final target row; scale on train only
+macd,fallback MACD line,No,Drop final target row; scale on train only
+sar,fallback SAR proxy,No,Drop final target row; scale on train only
+target,Close.shift(-1) > Close,Only as label construction,Drop final row after target creation

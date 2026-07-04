@@ -1,0 +1,6 @@
+current_position,rsi_condition,target_position,correct_order_action,source_status
+0,RSI < 30,1,BUY,source logic already assigns BUY for new long entry
+0,RSI > 70,-1,SELL,source logic already assigns SELL for new short entry
+1,RSI > 70,0,SELL,source line uses order_action == SELL; corrected addendum uses assignment
+-1,RSI < 30,0,BUY,source line uses order_action == BUY; corrected addendum uses assignment
+any,threshold not crossed,unchanged,none,hold current position

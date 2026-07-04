@@ -1,0 +1,5 @@
+control,source_context,why_it_matters,correct_action
+Back-adjusted continuous futures contract,GC source exercise,Naively stitching expiring contracts creates price gaps that are not real P&L.,Use a back-adjusted series or explicitly roll positions in the backtest.
+Timestamp alignment,GC versus GLD exercise,"GC settlement and GLD close can be captured at different times, creating fictitious arbitrage profit.",Use intraday futures price at the same timestamp as the ETF close.
+Spot hedge selection,Gold and crude discussion,A futures-based ETF can hedge spot exposure but also remove the roll edge.,Use a true spot proxy where possible: GLD for gold; XLE is closer than USO for crude roll harvesting.
+Risk-free treatment in Sharpe,GC/GLD homework,Funding treatment differs by strategy construction.,Do not subtract risk-free for futures-only or dollar-neutral long/short; subtract it when cash is spent on GLD.

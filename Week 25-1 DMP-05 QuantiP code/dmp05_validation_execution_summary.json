@@ -1,0 +1,60 @@
+{
+  "lecture": "Week 25-1 DMP-05 QuantiP",
+  "generated_at": "2026-07-03T02:51:16",
+  "notebooks": [
+    {
+      "notebook": "Week 25-1 DMP-05 QuantiP_practice.ipynb",
+      "code_cells": 14,
+      "errors": 1,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": "Traceback (most recent call last):\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\_validation_work\\generate_dmp05.py\", line 841, in execute_notebook_safely\n    exec(compile(source, str(path), \"exec\"), ns)\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\Week 25-1 DMP-05 QuantiP code\\Week 25-1 DMP-05 QuantiP_practice.ipynb\", line 6, in <module>\n    \"metadata\": {},\nModuleNotFoundError: No module named 'statsmodels'\n"
+    },
+    {
+      "notebook": "Week 25-1 DMP-05 QuantiP_resource_addendum_practice.ipynb",
+      "code_cells": 4,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 25-1 DMP-05 QuantiP_validated_practice.ipynb",
+      "code_cells": 19,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    }
+  ],
+  "html": [
+    {
+      "file": "Week 25-1 DMP-05 QuantiP.html",
+      "body_open": 1,
+      "body_close": 1,
+      "html_open": 1,
+      "html_close": 1,
+      "generated_chart_refs": 10,
+      "missing_generated_charts": []
+    },
+    {
+      "file": "Week 25-1 DMP-05 QuantiP_study.html",
+      "body_open": 1,
+      "body_close": 1,
+      "html_open": 1,
+      "html_close": 1,
+      "generated_chart_refs": 0,
+      "missing_generated_charts": []
+    }
+  ],
+  "charts": [
+    "chart_addendum_1_dmp05_source_data_dependency_inventory.png",
+    "chart_addendum_2_dmp05_strategy_costs.png",
+    "chart_addendum_3_dmp05_diversification.png",
+    "chart_addendum_4_dmp05_beta_cross_section.png",
+    "chart_addendum_5_dmp05_bab_oos_controls.png"
+  ],
+  "main_html_appended": true,
+  "study_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "dependency_note": "statsmodels unavailable locally; validated notebook adds OLS fallback only.",
+  "correction_note": "Price matrix has 47 tradable stocks plus ^NSEI; HDFC is listed but absent from prices."
+}

@@ -1,0 +1,6 @@
+stage,mcc,f1,change_pct,reading
+train_walk_forward,0.06566404266222578,0.4930237899194626,0.0,SHAP-18 walk-forward training result.
+validation_holdout,0.019279814837205297,0.24615384615384617,-70.63870262088463,Validation performance degrades sharply from training.
+test_holdout_once,-0.005899880052585674,0.1759697256385998,-130.60133150864272,Untouched test MCC is below zero in Batch 68.
+vectorized_strategy,,,,"Return 5.6416 pct, Sharpe 0.1484, max drawdown -20.3880 pct, trades 91."
+production_verdict,,,,❌ FAIL - Excessive degradation; production_ready=False.

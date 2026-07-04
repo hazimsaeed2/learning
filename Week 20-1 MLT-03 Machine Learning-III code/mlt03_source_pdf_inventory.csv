@@ -1,0 +1,5 @@
+file,pages,text_chars,keyword_hits
+MLT-03-Lecture-Summary.pdf,10,7530,neural network; gradient; backpropagation; activation; ReLU; text
+MLT-03Instructions-and-Key-Takeaways.pdf,1,1005,neural network; gradient; backpropagation; activation; text
+Session-3.1-neuralnetwork-textmining.pdf,20,2725,neural network; MLP; gradient; backpropagation; activation; sigmoid
+Session-3.2-gradientdescent-backpropagation.pptx.pdf,19,3270,neural network; gradient; backpropagation; activation; sigmoid; vanishing; clipping

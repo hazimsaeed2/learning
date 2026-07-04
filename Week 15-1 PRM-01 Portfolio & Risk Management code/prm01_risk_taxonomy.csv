@@ -1,0 +1,9 @@
+risk_source,lecture_example,measurement,control
+Market risk,"Long asset falls; option value changes with spot, volatility, time, rates, and dividends","Greeks, what-if grids, VaR/CVaR, stress tests",Exposure limits and scenario limits
+Dividend risk,"Shareholder receives dividend, but call holder does not and can be pushed out of the money",Ex-dividend scenario and option Greek sensitivity,Corporate-action calendar and option repricing check
+Currency risk,Indian investor long Tesla can make or lose INR P&L from USD/INR even if Tesla is flat,Portfolio currency exposure and FX stress,FX hedge or currency exposure limit
+Credit and counterparty risk,"Broker, client, clearing house, or exchange failure",PD x LGD x EAD and unexpected-loss capital,Counterparty limits and collateral rules
+Financial and leverage risk,LTCM used leveraged bond arbitrage and faced Russia-default and liquidity shocks,"Leverage, downgrade sensitivity, funding stress, margin call path","Leverage cap, liquidity reserve, funding source diversification"
+Operational and technology risk,"Storage, server, old code, price feed, or order-gateway failure","Latency, capacity, heartbeat, deployment checksum, incident drill",Pretrade gateway checks and production release gates
+Liquidity risk,No counterparty at the other end or widening spread around news,"Order-book depth, ADV participation, market impact, liquidity-adjusted VaR","Size limits, pause rules, participation cap"
+Regulatory and political risk,"Short-selling ban, margin increase, tax/tariff change, or market-wide position limit","News analysis, historical event response, rule inventory",Regulatory monitor and strategy disable switch

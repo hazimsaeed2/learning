@@ -1,0 +1,6 @@
+risk,lecture_anchor,control
+Cointegration breakdown,LTCM 1998 risk reminder,"Stop-loss, re-test ADF, rolling hedge ratio, and pair retirement rule"
+Crowded unwind,Stat-arb can be market-neutral but not liquidity-neutral,"Size by ADV, borrow availability, and stress exit liquidity"
+Borderline test statistic,AUDCAD only passes around 90% in the lecture,Treat weak stationarity as a smaller-size or research-only signal
+Capital denominator error,Pair return uses both legs: h*EWA + EWC,Normalize spread P&L by gross capital in both legs
+Parameter overfit,Lookback 30 and 2 sigma bands are strategy parameters,Validate out-of-sample and avoid repeated sweeps on same history

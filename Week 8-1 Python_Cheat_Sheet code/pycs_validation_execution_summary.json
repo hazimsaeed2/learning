@@ -1,0 +1,40 @@
+{
+  "lecture": "Week 8-1 Python_Cheat_Sheet",
+  "generated_at": "2026-07-03T03:06:51",
+  "notebooks": [
+    {
+      "notebook": "Week 8-1 Python_Cheat_Sheet_resource_addendum_practice.ipynb",
+      "code_cells": 4,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 8-1 Python_Cheat_Sheet_validated_practice.ipynb",
+      "code_cells": 4,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    }
+  ],
+  "html": {
+    "file": "Week 8-1 Python_Cheat_Sheet.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 10,
+    "missing_generated_charts": []
+  },
+  "charts": [
+    "chart_addendum_1_pycs_html_dependency_audit.png",
+    "chart_addendum_2_pycs_calendar_row_correction.png",
+    "chart_addendum_3_pycs_synthetic_backtest.png",
+    "chart_addendum_4_pycs_shift_return_math.png",
+    "chart_addendum_5_pycs_mistake_controls.png"
+  ],
+  "main_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "correction_note": "Business-day row count sanity check added; original row counts preserved."
+}

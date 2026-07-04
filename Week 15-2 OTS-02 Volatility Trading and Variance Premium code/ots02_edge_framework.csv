@@ -1,0 +1,6 @@
+topic,lecture_point,implementation_rule,failure_mode
+Model-driven trading,"A model produces a number every day, such as Black-Scholes theoretical value versus market premium","Use the model continuously, but know where its assumptions fail",A model can look good while the market prices a risk the model omits
+Event-driven trading,"Earnings, rate decisions, and other triggers create option opportunities","Use event trades as special cases, not the only source of alpha","The event may not be the only reason price moves, and events are hard to scale"
+Trader t-stat,"A trader can use a t-stat near 1, not only the academic t-stat near 2",Require many independent bets before trusting a 55% edge,Small edge without enough trade count is still noise
+Adverse selection,"The good limit orders may not fill, while the bad ones fill immediately",Model fill probability and do not count unfilled winners as live P&L,Backtest assumes every signal fills and overstates edge
+Costs,"Bid-ask, brokerage, taxes, platform, and exchange fees can erase 20-30% or more of gross profit","Subtract costs inside the backtest, not after the fact",Gross Sharpe survives but net CAGR turns negative

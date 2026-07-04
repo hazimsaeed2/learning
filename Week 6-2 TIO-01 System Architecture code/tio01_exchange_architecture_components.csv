@@ -1,0 +1,9 @@
+component,zone,role,communication
+Trading server,Member side,Sends order requests and receives acks/reports,TCP session to exchange gateway
+Exchange gateway,Exchange edge,"Authenticates session, applies rate/format checks, routes instrument orders",One-to-one order flow
+Matching engine,Exchange core,Maintains order books and matches orders for assigned instruments,Receives orders from gateways
+Primary market data server,Exchange data,Publishes live market data updates,Usually multicast/broadcast style
+Secondary market data server,Exchange data,Backup market data source,Failover market data
+Snapshot server,Exchange data,Publishes periodic or top-book snapshots,Market data subscription
+Recovery server,Exchange data,Resends missed packets by sequence request,One-to-one TCP recovery
+Drop copy server,Exchange/reporting,Sends a copy of all trades/reports to risk or back office systems,Authenticated report stream

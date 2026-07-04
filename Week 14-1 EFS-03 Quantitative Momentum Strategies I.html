@@ -173,6 +173,70 @@
   </div>
 </section>
 
+<!-- CONTINUATION ADDENDUM: SOURCE-BACKED IMPLEMENTATION DETAILS -->
+<section class="bg-white rounded-xl p-4 shadow mb-4 border-t-4 border-cyan-500">
+  <div class="flex items-start justify-between gap-3 flex-wrap mb-3">
+    <div>
+      <div class="text-[10px] font-bold text-cyan-700 tracking-widest">CONTINUATION ADDENDUM - SOURCE-BACKED IMPLEMENTATION</div>
+      <h2 class="text-lg font-black text-cyan-800 mt-1">6 &middot; Source files and the full causal momentum map</h2>
+    </div>
+    <div class="text-[10px] bg-cyan-50 border border-cyan-200 rounded-lg p-2 max-w-xs">
+      Existing notes are preserved. This section adds the transcript and source-zip implementation details.
+    </div>
+  </div>
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <p>The EFS03/04 source packet contains MomentumWS scripts and raw MATLAB data for the roll-return examples. Selected source files were copied into the code folder, including the corn roll-estimation script, the GC/GLD script, the crude/XLE hedge script, and the relevant raw <code>.mat</code> files.</p>
+      <table class="w-full mt-2">
+        <tr><th>Momentum cause</th><th>Market</th><th>Lecture focus</th></tr>
+        <tr><td>Persistence of futures roll returns</td><td>Futures</td><td><b>EFS-03</b></td></tr>
+        <tr><td>Persistence of factor returns</td><td>Stocks/factors</td><td>EFS-04</td></tr>
+        <tr><td>Slow diffusion of news</td><td>Events/equities</td><td>EFS-04</td></tr>
+        <tr><td>Forced institutional flows</td><td>Funds, ETFs, leverage</td><td>EFS-04</td></tr>
+      </table>
+      <div class="bg-cyan-50 border-l-4 border-cyan-400 p-2 mt-2 text-[10px]"><b>Dependency note:</b> the copied source scripts use <code>scipy.io.loadmat</code>. SciPy is not installed here, so the raw MATLAB files are preserved and the addendum notebook validates the logic without loading them.</div>
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+      <img src="Week 14-1 EFS-03 Quantitative Momentum Strategies I code/chart_addendum_1_efs03_source_inventory.png" alt="EFS-03 source inventory chart" class="rounded-lg border border-cyan-200">
+      <img src="Week 14-1 EFS-03 Quantitative Momentum Strategies I code/chart_addendum_2_efs03_causal_momentum_map.png" alt="EFS-03 causal momentum map" class="rounded-lg border border-cyan-200">
+    </div>
+  </div>
+</section>
+
+<section class="bg-white rounded-xl p-4 shadow mb-4 border-t-4 border-amber-500">
+  <h2 class="text-lg font-black text-amber-800 mb-2">7 &middot; Roll formulas, spot hedges, and funding rules</h2>
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <p>The later transcript adds the practical bridge from "estimate roll" to "trade roll." ES and FX have exact arbitrage formulas, but commodities need a term-structure estimate and a spot hedge that does not erase the roll return.</p>
+      <table class="w-full mt-2">
+        <tr><th>Case</th><th>Rule</th><th>Implementation warning</th></tr>
+        <tr><td>ES</td><td>roll = dividend yield - interest rate</td><td>cash sits as futures margin and earns interest</td></tr>
+        <tr><td>MXN future</td><td>roll = foreign rate - domestic rate</td><td>GDP growth is not part of the arbitrage formula</td></tr>
+        <tr><td>Gold</td><td>short GC + long GLD - risk-free rate</td><td>GLD spends cash, so Sharpe uses excess return</td></tr>
+        <tr><td>Crude</td><td>hedge spot component carefully</td><td>USO holds futures and can remove the roll edge; XLE is only a partial proxy</td></tr>
+      </table>
+    </div>
+    <div>
+      <img src="Week 14-1 EFS-03 Quantitative Momentum Strategies I code/chart_addendum_3_efs03_roll_formula_map.png" alt="EFS-03 roll formula map" class="rounded-lg border border-amber-200 w-full">
+    </div>
+  </div>
+</section>
+
+<section class="bg-white rounded-xl p-4 shadow mb-4 border-t-4 border-slate-500">
+  <h2 class="text-lg font-black text-slate-800 mb-2">8 &middot; Two backtest traps: roll gaps and mismatched timestamps</h2>
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <p>A continuous futures series is not created by simply joining expiring contracts. The price gap between the old and new contract is not real P&amp;L, so a naive stitched series can create fake losses or gains. Use a back-adjusted series or explicitly model the roll.</p>
+      <p class="mt-1">The GC/GLD exercise also has a timestamp trap: GC settlement and GLD close may be observed at different times. A paired-market backtest must compare prices captured at the same timestamp; otherwise the spread can look profitable for a purely mechanical reason.</p>
+      <div class="bg-slate-50 border-l-4 border-slate-400 p-2 mt-2 text-[10px]"><b>Sharpe rule:</b> futures-only and dollar-neutral long/short strategies usually do not subtract the risk-free rate; short GC plus long GLD does, because buying GLD consumes cash.</div>
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+      <img src="Week 14-1 EFS-03 Quantitative Momentum Strategies I code/chart_addendum_4_efs03_back_adjustment_demo.png" alt="EFS-03 back adjustment demo" class="rounded-lg border border-slate-200">
+      <img src="Week 14-1 EFS-03 Quantitative Momentum Strategies I code/chart_addendum_5_efs03_timestamp_sharpe_controls.png" alt="EFS-03 timestamp and Sharpe controls chart" class="rounded-lg border border-slate-200">
+    </div>
+  </div>
+</section>
+
 <!-- GLOSSARY -->
 <section class="bg-neutral-800 text-emerald-50 rounded-xl p-4 shadow mb-4">
   <h2 class="text-base font-black text-emerald-200 mb-2">30-second glossary</h2>
@@ -192,5 +256,19 @@
 <footer class="text-center text-[10px] text-neutral-400 pb-4">Week 14-1 · EFS-03 Quantitative Momentum I · self-teaching cheat sheet · numbers reproduced in the practice notebook</footer>
 
 </div>
+
+<!-- VALIDATION_EVIDENCE_ADDENDUM_START -->
+<section id="validation-evidence-addendum" data-validation-evidence="true" style="max-width: 1100px; margin: 24px auto; padding: 14px 16px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.45;">
+  <h2 style="margin: 0 0 8px; font-size: 16px; font-weight: 700;">Validation Evidence Addendum</h2>
+  <p style="margin: 0 0 8px;">This additive note points to the validation evidence for this lecture. The original page content above remains unchanged.</p>
+  <ul style="margin: 0; padding-left: 18px;">
+    <li>Queue row: 15</li>
+    <li>Lecture: Week 14-1 EFS-03 Quantitative Momentum Strategies - I Equity, FX &amp; Futures Strategies</li>
+    <li>Status: DONE</li>
+    <li>Validation report: <a href="Week%2014-1%20EFS-03%20Quantitative%20Momentum%20Strategies%20I%20code/VALIDATION_REPORT.md">Week 14-1 EFS-03 Quantitative Momentum Strategies I code/VALIDATION_REPORT.md</a></li>
+    <li>Execution summary JSON: <a href="Week%2014-1%20EFS-03%20Quantitative%20Momentum%20Strategies%20I%20code/efs03_validation_execution_summary.json">Week 14-1 EFS-03 Quantitative Momentum Strategies I code/efs03_validation_execution_summary.json</a></li>
+  </ul>
+</section>
+<!-- VALIDATION_EVIDENCE_ADDENDUM_END -->
 </body>
 </html>

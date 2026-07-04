@@ -1,0 +1,20 @@
+function,source_script,method,endpoint,request_shape,response_or_role,five_piece_mapping
+validate_sso,TBP02_code_cp_web_api_functions.py,GET,sso/validate,empty payload,validates SSO browser session,base url + endpoint + method + headers + payload/params
+logout,TBP02_code_cp_web_api_functions.py,POST,logout,empty payload,ends the current session,base url + endpoint + method + headers + payload/params
+reauthenticate,TBP02_code_cp_web_api_functions.py,POST,iserver/reauthenticate,empty payload,attempts session reauthentication after idle disconnect,base url + endpoint + method + headers + payload/params
+auth_status,TBP02_code_cp_web_api_functions.py,POST,iserver/auth/status,empty payload,returns authenticated and connected flags,base url + endpoint + method + headers + payload/params
+tickle,TBP02_code_cp_web_api_functions.py,POST,tickle,empty payload,heartbeat to keep local gateway session alive,base url + endpoint + method + headers + payload/params
+fetch_contract_details,TBP02_code_cp_web_api_functions.py,GET,iserver/contract/{conid}/info,path parameter conid,fetches contract metadata,base url + endpoint + method + headers + payload/params
+fetch_historical_data,TBP02_code_cp_web_api_functions.py,GET,iserver/marketdata/history,"query params conid, exchange, period, bar",returns historical bars as JSON records,base url + endpoint + method + headers + payload/params
+fetch_ltp,TBP02_code_cp_web_api_functions.py,GET,iserver/marketdata/snapshot,query param conids,returns snapshot fields such as last price field 31,base url + endpoint + method + headers + payload/params
+fetch_accounts,TBP02_code_cp_web_api_functions.py,GET,iserver/accounts,empty payload,selects/fetches account context,base url + endpoint + method + headers + payload/params
+get_account_pnl,TBP02_code_cp_web_api_functions.py,GET,iserver/account/pnl/partitioned,empty payload,fetches realized/unrealized account PnL,base url + endpoint + method + headers + payload/params
+get_portfolio_positions,TBP02_code_cp_web_api_functions.py,GET,portfolio/{account_id}/positions/0,path parameter account_id,fetches paged positions,base url + endpoint + method + headers + payload/params
+get_portfolio_accounts,TBP02_code_cp_web_api_functions.py,GET,portfolio/accounts,empty payload,fetches portfolio accounts,base url + endpoint + method + headers + payload/params
+get_positions_conid,TBP02_code_cp_web_api_functions.py,GET,portfolio/positions/{conid},path parameter conid,fetches positions for one contract,base url + endpoint + method + headers + payload/params
+get_orders,TBP02_code_cp_web_api_functions.py,GET,iserver/account/orders,empty payload or force flag,fetches open/recent orders,base url + endpoint + method + headers + payload/params
+get_order_status,TBP02_code_cp_web_api_functions.py,GET,iserver/account/order/status/{order_id},path parameter order_id,fetches status for one order,base url + endpoint + method + headers + payload/params
+place_orders,TBP02_code_cp_web_api_functions.py,POST,iserver/account/{account_id}/orders,"JSON body: orders list with conid, orderType, side, quantity, price, tif",places one or more orders,base url + endpoint + method + headers + payload/params
+make_request,Strategy/TBP02_code_base_functions.py,GET or POST,passed URL,"headers, payload, query params",central wrapper used by strategy helper functions,base url + endpoint + method + headers + payload/params
+ib_market_data_socket,Real_Time_Data_Using_Websockets.py,WSS,wss://localhost:5000/v1/api/ws,send smd+contract+fields subscription,"streams fields 31,84,86,85,88",websocket url + action + topic/contract + JSON subscription fields
+alpaca_crypto_socket,TBP02_code_Crypto_Data_From_Alpaca.py,WSS,wss://stream.data.alpaca.markets/v1beta1/crypto,"auth action, then subscribe quotes BTCUSD",streams crypto quote messages,websocket url + action + topic/contract + JSON subscription fields

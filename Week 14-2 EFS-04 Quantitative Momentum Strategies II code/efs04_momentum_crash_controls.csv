@@ -1,0 +1,6 @@
+issue,fix,implementation_detail,caveat
+USO/XLE crisis alpha,Treat the outsized crisis gain as a regime event,Stop or reduce when VIX and realized volatility normalize after the crisis,"This is a rule-design problem, not proof that the base signal is permanently broken"
+Long post-crisis bleed,Disable the short leg or switch to long-only after the crash state,The lecture suggests the losing side can be state-dependent,Needs ex-ante regime definition to avoid hindsight
+Whipsaw after large moves,Combine slow momentum with faster mean reversion,"Buy only when price is above a longer lookback but below a shorter lookback, and analogous for shorts","The exact windows are parameters to validate, not universal constants"
+Stop-loss temptation,Use stops only after testing them against gap and recovery behavior,The transcript frames stop-loss as a weak standalone fix for momentum crashes,Stops can remove the rebound while preserving the whipsaw loss
+Regime forecast,"Use ML, hidden Markov, or latent-variable regime labels only if they improve out-of-sample behavior",A daily or weekly switch can decide when momentum versus mean-reversion should dominate,Complex labels need clean ex-ante features and transaction-cost checks

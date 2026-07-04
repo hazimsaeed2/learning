@@ -1,0 +1,16 @@
+metric,value,unit,reading
+source_rows,962,rows,Rows in shipped EOD CSV.
+first_date,2017-01-02,date,Start date in shipped CSV.
+last_date,2020-11-27,date,End date in shipped CSV.
+cumulative_simple_return_pct,58.5543,percent,Simple returns compound with product.
+cumulative_log_return_pct,46.0927,percent,This is log cumulative return; exponentiate for simple return.
+exp_log_to_simple_pct,58.5543,percent,Reconciles log and simple paths.
+annualized_return_pct,12.0867,percent,Annualized mean log return.
+annualized_volatility_pct,19.2146,percent,Annualized log-return volatility.
+sharpe_ratio,0.629038,ratio,No risk-free-rate adjustment in this simple calculation.
+maximum_drawdown_pct,-38.4399,percent,Worst peak-to-trough drawdown.
+breakeven_gain_after_5pct_loss,5.2632,percent,Gain needed to recover to prior equity.
+breakeven_gain_after_10pct_loss,11.1111,percent,Gain needed to recover to prior equity.
+breakeven_gain_after_20pct_loss,25.0,percent,Gain needed to recover to prior equity.
+breakeven_gain_after_50pct_loss,100.0,percent,Gain needed to recover to prior equity.
+breakeven_gain_after_90pct_loss,900.0,percent,Gain needed to recover to prior equity.

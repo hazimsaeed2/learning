@@ -1,0 +1,9 @@
+metric,value,unit,reading
+total_cells,27,cells,Original notebook cell count.
+code_cells,11,cells,Code cells executed in isolated temp folder.
+markdown_cells,16,cells,Narrative cells preserved in original notebook.
+original_execution_errors,0,errors,PASS
+uses_live_download,True,bool,"The shipped notebook uses the local CSV, so validation is offline."
+uses_zoneinfo,True,bool,Stdlib timezone support is used; no pytz dependency is needed for this notebook.
+original_bh_return_pct,40.3893,percent,Buy-and-hold result printed by original notebook.
+original_strategy_return_pct,68.0406,percent,SMA21/LMA63 crossover result printed by original notebook.

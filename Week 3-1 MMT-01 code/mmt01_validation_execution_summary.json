@@ -1,0 +1,49 @@
+{
+  "lecture_row": 1,
+  "lecture": "Week 3-1 MMT-01 Execution Strategy - I",
+  "queue_status": "DONE",
+  "summary_type": "legacy_report_digest",
+  "summary_created_utc": "2026-07-03T22:56:54+00:00",
+  "source_report": "Week 3-1 MMT-01 code/VALIDATION_REPORT.md",
+  "source_report_modified_utc": "2026-07-02T13:20:18+00:00",
+  "notebook_execution_rerun_for_this_json": false,
+  "status_from_existing_report": "PASS",
+  "report_pass_indicators": [
+    "The first-pass Study Guide already taught the order-book intuition from zero, used a consistent market-order walk example, explained market versus limit order trade-offs, included VWAP and OFI visuals, and kept a readable book-like tone. The first-pass Cheat Sheet already had a strong core example, visual order-book arithmetic, VWAP, time-horizon logic, terminology, and embedded chart images. The existing notebook already had a clean pedagogical structure and no stale error outputs. Per the additive-only instruction, the original notebook and original chart PNG files are preserved; resource-only exercises were added in a separate addendum notebook.",
+    "| No major transcript-only concept was missing after audit. | Transcript full pass | N/A | Preserved existing correct sections instead of rewriting them. |",
+    "| No existing teaching statement required replacement. | The first-pass files were broadly correct but missed several official-resource edge cases. | Preserved existing content and added supplemental sections instead of rewriting or deleting original material. | Study Guide, Cheat Sheet |",
+    "PASS \u2014 LECTURE COMPLETE"
+  ],
+  "report_error_indicators": [
+    "The first-pass Study Guide already taught the order-book intuition from zero, used a consistent market-order walk example, explained market versus limit order trade-offs, included VWAP and OFI visuals, and kept a readable book-like tone. The first-pass Cheat Sheet already had a strong core example, visual order-book arithmetic, VWAP, time-horizon logic, terminology, and embedded chart images. The existing notebook already had a clean pedagogical structure and no stale error outputs. Per the additive-only instruction, the original notebook and original chart PNG files are preserved; resource-only exercises were added in a separate addendum notebook.",
+    "- Errors discovered:",
+    "- Error outputs remaining: 0",
+    "| Notebook execution | 10/10 | Addendum notebook: 11/11 code cells executed, outputs embedded, no error outputs. |"
+  ],
+  "artifacts_in_code_folder": {
+    "notebooks": [
+      "Week 3-1 MMT-01 Execution Strategy I_practice.ipynb",
+      "Week 3-1 MMT-01 Execution Strategy I_resource_addendum_practice.ipynb"
+    ],
+    "notebook_count": 2,
+    "html_exports": [],
+    "html_export_count": 0,
+    "chart_files": [
+      "chart_1_orderbook_depth.png",
+      "chart_2_vwap.png",
+      "chart_3_ofi_impact.png",
+      "chart_addendum_1_orderbook_depth.png",
+      "chart_addendum_2_vwap.png",
+      "chart_addendum_3_ofi_impact.png"
+    ],
+    "chart_file_count": 6,
+    "csv_files": [
+      "mmt01_depth_structure.csv",
+      "mmt01_orderbook_abc.csv",
+      "mmt01_pro_rata_sell_10.csv",
+      "mmt01_vwap_trades.csv"
+    ],
+    "csv_file_count": 4
+  },
+  "coverage_note": "This JSON was added after queue completion because the folder already had a VALIDATION_REPORT.md but no machine-readable summary. It is a digest of that existing report and local artifacts, not a fresh execution claim."
+}

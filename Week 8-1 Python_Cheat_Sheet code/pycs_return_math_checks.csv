@@ -1,0 +1,6 @@
+check,value,formula
+simple_growth_from_cumprod,1.48692569,(1 + pct_change).cumprod()
+log_growth_from_exp_cumsum,1.48692569,exp(log_return.cumsum())
+absolute_difference,0.0,must be near zero for same path
+list_times_3,"[1, 2, 1, 2, 1, 2]",list repeats
+array_times_3,"[3, 6]",array multiplies elementwise

@@ -1,0 +1,14 @@
+metric,value,unit,reading
+fiber_latency_per_meter,5.0,ns/m,At 2e8 m/s signal speed in fiber.
+cable_length_edge,1.0,us per 200m,Why equal-length co-location cabling matters.
+rack_units,42,U,Physical rack size.
+rack_power_budget,6.0,kW,Corrected power unit; notebook variable says kWh.
+server_power_draw,0.5,kW,Corrected power unit; notebook variable says kWh.
+servers_by_power,12,servers,Power binds before physical 1U slot count.
+cme_full_rack_year,180000,USD/year,CME example.
+india_full_rack_year,15000,USD/year,India example upper bound.
+cme_vs_india_colo_cost_multiple,12.0,x,CME illustrative full rack is about 12x.
+avg_message_load,4273.504273504273,msgs/s,100M orders over 6.5 hours.
+cme_order_lines_needed,9,lines,500 msgs/s per CME line.
+nse_order_lines_needed,5,lines,1000 msgs/s per NSE line.
+nse_tbt_data_day,35,GB/day upper guide,Notebook says about 30-35 GB/day.

@@ -169,6 +169,94 @@ df[<span class="str">"Range"</span>] = df[<span class="str">"High"</span>] - df[
     </div>
   </div>
 
+  <!-- ADDENDUM: late-session pandas workflow -->
+  <div class="mt-4 bg-white rounded-2xl p-4 shadow border-t-4 border-cyan-600">
+    <div class="flex items-center gap-2"><span class="bg-cyan-600 text-white rounded-full w-6 h-6 grid place-items-center font-bold">9</span><h2 class="font-extrabold text-cyan-800 text-base">Add-on: pandas workflow after the CSV loads</h2></div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-2">
+      <div>
+        <img class="rounded-lg border border-slate-200 w-full" src="Week 6-3 PBQ-02 Python Basics for Quants code/chart_addendum_1_pbq02_pandas_workflow_map.png" alt="PBQ-02 pandas workflow map">
+      </div>
+      <div class="text-xs">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-cyan-50 border border-cyan-200 rounded p-2"><b>audit</b><br><code>df.info()</code>, <code>df.describe()</code>, <code>df.isnull().sum()</code></div>
+          <div class="bg-blue-50 border border-blue-200 rounded p-2"><b>select</b><br><code>[]</code> columns, <code>.loc</code> dates, <code>.iloc</code> positions</div>
+          <div class="bg-violet-50 border border-violet-200 rounded p-2"><b>filter</b><br><code>(cond1) &amp; (cond2)</code> for boolean masks</div>
+          <div class="bg-rose-50 border border-rose-200 rounded p-2"><b>signals</b><br><code>apply(axis=1)</code>, lambda, <code>np.where</code></div>
+        </div>
+        <table class="mt-2 w-full text-xs">
+          <thead><tr class="bg-cyan-50 text-cyan-800"><th class="text-left p-1 border">method</th><th class="text-left p-1 border">quant use</th><th class="text-left p-1 border">watch</th></tr></thead>
+          <tbody>
+            <tr><td class="p-1 border"><code>diff()</code></td><td class="p-1 border">currency change</td><td class="p-1 border">first row NaN</td></tr>
+            <tr class="bg-slate-50"><td class="p-1 border"><code>pct_change()</code></td><td class="p-1 border">simple return %</td><td class="p-1 border">not log return</td></tr>
+            <tr><td class="p-1 border"><code>shift(1)</code></td><td class="p-1 border">previous close</td><td class="p-1 border">past info only</td></tr>
+            <tr class="bg-slate-50"><td class="p-1 border"><code>shift(-1)</code></td><td class="p-1 border">next close demo</td><td class="p-1 border text-red-600">look-ahead risk</td></tr>
+            <tr><td class="p-1 border"><code>rolling()</code></td><td class="p-1 border">moving averages</td><td class="p-1 border">warm-up NaNs</td></tr>
+            <tr class="bg-slate-50"><td class="p-1 border"><code>ewm()</code></td><td class="p-1 border">EMA</td><td class="p-1 border">recent values weigh more</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4 grid grid-cols-12 gap-4">
+    <div class="col-span-12 lg:col-span-7 bg-white rounded-2xl p-4 shadow border-t-4 border-teal-600">
+      <div class="flex items-center gap-2"><span class="bg-teal-600 text-white rounded-full w-6 h-6 grid place-items-center font-bold">10</span><h2 class="font-extrabold text-teal-800 text-base">TCS add-on features: returns, MAs, volatility</h2></div>
+      <img class="mt-2 rounded-lg border border-slate-200 w-full" src="Week 6-3 PBQ-02 Python Basics for Quants code/chart_addendum_2_pbq02_tcs_returns_rolling.png" alt="TCS returns and rolling features">
+      <div class="mt-2 text-xs bg-teal-50 border border-teal-200 rounded p-2">Source data: 1,233 TCS daily rows, 2015-11-18 to 2020-11-17. Max high-low range is 313.95 on 2020-03-13.</div>
+    </div>
+    <div class="col-span-12 lg:col-span-5 bg-white rounded-2xl p-4 shadow border-t-4 border-red-500">
+      <div class="flex items-center gap-2"><span class="bg-red-500 text-white rounded-full w-6 h-6 grid place-items-center font-bold">11</span><h2 class="font-extrabold text-red-700 text-base">NaNs and row-wise labels</h2></div>
+      <img class="mt-2 rounded-lg border border-slate-200 w-full" src="Week 6-3 PBQ-02 Python Basics for Quants code/chart_addendum_3_pbq02_missing_apply_signal_workflow.png" alt="PBQ-02 missing values and volume signal labels">
+      <div class="mt-2 text-xs bg-red-50 border border-red-200 rounded p-2"><b>Lecture rule:</b> for price/time-series data, forward fill uses past information. Backfill, future close, and full-column means can create look-ahead bias.</div>
+      <div class="mt-2 text-xs bg-slate-50 border rounded p-2"><b>Extra files:</b> addendum notebook, validated notebook, selection/quant/missing-data CSVs, feature stats, and signal counts are in the Week 6-3 code folder.</div>
+    </div>
+  </div>
+
+  <!-- CONTINUATION ADDENDUM: FAQ + resource projects -->
+  <div class="mt-4 bg-white rounded-2xl p-4 shadow border-t-4 border-indigo-600">
+    <div class="flex items-center gap-2"><span class="bg-indigo-600 text-white rounded-full w-6 h-6 grid place-items-center font-bold">12</span><h2 class="font-extrabold text-indigo-800 text-base">Continuation: FAQ precision + mini-project resources</h2></div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-2">
+      <div>
+        <img class="rounded-lg border border-slate-200 w-full" src="Week 6-3 PBQ-02 Python Basics for Quants code/chart_continuation_3_pbq02_resource_bridge.png" alt="PBQ-02 FAQ, data hygiene, and VaR resource bridge">
+        <div class="mt-2 text-xs bg-indigo-50 border border-indigo-200 rounded p-2"><b>Additive correction note:</b> the earlier generated VaR/ES table is preserved. A corrected table and chart were added as <code>pbq02_var_es_summary_corrected.csv</code> and <code>chart_continuation_2_pbq02_var_es_corrected.png</code>.</div>
+      </div>
+      <div class="text-xs">
+        <table class="w-full text-xs">
+          <thead><tr class="bg-indigo-50 text-indigo-800"><th class="text-left p-1 border">FAQ item</th><th class="text-left p-1 border">correct working rule</th></tr></thead>
+          <tbody>
+            <tr><td class="p-1 border">multiple tickers</td><td class="p-1 border"><code>yf.download(["AAPL","MSFT"], ...)</code> works online; this pack keeps runnable notebooks offline.</td></tr>
+            <tr class="bg-slate-50"><td class="p-1 border"><code>np.where</code> vs <code>df.where</code></td><td class="p-1 border"><code>np.where</code> returns an array for labels/replacements; <code>df.where</code> keeps DataFrame shape.</td></tr>
+            <tr><td class="p-1 border">price distribution</td><td class="p-1 border">Prices are often modeled lognormal; returns are the object usually tested against normality, and real returns can be fat-tailed.</td></tr>
+            <tr class="bg-slate-50"><td class="p-1 border">tuples</td><td class="p-1 border">Use immutable tuples for fixed strategy settings such as <code>(20, 50, "long_only")</code>.</td></tr>
+            <tr><td class="p-1 border">nested conditions</td><td class="p-1 border">Nested <code>np.where</code> is valid for buy/sell/hold; <code>np.select</code> is clearer for many branches.</td></tr>
+            <tr class="bg-slate-50"><td class="p-1 border"><code>y[y&gt;3]</code>, <code>%whos</code>, <code>*args</code></td><td class="p-1 border">Boolean slicing filters rows; <code>%whos</code> audits notebook variables; <code>*args/**kwargs</code> accept flexible function inputs.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4 grid grid-cols-12 gap-4">
+    <div class="col-span-12 lg:col-span-6 bg-white rounded-2xl p-4 shadow border-t-4 border-emerald-600">
+      <div class="flex items-center gap-2"><span class="bg-emerald-600 text-white rounded-full w-6 h-6 grid place-items-center font-bold">13</span><h2 class="font-extrabold text-emerald-800 text-base">Data Hygiene Auditor resource</h2></div>
+      <img class="mt-2 rounded-lg border border-slate-200 w-full" src="Week 6-3 PBQ-02 Python Basics for Quants code/chart_continuation_1_pbq02_data_hygiene.png" alt="PBQ-02 data hygiene summary">
+      <div class="mt-2 text-xs bg-emerald-50 border border-emerald-200 rounded p-2">Official project: upload CSV, select ticker, verify against a trusted source, and optionally use Gemini/Mistral in Colab. Offline pack version: AXISBANK local CSV proxy checks missing values, business-day gaps, OHLC order, volume, and large close moves.</div>
+      <table class="mt-2 w-full text-xs">
+        <tbody>
+          <tr><td class="p-1 border">rows</td><td class="p-1 border">5,306 from 2000-01-03 to 2021-04-30</td></tr>
+          <tr class="bg-slate-50"><td class="p-1 border">business-day proxy gaps</td><td class="p-1 border">283 warning; exchange holidays need official calendar before calling every gap an error</td></tr>
+          <tr><td class="p-1 border">missing fields</td><td class="p-1 border">Trades, Deliverable Volume, and %Deliverble contain missing values</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-span-12 lg:col-span-6 bg-white rounded-2xl p-4 shadow border-t-4 border-amber-600">
+      <div class="flex items-center gap-2"><span class="bg-amber-600 text-white rounded-full w-6 h-6 grid place-items-center font-bold">14</span><h2 class="font-extrabold text-amber-800 text-base">Monte Carlo VaR/ES resource</h2></div>
+      <img class="mt-2 rounded-lg border border-slate-200 w-full" src="Week 6-3 PBQ-02 Python Basics for Quants code/chart_continuation_2_pbq02_var_es_corrected.png" alt="PBQ-02 corrected VaR and Expected Shortfall chart">
+      <div class="mt-2 text-xs bg-amber-50 border border-amber-200 rounded p-2">Corrected offline TCS results: daily historical 95% VaR <b>-2.43%</b>, historical CVaR <b>-3.61%</b>, parametric VaR <b>-2.59%</b>, parametric CVaR <b>-3.27%</b>. The 100-day Monte Carlo terminal VaR is <b>-18.27%</b> and CVaR is <b>-23.60%</b>.</div>
+      <div class="mt-2 text-xs bg-slate-50 border rounded p-2">Normality note: SciPy is not installed here, so Shapiro-Wilk is marked not run. The added Jarque-Bera proxy gives an extremely small p-value, consistent with fat-tailed daily returns.</div>
+    </div>
+  </div>
+
   <!-- GLOSSARY -->
   <div class="mt-4 bg-slate-900 text-slate-100 rounded-2xl p-4 shadow">
     <h2 class="font-extrabold text-lime-300 text-base">30-second glossary</h2>

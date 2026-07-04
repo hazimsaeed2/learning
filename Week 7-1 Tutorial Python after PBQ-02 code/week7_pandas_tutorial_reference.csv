@@ -1,0 +1,11 @@
+topic,transcript_rule,additive_example
+documentation_search,"Know the objective first, then use documentation for syntax and valid arguments.",help(pd.set_option); dir(np); np.quantile?
+warnings,Warnings are not errors; they can be hidden for screen space but should not be confused with failed code.,"warnings.filterwarnings(""ignore"")"
+display_options,"Use set_option for readable floats or more rows, then reset options so the kernel is not cluttered.","pd.set_option(""display.float_format"", lambda x: f""{x:.8f}"")"
+exchange_csv_cleanup,Hidden spaces in exchange column names cause KeyError; strip names before selecting.,df.columns = df.columns.str.strip()
+datetime_index,Read dates as dates and set them as the index at load time when possible.,"pd.read_csv(file, index_col=0, parse_dates=True)"
+chronological_sort,"Financial data is time series; sort in chronological order before returns, rolling windows, or visual inspection.",df = df.sort_index()
+loc_vs_iloc,loc uses labels and includes date endpoints; iloc uses integer positions and excludes the stop.,"df.loc[""2024-04""]; df.iloc[-5:, :]"
+modify_dataframe,Add null/static/computed columns deliberately and avoid confusing temporary copies with assigned changes.,"df[""Range""] = df[""HIGH""] - df[""LOW""]"
+interactive_charts,Plotly/cufflinks can create interactive candlesticks; static Matplotlib charts remain useful for offline packs.,"go.Candlestick(open=..., high=..., low=..., close=...)"
+quant_libraries,"Quantstats, pyfolio, backtrader, and legacy zipline are examples; choose maintained tools and understand outputs.",Use libraries after the pandas basics are understood.

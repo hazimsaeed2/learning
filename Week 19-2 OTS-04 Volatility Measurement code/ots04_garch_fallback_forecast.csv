@@ -1,0 +1,9 @@
+item,value,reading
+omega,0.05211854,Fallback uses omega + alpha*r^2 + beta*sigma^2.
+alpha,0.24,Recent shock weight.
+beta,0.727,Persistence weight.
+alpha_plus_beta,0.967,High persistence matches volatility clustering intuition.
+conditional_ann_vol_mean,16.58281563,Percent annualized because input returns are percent.
+conditional_ann_vol_max,128.36835247,Stress spike check.
+forecast_1d_ann_vol,0.15958097,One-day-ahead fallback forecast.
+realized_close_to_close_ann_vol,0.1994984,Context for forecast.

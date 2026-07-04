@@ -1,0 +1,6 @@
+score,meaning,common_inputs,pitfall
+Sentiment,"Tone for an entity, not just the whole document","Keyword polarity, grammar, negation, ML classifier",Document sentiment can differ by company
+Relevance,How central the company is to the article,"Headline mention, mention count, article length, total firms",Synonyms and company aliases must be mapped
+Novelty,Whether this is new or a repeat of an already reported event,Similarity to linked historical articles within/across feeds,Repeated alerts can trigger duplicate trades
+Market impact,Expected price importance of the news category,"Event type, article volume, social volume",High sentiment without impact may not trade well
+Strategy filter,Quality threshold for trading news signals,"High sentiment/relevance threshold, hedged long-short book",More news is not automatically better

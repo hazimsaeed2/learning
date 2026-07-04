@@ -1,0 +1,8 @@
+metric,value,note
+observations,2460,Rows loaded from the local TCS.NS.csv file
+start_date,2010-04-26,First date after parsing day-first dates
+end_date,2020-04-20,Last date in the local file
+mean_daily_return,0.000874,Average daily percentage change in adjusted close
+annualized_volatility,0.2591,Daily standard deviation scaled by sqrt(252)
+best_daily_return,0.1221,Largest single-day return in the sample
+worst_daily_return,-0.0941,Smallest single-day return in the sample

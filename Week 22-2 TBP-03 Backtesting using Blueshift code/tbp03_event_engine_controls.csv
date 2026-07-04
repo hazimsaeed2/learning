@@ -1,0 +1,6 @@
+component,purpose,offline_mapping
+initialize(context),"Runs once; sets universe, parameters, state, commission, and slippage.",Strategy init callbacks in the mini-engine.
+"handle_data(context, data)",Runs per bar and calls the strategy logic.,Loop over historical rows.
+data.history,Point-in-time rolling data access.,DataPortal slices only up to the current bar.
+order_target_percent,"Target-position order, avoiding repeated absolute order accumulation.",Context target weights.
+W.shift(1) * returns,Signal decided at t earns next-bar return.,Prevents same-bar look-ahead.

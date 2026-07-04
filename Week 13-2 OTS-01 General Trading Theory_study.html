@@ -125,5 +125,40 @@
 <strong>The one-paragraph version.</strong> You are a <em>trader</em> first and an options trader second; nothing about an instrument makes money on its own. Trading is a pyramid: <em>edge</em> (positive expected value — the only thing that pays), then <em>risk management</em> (everything that isn't edge, which keeps you alive to reach the long run), then a sliver of <em>psychology</em>. A 55% coin has EV +10¢ realized only over many trials, so survive the long run and never bet like a hero (Kelly is tiny). <em>Win-rate is not edge</em>, and equal-EV bets can differ wildly in risk. Risk includes model decay, luck (a Sharpe-1.5 strategy loses ~7% of years), unpredicted factors, fraud (have an independent risk manager), and black swans (hedge the consequences, not the probabilities). The EMH is a great approximation; you live in its exceptions — fleeting <em>inefficiencies</em> (arbitrage, trade big) and persistent <em>risk premia</em> (selling options, a career). Always start from an <em>observation</em> and quantify it as simply as possible: the magic is in the observation, never in the method.
 </div>
 
+<h2>Continuation addendum: compliance and the trading process</h2>
+
+<p>The source packet adds an important control layer before the trading theory even begins. The option examples are educational, not recommendations, and derivatives can create large losses quickly. More practically, Sinclair emphasizes that market rules and ethical norms differ across venues, so a trader should not infer legality from first principles. If you change a strategy, order type, execution route, or operating workflow, get manager or compliance approval in writing. That written chain is part of risk management.</p>
+
+<p>The larger process rule is: do not start from a method. Start from an observation. The observation can be simple, such as an unusual month-end move or a persistent volatility premium. Then quantify it with the simplest test that can disprove it. Only after that do you split edge from risk, test costs and adverse selection, and ask whether the strategy can become a live business.</p>
+
+<table>
+<tr><th>Step</th><th>Question</th><th>Failure mode</th></tr>
+<tr><td>Observation</td><td>What phenomenon did you notice?</td><td>Starting with a model and searching for a story.</td></tr>
+<tr><td>Simple quantification</td><td>Does it work with buckets, OLS, or event returns?</td><td>Rescuing a weak idea with complexity.</td></tr>
+<tr><td>Edge/risk split</td><td>What pays you, and what can hurt you?</td><td>Confusing win-rate or payoff shape with edge.</td></tr>
+<tr><td>Implementation</td><td>Can it survive costs, liquidity, mandate limits, compliance, and execution?</td><td>Stopping at a backtest.</td></tr>
+<tr><td>Review</td><td>Is live evidence statistical, or just a tempting story?</td><td>Changing a 1000-observation idea after a 20-observation sample.</td></tr>
+</table>
+
+<p><img src="Week 13-2 OTS-01 General Trading Theory code/chart_addendum_1_ots01_source_coverage.png" alt="OTS-01 source coverage chart" style="max-width:100%;border:1px solid #fecdd3;border-radius:6px;margin:10px 0;"></p>
+<p><img src="Week 13-2 OTS-01 General Trading Theory code/chart_addendum_2_ots01_observation_to_business.png" alt="OTS-01 observation to business pipeline chart" style="max-width:100%;border:1px solid #fecdd3;border-radius:6px;margin:10px 0;"></p>
+
+<h2>Continuation addendum: edge depends on who is trading</h2>
+
+<p>The source summary makes the edge/risk distinction concrete by participant. A directional trader may be paid for a direction forecast, while volatility, rates, liquidity, and execution are risks. A market maker may be paid for bid/ask spread and flow information, while inventory and adverse selection are risks. An options volatility trader may be paid for a volatility forecast or risk premium, while stock direction, dividends, rates, skew, jumps, and liquidity are risks. The same instrument can therefore contain different edges for different participants.</p>
+
+<p><img src="Week 13-2 OTS-01 General Trading Theory code/chart_addendum_3_ots01_edge_risk_map.png" alt="OTS-01 edge risk map" style="max-width:100%;border:1px solid #fecdd3;border-radius:6px;margin:10px 0;"></p>
+
+<h2>Continuation addendum: review, automation, and psychology</h2>
+
+<p>Trade review is meant to keep you immersed in the market, not to provide an excuse to rewrite rules from a tiny live sample. The addendum notebook simulates this trap: a strategy with 1000 observations can have a 20-day live window where a small cluster of losses appears on one weekday. That story feels meaningful because you lived through it, but it is not enough evidence to change the strategy.</p>
+
+<p>The automation rule is similarly practical: automate needs, not wants. If a task is cheap, informative, and keeps you in contact with the market, doing it manually may be better than hiding it behind a report that you stop reading. Psychology sits in the same place as risk management: it is a guardrail, not edge. It can stop you from overtrading, staring at P&amp;L, staying in a position only because it is down, or setting impossible outcome goals. It cannot make a strategy profitable if the edge is not there.</p>
+
+<p>The original OTS-01 notebook is preserved. In this environment it fails locally because SciPy is not installed and the notebook imports <code>scipy.stats.norm</code>. A new validated composite notebook was added with a small <code>norm.cdf</code> fallback before the preserved original cells, so the corrected version runs without changing the source notebook.</p>
+
+<p><img src="Week 13-2 OTS-01 General Trading Theory code/chart_addendum_4_ots01_trade_review_noise.png" alt="OTS-01 trade review noise chart" style="max-width:100%;border:1px solid #fecdd3;border-radius:6px;margin:10px 0;"></p>
+<p><img src="Week 13-2 OTS-01 General Trading Theory code/chart_addendum_5_ots01_psychology_automation_controls.png" alt="OTS-01 psychology automation controls chart" style="max-width:100%;border:1px solid #fecdd3;border-radius:6px;margin:10px 0;"></p>
+
 </body>
 </html>

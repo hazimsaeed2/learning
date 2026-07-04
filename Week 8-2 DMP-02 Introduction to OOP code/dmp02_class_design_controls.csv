@@ -1,0 +1,7 @@
+method,role,state_written,validation
+__init__,store parameters and run pipeline,"csv_path, ma_short, ma_long",One object equals one parameterized backtest.
+fetch_data,read CSV and keep Close,df,Uses index_col='Date' and parse_dates=True.
+indicators,compute rolling short and long averages,"SMA_s, SMA_l",Drops rolling warmup rows.
+signals,convert SMA relationship to regime,regime,Uses numpy vectorization.
+positions,lag regime by one row,pos,This is the no-look-ahead lag. Do not shift again in returns.
+returns,multiply position by close-to-close return,"bh, strat, total",Strategy return uses the already shifted pos column.

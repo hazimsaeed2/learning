@@ -1,0 +1,7 @@
+control,lecture_application,additive_note
+Original notebook execution,Run DMP-04 practice notebook in a temp folder.,Original notebook executed with 0 errors locally.
+Event contract audit,"MarketEvent, SignalEvent, OrderEvent, FillEvent.","Counts the event flow from the lags=1, threshold=0 run."
+Queue routing,BacktestEngine drains a deque per market bar.,"Market, signal, order, and fill routing is documented."
+Live scope correction,Same interface can support a live data handler.,"This notebook does not validate broker connectivity, reconnection, order state, latency, or risk controls."
+Execution realism,NaiveExecutionHandler fills immediately at last price.,"No commissions, slippage, partial fills, or leverage constraints are included."
+Parameter sweep caution,The lags/threshold grid is in-sample.,"The best row is descriptive only, not an out-of-sample claim."

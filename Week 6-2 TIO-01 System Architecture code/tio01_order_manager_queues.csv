@@ -1,0 +1,4 @@
+queue,why_it_exists,blocks_when,safe_action
+Message-rate queue,Exchange sells/limits order messages per second per connection,Current second has used its order quota,Hold until the next time bucket
+Acknowledgement queue,Cancel/replace needs exchange order ID and sometimes exchange timestamp,Original order has not been acknowledged yet,Wait for ack before replace/cancel
+Gateway queue,Exchange-side gateway and matching engine load varies,Exchange traffic is high,Model variable latency in simulator

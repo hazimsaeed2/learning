@@ -1,0 +1,7 @@
+control,lecture_application,additive_note
+Latency defines paradigm,"LFT, MFT, and HFT are separated by edge decay under added delay.",Examples and platform ladder exported.
+Membership break-even,Own membership pays only when per-volume savings justify fixed annual costs.,Break-even volume retained in CSV and chart.
+Co-location fairness,A 200m cable difference can create about 1us edge; equal-length cabling matters.,Fiber math and power limit shown separately.
+Power unit correction,Notebook variable names use kWh for rack/server draw.,Addendum labels those as kW; computation unchanged.
+Regulatory update,"Original PDT note is stale as of June 4, 2026.",FINRA Notice 26-10 update added; original preserved.
+Operational kill switches,"Stale data, socket failure, or heartbeat failure all halt trading.",Scenario decisions exported.

@@ -142,5 +142,19 @@
   <div class="end">— End of Week 17-1 EFS-02 study guide · pair this with the dashboard cheat sheet and the executed practice notebook —</div>
 
 </div>
+
+<!-- EFS02_STUDY_ADDITIVE_SOURCE_PACK_START -->
+<section id="efs02-study-additive-source-pack" style="margin-top: 32px; padding: 20px; border: 1px solid #cfe6e1; border-radius: 8px; background: #fff;">
+  <h2>Additive Source-Backed Continuation: EFS-02</h2>
+  <p>This block is appended beside the existing study guide. It adds implementation controls that keep the pair trade honest.</p>
+  <ul>
+    <li><strong>Local dependency:</strong> the original notebook imports <code>statsmodels</code>. The new validated notebook keeps the original cells and adds local <code>OLS</code>/<code>adfuller</code> fallbacks.</li>
+    <li><strong>Correlation is a screen:</strong> cointegration is the gate because the spread, not just returns, must be stationary.</li>
+    <li><strong>No look-ahead:</strong> estimate the hedge ratio on a training window or rolling past window only.</li>
+    <li><strong>Risk controls:</strong> stop out, re-test stationarity, diversify pairs, include borrow/costs, and retire broken spreads.</li>
+  </ul>
+</section>
+<!-- EFS02_STUDY_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

@@ -1,0 +1,8 @@
+step,name,lecture_detail
+1,Strategy idea,"State the hypothesis and whether it is long-only, long-flat, or long-short."
+2,Data,Download or load historical data; keep a CSV contingency if live download fails.
+3,Indicators,"Create alpha sources such as SMA, EMA, RSI, Bollinger Bands, MACD."
+4,Signals,Encode entry/exit events from the indicators.
+5,Positions,Carry signals forward and shift positions to avoid look-ahead bias.
+6,Returns,Multiply returns by positions; use cumprod for simple returns and cumsum/exp for log returns.
+7,Analysis,"Evaluate equity, drawdown, Sharpe, exposure, and benchmark comparison."

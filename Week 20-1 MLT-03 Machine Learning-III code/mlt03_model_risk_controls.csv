@@ -1,0 +1,7 @@
+risk,additive_control,production_control
+Missing TA-Lib/sklearn,Validated notebook adds local fallbacks only for execution.,Use real TA-Lib and scikit-learn for final model work.
+Fabricated final target,Corrected validation drops final row after shift(-1).,Never train on an unlabeled future row.
+Same-day close-open timing,Feature audit flags co timing.,Use only after close or lag it.
+Accuracy-only judgement,Backtest PnL table included.,"Evaluate return, drawdown, turnover, and costs."
+Overfit neural net,Train/test metrics and fallback scope table.,Use walk-forward validation and regularization.
+Text vectorization leakage,TF-IDF reference is toy-only.,Fit vocabulary on train only; transform test/live text.

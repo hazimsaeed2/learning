@@ -1,0 +1,6 @@
+greek,leg_1_long_10_atm_calls,leg_2_short_5_110_calls,net_book_greek,reading
+delta,569.460183,-109.127251,460.332933,Greeks add across option legs after applying position size and multiplier.
+gamma,39.288001,-14.737028,24.550973,Greeks add across option legs after applying position size and multiplier.
+theta_per_day,-28.696305,9.488394,-19.207911,Greeks add across option legs after applying position size and multiplier.
+vega_per_1pct_vol,196.440005,-73.685142,122.754863,Greeks add across option legs after applying position size and multiplier.
+rho_per_1pct_rate,130.827553,-25.792898,105.034655,Greeks add across option legs after applying position size and multiplier.

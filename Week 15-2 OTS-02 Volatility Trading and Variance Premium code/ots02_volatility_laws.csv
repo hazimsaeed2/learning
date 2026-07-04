@@ -1,0 +1,4 @@
+law,lecture_number,trading_use,caveat
+Volatility is negatively correlated with equity-index returns,"SPX/VIX about -0.7 across daily, weekly, and monthly examples",Equity drawdowns can be hedged or detected with volatility exposure,Commodity relationships differ; gold can rise with volatility in safe-haven regimes
+Volatility has vol-of-vol,Vol level and vol-of-vol about +0.8 in the lecture framing,High-vol regimes have larger volatility changes and sharper crashes,Measure over a fixed window; otherwise level and variability can be conflated
+Volatility is mean-reverting,Mean reversion is clearer at weekly/monthly horizons than daily noise,High VIX invites vol-crash trades; low VIX usually does not spike without a catalyst,A crisis catalyst can keep vol elevated longer than a simple mean-reversion rule expects

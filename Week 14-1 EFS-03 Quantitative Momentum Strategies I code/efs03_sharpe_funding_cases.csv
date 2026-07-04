@@ -1,0 +1,4 @@
+strategy_case,subtract_risk_free,reason
+Futures-only strategy,no,Cash remains in the account and earns interest; the futures P&L is already the excess trading return.
+Dollar-neutral long/short stocks,usually no,"The short side funds the long side, ignoring small financing spreads."
+Short GC future plus long GLD,yes,"Cash is spent buying GLD, so the combined strategy has an opportunity cost equal to the risk-free rate."

@@ -1,0 +1,5 @@
+model,train_accuracy,test_accuracy,base_rate_up,note
+majority_baseline,0.507637,0.497312,0.505051,Baseline required before trusting small accuracy edges.
+fallback_decision_stump,0.538185,0.508065,0.505051,Local sklearn-free validation stump on co.
+fallback_random_forest_proxy,0.520216,0.521505,0.505051,Proxy validates workflow only; real sklearn forest remains preferred.
+fallback_logistic_proxy,0.557951,0.516129,0.505051,Least-squares logistic proxy validates scaling/splitting flow.

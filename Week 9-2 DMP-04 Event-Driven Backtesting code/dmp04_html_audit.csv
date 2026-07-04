@@ -1,0 +1,85 @@
+source,item,value,reading
+main_html,file_size_bytes,126373,Week 9-2 DMP-04 Event Driven Back-Testing and working with Live Data Stream.html
+main_html,html_open,1,structural count
+main_html,html_close,1,structural count
+main_html,body_open,1,structural count
+main_html,body_close,1,structural count
+main_html,tables,2,structural count
+main_html,code_blocks,4,structural count
+main_html,image_tags,1,structural count
+main_html,term_MarketEvent,6,event-driven term frequency
+main_html,term_SignalEvent,4,event-driven term frequency
+main_html,term_OrderEvent,5,event-driven term frequency
+main_html,term_FillEvent,4,event-driven term frequency
+main_html,term_DataHandler,5,event-driven term frequency
+main_html,term_Portfolio,3,event-driven term frequency
+main_html,term_ExecutionHandler,2,event-driven term frequency
+main_html,term_deque,2,event-driven term frequency
+main_html,term_live,14,event-driven term frequency
+main_html,term_latency,2,event-driven term frequency
+main_html,term_slippage,0,event-driven term frequency
+main_html,term_threshold,5,event-driven term frequency
+main_html,term_same code,2,event-driven term frequency
+study_html,file_size_bytes,12797,Week 9-2 DMP-04 Event Driven Back-Testing and working with Live Data Stream_study.html
+study_html,html_open,1,structural count
+study_html,html_close,1,structural count
+study_html,body_open,1,structural count
+study_html,body_close,1,structural count
+study_html,tables,1,structural count
+study_html,code_blocks,3,structural count
+study_html,image_tags,0,structural count
+study_html,term_MarketEvent,5,event-driven term frequency
+study_html,term_SignalEvent,3,event-driven term frequency
+study_html,term_OrderEvent,4,event-driven term frequency
+study_html,term_FillEvent,3,event-driven term frequency
+study_html,term_DataHandler,7,event-driven term frequency
+study_html,term_Portfolio,9,event-driven term frequency
+study_html,term_ExecutionHandler,3,event-driven term frequency
+study_html,term_deque,2,event-driven term frequency
+study_html,term_live,13,event-driven term frequency
+study_html,term_latency,1,event-driven term frequency
+study_html,term_slippage,0,event-driven term frequency
+study_html,term_threshold,4,event-driven term frequency
+study_html,term_same code,2,event-driven term frequency
+transcript_text,file_size_bytes,140328,Week 9-2 DMP-04 Event Driven Back-Testing and working with Live Data Stream.txt
+transcript_text,html_open,0,structural count
+transcript_text,html_close,0,structural count
+transcript_text,body_open,0,structural count
+transcript_text,body_close,0,structural count
+transcript_text,tables,0,structural count
+transcript_text,code_blocks,0,structural count
+transcript_text,image_tags,0,structural count
+transcript_text,term_MarketEvent,0,event-driven term frequency
+transcript_text,term_SignalEvent,0,event-driven term frequency
+transcript_text,term_OrderEvent,0,event-driven term frequency
+transcript_text,term_FillEvent,0,event-driven term frequency
+transcript_text,term_DataHandler,0,event-driven term frequency
+transcript_text,term_Portfolio,24,event-driven term frequency
+transcript_text,term_ExecutionHandler,0,event-driven term frequency
+transcript_text,term_deque,0,event-driven term frequency
+transcript_text,term_live,21,event-driven term frequency
+transcript_text,term_latency,1,event-driven term frequency
+transcript_text,term_slippage,1,event-driven term frequency
+transcript_text,term_threshold,12,event-driven term frequency
+transcript_text,term_same code,1,event-driven term frequency
+practice_notebook_json,file_size_bytes,21797,Week 9-2 DMP-04 Event-Driven Backtesting_practice.ipynb
+practice_notebook_json,html_open,0,structural count
+practice_notebook_json,html_close,0,structural count
+practice_notebook_json,body_open,0,structural count
+practice_notebook_json,body_close,0,structural count
+practice_notebook_json,tables,0,structural count
+practice_notebook_json,code_blocks,2,structural count
+practice_notebook_json,image_tags,0,structural count
+practice_notebook_json,term_MarketEvent,8,event-driven term frequency
+practice_notebook_json,term_SignalEvent,6,event-driven term frequency
+practice_notebook_json,term_OrderEvent,6,event-driven term frequency
+practice_notebook_json,term_FillEvent,6,event-driven term frequency
+practice_notebook_json,term_DataHandler,12,event-driven term frequency
+practice_notebook_json,term_Portfolio,21,event-driven term frequency
+practice_notebook_json,term_ExecutionHandler,6,event-driven term frequency
+practice_notebook_json,term_deque,3,event-driven term frequency
+practice_notebook_json,term_live,14,event-driven term frequency
+practice_notebook_json,term_latency,1,event-driven term frequency
+practice_notebook_json,term_slippage,0,event-driven term frequency
+practice_notebook_json,term_threshold,16,event-driven term frequency
+practice_notebook_json,term_same code,2,event-driven term frequency

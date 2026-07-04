@@ -1,0 +1,10 @@
+item,value,reading
+forecast_hedge_vol,13.9,Average of VIX and GARCH forecast.
+iv_minus_forecast_rv,4.9,Expected vol edge in vol points.
+book_vega_per_vol_point,3448.97959184,Calibrated to lecture expected PnL.
+expected_pnl,16900.0,Vega times vol edge.
+one_sigma_low,8700.0,Planning range lower bound.
+one_sigma_high,25100.0,Planning range upper bound.
+actual_pnl,24218,Post-trade result.
+hindsight_expectation,28281.63265306,Shows result was helped by realized vol crash.
+with_drift_expectation,21700,Trend-aware attribution closer to actual.

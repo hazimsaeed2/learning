@@ -1,0 +1,15 @@
+check,value,expected,note
+integer_dunder_add,4,4,2 + 2 dispatches to int.__add__.
+list_dunder_len,3,3,len(list) dispatches to list.__len__.
+float_instance_type,float,float,Basic values are objects too.
+float_is_integer_false,False,False,Instance methods operate on the object.
+float_is_integer_true,True,True,"Same method, different object state."
+class_attribute_update,to get educated and get a job,to get educated and get a job,classmethod mutates class-level state.
+instance_attribute_name,John Paul,John Paul,__init__ stores per-object data.
+instance_method_update_age,20,20,self points to the specific object being changed.
+static_method_result,Academic year 2024-25,Academic year 2024-25,staticmethod needs no self or cls.
+child_overrides_goal,to get educated and win some trophies,to get educated and win some trophies,Subclass attribute overrides parent attribute.
+sporty_is_student,True,True,Inheritance preserves parent identity checks.
+sporty_mro,SportyStudent > Student > object,SportyStudent > Student > object,Method resolution order ends at object.
+child_mro,Child > ParentOne > ParentTwo > object,Child > ParentOne > ParentTwo > object,Multiple inheritance follows declared parent order.
+child_parent_two_method,hello from ParentTwo,hello from ParentTwo,Child can use methods inherited from the second parent.

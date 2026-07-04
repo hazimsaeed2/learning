@@ -1,0 +1,9 @@
+metric,value,formula
+true_negative,135,actual 0 and predicted 0
+false_positive,40,actual 0 and predicted 1
+false_negative,30,actual 1 and predicted 0
+true_positive,167,actual 1 and predicted 1
+accuracy,0.811828,(TP + TN) / all
+precision,0.806763,TP / (TP + FP)
+recall,0.847716,TP / (TP + FN)
+f1,0.826733,2*precision*recall/(precision+recall)

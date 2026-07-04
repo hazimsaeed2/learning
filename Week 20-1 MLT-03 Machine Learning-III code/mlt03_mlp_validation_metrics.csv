@@ -1,0 +1,8 @@
+metric,value,reading
+usable_rows_after_dropna,2319,Rows with all rolling/TA features present.
+corrected_supervised_rows,2318,Drops final row after shift(-1) to avoid fabricated final -1 label.
+feature_count,16,"Rolling, OHLC, Bollinger, MACD, and SAR features."
+proxy_train_accuracy,0.511327,Local fallback MLP proxy; not a replacement for sklearn MLP.
+proxy_test_accuracy,0.497845,Close to coin-toss is expected for next-day FX direction.
+proxy_weighted_precision,0.505538,Weighted by class support.
+proxy_weighted_recall,0.497845,Weighted by class support.

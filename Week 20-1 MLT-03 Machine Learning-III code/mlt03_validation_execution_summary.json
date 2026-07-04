@@ -1,0 +1,77 @@
+{
+  "lecture": "Week 20-1 MLT-03 Machine Learning-III Machine Learning for Tradin",
+  "generated_at": "2026-07-03T01:47:05",
+  "notebooks": [
+    {
+      "notebook": "Week 20-1 MLT-03 Machine Learning-III_practice.ipynb",
+      "code_cells": 8,
+      "errors": 1,
+      "markdown_before_code_gaps": 1,
+      "execution_exception": "Traceback (most recent call last):\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\_validation_work\\generate_mlt03.py\", line 629, in execute_notebook_safely\n    exec(compile(source, str(path), \"exec\"), ns)\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\Week 20-1 MLT-03 Machine Learning-III code\\Week 20-1 MLT-03 Machine Learning-III_practice.ipynb\", line 4, in <module>\n    \"cell_type\": \"markdown\",\n    ^^^^^^^^^^^^^^^^^^\nModuleNotFoundError: No module named 'talib'\n"
+    },
+    {
+      "notebook": "Week 20-1 MLT-03 Machine Learning-III_resource_addendum_practice.ipynb",
+      "code_cells": 4,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 20-1 MLT-03 Machine Learning-III_validated_practice.ipynb",
+      "code_cells": 13,
+      "errors": 0,
+      "markdown_before_code_gaps": 2,
+      "execution_exception": null
+    }
+  ],
+  "html": [
+    {
+      "file": "Week 20-1 MLT-03 Machine Learning-III Machine Learning for Tradin.html",
+      "body_open": 1,
+      "body_close": 1,
+      "html_open": 1,
+      "html_close": 1,
+      "generated_chart_refs": 10,
+      "missing_generated_charts": []
+    },
+    {
+      "file": "Week 20-1 MLT-03 Machine Learning-III Machine Learning for Tradin_study.html",
+      "body_open": 1,
+      "body_close": 1,
+      "html_open": 1,
+      "html_close": 1,
+      "generated_chart_refs": 0,
+      "missing_generated_charts": []
+    }
+  ],
+  "charts": [
+    "chart_addendum_1_mlt03_source_data_dependency_inventory.png",
+    "chart_addendum_2_mlt03_activation_gradient_reference.png",
+    "chart_addendum_3_mlt03_mlp_metrics_backtest.png",
+    "chart_addendum_4_mlt03_feature_indicator_controls.png",
+    "chart_addendum_5_mlt03_tfidf_model_risk_controls.png"
+  ],
+  "engineered_features": [
+    "std_5",
+    "std_10",
+    "std_15",
+    "ma_10",
+    "ma_15",
+    "ma_20",
+    "ma_25",
+    "pct_3",
+    "pct_6",
+    "pct_9",
+    "co",
+    "upper_band",
+    "middle_band",
+    "lower_band",
+    "macd",
+    "sar"
+  ],
+  "main_html_appended": true,
+  "study_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "dependency_note": "talib and sklearn are not installed locally; validated notebook adds local fallbacks."
+}

@@ -1,0 +1,7 @@
+topic,additive_precision,trading_control
+Continuous hedging,Costs can dominate when IV equals RV.,Use bands or schedules; include costs.
+Hedge-frequency elbow,Dispersion falls roughly like 1/sqrt(N).,Stop adding hedges after marginal benefit fades.
+Whalley-Wilmott kappa,"Kappa is calibrated risk appetite, not a market quote.",Set once from comfort band and reuse consistently.
+Hedge-vol choice,Implied smooths marks; realized tightens final PnL.,Match hedge vol to the evaluation objective.
+Early exercise,American early exercise can be rational around dividends.,Compare dividend to remaining extrinsic value.
+Single trade attribution,A profitable trade can still be lucky.,"Decompose IV/RV, drift, hedge costs, and tail hedge impact."

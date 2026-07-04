@@ -1,0 +1,4 @@
+artifact,artifact_type,exists,size_bytes,rows,columns,note
+Week 10-1 ASQ-01 Statistical Analysis_practice.ipynb,practice_notebook,True,615942,,,"13 code cells, 17 markdown cells"
+market_data.csv,source_data,True,75044,962,6,2017-01-02 through 2020-11-27
+chart_1_arima.png,original_chart,True,132549,,,Existing chart preserved; addendum charts use separate names.

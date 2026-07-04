@@ -1,0 +1,7 @@
+control,lecture_application,additive_note
+Original notebook execution,Run ASQ-02 practice notebook.,Original fails locally because statsmodels/arch dependencies are unavailable.
+Validated fallback copy,Permit local execution without installing packages.,Fallback AR-like and EWMA-GARCH-like classes are labelled and limited to this notebook.
+Fixed versus auto order,ARIMA order selection and AIC.,Fallback AIC search is recorded separately from formal statsmodels ARIMA.
+Transaction costs,Gross versus net strategy return.,Cost drag is explicitly subtracted from signal returns.
+Volatility regimes,Heteroscedasticity and COVID volatility spike.,Rolling 30-day realized vol confirms non-constant risk.
+Formal inference scope,GARCH and ARIMA modelling.,Use statsmodels/arch for production-grade model estimation.

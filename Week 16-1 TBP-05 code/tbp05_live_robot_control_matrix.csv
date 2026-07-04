@@ -1,0 +1,6 @@
+control,backtest_gap,live_requirement,reference_file
+Market calendar,CSV backtest has only rows that exist,Do not send orders on holidays or non-trading days,moving_average_crossover_2_trading_day.py
+Early close clock,Daily bars hide half-day close time,Trade at 12:59 on half-days and 15:59 on normal days,moving_average_crossover_early_close.py
+Notifications,Research notebook does not notify humans,"Email account balance, errors, and status",moving_average_crossover_email.py
+Order error handling,Backtest assumes orders always work,Catch rejected orders and keep the process alive,moving_average_crossover_handle_error.py
+Broker/API dependency,Offline code cannot call IBridgePy functions,Run reference robots only inside IBridgePy/IB connected environment,all reference_ibridgepy_strategies/*.py

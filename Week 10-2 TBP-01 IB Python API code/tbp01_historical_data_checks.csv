@@ -1,0 +1,10 @@
+metric,value,unit,reading
+source_rows,962,rows,Rows in local historical sample.
+source_columns,6,columns,Date/OHLCV columns.
+first_date,2017-01-02,date,Start date in source CSV.
+last_date,2020-11-27,date,End date in source CSV.
+callback_rows_requested,10,bars,Notebook requests tail(10).
+callback_first_date,2020-11-13,date,First callback bar in request.
+callback_last_date,2020-11-27,date,Last callback bar in request.
+callback_close_min,12719.950195,price,Minimum close in callback sample.
+callback_close_max,13055.150391,price,Maximum close in callback sample.

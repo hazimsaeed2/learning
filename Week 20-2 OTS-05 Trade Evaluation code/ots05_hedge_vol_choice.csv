@@ -1,0 +1,3 @@
+hedge_vol,final_pnl_mean,final_pnl_std,avg_daily_mtm_std,reading
+implied_40v,4.0340285,1.95196722,0.16173485,"Smoother marks, wider final outcome."
+realized_30v,3.94772887,1.45281269,0.23237655,"Noisier marks, tighter final outcome."

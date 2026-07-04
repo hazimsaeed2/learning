@@ -1,0 +1,4 @@
+series,rows,coef,corr,interpretation
+NIFTY daily,960,-0.0806509,-0.08065009,weak; sign unstable across timeframe
+NIFTY 2-day,479,0.13538068,0.13535959,weak; sign unstable across timeframe
+NIFTY weekly,202,0.04808157,0.04812845,weak; sign unstable across timeframe

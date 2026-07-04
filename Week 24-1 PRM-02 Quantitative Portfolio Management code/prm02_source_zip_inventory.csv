@@ -1,0 +1,13 @@
+zip,path,role,size_bytes
+PRM02-Inclass-Exercises-File.zip,PRM02 Inclass Exercises File/,directory,0
+PRM02-Inclass-Exercises-File.zip,PRM02 Inclass Exercises File/.ipynb_checkpoints/,directory,0
+PRM02-Inclass-Exercises-File.zip,PRM02 Inclass Exercises File/.ipynb_checkpoints/PRM-02_codes_nifty50_data-checkpoint.csv,checkpoint,813421
+PRM02-Inclass-Exercises-File.zip,PRM02 Inclass Exercises File/.ipynb_checkpoints/PRM_02_code-checkpoint.ipynb,checkpoint,7358131
+PRM02-Inclass-Exercises-File.zip,PRM02 Inclass Exercises File/.ipynb_checkpoints/PRM_02_data_MARUTI-checkpoint.csv,checkpoint,113914
+PRM02-Inclass-Exercises-File.zip,PRM02 Inclass Exercises File/PRM-02_codes_nifty50_data.csv,source_data,813421
+PRM02-Inclass-Exercises-File.zip,PRM02 Inclass Exercises File/PRM_02_code.ipynb,source_notebook,7358131
+PRM02-Inclass-Exercises-File.zip,PRM02 Inclass Exercises File/PRM_02_data_Benchmark_data.csv,source_data,75157
+PRM02-Inclass-Exercises-File.zip,PRM02 Inclass Exercises File/PRM_02_data_MARICO.csv,source_data,132734
+PRM02-Inclass-Exercises-File.zip,PRM02 Inclass Exercises File/PRM_02_data_MARUTI.csv,source_data,113914
+PRM02-Inclass-Exercises-File.zip,PRM02 Inclass Exercises File/PRM_02_data_TCS.csv,source_data,128125
+PRM02-Inclass-Exercises-File.zip,PRM02 Inclass Exercises File/PRM_02_other_Explanations.xlsx,source_spreadsheet,11253

@@ -247,5 +247,29 @@ production trading code is written this way.</p>
 
 <p style="text-align:center;color:#a78bca;margin-top:36px;font-size:14px;">EPAT · Week 8-2 DMP-02 · Introduction to Object-Oriented Programming</p>
 
+
+
+<!-- DMP02_STUDY_ADDITIVE_SOURCE_PACK_START -->
+<h2>Additive Validation Pack</h2>
+<div class="callout">
+  <p><strong>Added without changing the original study guide.</strong> The validation pack confirms the original practice notebook runs offline, checks the OOP examples, and reproduces the two <code>BacktestingCrossover</code> parameter runs.</p>
+</div>
+<table>
+  <tr><th>Check</th><th>Additive result</th></tr>
+  <tr><td>Original notebook execution</td><td>0 errors in an isolated temporary folder.</td></tr>
+  <tr><td>Backtest rows</td><td>942 rows for each 20-day long-window run after rolling warmup and position lag.</td></tr>
+  <tr><td>Strategy comparison</td><td>SMA10/20 2.64%; SMA5/20 5.62%; buy-and-hold 51.48%.</td></tr>
+  <tr><td>Shift placement clarification</td><td>The lag is applied once in <code>positions()</code>; avoid shifting the strategy twice.</td></tr>
+</table>
+<p>Generated validation artifacts are in <code>Week 8-2 DMP-02 Introduction to OOP code</code>, including <code>VALIDATION_REPORT.md</code>, the addendum notebook, the validated notebook copy, and these charts:</p>
+<ul>
+<li><code>Week 8-2 DMP-02 Introduction to OOP code/chart_addendum_1_dmp02_source_notebook_audit.png</code></li>
+<li><code>Week 8-2 DMP-02 Introduction to OOP code/chart_addendum_2_dmp02_oop_concept_map.png</code></li>
+<li><code>Week 8-2 DMP-02 Introduction to OOP code/chart_addendum_3_dmp02_backtest_equity.png</code></li>
+<li><code>Week 8-2 DMP-02 Introduction to OOP code/chart_addendum_4_dmp02_parameter_comparison.png</code></li>
+<li><code>Week 8-2 DMP-02 Introduction to OOP code/chart_addendum_5_dmp02_method_pipeline.png</code></li>
+</ul>
+<!-- DMP02_STUDY_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

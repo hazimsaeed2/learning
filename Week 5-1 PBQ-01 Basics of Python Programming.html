@@ -187,7 +187,51 @@ d[<span class="str">"signal"</span>] = np.<span class="tok">where</span>(d.SMA20
     <div class="mt-3 text-xs text-slate-300">Jupyter: <span class="kbd">A</span> cell above · <span class="kbd">B</span> below · <span class="kbd">DD</span> delete · <span class="kbd">Esc</span> command mode · <span class="kbd">Enter</span> edit · <span class="kbd">Shift+Enter</span> run · <code>?print</code> / <code>help(print)</code> docs · <code>%who</code>/<code>%whos</code> list vars.</div>
   </div>
 
+  <div class="mt-4 bg-white rounded-2xl p-4 shadow border-t-4 border-emerald-500">
+    <div class="flex items-center gap-2"><span class="bg-emerald-500 text-white rounded-full w-6 h-6 grid place-items-center font-bold">8</span><h2 class="font-extrabold text-emerald-800 text-base">Addendum: official workflow mechanics</h2></div>
+    <div class="grid grid-cols-12 gap-3 mt-3 text-xs">
+      <div class="col-span-12 lg:col-span-6 bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+        <b class="text-emerald-900">Jupyter and environment workflow</b>
+        <ul class="list-disc ml-4 mt-2 space-y-1">
+          <li><code>Esc</code> command mode, <code>Enter</code> edit mode, <code>Shift+Enter</code> run current cell.</li>
+          <li><code>help(obj)</code>, <code>obj?</code>, tab completion, <code>%who</code>, and <code>%whos</code> inspect code and memory.</li>
+          <li><code>conda</code> is strong for environments and scientific packages; <code>pip</code> installs Python packages.</li>
+          <li>AI can explain errors and examples, but trading logic and signal alignment still need human verification.</li>
+        </ul>
+      </div>
+      <div class="col-span-12 lg:col-span-6 bg-sky-50 border border-sky-200 rounded-lg p-3">
+        <b class="text-sky-900">Python and pandas gotchas</b>
+        <ul class="list-disc ml-4 mt-2 space-y-1">
+          <li><code>set</code> means unordered unique values; use it for de-duplication and membership checks.</li>
+          <li><code>append(x)</code> adds one object; <code>extend(xs)</code> adds each item from <code>xs</code>.</li>
+          <li><code>.loc</code> is label-based; <code>.iloc</code> is integer-position based.</li>
+          <li><code>None</code> and <code>NaN</code> are missing values, not zero. Rolling signals create warm-up <code>NaN</code> rows.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="grid grid-cols-12 gap-3 mt-3">
+      <img class="col-span-12 lg:col-span-4 rounded-lg border border-slate-200" src="Week 5-1 PBQ-01 code/chart_addendum_1_pbq01_vectorization_benchmark.png" alt="PBQ-01 vectorization benchmark">
+      <img class="col-span-12 lg:col-span-4 rounded-lg border border-slate-200" src="Week 5-1 PBQ-01 code/chart_addendum_2_pbq01_pandas_access_patterns.png" alt="PBQ-01 pandas access patterns">
+      <img class="col-span-12 lg:col-span-4 rounded-lg border border-slate-200" src="Week 5-1 PBQ-01 code/chart_addendum_3_pbq01_missing_data_signals.png" alt="PBQ-01 missing data and signal states">
+    </div>
+    <div class="mt-3 text-xs bg-slate-50 border border-slate-200 rounded-lg p-2">New companion files: <code>Week 5-1 PBQ-01 Basics of Python Programming_resource_addendum_practice.ipynb</code>, <code>Week 5-1 PBQ-01 Basics of Python Programming_validated_practice.ipynb</code>, and the <code>pbq01_*.csv</code> reference tables.</div>
+  </div>
+
   <div class="mt-3 text-center text-xs text-slate-400">Week 5-1 · PBQ-01 · Basics of Python Programming — self-teaching cheat sheet · practice ~1 hr/day</div>
 </div>
+
+<!-- VALIDATION_EVIDENCE_ADDENDUM_START -->
+<section id="validation-evidence-addendum" data-validation-evidence="true" style="max-width: 1100px; margin: 24px auto; padding: 14px 16px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.45;">
+  <h2 style="margin: 0 0 8px; font-size: 16px; font-weight: 700;">Validation Evidence Addendum</h2>
+  <p style="margin: 0 0 8px;">This additive note points to the validation evidence for this lecture. The original page content above remains unchanged.</p>
+  <ul style="margin: 0; padding-left: 18px;">
+    <li>Queue row: 5</li>
+    <li>Lecture: Week 5-1 PBQ-01 Basics of Python Programming</li>
+    <li>Status: DONE</li>
+    <li>Validation report: <a href="Week%205-1%20PBQ-01%20code/VALIDATION_REPORT.md">Week 5-1 PBQ-01 code/VALIDATION_REPORT.md</a></li>
+    <li>Execution summary JSON: <a href="Week%205-1%20PBQ-01%20code/pbq01_validation_execution_summary.json">Week 5-1 PBQ-01 code/pbq01_validation_execution_summary.json</a></li>
+  </ul>
+</section>
+<!-- VALIDATION_EVIDENCE_ADDENDUM_END -->
 </body>
 </html>

@@ -1,0 +1,6 @@
+frequency,model,lecture_anchor,addendum_use
+low,factor ETF or factor exposure,"regress stock/fund returns on market, size, value, and other factors; if factors explain most variance, ETF exposure may replace stock picking",concept table only; no external factor data required
+mid,ETF asset allocation / robo-advisory,combine ETFs to match investor risk and return profile; textbook efficient frontier often needs robust real-world adjustments,portfolio-construction reference
+high,ETF market making,"model limit-order-book arrivals/cancellations, often with queueing or Poisson-process ideas",execution/model ladder reference
+product structure,active ETF growth,transcript cites active ETF AUM rising from about 0.8T in 2024 to about 1.4T in 2025,source-labeled industry note
+product structure,leveraged ETFs,transcript points to Korea/Taiwan markets and leveraged ETF construction papers as follow-up study,extension topic note

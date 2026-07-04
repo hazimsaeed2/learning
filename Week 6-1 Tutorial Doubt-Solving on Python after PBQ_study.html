@@ -160,6 +160,33 @@ an LLM hands you a strategy using <code>rolling</code>, <code>np.where</code>, <
 <code>pct_change</code> and you can't read those, the code is a black box you can't trust. Learn the basics
 first; then let the AI accelerate you, with you as the verifier.</div>
 
+<h2>9. Additive practice: inspect, fetch, plot, verify</h2>
+<p>The source tutorial also touched several practical habits that deserve their own checklist. These do not
+replace the mechanics above; they extend them into the way you should work in real notebooks.</p>
+
+<p><img src="Week 6-1 Tutorial Python code/chart_addendum_1_week6_import_decision_flow.png" alt="Week 6-1 import, inspection, and local data workflow" style="max-width:100%;border:1px solid #cbd5e1;border-radius:8px"></p>
+
+<table>
+<tr><th>Habit</th><th>Why it matters</th><th>Practice cue</th></tr>
+<tr><td><code>urllib</code></td><td>Reinforces <code>from B import A</code> using <code>from urllib import request</code> and <code>request.urlopen(url)</code>.</td><td>Use a local <code>file://</code> URL first so the workflow is offline and reproducible.</td></tr>
+<tr><td><code>dir()</code>, <code>?</code>, <code>??</code></td><td>Lets you inspect a library before guessing names, arguments, or source.</td><td>Check the signature/docstring before using a new function in a strategy.</td></tr>
+<tr><td>Explicit namespaces</td><td>Prevents silent name replacement when two libraries define the same function name.</td><td>Prefer <code>math.sin(x)</code> and <code>cmath.sin(x)</code> over loose imported names.</td></tr>
+<tr><td>AI with verification</td><td>LLMs are useful for examples, but you must understand every function they introduce.</td><td>Ask for line-by-line explanation, then test <code>rolling</code>, <code>shift</code>, <code>pct_change</code>, or <code>np.where</code> on a tiny case.</td></tr>
+<tr><td>Tool choices</td><td>Notebook, JupyterLab, VS Code, Spyder, and PyCharm are interfaces around the same Python habits.</td><td>Use Git/GitHub checkpoints once code becomes more than a throwaway notebook.</td></tr>
+</table>
+
+<p><img src="Week 6-1 Tutorial Python code/chart_addendum_2_week6_namespace_and_brackets.png" alt="Week 6-1 namespace discipline and bracket reference" style="max-width:100%;border:1px solid #cbd5e1;border-radius:8px"></p>
+
+<p>The official exercise file also used market data for visualization. The local TCS file now has a companion
+plot and statistics table so you can practise the same checks without any network dependency.</p>
+<p><img src="Week 6-1 Tutorial Python code/chart_addendum_3_week6_tcs_visualization_practice.png" alt="Week 6-1 TCS adjusted close and daily return distribution" style="max-width:100%;border:1px solid #cbd5e1;border-radius:8px"></p>
+
+<p>The code folder now includes additive resources: <code>week6_import_reference.csv</code>,
+<code>week6_bracket_reference.csv</code>, <code>week6_magic_reference.csv</code>,
+<code>week6_learning_tools_reference.csv</code>, <code>week6_tcs_visualization_stats.csv</code>,
+<code>Week 6-1 Tutorial Doubt-Solving on Python after PBQ_resource_addendum_practice.ipynb</code>, and
+<code>Week 6-1 Tutorial Doubt-Solving on Python after PBQ_validated_practice.ipynb</code>.</p>
+
 <h2>Key takeaways</h2>
 <ul>
 <li>A <strong>library</strong> is a labelled toolbox; <strong>built-in</strong> ones (<code>os</code>, <code>math</code>) need no install, <strong>third-party</strong> ones (<code>numpy</code>, <code>pandas</code>) install once and import every session.</li>

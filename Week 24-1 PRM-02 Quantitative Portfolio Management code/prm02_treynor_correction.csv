@@ -1,0 +1,2 @@
+item,original_notebook_formula,original_notebook_value,corrected_annual_formula,corrected_annual_value,additive_note
+Treynor ratio,(daily_mean - rf/252) / beta * sqrt(252),0.016272,(annual_mean - rf) / beta,0.258314,Original value remains in place; this row adds the standard annual convention.

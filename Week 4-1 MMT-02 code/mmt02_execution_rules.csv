@@ -1,0 +1,13 @@
+rule,trigger,action,risk_control
+incoming_order_filter,Order is illiquid or very large relative to ADV,Divert for manual attention,Avoid forcing an automated strategy into bad liquidity
+volume_distribution,Projected intraday volume is high,Allocate a larger slice,Use liquidity when the market can absorb the order
+thin_period_control,Projected volume is thin,Reduce participation and prefer passive posting,Limit market impact and information leakage
+tth_gate,TTH / practical horizon greater than 2,Flag time as insufficient,Escalate before the strategy runs out of time
+peg_loop_guard,Peg target moves but the order is alone or being gamed,"Wait, correct down, or cancel according to thresholds",Avoid chasing artificial quote moves
+significant_size_check,"Size ahead at bid is at least max(500 shares, 50 pct of bid size)",Allow peg-price adjustment despite normal threshold,React when meaningful queue depth changes execution odds
+discretion_price,Adjusted spread is within the discretion range and the client limit is respected,Send an aggressive discretion child order,Take liquidity only when the hidden second price is justified
+dynamic_dr,"Trend, opposite-side liquidity, urgency, and expected spread change",Update discretion range instead of using a static value,Keep the order on schedule without blindly overpaying
+iceberg_awareness,Opposite liquidity refills repeatedly,Treat visible size as incomplete information,Avoid assuming the displayed book is the full supply/demand
+ioc_order,Need immediate execution only,Fill what is available now and cancel the rest,Prevents stale resting exposure
+tbt_data,Need fill-probability and book-reconstruction estimates,Use true tick-by-tick order events,Builds the evidence behind EV and queue-position assumptions
+spoofing_compliance,Repeated orders appear designed to move price without intent to trade,Do not use; maintain logs and kill switches,Spoofing is illegal and operationally dangerous

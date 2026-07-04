@@ -1,0 +1,6 @@
+sklearn_api,fallback_behavior,validation_scope
+train_test_split,"time-ordered split, optional deterministic shuffle",Notebook execution only
+DecisionTreeClassifier,single best Gini stump,Does not replace full sklearn CART
+RandomForestClassifier,stump proxy with accepted constructor args,Workflow smoke test only
+LogisticRegression,linear score threshold proxy,Scaling and prediction smoke test
+StandardScaler/metrics,minimal compatible methods,Local reproducibility

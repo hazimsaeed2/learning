@@ -1,0 +1,6 @@
+platform,latency_us,data_feed_delay,cost_per_month_usd,x_faster_than_broker
+Broker API (retail),30000.0,few 100 ms,free-$10,1
+MFT vendor,3000.0,~100 us,few $100,10
+HFT vendor,50.0,10-100 us,$5k-$25k,600
+In-house HFT,5.0,few us,$100k-$2M,6000
+FPGA / ASIC,0.5,< 1 us,$100k-$2M,60000

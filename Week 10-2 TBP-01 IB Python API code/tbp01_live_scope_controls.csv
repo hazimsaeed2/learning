@@ -1,0 +1,8 @@
+scope_item,validated_here,note
+TWS / IB Gateway running,no,"Notebook uses a local mock, not a real socket."
+IB account authentication,no,No credentials or live broker session are used.
+API port and clientId settings,concept only,The example shows host/port/clientId shape but does not probe a live endpoint.
+Market data permissions,no,Historical bars come from historical_sample.csv.
+Callback wiring,yes,Mock EClient queues messages and EWrapper callbacks receive them.
+Threaded listener pattern,yes,Execution uses a listener thread; validator disconnects the mock app afterward.
+Order placement / fills,no,"TBP-01 focuses on connectivity and data callbacks, not live orders."

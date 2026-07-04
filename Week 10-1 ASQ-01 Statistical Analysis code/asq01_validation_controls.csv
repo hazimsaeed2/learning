@@ -1,0 +1,7 @@
+control,lecture_application,additive_note
+Original notebook execution,Run ASQ-01 practice notebook in a temp folder.,Original fails locally because statsmodels is unavailable.
+Validated fallback copy,Permit local execution without installing packages.,"Fallback covers only AR(1), ADF-like, ACF/PACF plotting for this notebook."
+MA crossover replication,Daily 10/30 moving-average rule.,MA and buy-and-hold returns match the study-guide scale.
+Stationarity scope,ADF test interpretation.,Fallback ADF-like p values are heuristic; formal inference needs statsmodels.
+Rolling AR caution,Dynamic AR(1) weekly forecast.,Fallback OLS AR(1) differs from statsmodels ARIMA exact output; direction of underperformance remains.
+Additive-only correction,Preserve original values.,Original study values remain; addendum records local fallback metrics separately.

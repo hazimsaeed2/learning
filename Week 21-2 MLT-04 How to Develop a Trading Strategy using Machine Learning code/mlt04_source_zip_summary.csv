@@ -1,0 +1,17 @@
+batch,role,files,total_bytes
+Batch 67,build_or_cache,4219,124661833
+Batch 67,config,3,521158
+Batch 67,docs,3,22605
+Batch 67,model_or_result_pickle,13,1097029
+Batch 67,notebook,8,1357373
+Batch 67,other,4,2209
+Batch 67,parquet_data,6,3127568
+Batch 67,python_source,15,125018
+Batch 68 Onwards,build_or_cache,5,1088
+Batch 68 Onwards,config,3,521335
+Batch 68 Onwards,docs,2,26407
+Batch 68 Onwards,model_or_result_pickle,13,653145
+Batch 68 Onwards,notebook,8,1436841
+Batch 68 Onwards,other,5,2214
+Batch 68 Onwards,parquet_data,6,3105010
+Batch 68 Onwards,python_source,16,129409

@@ -1,0 +1,40 @@
+{
+  "lecture_row": 7,
+  "lecture": "Week 6-1 Tutorial Session - Doubt Solving on Python after P",
+  "queue_status": "DONE",
+  "summary_type": "legacy_report_digest",
+  "summary_created_utc": "2026-07-03T22:56:54+00:00",
+  "source_report": "Week 6-1 Tutorial Python code/VALIDATION_REPORT.md",
+  "source_report_modified_utc": "2026-07-02T14:30:46+00:00",
+  "notebook_execution_rerun_for_this_json": false,
+  "status_from_existing_report": "UNKNOWN",
+  "report_pass_indicators": [],
+  "report_error_indicators": [],
+  "artifacts_in_code_folder": {
+    "notebooks": [
+      "Week 6-1 Tutorial Doubt-Solving on Python after PBQ_practice.ipynb",
+      "Week 6-1 Tutorial Doubt-Solving on Python after PBQ_resource_addendum_practice.ipynb",
+      "Week 6-1 Tutorial Doubt-Solving on Python after PBQ_validated_practice.ipynb"
+    ],
+    "notebook_count": 3,
+    "html_exports": [],
+    "html_export_count": 0,
+    "chart_files": [
+      "chart_1_timeit.png",
+      "chart_addendum_1_week6_import_decision_flow.png",
+      "chart_addendum_2_week6_namespace_and_brackets.png",
+      "chart_addendum_3_week6_tcs_visualization_practice.png"
+    ],
+    "chart_file_count": 4,
+    "csv_files": [
+      "TCS.NS.csv",
+      "week6_bracket_reference.csv",
+      "week6_import_reference.csv",
+      "week6_learning_tools_reference.csv",
+      "week6_magic_reference.csv",
+      "week6_tcs_visualization_stats.csv"
+    ],
+    "csv_file_count": 6
+  },
+  "coverage_note": "This JSON was added after queue completion because the folder already had a VALIDATION_REPORT.md but no machine-readable summary. It is a digest of that existing report and local artifacts, not a fresh execution claim."
+}

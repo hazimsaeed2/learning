@@ -1,0 +1,8 @@
+participant,primary_role,typical_motivation,examples
+Brokers,facilitate client execution,"commissions, principal bid premium, client service","investment banks, full-service, bulge bracket, research brokers"
+Institutions,invest and rebalance portfolios,implementation consistent with fund objective,"asset managers, mutual funds, index funds, insurers"
+Hedge funds,seek alpha and manage risk,quant and non-quant investment profits,"long/short, statistical arbitrage, event strategies"
+Liquidity providers,post bids and asks,spread capture and venue rebates,"specialists, market makers, NYSE DMM, Nasdaq QMM, AMM brokers"
+Retail investors,individual trading and investing,"portfolio allocation, wealth management, speculation","individuals, wealth managers, Gen-X, millennials, Gen-Z"
+Proprietary trading firms,trade firm capital,short-horizon trading profit,"prop firms, market-making firms"
+High-frequency traders,fast liquidity and pattern trading,"spread, rebates, short-term order-flow patterns",HFT liquidity and rebate strategies

@@ -1,0 +1,8 @@
+control,lecture_application,additive_note
+Use returns for PCA,SPY/QQQ and baskets are converted to daily percent changes before covariance/eigendecomposition.,Data inventory and PCA metrics preserve the return-based calculation.
+PCA hedge ratio sign,Eigenvectors are sign-indeterminate; the index eigen-portfolio is sign-aligned to SPY.,Index metrics record the correlation and weight sum.
+OLS is not invertible,QQQ-on-SPY OLS slope differs from inverse SPY-on-QQQ slope.,PCA metrics record both OLS slopes and the PCA slope.
+Cointegration is not correlation,"Crude/gasoline pair is cointegrated, while eigen-portfolio/SPY is highly correlated but not cointegrated.",Cointegration table separates p-values from correlation.
+Backtest realism,"Notebook spread tests omit costs, slippage, borrow/funding, stop loss, and sizing constraints.",Backtest metrics mark these as demonstration-only.
+Survivorship bias,Top-40 stock basket is a shipped current/selected universe.,Production research should use point-in-time constituents.
+Column-order spread,The notebook uses diff(axis=1)['RB=F']; this depends on CL/RB column order.,A production version should name the spread explicitly as RB_z minus CL_z.

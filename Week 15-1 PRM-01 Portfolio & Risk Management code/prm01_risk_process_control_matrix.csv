@@ -1,0 +1,6 @@
+phase,lecture_action,control_artifact,failure_prevented
+1. Structure and policy,Create an independent risk function with authority over trading activity,"Risk mandate, new-product approval, trader/risk separation, escalation owner",Rogue traders using process knowledge to hide trades
+2. Identify sources,List every material source of risk before sizing the strategy,"Market, credit, financial, regulatory, operational, liquidity, and disaster taxonomy",Treating a non-price risk as if it were ordinary market volatility
+3. Evaluate and quantify,"Measure the risk using sensitivities, what-if grids, VaR/CVaR, stress tests, and credit loss formulas","Greek report, scenario cube, VaR/CVaR report, PD x LGD x EAD, liquidity-adjusted loss",A strategy looking safe only because the measurement omitted tail or liquidity loss
+4. Set limits,"Set hard caps by exposure, geography, sector, settlement, margin, order count, and price band",Limit table in the OMS and independent risk-monitoring service,An otherwise valid strategy becoming too concentrated or cash-settlement constrained
+5. Design controls,Put controls before orders reach the exchange and monitor them in real time,"Heartbeat, stale-data rejection, book sanity, order gate, checksum deployment, kill switch",Fast automated errors that humans cannot interrupt manually

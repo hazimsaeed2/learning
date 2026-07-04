@@ -1,0 +1,9 @@
+check,value,reading
+unique_quote_days,175,Backtest iterates by quote date.
+unique_expiries,12,Monthly expiry coverage.
+dte_min,0,Minimum days to expiry in data.
+dte_max,22,Maximum days to expiry in data.
+active_price_rows,32878,Rows with both call and put prices positive.
+zero_call_last_rows,13198,Rows excluded by active-price filter.
+zero_put_last_rows,6780,Rows excluded by active-price filter.
+min_abs_strike_distance_pct,0.0,ATM proximity check.

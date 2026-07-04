@@ -112,5 +112,23 @@
 <strong>The one-paragraph version.</strong> Part II turns the roll into trades. A <em>perfect</em> hedge (short GC, long GLD) earns a Sharpe of <em>zero</em> — no risk means no excess return. So you take an <em>imperfect</em> hedge: <em>short USO / long XLE</em> harvests the oil roll, makes <em>+200%+</em> in the 2008 crisis (momentum is crisis alpha, and it was <em>long</em> stocks while winning), then pays it partly back in the inevitable <em>momentum crash</em>. The <em>VIX future</em> carries a brutal <em>−50% roll</em> that is really option <em>theta</em>; short it and hedge the spot with the <em>anti-correlated E-mini</em> (sell <em>both</em>, since they move oppositely), sizing the hedge in <em>dollars</em> (VX \$1000 vs ES \$50) on the <em>post-crisis regime only</em> — and never regress without the scatter plot. To <em>find</em> momentum without a story, scan <em>serial autocorrelation</em> over a look-back/hold pair (≈250/25), but overlapping windows <em>break IID</em> and fake your p-value, so sample every <code>min(L,H)</code> days; the simplest rule (buy if the look-back is positive, hold H days) already gives Sharpe ~1, and <em>combining</em> it with a faster mean-reversion signal <em>removes the crash</em>. Finally, calendar spreads need <em>curvature</em> (roll = −slope, so short the front on a convex curve), and 3× ETFs both suffer <em>volatility drag</em> and create tradable end-of-day momentum through forced rebalancing. Every strategy here is a <em>starting point</em> — the profit is in the bells and whistles you add.
 </div>
 
+
+<!-- EFS04_STUDY_ADDITIVE_SOURCE_PACK_START -->
+<section id="efs04-study-additive-source-pack" style="margin-top: 32px; padding: 20px; border: 1px solid #d6dee8; border-radius: 8px; background: #ffffff;">
+  <h2>Additive Source-Backed Continuation: EFS-04</h2>
+  <p>This block is appended beside the existing study guide. It keeps the original text and adds the source-backed version of the implementation details that matter most in practice.</p>
+  <ul>
+    <li><strong>VX/ES source hedge ratio:</strong> the copied regime-trading source uses <code>hedgeRatio = 0.315377</code>; recompute this after choosing the regime and converting contract multipliers.</li>
+    <li><strong>VIX tradability:</strong> VIX is an options-derived index used as the reference for VX roll, not the instrument traded in the strategy.</li>
+    <li><strong>Same-side hedge:</strong> VIX and ES are anti-correlated, so short VX roll harvest pairs with short ES, and long VX pairs with long ES.</li>
+    <li><strong>Oil timestamp hygiene:</strong> CL settlement around 2:30pm ET and ETF close at 4:00pm ET must not be mixed as if they were simultaneous. Back-adjustment fixes roll gaps, not this timing problem.</li>
+    <li><strong>Autocorrelation testing:</strong> overlapping lookback/holding windows are not IID. Sample every <code>min(L,H)</code> days before trusting the p-value filter.</li>
+    <li><strong>Calendar spreads:</strong> a linear term structure gives both legs the same roll. The spread needs curvature, and the curve shape can change.</li>
+    <li><strong>Leveraged ETFs:</strong> volatility drag and forced end-of-day rebalance flow are separate effects. The first explains long-run underperformance; the second creates a possible short-horizon flow signal.</li>
+  </ul>
+  <p>See the new code-folder files <code>efs04_*.csv</code>, <code>chart_addendum_*_efs04_*.png</code>, <code>Week 14-2 EFS-04 Quantitative Momentum Strategies II_resource_addendum_practice.ipynb</code>, and <code>Week 14-2 EFS-04 Quantitative Momentum Strategies II_validated_practice.ipynb</code>.</p>
+</section>
+<!-- EFS04_STUDY_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

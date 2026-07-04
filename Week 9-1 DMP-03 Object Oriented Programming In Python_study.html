@@ -207,5 +207,29 @@ back-testing.</p>
 
 <p style="text-align:center;color:#94a3b8;margin-top:36px;font-size:14px;">EPAT · Week 9-1 DMP-03 · OOP in Python (Part 1) — EMH, Random Walks &amp; Vectorized Back-testing</p>
 
+
+
+<!-- DMP03_STUDY_ADDITIVE_SOURCE_PACK_START -->
+<h2>Additive Validation Pack</h2>
+<div class="callout">
+  <p><strong>Added without changing the original study guide.</strong> The validation pack confirms the original practice notebook runs offline and reproduces the EMH, return/risk, and OLS AR(7) backtest calculations.</p>
+</div>
+<table>
+  <tr><th>Check</th><th>Additive result</th></tr>
+  <tr><td>Original notebook execution</td><td>0 errors in an isolated temporary folder.</td></tr>
+  <tr><td>ACF correction</td><td>The shipped NIFTY data has 8 of 15 return ACF lags outside the simple 95% band, not only a couple; the signs remain scattered.</td></tr>
+  <tr><td>Return math</td><td>Simple cumulative return 58.55%; cumulative log return 46.09%, which exponentiates back to the same simple return.</td></tr>
+  <tr><td>OLS backtest</td><td>Buy-and-hold 54.26%; OLS AR(7) sign strategy -47.34%.</td></tr>
+</table>
+<p>Generated validation artifacts are in <code>Week 9-1 DMP-03 OOP in Python code</code>, including <code>VALIDATION_REPORT.md</code>, the addendum notebook, the validated notebook copy, and these charts:</p>
+<ul>
+<li><code>Week 9-1 DMP-03 OOP in Python code/chart_addendum_1_dmp03_source_notebook_audit.png</code></li>
+<li><code>Week 9-1 DMP-03 OOP in Python code/chart_addendum_2_dmp03_random_walk_acf.png</code></li>
+<li><code>Week 9-1 DMP-03 OOP in Python code/chart_addendum_3_dmp03_return_risk_drawdown.png</code></li>
+<li><code>Week 9-1 DMP-03 OOP in Python code/chart_addendum_4_dmp03_ols_backtest_equity.png</code></li>
+<li><code>Week 9-1 DMP-03 OOP in Python code/chart_addendum_5_dmp03_validation_summary.png</code></li>
+</ul>
+<!-- DMP03_STUDY_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

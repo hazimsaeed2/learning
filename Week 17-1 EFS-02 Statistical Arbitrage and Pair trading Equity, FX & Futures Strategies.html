@@ -363,7 +363,27 @@
     </div>
   </div>
 
-  <footer class="text-center text-xs text-slate-600 mt-6">
+  
+<!-- EFS02_ADDITIVE_SOURCE_PACK_START -->
+<section id="efs02-additive-source-pack" class="card mt-8 rounded-xl border border-teal-500/30 bg-slate-900 p-5">
+  <h2 class="text-xl font-bold text-teal-200">Additive Source-Backed Continuation: EFS-02 Validation Pack</h2>
+  <p class="mt-2 text-sm text-slate-300">This section is appended without replacing the existing lecture notes. It adds dependency-safe validation, source inventories, and controls for cointegration, pair selection, and stat-arb risk.</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-4">
+    <figure><img src="Week 17-1 EFS-02 Statistical Arbitrage and Pair Trading code/chart_addendum_1_efs02_source_data_inventory.png" alt="EFS-02 source data inventory" class="rounded border border-slate-700"><figcaption class="text-xs text-slate-500 mt-1">Source packet and local data coverage.</figcaption></figure>
+    <figure><img src="Week 17-1 EFS-02 Statistical Arbitrage and Pair Trading code/chart_addendum_2_efs02_stationarity_diagnostics.png" alt="EFS-02 stationarity diagnostics" class="rounded border border-slate-700"><figcaption class="text-xs text-slate-500 mt-1">ADF diagnostics for single assets and the spread.</figcaption></figure>
+    <figure><img src="Week 17-1 EFS-02 Statistical Arbitrage and Pair Trading code/chart_addendum_3_efs02_spread_bands.png" alt="EFS-02 spread bands" class="rounded border border-slate-700"><figcaption class="text-xs text-slate-500 mt-1">EWA/EWC spread with rolling bands.</figcaption></figure>
+    <figure><img src="Week 17-1 EFS-02 Statistical Arbitrage and Pair Trading code/chart_addendum_4_efs02_pair_controls.png" alt="EFS-02 pair controls" class="rounded border border-slate-700"><figcaption class="text-xs text-slate-500 mt-1">Pair selection and risk controls.</figcaption></figure>
+    <figure class="md:col-span-2"><img src="Week 17-1 EFS-02 Statistical Arbitrage and Pair Trading code/chart_addendum_5_efs02_correlation_vs_cointegration.png" alt="Correlation versus cointegration map" class="rounded border border-slate-700"><figcaption class="text-xs text-slate-500 mt-1">Correlation screens; cointegration gates the trade.</figcaption></figure>
+  </div>
+  <ul class="mt-3 list-disc pl-5 text-sm text-slate-300">
+    <li>The local environment lacks <code>statsmodels</code>, so the original notebook fails locally. The validated notebook adds local <code>OLS</code> and <code>adfuller</code> fallbacks.</li>
+    <li>Correlation is not enough; trade only if the spread is stationary and the hedge ratio was estimated without look-ahead.</li>
+    <li>Cointegration can break. The addendum adds stop, re-test, diversification, and capital-normalization controls beside the existing notes.</li>
+  </ul>
+</section>
+<!-- EFS02_ADDITIVE_SOURCE_PACK_END -->
+
+<footer class="text-center text-xs text-slate-600 mt-6">
     Week 17-1 · EFS-02 · Statistical Arbitrage &amp; Pairs Trading · Ishan Shah · all numbers reproduced in the practice notebook (0 errors)
   </footer>
 

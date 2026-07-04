@@ -1,0 +1,7 @@
+topic,additive_precision,control
+Active price filter,Rows with zero call/put last price are not tradable.,Filter or use bid/ask/mid with liquidity checks.
+Entry/exit calendar,First trading day and day-before-expiry are explicit tags.,Avoid accidental month-end look-ahead.
+ATM selection,strike_distance_pct min can have ties.,Define tie-break rule by liquidity or nearest strike.
+Costs,Notebook uses 1% of premium turnover as a simple cost model.,"Replace with commissions, fees, spread, and slippage before production."
+Lot size,PnL scales by lot_size=50.,Parameterize multiplier by product.
+Stoploss/takeprofit,Exit type changes holding-period distribution.,Report exit mix and not only total PnL.

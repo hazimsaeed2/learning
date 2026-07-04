@@ -1,0 +1,5 @@
+source,raw_topic,_updated,31,84,86,85,88,dpl,upl,order_status,order_id,symbol,bid,ask
+IB,smd+56987333,1657000000000,18123.50,18122.00,18124.00,100,120,,,,,,,
+IB,spl,1657000005000,,,,,,1250.50,-210.25,,,,,
+IB,sor,1657000010000,,,,,,,,Submitted,MOCK-1001,,,
+Alpaca,q,2026-07-02T14:30:01Z,,,,,,,,,,BTCUSD,63250.10,63252.40

@@ -1,0 +1,9 @@
+metric,sentiment_long,buy_hold,reading
+granger_sentiment_to_returns_best_p,0.0458,,"Executed notebook statsmodels output, lags 1-3."
+granger_returns_to_sentiment_best_p,0.0103,,"Executed notebook statsmodels output, reverse direction also low."
+total_return_pct,488.9,88.7,Executed notebook strategy output.
+cagr_pct,30.6,10.0,Executed notebook strategy output.
+sharpe_ann,1.05,0.45,Executed notebook strategy output.
+max_drawdown_pct,-31.8,-47.1,Executed notebook strategy output.
+time_in_market_pct,72.0,100.0,Executed notebook strategy output.
+up_day_hit_rate_pct,51.2,,Executed notebook strategy output.

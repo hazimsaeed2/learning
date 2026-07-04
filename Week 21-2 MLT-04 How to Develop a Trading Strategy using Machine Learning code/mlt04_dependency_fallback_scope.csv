@@ -1,0 +1,9 @@
+dependency,available_locally,version,fallback_or_note
+numpy,yes,2.2.6,not needed
+pandas,yes,3.0.3,not needed
+matplotlib,yes,3.11.0,not needed
+sklearn,no,,validated notebook supplies local execution stub: ModuleNotFoundError
+lightgbm,no,,validated notebook supplies local execution stub: ModuleNotFoundError
+pyarrow,no,,validated notebook supplies local execution stub: ModuleNotFoundError
+fastparquet,no,,validated notebook supplies local execution stub: ModuleNotFoundError
+joblib,no,,validated notebook supplies local execution stub: ModuleNotFoundError

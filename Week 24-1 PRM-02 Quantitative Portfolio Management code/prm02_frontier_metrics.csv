@@ -1,0 +1,4 @@
+portfolio,expected_return_pct,expected_volatility_pct,return_per_risk,stock_count,simulation_count,seed
+minimum_volatility,13.2066,16.9095,0.781016,6,3500,11
+maximum_sharpe,19.8695,18.8742,1.052731,6,3500,11
+maximum_return,21.0339,21.35,0.985195,6,3500,11

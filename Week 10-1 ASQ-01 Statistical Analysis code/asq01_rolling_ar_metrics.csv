@@ -1,0 +1,13 @@
+metric,value,unit,reading
+rolling_window,100,weeks,Training window for AR(1) fallback.
+forecast_rows,103,weeks,Rows after rolling window and signal dropna.
+long_weeks,90,weeks,Positive forecast sign.
+short_weeks,13,weeks,Negative forecast sign.
+fallback_mean_phi,0.020915,coefficient,Mean rolling AR(1) coefficient in fallback OLS.
+fallback_ar1_total_pct,-15.6365,percent,Fallback OLS AR(1) strategy total return.
+buy_hold_total_pct,21.2765,percent,Buy-and-hold over same rolling forecast window.
+fallback_ar1_sharpe,-0.277101,ratio,Annualized weekly Sharpe.
+buy_hold_sharpe,0.552195,ratio,Annualized weekly Sharpe.
+fallback_ar1_max_drawdown_pct,-30.9372,percent,Strategy drawdown.
+buy_hold_max_drawdown_pct,-34.5566,percent,Buy-and-hold drawdown.
+fallback_ar1_win_rate_pct,55.3398,percent,Positive strategy weeks.

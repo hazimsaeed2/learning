@@ -1,0 +1,7 @@
+control,what_to_measure,why_it_matters,trade_rule
+Fill model,"Probability of fill by limit price distance, queue position, and future P&L",Adverse selection makes winners less likely to fill,Backtest only tradable fills or charge an execution penalty
+Cost model,"Bid-ask, brokerage, taxes, exchange fees, slippage, and leverage-driven turnover",Costs can erase most gross edge,Costs must be inside the signal backtest and walk-forward validation
+Model limit,"Input data quality, model assumptions, calibration stability, and out-of-domain cases",A good model is useful only where the assumptions are reasonable,Do not trade when inputs are stale or the model is outside its valid regime
+Vol surface sanity,"Smile shape, term structure, arbitrage violations, and missing strikes",IV is contract-specific and bad surface data creates false signals,Clean and interpolate the surface before ranking cheap/rich contracts
+Tail and margin control,"Jump loss, drawdown, margin call path, and capital required through shocks",Short-vol P&L can look smooth until the one loss that forces liquidation,Size to survive spike days and use defined-risk structures when needed
+Journal and regime review,"Reason for trade, regime, IV/RV gap, fill quality, costs, and post-trade result",Psychology improves when decisions are observable and repeatable,Reduce size or paper trade when you cannot explain why a trade failed

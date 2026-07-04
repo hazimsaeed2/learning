@@ -1,0 +1,8 @@
+time,eat,wait,optimal_action
+1,1.0,1.062882,wait
+2,1.0,1.18098,wait
+3,1.0,1.3122,wait
+4,1.0,1.458,wait
+5,1.0,1.62,wait
+6,1.0,1.8,wait
+7,2.0,2.0,eat

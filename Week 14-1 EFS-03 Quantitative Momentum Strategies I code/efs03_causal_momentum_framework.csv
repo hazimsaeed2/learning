@@ -1,0 +1,5 @@
+cause,market,lecture_part,implementation_note
+Persistence of futures roll returns,Futures,EFS-03,"Estimate roll from exact arbitrage or from the forward curve, then harvest persistent sign."
+Persistence of factor returns,Stocks and factor portfolios,EFS-04,Use factor returns as the equity-market analogue of futures roll.
+Slow diffusion and interpretation of news,Event-driven and cross-sectional equity trading,EFS-04,Alpha can decay quickly as participants process information faster.
+Forced institutional buying or selling,"Index funds, mutual funds, hedge funds, leveraged ETFs",EFS-04,Mechanically constrained flows can create predictable short-horizon momentum.

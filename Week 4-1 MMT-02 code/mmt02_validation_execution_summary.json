@@ -1,0 +1,44 @@
+{
+  "lecture_row": 3,
+  "lecture": "Week 4-1 MMT-02 Execution Strategy- II",
+  "queue_status": "DONE",
+  "summary_type": "legacy_report_digest",
+  "summary_created_utc": "2026-07-03T22:56:54+00:00",
+  "source_report": "Week 4-1 MMT-02 code/VALIDATION_REPORT.md",
+  "source_report_modified_utc": "2026-07-02T13:56:43+00:00",
+  "notebook_execution_rerun_for_this_json": false,
+  "status_from_existing_report": "PASS",
+  "report_pass_indicators": [
+    "PASS. The existing study pack covered the main lecture arc, and the missing official-resource mechanics were added without deleting or replacing existing content."
+  ],
+  "report_error_indicators": [
+    "- No saved error outputs found."
+  ],
+  "artifacts_in_code_folder": {
+    "notebooks": [
+      "Week 4-1 MMT-02 Execution Strategy II_practice.ipynb",
+      "Week 4-1 MMT-02 Execution Strategy II_resource_addendum_practice.ipynb",
+      "Week 4-1 MMT-02 Execution Strategy II_validated_practice.ipynb"
+    ],
+    "notebook_count": 3,
+    "html_exports": [],
+    "html_export_count": 0,
+    "chart_files": [
+      "chart_1_vwap.png",
+      "chart_2_ev.png",
+      "chart_addendum_1_mmt02_volume_schedule.png",
+      "chart_addendum_2_mmt02_dynamic_discretion.png",
+      "chart_addendum_3_mmt02_order_logic_flow.png"
+    ],
+    "chart_file_count": 5,
+    "csv_files": [
+      "microsoft_intraday.csv",
+      "mmt02_dynamic_discretion_scenarios.csv",
+      "mmt02_execution_rules.csv",
+      "mmt02_order_specifications.csv",
+      "mmt02_volume_schedule.csv"
+    ],
+    "csv_file_count": 5
+  },
+  "coverage_note": "This JSON was added after queue completion because the folder already had a VALIDATION_REPORT.md but no machine-readable summary. It is a digest of that existing report and local artifacts, not a fresh execution claim."
+}

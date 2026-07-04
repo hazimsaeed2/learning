@@ -1,0 +1,8 @@
+metric,value,note
+top40_rows,3393,2013-01-02 to 2026-06-30.
+top40_stocks,40,Current large-cap basket shipped in the practice data.
+pc1_explained_pct,43.623172,First eigen-portfolio variance share.
+eigenportfolio_spy_corr,0.994107,Correlation of cumulative eigen-portfolio with SPY.
+fit_slope,0.105075,In-sample residual fit slope.
+fit_intercept,0.028861,In-sample residual fit intercept.
+pc1_weight_sum,6.083842,Eigenvector weights are not normalized to sum to 1 in the notebook.

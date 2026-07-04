@@ -1,0 +1,12 @@
+check,result,severity,interpretation
+rows,5306,info,Number of submitted rows.
+date_range_start,2000-01-03,info,First date after parsing.
+date_range_end,2021-04-30,info,Last date after parsing.
+duplicate_dates,0,pass,Duplicate dates can double-count or overwrite observations.
+missing_business_days_proxy,283,warning,Business-day proxy; exchange holidays require an official NSE calendar before calling all gaps errors.
+ohlc_order_violations,0,pass,High should be at least Open/Close/Low and Low should be at most Open/Close/High.
+non_positive_volume,0,pass,Zero or negative volume is suspicious for actively traded daily equity data.
+large_absolute_close_moves_gt_25pct,2,warning,Large close-to-close moves may be real corporate actions or data errors and need investigation.
+missing_values_Trades,2850,warning,Trades contains missing values.
+missing_values_Deliverable Volume,509,warning,Deliverable Volume contains missing values.
+missing_values_%Deliverble,509,warning,%Deliverble contains missing values.

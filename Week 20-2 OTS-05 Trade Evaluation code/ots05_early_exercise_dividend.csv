@@ -1,0 +1,5 @@
+item,value,reading
+intrinsic,20.0,S - K for an in-the-money call.
+extrinsic,0.1,Remaining time value.
+dividend,1.0,Early exercise candidate input.
+decision,exercise,Exercise American call when dividend exceeds remaining extrinsic value.

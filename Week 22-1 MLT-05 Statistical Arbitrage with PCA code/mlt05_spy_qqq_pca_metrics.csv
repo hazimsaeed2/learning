@@ -1,0 +1,14 @@
+metric,value,note
+spy_qqq_rows,5406,2005-01-03 to 2026-06-30
+qqq_compounded_gain_pct,2090.622517,Compounded daily returns.
+qqq_summed_gain_pct,358.969261,Arithmetic sum of daily returns.
+cov_spy_spy,0.000142613,Return covariance matrix.
+cov_spy_qqq,0.0001497004,Return covariance matrix.
+cov_qqq_qqq,0.0001856534,Return covariance matrix.
+eigenvalue_1,0.0003153725,Largest variance direction.
+eigenvalue_2,1.28939e-05,Orthogonal residual direction.
+pc1_explained_pct,96.072119,Matches notebook one-factor finding.
+eigenvalue_ratio,24.45902,PC1 vs PC2 variance ratio.
+ols_qqq_on_spy_slope,1.049697,OLS is orientation-dependent.
+inverse_ols_spy_on_qqq_slope,1.240167,Does not match QQQ-on-SPY OLS slope.
+pca_pc1_slope_abs,1.154035,PCA hedge direction is orientation-independent up to sign.

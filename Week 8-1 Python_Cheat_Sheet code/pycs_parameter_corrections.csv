@@ -1,0 +1,4 @@
+item,original_value,additive_calendar_check,note
+raw_rows,962,783,Business-day count before exchange holidays for 2017-01-01 through 2020-01-01.
+rows_after_dropna,899,720,Approximate rows after 63-day LMA plus previous-day shift warmup; live Yahoo data may vary by holidays.
+yfinance_multi_level_index,Always add multi_level_index=False,environment note,"Local yfinance is available, but the decorated signature does not expose this keyword in version-specific introspection."

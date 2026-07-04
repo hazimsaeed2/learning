@@ -1,0 +1,5 @@
+check,value,expected,note
+list_times_3_result,"[1, 2, 11, 5, 8, 1, 2, 11, 5, 8, 1, 2, 11, 5, 8]",list repetition,Python list multiplication repeats elements.
+list_times_3_length,15,15,Five source elements repeated three times.
+array_times_3_result,"[3, 6, 33, 15, 24]","[3, 6, 33, 15, 24]",Numpy array multiplication is elementwise.
+loop_times_3_result,"[3, 6, 33, 15, 24]","[3, 6, 33, 15, 24]",Iterated/event-driven style gives the same arithmetic result.

@@ -1,0 +1,6 @@
+step,stage,question,failure_mode,lecture_anchor
+1,Observation,What obvious phenomenon did you notice before choosing a method?,Starting from a model or indicator and searching for a story.,"The magic is in the observation, not the method."
+2,Simple quantification,"Does the idea work with a simple test such as OLS, buckets, or event returns?",Trying to rescue a weak idea with complex ML or parameter tuning.,Use the simplest model that can disprove the idea quickly.
+3,Edge and risk split,"What is the edge, and what variables are just risks to hedge or tolerate?","Confusing a high win-rate, a payoff shape, or an instrument with edge.",Risk is everything that is not edge.
+4,Implementation,"Can it survive transaction costs, adverse selection, liquidity, mandate limits, and compliance review?",Stopping at a backtest and never turning the strategy into a tradable business.,"An observation is not a strategy, and a strategy is not a business."
+5,Review,"Are live results changing your confidence for a statistical reason, or are you narrating noise?",Changing a 1000-observation idea after 20 live observations because the losses feel salient.,Do not attach a new story to a short unlucky sample.

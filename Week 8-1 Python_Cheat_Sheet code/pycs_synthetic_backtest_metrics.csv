@@ -1,0 +1,8 @@
+metric,value,unit,reading
+synthetic_business_days,783,rows,Offline business-day calendar sanity check.
+synthetic_rows_after_dropna,720,rows,"After 21/63 MA, previous columns, and dropna."
+buy_signals,7,count,Offline synthetic crossover count.
+sell_signals,8,count,Offline synthetic crossover count.
+buy_hold_total_pct,48.6926,percent,Synthetic buy-and-hold result.
+shift2_strategy_total_pct,-12.9779,percent,Bias-controlled daily strategy result.
+no_shift_strategy_total_pct,0.7004,percent,Shows why shift controls are audited.

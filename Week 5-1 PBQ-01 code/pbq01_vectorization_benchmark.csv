@@ -1,0 +1,3 @@
+method,seconds,speedup_vs_vectorized
+Python loop,0.03690979999373667,22.21735322134177
+NumPy vectorized,0.001661305000016,1.0

@@ -1,0 +1,60 @@
+{
+  "lecture": "Week 26-1 TIO-02 Tackling desk operations and Regulatory environment",
+  "generated_at": "2026-07-03T02:57:07",
+  "notebooks": [
+    {
+      "notebook": "Week 26-1 TIO-02 Tackling desk operations and Regulatory environment_practice.ipynb",
+      "code_cells": 16,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 26-1 TIO-02 Tackling desk operations and Regulatory environment_resource_addendum_practice.ipynb",
+      "code_cells": 4,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    },
+    {
+      "notebook": "Week 26-1 TIO-02 Tackling desk operations and Regulatory environment_validated_practice.ipynb",
+      "code_cells": 20,
+      "errors": 0,
+      "markdown_before_code_gaps": 0,
+      "execution_exception": null
+    }
+  ],
+  "html": [
+    {
+      "file": "Week 26-1 TIO-02 Tackling desk operations and Regulatory environment.html",
+      "body_open": 1,
+      "body_close": 1,
+      "html_open": 1,
+      "html_close": 1,
+      "generated_chart_refs": 10,
+      "missing_generated_charts": []
+    },
+    {
+      "file": "Week 26-1 TIO-02 Tackling desk operations and Regulatory environment_study.html",
+      "body_open": 1,
+      "body_close": 1,
+      "html_open": 1,
+      "html_close": 1,
+      "generated_chart_refs": 0,
+      "missing_generated_charts": []
+    }
+  ],
+  "charts": [
+    "chart_addendum_1_tio02_source_regulatory_inventory.png",
+    "chart_addendum_2_tio02_latency_ladder.png",
+    "chart_addendum_3_tio02_membership_setup_costs.png",
+    "chart_addendum_4_tio02_colocation_network.png",
+    "chart_addendum_5_tio02_operational_regulatory_controls.png"
+  ],
+  "main_html_appended": true,
+  "study_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "regulatory_note": "FINRA Notice 26-10 update added; original PDT note preserved.",
+  "unit_note": "rack/server power relabeled as kW in additive correction; original calculation unchanged."
+}

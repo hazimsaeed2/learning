@@ -1,0 +1,11 @@
+output,definition,why_it_matters
+CAGR,Compound annual growth rate for the EMA crossover strategy,Performance scale
+Hit ratio,Profitable trades divided by total trades,Trade success rate
+Average profit per trade,Mean return on winning trades,Win size
+Average loss per trade,Mean return on losing trades,Loss size
+Profit/loss ratio,Average profit divided by average loss,Payoff asymmetry
+Maximum drawdown,Largest peak-to-trough equity decline at leverage 1,Capital pain
+Leveraged equity curves,"Equity curves for leverage 1, 2, 3, and 4",Leverage fragility
+Year-wise long profit,Calendar-year profit from long trades,Regime diagnosis
+Year-wise short profit,Calendar-year profit from short trades,Regime diagnosis
+Year-wise hit ratio,Annual hit ratio,Stability check

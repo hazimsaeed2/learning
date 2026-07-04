@@ -167,5 +167,29 @@ live before risking real capital.</p>
 
 <p style="text-align:center;color:#a8a29e;margin-top:36px;font-size:14px;">EPAT · Week 11-1 TBP-04 · Backtest &amp; Live Trade Algorithmic Strategies (Part 1)</p>
 
+
+
+<!-- TBP04_STUDY_ADDITIVE_SOURCE_PACK_START -->
+<h2>Additive Validation Pack</h2>
+<div class="callout">
+  <p><strong>Added without changing the original study guide.</strong> The validation pack documents the missing <code>sklearn</code> dependency, keeps the original notebook untouched, and adds a validated fallback copy for the one-feature regression example.</p>
+</div>
+<table>
+  <tr><th>Check</th><th>Additive result</th></tr>
+  <tr><td>Original notebook execution</td><td>Fails locally at the <code>sklearn</code> import; original file preserved.</td></tr>
+  <tr><td>Regression</td><td>Coefficient -0.0807; correlation -0.0807, confirming a very weak daily edge.</td></tr>
+  <tr><td>Strategy scorecard</td><td>Swing -3.41%; buy-and-hold 58.31%; swing win rate 47.19%.</td></tr>
+  <tr><td>Scope</td><td>No broker connectivity, live order placement, commissions, slippage, or production risk controls are validated here.</td></tr>
+</table>
+<p>Generated validation artifacts are in <code>Week 11-1 TBP-04 Backtest and Live Trade code</code>, including <code>VALIDATION_REPORT.md</code>, the addendum notebook, the validated notebook copy, and these charts:</p>
+<ul>
+<li><code>Week 11-1 TBP-04 Backtest and Live Trade code/chart_addendum_1_tbp04_source_dependency_audit.png</code></li>
+<li><code>Week 11-1 TBP-04 Backtest and Live Trade code/chart_addendum_2_tbp04_swing_regression.png</code></li>
+<li><code>Week 11-1 TBP-04 Backtest and Live Trade code/chart_addendum_3_tbp04_strategy_equity.png</code></li>
+<li><code>Week 11-1 TBP-04 Backtest and Live Trade code/chart_addendum_4_tbp04_timeframe_coefficients.png</code></li>
+<li><code>Week 11-1 TBP-04 Backtest and Live Trade code/chart_addendum_5_tbp04_scope_controls.png</code></li>
+</ul>
+<!-- TBP04_STUDY_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

@@ -41,6 +41,10 @@
   figcaption{ color:var(--soft); font-size:14px; font-style:italic; margin-top:6px; }
   .foot{ margin-top:60px; padding-top:18px; border-top:1px solid var(--line);
          color:var(--soft); font-size:14.5px; }
+  .warn{ background:#fff7ed; border-left:4px solid #c2410c; padding:14px 18px;
+         margin:22px 0; border-radius:0 8px 8px 0; }
+  .warn .t{ font-variant:small-caps; letter-spacing:.5px; font-weight:bold; color:#c2410c;
+            font-family:Arial,sans-serif; font-size:13px; }
 </style>
 </head>
 <body>
@@ -281,6 +285,15 @@ price) is <em>inversely proportional to depth</em>: thin books move more per ord
   <li><strong>Market impact</strong> — how much your own buying/selling pushes the price against you.</li>
   <li><strong>Slippage</strong> — the gap between the price you expected and the price you got
   (worse in volatile markets and with market orders).</li>
+  <li><strong>Tick</strong> - the minimum allowed price increment for an instrument.</li>
+  <li><strong>Level 2 / Level 3 data</strong> - broker views of multiple bid/ask levels; full
+  event data is richer because it includes order events and timestamps.</li>
+  <li><strong>Marketable price</strong> - the current ask for a buy order, or current bid for a
+  sell order.</li>
+  <li><strong>Depth ahead</strong> - quantity at more aggressive prices that must trade before
+  your resting order can fill.</li>
+  <li><strong>Alone at inside</strong> - your order is the only same-side quantity at the best
+  bid or best ask.</li>
   <li><strong>Alpha</strong> — risk-adjusted return above a benchmark; <strong>beta</strong> — how
   much an asset moves with the market, estimated as <code>Cov(asset, market) ÷ Var(market)</code>.</li>
   <li><strong>OHLC</strong> — the open/high/low/close summary of a bar; the basis of moving averages
@@ -293,6 +306,90 @@ price) is <em>inversely proportional to depth</em>: thin books move more per ord
   <em>how well</em> you actually trade it. The order book is where these meet — and every basis point
   you save in execution drops straight to the bottom line.</p>
 </div>
+
+<h2>11. Workbook mechanics that complete the lecture</h2>
+<p>The Excel workbook in the official exercise folder adds several practical order mechanics that
+were only touched briefly in the transcript. They matter because execution code has to decide
+what to do at the exact moment the book changes.</p>
+
+<h3>Marketable limit orders versus market orders</h3>
+<p>A <strong>marketable limit order</strong> behaves like a market order, but with a safety rail. If
+the best ask is <code>100.50</code>, a buy-limit at <code>100.75</code> can trade immediately, but
+it refuses to pay above <code>100.75</code>. A plain market buy has no such ceiling.</p>
+<table>
+  <tr><th>Action from workbook</th><th>What fills</th><th>What remains</th><th>Lesson</th></tr>
+  <tr><td>Buy-limit 20 @ 100.75</td><td>15 @ 100.50</td><td>5 shares post as a bid @ 100.75</td><td>Immediate up to your limit; residue can rest.</td></tr>
+  <tr><td>Market buy 20</td><td>15 @ 100.50 + 5 @ 101.00</td><td>Nothing</td><td>Certain completion, but the price can walk up.</td></tr>
+</table>
+
+<h3>Price-time priority and the queue</h3>
+<p>If 3 shares are already bid at <code>99.50</code> and you add 10 more at the same price,
+your 10 shares sit <em>behind</em> the first 3. When an 8-share sell order reaches that price,
+the first 3 fill before you receive the next 5. The rule is not "largest order wins"; it is
+<strong>best price first, then earliest timestamp</strong>.</p>
+
+<h3>Stop-loss, take-profit, and bracket orders</h3>
+<p>If you bought at <code>100</code> and want to take profit at <code>105</code>, a sell-limit at
+<code>105</code> can safely rest in the book. But if your stop loss is <code>95</code>, a normal
+sell-limit at <code>95</code> would execute immediately because it is below the current bid. That is
+why a <strong>stop order</strong> waits until the market reaches the stop trigger. A
+<strong>bracket order</strong>, mentioned in the FAQ, combines the entry, stop-loss, and
+profit-taking order so only one exit remains active.</p>
+
+<h3>IOC, FOK, iceberg, and pro-rata matching</h3>
+<table>
+  <tr><th>Mechanic</th><th>Workbook idea</th><th>When it is useful</th><th>Main warning</th></tr>
+  <tr><td>Immediate-or-Cancel (IOC)</td><td>Accept whatever fills now; cancel the rest.</td><td>Two-leg trades where you do not want stale leftover exposure.</td><td>You may get only a partial fill.</td></tr>
+  <tr><td>Fill-or-Kill (FOK)</td><td>Fill the whole order now or cancel all.</td><td>Trades that are useless unless fully completed.</td><td>More likely to get nothing in thin books.</td></tr>
+  <tr><td>Iceberg</td><td>Display 10 shares while hiding 90; replenish after fills.</td><td>Large orders where showing full size would reveal intent.</td><td>Repeated replenishment can still reveal the iceberg.</td></tr>
+  <tr><td>Pro-rata matching</td><td>Fill quantity is allocated by size at each eligible level.</td><td>Some venues/products use allocation variants rather than pure price-time.</td><td>Do not assume every market uses the same matching rule.</td></tr>
+</table>
+
+<div class="warn">
+  <div class="t">FAQ edge cases</div>
+  <p style="margin:8px 0 0;">If there is no opposite-side liquidity, the exchange does not take
+  the other side for you. Depending on the order type, your order rests, partially fills, or cancels.
+  True tick-by-tick data includes new orders, modifications, cancellations, executions, prices,
+  quantities, and timestamps; a retail "top five levels" view is only a small window into the book.</p>
+</div>
+
+<h2>12. Where the sources add alternatives or nuance</h2>
+<p>The transcript teaches the trading intuition: read the book, know which order type you are
+using, and control the price-time trade-off. The official resources add three important
+extensions.</p>
+
+<p><strong>Method taught in the lecture:</strong> most examples assume the usual
+<strong>price-time priority</strong> exchange. This is the right default for the workbook's main
+order-book exercises.</p>
+<p><strong>Alternative method found in the official resources:</strong> the pro-rata sheet shows a
+different matching convention, where eligible fills are allocated in proportion to resting size.
+Both are valid market designs. Use price-time when the venue's rulebook says earliest queue
+position matters; use pro-rata only when the contract or venue explicitly uses proportional
+allocation.</p>
+
+<p><strong>Method taught in the lecture:</strong> volume and VWAP are used as the natural way to
+score execution.</p>
+<p><strong>Alternative method found in the order-book impact paper:</strong> short-horizon price
+changes are better explained by <strong>order-flow imbalance (OFI)</strong>, which combines
+market orders, limit orders, and cancellations at the best quotes. The paper reports that OFI
+explained price changes better than trade imbalance or raw traded volume. In practice, VWAP is
+still a benchmark; OFI is a diagnostic for why the book is moving.</p>
+
+<p><strong>Method taught in the lecture:</strong> simple pegging plus discretion can blend passive
+and aggressive execution.</p>
+<p><strong>More detailed resource workflow:</strong> later slides add operational controls:
+client price limits, reserve size, "stub" logic for small leftovers, "alone at inside" checks,
+significant-size-ahead checks, and a dynamic discretion range based on expected spread, trend,
+and opposite-side liquidity. Those controls keep the algorithm from blindly chasing the market.</p>
+
+<div class="callout">
+  <div class="t">Modern best practice</div>
+  <p style="margin:8px 0 0;">Treat execution logic as a risk system, not just an order sender.
+  Before live use, test it with delayed fills, partial fills, stale quotes, exchange rejects, missing
+  depth, and sudden spread widening. A backtest that assumes every limit order fills at the
+  displayed price is usually too optimistic.</p>
+</div>
+
 
 <div class="foot">
   Week 3-1 · MMT-01 Execution Strategy I — companion to the dense one-page cheat sheet and the

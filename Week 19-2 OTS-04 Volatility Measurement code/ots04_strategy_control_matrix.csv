@@ -1,0 +1,7 @@
+topic,lecture_anchor,additive_precision,trading_control
+GARCH recursion,shipped loop plus arch fit,"Use omega or gamma*long-run variance, not a raw constant added to daily return variance.",Validate units before comparing fitted vol to realized vol.
+Parkinson low bias,high-low estimator,Misses overnight gaps; useful only when estimator choice is consistent.,"Use same estimator for measurement, forecast, and signal thresholds."
+Rolling-window trap,NFLX shock,"Rolling vol jumps, plateaus, then cliff-crashes at window exit.",Prefer EWMA/GARCH for tradable forecasts.
+Variance premium wording,PnL = Vega*(IV-RV),The notebook formula uses volatility points; variance products pay in variance units.,Check product payoff definition before sizing.
+Delta hedging costs,vol-only position,Continuous hedging is theoretical.,"Include slippage, commissions, gap risk, and hedge frequency."
+Single-trade PnL,Monte Carlo straddle,The vega equation is an expectation over many trades.,"Judge strategy distribution, not one realized trade."

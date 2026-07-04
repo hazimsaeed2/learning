@@ -1,0 +1,8 @@
+metric,value,unit,reading
+code_cells,11,cells,Original executable cells.
+markdown_cells,14,cells,Original explanatory cells.
+original_execution_errors,0,errors,PASS
+sma10_20_return_pct,2.6414,percent,"Original class instance with ma_short=10, ma_long=20."
+sma5_20_return_pct,5.6227,percent,"Original class instance with ma_short=5, ma_long=20."
+buy_hold_return_pct,51.4834,percent,Buy-and-hold over the same SMA10/20 output window.
+backtest_rows,942,rows,Rows in each BacktestingCrossover result after 20-day warmup and position lag.

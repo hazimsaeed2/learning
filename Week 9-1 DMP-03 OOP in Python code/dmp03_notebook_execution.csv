@@ -1,0 +1,11 @@
+metric,value,unit,reading
+code_cells,9,cells,Original executable cells.
+markdown_cells,13,cells,Original explanatory cells.
+original_execution_errors,0,errors,PASS
+price_autocorr_lag1,0.992979,correlation,Prices are mechanically highly autocorrelated.
+return_autocorr_lag1,-0.082752,correlation,Return autocorrelation is much closer to zero.
+acf_lags_outside_band,8,lags,Additive correction: shipped CSV shows 8 of 15 lags outside the simple band.
+sharpe,0.629038,ratio,Annualized log-return Sharpe from original notebook.
+max_drawdown_pct,-38.4399,percent,Maximum drawdown from buy-and-hold equity curve.
+ols_strategy_return_pct,-47.3413,percent,In-sample OLS AR(7) strategy return.
+ols_rows,953,rows,Rows after 7 lag features and shifted position.

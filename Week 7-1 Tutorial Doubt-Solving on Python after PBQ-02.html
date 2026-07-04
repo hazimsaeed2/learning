@@ -146,6 +146,41 @@ go.Figure(go.Candlestick(
   </div>
 </section>
 
+<!-- CONTINUATION ADDENDUM -->
+<section class="card p-4 mb-4">
+  <h2 class="text-base font-bold text-fuchsia-900 mb-2">Continuation addendum - official tutorial source files</h2>
+  <div class="grid md:grid-cols-2 gap-3 items-start">
+    <div>
+      <img src="Week 7-1 Tutorial Python after PBQ-02 code/chart_addendum_1_week7_source_data_ranges.png" alt="Week 7-1 source data ranges" class="w-full rounded border border-fuchsia-200">
+      <div class="bg-fuchsia-50 rounded p-2 mt-2 text-[10px]"><b>Source zip coverage:</b> the official optional tutorial zip includes a Pyodide/Plotly tutorial HTML, AAPL daily data, and an NSE HDFCBANK exchange export. The pack now adds parsed CSV copies and keeps the original TCS notebook.</div>
+    </div>
+    <div>
+      <table>
+        <tr><th>Dataset</th><th>Rows</th><th>Date range</th></tr>
+        <tr><td>TCS existing pack</td><td>1,233</td><td>2015-11-18 to 2020-11-17</td></tr>
+        <tr><td>AAPL tutorial source</td><td>3,900</td><td>2004-12-31 to 2020-06-29</td></tr>
+        <tr><td>HDFCBANK exchange source</td><td>252</td><td>2024-02-19 to 2025-02-19</td></tr>
+      </table>
+      <div class="bg-purple-50 rounded p-2 mt-2 text-[10px]"><b>File note:</b> the two source files use <code>.xls</code> extensions but are CSV-style text. The addendum uses <code>pd.read_csv</code>, then writes <code>AAPL_daily_tutorial.csv</code>, <code>HDFCBANK_exchange_tutorial_raw.csv</code>, and <code>HDFCBANK_exchange_tutorial_clean.csv</code>.</div>
+    </div>
+  </div>
+</section>
+
+<section class="grid md:grid-cols-2 gap-4 mb-4">
+  <div class="card p-4">
+    <h2 class="text-base font-bold text-purple-900 mb-2">Continuation addendum - HDFCBANK cleanup</h2>
+    <img src="Week 7-1 Tutorial Python after PBQ-02 code/chart_addendum_2_week7_hdfc_column_cleanup.png" alt="HDFCBANK raw and stripped column names" class="w-full rounded border border-fuchsia-200">
+    <div class="bg-fuchsia-50 rounded p-2 mt-2 text-[10px]"><b>Exact transcript trap:</b> <code>'VALUE '</code> and other hidden trailing spaces create <code>KeyError</code>. <code>df.columns = df.columns.str.strip()</code> makes <code>VALUE</code>, <code>OPEN</code>, <code>HIGH</code>, <code>LOW</code>, and <code>close</code> usable.</div>
+  </div>
+  <div class="card p-4">
+    <h2 class="text-base font-bold text-purple-900 mb-2">Continuation addendum - calendar slices and edits</h2>
+    <img src="Week 7-1 Tutorial Python after PBQ-02 code/chart_addendum_3_week7_calendar_slicing.png" alt="HDFCBANK April calendar slice" class="w-full rounded border border-fuchsia-200">
+    <div class="bg-purple-50 rounded p-2 mt-2 text-[10px]">A real <code>DatetimeIndex</code> enables <code>df.loc["2024-04"]</code> or <code>df.index.month == 4</code>. HDFCBANK has 20 April rows, mean April close 1514.61, and mean high-low range 24.63.</div>
+    <img src="Week 7-1 Tutorial Python after PBQ-02 code/chart_addendum_4_week7_dataframe_modification.png" alt="HDFCBANK added direction column counts" class="w-full rounded border border-fuchsia-200 mt-2">
+    <div class="bg-gray-50 rounded p-2 mt-2 text-[10px]">The addendum notebook also creates null, static, computed, and signal columns: <code>blank_notes</code>, <code>source</code>, <code>range</code>, <code>close_return_pct</code>, and <code>direction</code>.</div>
+  </div>
+</section>
+
 <!-- DATA SOURCES + GLOSSARY -->
 <section class="grid md:grid-cols-2 gap-4 mb-4">
   <div class="card p-4">
@@ -177,5 +212,19 @@ go.Figure(go.Candlestick(
 
 <footer class="text-center text-[9px] text-gray-400 mt-4">Week 7-1 Tutorial · pandas doubt-solving · verified on TCS.NS.csv (1,233 rows) · 0 notebook errors</footer>
 </div>
+
+<!-- VALIDATION_EVIDENCE_ADDENDUM_START -->
+<section id="validation-evidence-addendum" data-validation-evidence="true" style="max-width: 1100px; margin: 24px auto; padding: 14px 16px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.45;">
+  <h2 style="margin: 0 0 8px; font-size: 16px; font-weight: 700;">Validation Evidence Addendum</h2>
+  <p style="margin: 0 0 8px;">This additive note points to the validation evidence for this lecture. The original page content above remains unchanged.</p>
+  <ul style="margin: 0; padding-left: 18px;">
+    <li>Queue row: 10</li>
+    <li>Lecture: Week 7-1 Tutorial Session - Doubt Solving on Python after PBQ-02</li>
+    <li>Status: DONE</li>
+    <li>Validation report: <a href="Week%207-1%20Tutorial%20Python%20after%20PBQ-02%20code/VALIDATION_REPORT.md">Week 7-1 Tutorial Python after PBQ-02 code/VALIDATION_REPORT.md</a></li>
+    <li>Execution summary JSON: <a href="Week%207-1%20Tutorial%20Python%20after%20PBQ-02%20code/week7_validation_execution_summary.json">Week 7-1 Tutorial Python after PBQ-02 code/week7_validation_execution_summary.json</a></li>
+  </ul>
+</section>
+<!-- VALIDATION_EVIDENCE_ADDENDUM_END -->
 </body>
 </html>

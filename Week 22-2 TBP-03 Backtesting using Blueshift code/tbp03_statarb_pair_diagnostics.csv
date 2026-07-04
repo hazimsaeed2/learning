@@ -1,0 +1,6 @@
+metric,value,reading
+price_correlation,0.932627,High correlation did not prevent large spread losses.
+pca_hedge_ratio_last,4.366959,Hedge ratio from final PCA window.
+trades,17,Low count over 10 years.
+total_return_pct,-78.51585,Naive z-score spread lost heavily.
+max_drawdown_pct,-94.781545,Spread drift dominates mean reversion.

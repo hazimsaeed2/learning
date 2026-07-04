@@ -1,0 +1,7 @@
+topic,safe_pattern,common_error,check
+Install vs import,Install a third-party package once; import it in every fresh session,Assuming an installed package is already loaded,Restart the kernel and rerun imports first
+Current working directory,"Use os.getcwd(), os.listdir(), and explicit file paths before read_csv",FileNotFoundError from reading a file outside the CWD,Print Path.cwd() and confirm the file appears
+Import order,from package import object,Writing import object from package,Library/package name comes after from
+Alias import,import pandas as pd; import numpy as np,Using an alias before importing it,Run the import cell after every kernel restart
+Explicit namespace,"math.sin(x), np.where(...), pd.read_csv(...)",from package import * hides where names came from,Prefer qualified names in notebooks and projects
+urllib workflow,from urllib import request; request.urlopen(url),Trying import request from urllib,Use from B import A order

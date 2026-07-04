@@ -1,0 +1,5 @@
+metric,value,note
+vector_final_equity,1.5445825890595593,Vectorized shifted position equity.
+loop_final_equity,1.5445825890595593,For-loop event-style equity.
+absolute_difference,0.0,Should be zero or floating-point noise.
+matching_positions_pct,100.0,Position alignment after shifting.

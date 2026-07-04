@@ -1,0 +1,10 @@
+sequence,operation,method,endpoint,status_code,content_summary,status_family
+1,auth_status_before_manual_login,POST,iserver/auth/status,200,authenticated false; status itself is successful,2xx
+2,fetch_accounts_without_auth,GET,iserver/accounts,401,client is not authenticated,4xx
+3,manual_gateway_login_complete,manual/browser,Client Portal Gateway login page,200,human login step; not automated,2xx
+4,auth_status_after_login,POST,iserver/auth/status,200,authenticated true and connected true,2xx
+5,fetch_historical_data,GET,iserver/marketdata/history,200,JSON bars returned,2xx
+6,place_market_order,POST,iserver/account/DUXXXX/orders,200,order accepted in mock audit log,2xx
+7,bad_endpoint_typo,POST,iserver/auth/statuss,404,client endpoint error,4xx
+8,gateway_unavailable_example,GET,iserver/marketdata/snapshot,503,server/gateway unavailable example,5xx
+9,tickle_heartbeat,POST,tickle,200,session heartbeat accepted,2xx

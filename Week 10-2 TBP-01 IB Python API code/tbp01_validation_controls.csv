@@ -1,0 +1,7 @@
+control,lecture_application,additive_note
+Safe notebook execution,Run mock IB API notebook with noninteractive plotting.,Original file preserved; validator replaces plt.show only during temp execution.
+Request/response audit,MiniServer PING/TIME/error examples.,Structured responses are recorded in CSV.
+Async timing audit,Synchronous vs threaded mock waits.,Speedup is measured locally and may vary slightly per run.
+Callback flow audit,EClient requests and EWrapper callbacks.,currentTime and historicalData callbacks execute through the mock listener.
+Historical sample audit,reqHistoricalData mock returns tail rows.,10 bars from local CSV are verified.
+Live trading scope,IB API architecture.,"No real TWS/Gateway, account, permissions, market data farm, or orders are validated."

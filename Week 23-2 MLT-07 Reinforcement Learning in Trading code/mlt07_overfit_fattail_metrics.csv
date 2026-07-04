@@ -1,0 +1,12 @@
+metric,value,reading
+poly_degree_2_train_mse,0.68572,Bias/variance demo.
+poly_degree_2_test_mse,2.15038,Out-of-sample error.
+poly_degree_15_train_mse,0.372015,Bias/variance demo.
+poly_degree_15_test_mse,705.409625,Out-of-sample error.
+gaussian_abs_5sigma_prob,5.733031437583891e-07,Normal tail probability.
+cauchy_abs_5sigma_prob,0.12566591637800228,Fat-tail proxy.
+cauchy_vs_gaussian_multiplier,219196.28,5-sigma moves are far less rare under fat tails.
+random_walk_lag1_return_autocorr,0.021864,Inside noise.
+mean_reverting_lag1_return_autocorr,-0.749181,Predictability comes from autocorrelation.
+naive_price_r2,0.999478,Predicting price from yesterday's price looks falsely excellent.
+naive_direction_accuracy,0.496891,Direction is coin-toss.

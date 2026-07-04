@@ -161,5 +161,36 @@
   <p class="text-center text-pink-400 mt-3">EPAT · Week 10-1 ASQ-01 · Statistical Analysis of Financial Market Data (Part 1)</p>
 </section>
 
+
+
+<!-- ASQ01_ADDITIVE_SOURCE_PACK_START -->
+<section class="mt-10 border-t border-pink-200 pt-6">
+  <h2 class="text-2xl font-black text-pink-900 mb-2">Additive Validation Pack: ASQ-01 Statistical Analysis</h2>
+  <p class="text-sm text-slate-700 mb-4">This section was added without removing or editing existing lecture content. It records the local <code>statsmodels</code> dependency gap, validates the source data, reproduces the moving-average and weekly return diagnostics, and adds a clearly labelled educational fallback notebook.</p>
+  <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900 mb-4"><strong>Additive correction.</strong> The original notebook requires <code>statsmodels</code> and fails locally before execution. The validated copy injects a fallback AR(1)/ADF-like/ACF/PACF layer for local execution only; formal ARIMA and ADF inference still require installing <code>statsmodels</code>.</div>
+  <div class="grid md:grid-cols-2 gap-4"><figure class="bg-white border border-pink-100 rounded-lg p-3">
+  <img src="Week 10-1 ASQ-01 Statistical Analysis code/chart_addendum_1_asq01_source_dependency_audit.png" alt="ASQ-01 additive validation chart" class="w-full rounded">
+  <figcaption class="text-[11px] text-slate-500 mt-2">chart_addendum_1_asq01_source_dependency_audit.png</figcaption>
+</figure>
+<figure class="bg-white border border-pink-100 rounded-lg p-3">
+  <img src="Week 10-1 ASQ-01 Statistical Analysis code/chart_addendum_2_asq01_price_return_stationarity.png" alt="ASQ-01 additive validation chart" class="w-full rounded">
+  <figcaption class="text-[11px] text-slate-500 mt-2">chart_addendum_2_asq01_price_return_stationarity.png</figcaption>
+</figure>
+<figure class="bg-white border border-pink-100 rounded-lg p-3">
+  <img src="Week 10-1 ASQ-01 Statistical Analysis code/chart_addendum_3_asq01_ma_crossover_equity.png" alt="ASQ-01 additive validation chart" class="w-full rounded">
+  <figcaption class="text-[11px] text-slate-500 mt-2">chart_addendum_3_asq01_ma_crossover_equity.png</figcaption>
+</figure>
+<figure class="bg-white border border-pink-100 rounded-lg p-3">
+  <img src="Week 10-1 ASQ-01 Statistical Analysis code/chart_addendum_4_asq01_weekly_acf.png" alt="ASQ-01 additive validation chart" class="w-full rounded">
+  <figcaption class="text-[11px] text-slate-500 mt-2">chart_addendum_4_asq01_weekly_acf.png</figcaption>
+</figure>
+<figure class="bg-white border border-pink-100 rounded-lg p-3">
+  <img src="Week 10-1 ASQ-01 Statistical Analysis code/chart_addendum_5_asq01_rolling_ar_equity.png" alt="ASQ-01 additive validation chart" class="w-full rounded">
+  <figcaption class="text-[11px] text-slate-500 mt-2">chart_addendum_5_asq01_rolling_ar_equity.png</figcaption>
+</figure></div>
+  <div class="mt-4 text-xs text-slate-500">Added files: <code>Week 10-1 ASQ-01 Statistical Analysis code/VALIDATION_REPORT.md</code>, <code>Week 10-1 ASQ-01 Statistical Analysis code/Week 10-1 ASQ-01 Statistical Analysis of Financial Market Data_resource_addendum_practice.ipynb</code>, and <code>Week 10-1 ASQ-01 Statistical Analysis code/Week 10-1 ASQ-01 Statistical Analysis of Financial Market Data_validated_practice.ipynb</code>. MA10/30: <code>26.04%</code>; buy-and-hold over MA window: <code>47.29%</code>; fallback rolling AR(1): <code>-15.64%</code>.</div>
+</section>
+<!-- ASQ01_ADDITIVE_SOURCE_PACK_END -->
+
 </body>
 </html>

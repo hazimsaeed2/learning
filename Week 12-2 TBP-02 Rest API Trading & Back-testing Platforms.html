@@ -135,6 +135,63 @@ data = json.loads(r.content)        # part 2</pre>
   </table>
 </section>
 
+<!-- CONTINUATION ADDENDUM -->
+<section class="mb-4 p-3 border rounded bg-slate-50">
+  <h2 class="font-bold text-zinc-700 border-b-2 border-zinc-200 mb-2">Continuation addendum - official source scripts</h2>
+  <div class="grid md:grid-cols-2 gap-3 items-start">
+    <div>
+      <img src="Week 12-2 TBP-02 Rest API code/chart_addendum_1_tbp02_source_architecture.png" alt="TBP-02 official source architecture and offline addendum" class="w-full border rounded">
+      <div class="bg-white border rounded p-2 mt-2 text-[10px]"><b>Source zip coverage:</b> the official class files add a REST helper library, an entry-point script, IB WebSocket streaming, Alpaca crypto streaming, reusable strategy base functions, and an RSI intraday strategy. The addendum copies those as source snapshots and keeps all runnable examples offline.</div>
+    </div>
+    <div>
+      <img src="Week 12-2 TBP-02 Rest API code/chart_addendum_2_tbp02_endpoint_coverage.png" alt="TBP-02 endpoint and channel coverage" class="w-full border rounded">
+      <table class="w-full border mt-2 text-[10px]">
+        <tr class="bg-zinc-100"><th class="border p-1">Added source layer</th><th class="border p-1">What it reinforces</th></tr>
+        <tr><td class="border p-1"><code>cp_web_api_functions.py</code></td><td class="border p-1">one function per endpoint</td></tr>
+        <tr><td class="border p-1"><code>make_request()</code></td><td class="border p-1">central GET/POST wrapper</td></tr>
+        <tr><td class="border p-1">WebSocket scripts</td><td class="border p-1">streaming is subscription + push messages</td></tr>
+        <tr><td class="border p-1">RSI strategy</td><td class="border p-1">REST orders plus live market-data events</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="grid md:grid-cols-2 gap-4 mb-4">
+  <div class="p-3 border rounded bg-white">
+    <h2 class="font-bold text-zinc-700 border-b-2 border-zinc-200 mb-2">Continuation addendum - REST vs WebSocket</h2>
+    <img src="Week 12-2 TBP-02 Rest API code/chart_addendum_3_tbp02_rest_vs_websocket.png" alt="REST calls are discrete while WebSocket ticks stream continuously" class="w-full border rounded">
+    <div class="bg-cyan-50 border-l-4 border-cyan-400 p-2 mt-2 text-[10px]"><b>Practical split:</b> use REST for auth checks, historical bars, positions, PnL, and orders. Use WebSockets when you need a continuing stream of last price, bid, ask, PnL, or order updates after one subscription.</div>
+  </div>
+  <div class="p-3 border rounded bg-white">
+    <h2 class="font-bold text-zinc-700 border-b-2 border-zinc-200 mb-2">Continuation addendum - corrected RSI decision logic</h2>
+    <img src="Week 12-2 TBP-02 Rest API code/chart_addendum_5_tbp02_correction_heartbeat.png" alt="Corrected RSI close-position order logic and heartbeat schedule" class="w-full border rounded">
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-2 mt-2 text-[10px]"><b>Correction added, source preserved:</b> the source RSI script uses <code>order_action == 'SELL'</code> and <code>order_action == 'BUY'</code> in close-position branches. The addendum keeps that file unchanged and adds the corrected assignment version in the offline notebook.</div>
+  </div>
+</section>
+
+<section class="mb-4 p-3 border rounded bg-white">
+  <h2 class="font-bold text-zinc-700 border-b-2 border-zinc-200 mb-2">Continuation addendum - offline RSI warning example</h2>
+  <div class="grid md:grid-cols-2 gap-3 items-start">
+    <div>
+      <img src="Week 12-2 TBP-02 Rest API code/chart_addendum_4_tbp02_offline_rsi_strategy.png" alt="TBP-02 offline corrected RSI strategy on local historical sample" class="w-full border rounded">
+    </div>
+    <div>
+      <table class="w-full border text-[10px]">
+        <tr class="bg-zinc-100"><th class="border p-1">Local offline result</th><th class="border p-1">Value</th></tr>
+        <tr><td class="border p-1">rows in <code>historical_sample.csv</code></td><td class="border p-1">962</td></tr>
+        <tr><td class="border p-1">RSI warm-up observations</td><td class="border p-1">948</td></tr>
+        <tr><td class="border p-1">mock orders</td><td class="border p-1">13</td></tr>
+        <tr><td class="border p-1">long / short / flat exposure</td><td class="border p-1">25.88% / 71.73% / 2.39%</td></tr>
+        <tr><td class="border p-1">buy-and-hold return</td><td class="border p-1">+58.55%</td></tr>
+        <tr><td class="border p-1">corrected RSI strategy return</td><td class="border p-1">-21.76%</td></tr>
+        <tr><td class="border p-1">max drawdown</td><td class="border p-1">-32.87%</td></tr>
+      </table>
+      <div class="bg-red-50 border-l-4 border-red-500 p-2 mt-2 text-[10px]">This is a warning example, not a recommendation. The strategy shows how to wire REST orders and WebSocket-style events, but the local back-test does not beat the benchmark.</div>
+      <div class="bg-gray-50 border rounded p-2 mt-2 text-[10px]">New notebooks: <code>Week 12-2 TBP-02 Rest API_resource_addendum_practice.ipynb</code> and <code>Week 12-2 TBP-02 Rest API_validated_practice.ipynb</code>. Validation: 16 composite code cells, 0 code errors.</div>
+    </div>
+  </div>
+</section>
+
 <section class="border-t-2 border-zinc-200 pt-2">
   <h2 class="font-bold text-zinc-700 mb-1">⏱️ 30-second glossary</h2>
   <div class="grid grid-cols-3 gap-2">
@@ -148,5 +205,19 @@ data = json.loads(r.content)        # part 2</pre>
   <p class="text-center text-zinc-400 mt-3">EPAT · Week 12-2 TBP-02 · REST API for Algorithmic Trading · one technology, any broker</p>
 </section>
 
+
+<!-- VALIDATION_EVIDENCE_ADDENDUM_START -->
+<section id="validation-evidence-addendum" data-validation-evidence="true" style="max-width: 1100px; margin: 24px auto; padding: 14px 16px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.45;">
+  <h2 style="margin: 0 0 8px; font-size: 16px; font-weight: 700;">Validation Evidence Addendum</h2>
+  <p style="margin: 0 0 8px;">This additive note points to the validation evidence for this lecture. The original page content above remains unchanged.</p>
+  <ul style="margin: 0; padding-left: 18px;">
+    <li>Queue row: 12</li>
+    <li>Lecture: Week 12-2 TBP-02 Rest API Trading &amp; Back-testing Platforms</li>
+    <li>Status: DONE</li>
+    <li>Validation report: <a href="Week%2012-2%20TBP-02%20Rest%20API%20code/VALIDATION_REPORT.md">Week 12-2 TBP-02 Rest API code/VALIDATION_REPORT.md</a></li>
+    <li>Execution summary JSON: <a href="Week%2012-2%20TBP-02%20Rest%20API%20code/tbp02_validation_execution_summary.json">Week 12-2 TBP-02 Rest API code/tbp02_validation_execution_summary.json</a></li>
+  </ul>
+</section>
+<!-- VALIDATION_EVIDENCE_ADDENDUM_END -->
 </body>
 </html>

@@ -1,0 +1,72 @@
+{
+  "lecture": "Week 10-1 ASQ-01 Statistical Analysis of Financial Market Data",
+  "generated_at": "2026-07-03T14:28:54",
+  "notebooks": [
+    {
+      "notebook": "Week 10-1 ASQ-01 Statistical Analysis_practice.ipynb",
+      "code_cells": 13,
+      "markdown_cells": 17,
+      "errors": 1,
+      "execution_exception": "Traceback (most recent call last):\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\_validation_work\\generate_asq01.py\", line 174, in execute_notebook_safely\n    exec(compile(\"\".join(cell.get(\"source\", [])), str(path), \"exec\"), ns)\n  File \"C:\\Users\\hsaeed\\Downloads\\EPAT-Git\\Week 10-1 ASQ-01 Statistical Analysis code\\Week 10-1 ASQ-01 Statistical Analysis_practice.ipynb\", line 5, in <module>\n    \"id\": \"38de2755\",\nModuleNotFoundError: No module named 'statsmodels'\n",
+      "stdout_excerpt": "",
+      "ma_total": "",
+      "bh_total": "",
+      "rolling_ar_total": "",
+      "rolling_bh_total": ""
+    },
+    {
+      "notebook": "Week 10-1 ASQ-01 Statistical Analysis of Financial Market Data_resource_addendum_practice.ipynb",
+      "code_cells": 4,
+      "markdown_cells": 4,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "                                                                                        additive_note\nOriginal notebook execution      Run ASQ-01 practice notebook in a temp folder.                                             Original fails locally because statsmodels is unavailable.\n    Validated fallback copy Permit local execution without installing packages.                             Fallback covers only AR(1), ADF-like, ACF/PACF plotting for this notebook.\n   MA crossover replication                    Daily 10/30 moving-average rule.                                               MA and buy-and-hold returns match the study-guide scale.\n         Stationarity scope                            ADF test interpretation.                          Fallback ADF-like p values are heuristic; formal inference needs statsmodels.\n         Rolling AR caution                      Dynamic AR(1) weekly forecast. Fallback OLS AR(1) differs from statsmodels ARIMA exact output; direction of underperformance remains.\n   Additive-only correction                           Preserve original values.                      Original study values remain; addendum records local fallback metrics separately.\n",
+      "ma_total": "",
+      "bh_total": "",
+      "rolling_ar_total": "",
+      "rolling_bh_total": ""
+    },
+    {
+      "notebook": "Week 10-1 ASQ-01 Statistical Analysis of Financial Market Data_validated_practice.ipynb",
+      "code_cells": 18,
+      "markdown_cells": 22,
+      "errors": 0,
+      "execution_exception": null,
+      "stdout_excerpt": "                                                                                        additive_note\nOriginal notebook execution      Run ASQ-01 practice notebook in a temp folder.                                             Original fails locally because statsmodels is unavailable.\n    Validated fallback copy Permit local execution without installing packages.                             Fallback covers only AR(1), ADF-like, ACF/PACF plotting for this notebook.\n   MA crossover replication                    Daily 10/30 moving-average rule.                                               MA and buy-and-hold returns match the study-guide scale.\n         Stationarity scope                            ADF test interpretation.                          Fallback ADF-like p values are heuristic; formal inference needs statsmodels.\n         Rolling AR caution                      Dynamic AR(1) weekly forecast. Fallback OLS AR(1) differs from statsmodels ARIMA exact output; direction of underperformance remains.\n   Additive-only correction                           Preserve original values.                      Original study values remain; addendum records local fallback metrics separately.\n",
+      "ma_total": 0.2604408409616361,
+      "bh_total": 0.47289912981619864,
+      "rolling_ar_total": -0.15636497347787737,
+      "rolling_bh_total": 0.21276545615121467
+    }
+  ],
+  "html": {
+    "file": "Week 10-1 ASQ-01 Statistical Analysis of Financial Market Data.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 10,
+    "missing_generated_charts": []
+  },
+  "study_html": {
+    "file": "Week 10-1 ASQ-01 Statistical Analysis of Financial Market Data_study.html",
+    "body_open": 1,
+    "body_close": 1,
+    "html_open": 1,
+    "html_close": 1,
+    "generated_chart_refs": 5,
+    "missing_generated_charts": []
+  },
+  "charts": [
+    "chart_addendum_1_asq01_source_dependency_audit.png",
+    "chart_addendum_2_asq01_price_return_stationarity.png",
+    "chart_addendum_3_asq01_ma_crossover_equity.png",
+    "chart_addendum_4_asq01_weekly_acf.png",
+    "chart_addendum_5_asq01_rolling_ar_equity.png"
+  ],
+  "main_html_appended": true,
+  "study_html_appended": true,
+  "queue_updated": true,
+  "additive_only": true,
+  "dependency_note": "Original notebook requires statsmodels; validated copy injects a labelled educational fallback."
+}

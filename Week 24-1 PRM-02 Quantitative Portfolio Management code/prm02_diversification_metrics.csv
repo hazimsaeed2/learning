@@ -1,0 +1,12 @@
+case,members,correlation,expected_return_pct,annual_volatility_pct,reading
+TCS+MARUTI_50_50,2,0.249698,17.7884,21.9211,Diversified volatility is below both single-stock volatilities.
+TCS+MARICO_50_50,2,0.119244,18.1963,19.1536,Lower correlation reduces volatility further.
+equal_weight_first_1_nifty_names,1,,,36.1785,Diversification curve point; full-universe row approximates systematic floor.
+equal_weight_first_2_nifty_names,2,,,25.4808,Diversification curve point; full-universe row approximates systematic floor.
+equal_weight_first_3_nifty_names,3,,,25.3164,Diversification curve point; full-universe row approximates systematic floor.
+equal_weight_first_5_nifty_names,5,,,23.5503,Diversification curve point; full-universe row approximates systematic floor.
+equal_weight_first_8_nifty_names,8,,,22.4755,Diversification curve point; full-universe row approximates systematic floor.
+equal_weight_first_10_nifty_names,10,,,20.5497,Diversification curve point; full-universe row approximates systematic floor.
+equal_weight_first_20_nifty_names,20,,,18.8538,Diversification curve point; full-universe row approximates systematic floor.
+equal_weight_first_30_nifty_names,30,,,18.6076,Diversification curve point; full-universe row approximates systematic floor.
+equal_weight_first_49_nifty_names,49,,,18.0333,Diversification curve point; full-universe row approximates systematic floor.

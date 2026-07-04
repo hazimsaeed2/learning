@@ -1,0 +1,15 @@
+metric,value,units
+observations,1230.0,daily returns
+mean_daily_return_pct,0.08731832197544384,percent
+daily_volatility_pct,1.6282970237472427,percent
+skewness,0.06345004287464669,unitless
+excess_kurtosis,4.026144151547541,unitless
+shapiro_pvalue_sample_500,,p-value
+historical_var_95_pct,-2.431394646605751,percent return
+historical_cvar_95_pct,-3.613152401792501,percent return
+parametric_var_95_pct,-2.58952917771349,percent return
+parametric_cvar_95_pct,,percent return
+monte_carlo_100d_var_95_pct,-19.067274148637946,percent return
+monte_carlo_100d_cvar_95_pct,-23.641657274269654,percent return
+monte_carlo_100d_price_var_95,2157.7069772172754,price
+monte_carlo_100d_price_cvar_95,2035.7516336549215,price

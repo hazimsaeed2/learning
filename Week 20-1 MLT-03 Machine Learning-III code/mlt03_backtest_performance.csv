@@ -1,0 +1,6 @@
+item,value,reading
+backtest_rows,316,Rows after indicators and next-day return alignment.
+buy_hold_log_return,-0.05834475,Cumulative log return.
+strategy_log_return,0.09982793,Proxy MLP strategy cumulative log return.
+buy_hold_simple_return_pct,-5.667532,Simple return equivalent.
+strategy_simple_return_pct,10.498077,Simple return equivalent.
